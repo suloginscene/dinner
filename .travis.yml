@@ -16,6 +16,14 @@ before_install:
   - sudo touch /dinner-ref/app/logs/dinner.log
   - sudo chmod 666 /dinner-ref/app/logs/dinner.log
 
+after_success:
+  - docker build -t dinner:latest ./
+  - docker tag dinner:latest scenecho/dinner:latest
+  - docker tag dinner:latest scenecho/dinner:"$TAG"
+  - echo "$DOCKER_HUB_PASSWORD" | docker login -u "$DOCKER_HUB_ID" --password-stdin
+  - docker push scenecho/dinner:latest
+  - docker push scenecho/dinner:"$TAG"
+
 notifications:
   email:
     recipients:
