@@ -1,0 +1,22 @@
+language: java
+jdk: openjdk11
+
+branches:
+  only:
+    - dev
+
+cache:
+  directories:
+    - $HOME/.m2
+
+before_install:
+  - sudo mkdir /dinner-ref
+  - sudo mkdir /dinner-ref/app
+  - sudo mkdir /dinner-ref/app/logs
+  - sudo touch /dinner-ref/app/logs/dinner.log
+  - sudo chmod 666 /dinner-ref/app/logs/dinner.log
+
+notifications:
+  email:
+    recipients:
+      - suloginscene@gmail.com
