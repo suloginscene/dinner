@@ -8,4 +8,10 @@
         <script th:replace="${scripts}"></script>
     </head>
 
+    <body th:fragment="body(section)">
+        <header th:replace="layout/fragments::navbar"></header>
+        <section th:replace="${section}"></section>
+        <footer th:replace="layout/fragments::footer"></footer>
+    </body>
+
 </html>

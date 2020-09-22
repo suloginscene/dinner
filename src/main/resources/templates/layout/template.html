@@ -7,4 +7,10 @@
         <script src="/js/custom.js"></script>
     </head>
 
+    <body th:replace="layout/layout::body(~{::section})">
+        <section>
+            Content
+        </section>
+    </body>
+
 </html>
