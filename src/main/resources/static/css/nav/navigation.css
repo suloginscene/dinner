@@ -1,0 +1,114 @@
+/* ---- Overlay Frame --- */
+/* The Overlay (background) */
+.overlay {
+    /* Height & width depends on how you want to reveal the overlay (see JS below) */
+    height: 100%;
+    width: 0;
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    background-color: rgb(0, 0, 0); /* Black fallback color */
+    background-color: rgba(0, 0, 0, 0.85); /* Black w/opacity */
+    overflow-x: hidden; /* Disable horizontal scroll */
+    transition: 0.4s; /* 0.4 second transition effect to slide in or slide down the overlay (height or width, depending on reveal) */
+}
+
+/* Position the content inside the overlay */
+.overlay-content {
+    position: relative;
+    top: 23%; /* 23% from the top */
+    width: 100%; /* 100% width */
+    text-align: center; /* Centered text/links */
+    margin-top: 30px; /* 30px top margin to avoid conflict with the close button on smaller screens */
+}
+
+/* ---- End of Overlay Frame --- */
+
+/* ---- Accordion Frame --- */
+/* Position the chevron (center) */
+.overlay-content .accordion {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Style the accordion panel. Note: hidden by default */
+.overlay-content nav ul {
+    padding: 0 18px;
+    margin: 0;
+    overflow: hidden;
+    max-height: 0; /* Animate Option */
+    transition: max-height 0.2s ease-out; /* Animate Option */
+}
+
+/* ---- End of Accordion Frame --- */
+
+
+/* ---- Link Elements --- */
+/* Default Element Settings*/
+.overlay button,
+.overlay-content a,
+.overlay-content nav ul li a {
+    color: #818181;
+    transition: 0.3s; /* Transition effects on hover (color) */
+}
+
+/* Position the close button (top right corner) */
+.overlay button {
+    position: absolute;
+    top: 20px;
+    right: 45px;
+    border: 0;
+    background-color: rgba(0, 0, 0, 0);
+    font-size: 60px;
+}
+
+/* The navigation links inside the overlay */
+.overlay-content a {
+    font-size: 32px;
+    padding: 8px;
+    text-decoration: none;
+    display: block; /* Display block instead of inline */
+}
+
+/* Chevron */
+.overlay-content .accordion i {
+    font-size: 20px;
+    color: #515151;
+    transition: 0.3s; /* Vertical Flip */
+    margin-left: 8px;
+}
+
+/* The lists inside the accordion panel */
+.overlay-content nav ul li a {
+    padding: 4px;
+    font-size: 24px;
+}
+
+
+/* When you mouse over the navigation links, change their color */
+.overlay button:hover,
+.overlay-content a:hover, .overlay-content a:focus,
+.overlay-content nav ul li a:hover, .overlay-content nav ul li a:focus {
+    color: #f1f1f1;
+}
+
+/* When the height of the screen is less than 450 pixels, change the font-size of the links and position the close button again, so they don't overlap */
+@media screen and (max-height: 450px) {
+    .overlay button {
+        top: 15px;
+        right: 35px;
+        font-size: 40px;
+    }
+
+    .overlay-content a {
+        font-size: 20px;
+    }
+
+    .overlay-content nav ul li a {
+        font-size: 15px;
+    }
+}
+
+/* ---- End of Link Elements --- */
