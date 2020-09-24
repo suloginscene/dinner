@@ -11,14 +11,16 @@
         <link rel="stylesheet" href="/css/nav/navigation.css"/>
         <script src="/js/nav/overlay.js"></script>
         <script src="/js/nav/accordion.js"></script>
+        <link rel="stylesheet" href="/css/main/layout.css"/>
     </th:block>
 
-    <header th:fragment="navbar">
+    <header th:fragment="navbar" class="navbar">
         <button class="btn btn-dark" onclick="openNav()">menu</button>
         <nav id="myNav" class="overlay">
             <button class="closebtn" onclick="closeNav()">&times;</button>
             <div class="overlay-content">
-                <a href="#">Dinner</a>
+                <a href="/">Dinner</a>
+                <hr/>
                 <nav>
                     <a href="#" class="accordion">&nbsp;&nbsp;&nbsp;Magazines<i class="fa fa-chevron-down"></i></a>
                     <ul class="panel">
@@ -27,6 +29,7 @@
                         <li><a href="#">etc</a></li>
                     </ul>
                 </nav>
+                <hr/>
                 <a href="#">About</a>
             </div>
         </nav>

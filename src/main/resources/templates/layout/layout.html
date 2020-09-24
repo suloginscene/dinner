@@ -10,7 +10,9 @@
 
     <body th:fragment="body(section)">
         <header th:replace="layout/fragments::navbar"></header>
-        <section th:replace="${section}"></section>
+        <div class="container-fluid">
+            <section th:replace="${section}"></section>
+        </div>
         <footer th:replace="layout/fragments::footer"></footer>
     </body>
 

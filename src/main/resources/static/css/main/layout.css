@@ -1,0 +1,29 @@
+body {
+    background-color: ghostwhite;
+}
+
+header {
+    height: 9vh;
+    padding: 1vh 5vw !important;
+}
+
+section {
+    min-height: 80vh;
+    margin: 0 10vw;
+    padding: 3vh 0;
+    border-bottom: 1px solid dimgray;
+}
+
+footer {
+    height: 11vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+@media (max-width: 768px) {
+    section {
+        margin: 0 3vw;
+    }
+
+}
