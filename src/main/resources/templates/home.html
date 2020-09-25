@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 
-    <head th:replace="layout/layout::head(~{::title},~{},~{})">
+    <head th:replace="layout/layout::head(~{::title},~{::link}, ~{})">
         <title>Dinner</title>
+        <link rel="stylesheet" href="/css/home/home.css"/>
     </head>
 
     <body th:replace="layout/layout::body(~{::section})">
