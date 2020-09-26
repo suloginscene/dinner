@@ -1,0 +1,33 @@
+@import "/css/lib/service-fundamental.css";
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 100;
+    }
+}
+
+body {
+    animation: 1s ease-out 0s 1 fadeIn;
+    background-image: url("/images/home.jpg");
+    background-position-x: center;
+    background-position-y: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+section button {
+    background-color: palevioletred;
+    color: ghostwhite;
+}
+
+section button:hover {
+    background-color: ghostwhite;
+    color: palevioletred;
+}
+
+section .message {
+    color: ghostwhite;
+}

@@ -10,12 +10,12 @@ public class MainController {
 
     @GetMapping(URL_HOME)
     public String home() {
-        return "main/home";
+        return "page/main/home";
     }
 
     @GetMapping(URL_ABOUT)
     public String about() {
-        return "main/about";
+        return "page/main/about";
     }
 
 }

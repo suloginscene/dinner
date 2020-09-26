@@ -1,7 +1,8 @@
-package me.scene.dinner.config;
+package me.scene.dinner.infra.config;
 
 
 import me.scene.dinner.MainController;
+import me.scene.dinner.domain.account.AccountController;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -17,7 +18,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
 
                 .mvcMatchers(HttpMethod.GET,
-                        MainController.URL_HOME, MainController.URL_ABOUT)
+                        MainController.URL_HOME, MainController.URL_ABOUT,
+                        AccountController.URL_SIGNUP, AccountController.URL_LOGIN)
                 .permitAll()
 
 //                .mvcMatchers(HttpMethod.POST,

@@ -40,6 +40,7 @@
     overflow: hidden;
     max-height: 0; /* Animate Option */
     transition: max-height 0.2s ease-out; /* Animate Option */
+    list-style-type: none;
 }
 
 /* ---- End of Accordion Frame --- */

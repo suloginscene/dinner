@@ -1,16 +1,3 @@
-@keyframes fadeIn {
-    0% {
-        opacity: 0;
-    }
-    100% {
-        opacity: 100;
-    }
-}
-
-body {
-    animation: 1s ease-out 0s 1 fadeIn;
-}
-
 section {
     display: flex;
     justify-content: center;
@@ -22,8 +9,8 @@ section .centered-content {
     width: 66vw;
 }
 
-section .about-message {
-    color: ghostwhite;
+section .message {
+    color: black;
     font-size: 35px;
 }
 
@@ -34,7 +21,8 @@ section hr {
 }
 
 @media (max-width: 768px) {
-    section .about-message {
+
+    section .message {
         font-size: 27px;
     }
 

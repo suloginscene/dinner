@@ -3,18 +3,18 @@
 
     <head th:replace="layout/layout::head(~{::title},~{::link}, ~{})">
         <title>About Dinner</title>
-        <link rel="stylesheet" href="/css/main/about.css"/>
+        <link rel="stylesheet" href="/css/page/main/about.css"/>
     </head>
 
     <body th:replace="layout/layout::body(~{::section})">
         <section>
             <div class="centered-content">
-                <div class="about-message">
+                <div class="message">
                     이것은 어바웃 화면 메시지입니다.
                     뭐라고 소개를 할까요.
                 </div>
                 <hr/>
-                <button>
+                <button onclick="location.href='/signup'">
                     join
                 </button>
             </div>

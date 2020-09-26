@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+    <head th:replace="layout/layout::head(~{::title},~{::link}, ~{})">
+        <title>Join Dinner</title>
+        <link rel="stylesheet" href="/css/page/account/signup.css"/>
+    </head>
+
+    <body th:replace="layout/layout::body(~{::section})">
+        <section>
+            <div class="centered-content">
+                <div class="message">
+                    이것은 회원가입 화면입니다.
+                </div>
+                <hr/>
+                <button>
+                    submit
+                </button>
+            </div>
+        </section>
+    </body>
+
+</html>

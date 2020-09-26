@@ -11,8 +11,8 @@ button {
 }
 
 button:hover {
-    background-color: ghostwhite;
-    color: lightslategray;
+    background-color: lightgrey;
+    color: dimgray;
 }
 
 section button {
@@ -24,7 +24,7 @@ section button {
 }
 
 section button:hover {
-    background-color: ghostwhite;
+    background-color: lightpink;
     color: palevioletred;
 }
 
