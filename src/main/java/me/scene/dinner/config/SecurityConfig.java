@@ -1,6 +1,7 @@
 package me.scene.dinner.config;
 
 
+import me.scene.dinner.MainController;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -12,10 +13,16 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+
         http.authorizeRequests()
+
                 .mvcMatchers(HttpMethod.GET,
-                        "/")
+                        MainController.URL_HOME, MainController.URL_ABOUT)
                 .permitAll()
+
+//                .mvcMatchers(HttpMethod.POST,
+//                        "")
+//                .permitAll()
 
                 .anyRequest().authenticated()
         ;
