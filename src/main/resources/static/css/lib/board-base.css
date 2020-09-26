@@ -1,0 +1,14 @@
+section {
+    word-break: break-all;
+    text-align: justify;
+}
+
+section .info {
+    text-align: center;
+    position: relative;
+    overflow: auto;
+}
+
+@media (max-width: 768px) {
+
+}

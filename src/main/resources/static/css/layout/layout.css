@@ -10,7 +10,7 @@ header {
 section {
     min-height: 80vh;
     margin: 0 10vw;
-    padding: 3vh 0;
+    padding: 1vh 0;
     border-bottom: 1px solid dimgray;
 }
 
@@ -23,8 +23,9 @@ footer {
 }
 
 @media (max-width: 768px) {
+
     section {
-        margin: 0 3vw;
+        margin: 0 1vw;
     }
 
 }

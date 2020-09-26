@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 
-    <head th:replace="layout/layout::head(~{::title},~{::link}, ~{})">
-        <title>Dinner</title>
+    <div th:replace="layout/layout::head(_, ~{::link}, ~{})">
         <link rel="stylesheet" href="/css/page/main/home.css"/>
-    </head>
+    </div>
 
     <body th:replace="layout/layout::body(~{::section})">
         <section>
@@ -14,7 +13,7 @@
                     가독성은 그림자가 아니라 배경 이미지 선정으로 개선하는 것이 나아보입니다.
                 </div>
                 <hr/>
-                <button>
+                <button onclick="location.href='/articles/exampleArticle'">
                     read
                 </button>
             </div>

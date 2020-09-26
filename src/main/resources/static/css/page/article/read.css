@@ -1,0 +1,51 @@
+@import "/css/lib/board-base.css";
+
+section .info #topic {
+    font-size: 30px;
+    margin: 15px 0;
+    padding: 0;
+}
+
+section .info #title {
+    margin: 15px 0;
+}
+
+section .info #sub-info {
+    font-size: 20px;
+    margin: 15px 0;
+    float: right;
+}
+
+section .info #sub-info #writer {
+    margin-right: 10px;
+}
+
+section .info #sub-info #date {
+    margin-right: 10px;
+}
+
+section article {
+    padding-bottom: 30px;
+    border-bottom: 1px solid dimgray;
+}
+
+section h1 {
+
+}
+
+section h2 {
+    padding-top: 30px;
+    margin-bottom: 15px;
+}
+
+section h3 {
+    text-indent: 15px;
+    padding-top: 30px;
+    margin-bottom: 15px;
+}
+
+section p {
+    text-indent: 15px;
+    margin-bottom: 10px;
+}
+

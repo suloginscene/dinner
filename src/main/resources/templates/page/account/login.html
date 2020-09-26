@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 
-    <head th:replace="layout/layout::head(~{::title},~{::link}, ~{})">
-        <title>Login Dinner</title>
+    <div th:replace="layout/layout::head(_, ~{::link}, ~{})">
         <link rel="stylesheet" href="/css/page/account/login.css"/>
-    </head>
+    </div>
 
     <body th:replace="layout/layout::body(~{::section})">
         <section>
             <div class="centered-content">
                 <div class="message">
                     이것은 로그인 화면입니다.
+                    <a href="/signup">회원가입</a>
                 </div>
                 <hr/>
                 <button>

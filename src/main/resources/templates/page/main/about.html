@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 
-    <head th:replace="layout/layout::head(~{::title},~{::link}, ~{})">
-        <title>About Dinner</title>
+    <div th:replace="layout/layout::head(_, ~{::link}, ~{})">
         <link rel="stylesheet" href="/css/page/main/about.css"/>
-    </head>
+    </div>
 
     <body th:replace="layout/layout::body(~{::section})">
         <section>
@@ -15,7 +14,7 @@
                 </div>
                 <hr/>
                 <button onclick="location.href='/signup'">
-                    join
+                    signup
                 </button>
             </div>
         </section>

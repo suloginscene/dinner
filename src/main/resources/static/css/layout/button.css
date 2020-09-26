@@ -27,10 +27,3 @@ section button:hover {
     background-color: lightpink;
     color: palevioletred;
 }
-
-@media (max-width: 768px) {
-    section {
-        margin: 0 3vw;
-    }
-
-}

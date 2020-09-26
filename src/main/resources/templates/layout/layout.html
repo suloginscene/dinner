@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 
-    <head th:fragment="head(title,links,scripts)">
-        <title th:replace="${title}">Dinner</title>
+    <head th:fragment="head(title_val,link_tags,script_tags)">
+        <title th:text="${title_val}">Dinner</title>
         <th:block th:replace="layout/fragments::head"></th:block>
-        <link th:replace="${links}"/>
-        <script th:replace="${scripts}"></script>
+        <link th:replace="${link_tags}"/>
+        <script th:replace="${script_tags}"></script>
     </head>
 
     <body th:fragment="body(section)">
