@@ -1,6 +1,6 @@
-window.onload = function () {
+const navAccordion = function () {
 
-    const acc = document.getElementsByClassName("accordion");
+    const acc = document.getElementsByClassName("nav-acc");
 
     for (let i = 0; i < acc.length; i++) {
 
@@ -23,4 +23,6 @@ window.onload = function () {
 
     }
 
-}
+};
+
+window.onload = navAccordion;

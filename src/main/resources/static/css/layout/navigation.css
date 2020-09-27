@@ -27,7 +27,7 @@
 
 /* ---- Accordion Frame --- */
 /* Position the chevron (center) */
-.overlay-content .accordion {
+.overlay-content .nav-acc {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -74,7 +74,7 @@
 }
 
 /* Chevron */
-.overlay-content .accordion i {
+.overlay-content .nav-acc i {
     font-size: 20px;
     color: dimgray;
     transition: 0.3s; /* Vertical Flip */
@@ -112,7 +112,7 @@ hr {
         padding: 8px;
     }
 
-    .overlay-content .accordion i {
+    .overlay-content .nav-acc i {
         font-size: 17px;
     }
 

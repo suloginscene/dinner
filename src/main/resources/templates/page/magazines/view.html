@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+    <div th:replace="layout/layout::head(${title},~{::link}, ~{::script})">
+        <link rel="stylesheet" href="/css/page/magazines/view.css"/>
+        <script src="/js/magazine/accordion.js"></script>
+    </div>
+
+    <body th:replace="layout/layout::body(~{::section})">
+        <section>
+
+            <div class="info">
+                <h1 id="title" th:text="${title}"></h1>
+                <a href="#" id="introduction">매거진 한 줄 소개를 적는 곳입니다.<i class="fa fa-chevron-down"></i></a>
+                <div class="panel">
+                    <p>매거진에 대한 긴 소개를 적는 곳입니다.</p>
+                    <p>아래 부분에 태그?처럼 들어간 '승인된 작가들의 공간입니다'와 '누구에게나 열린 공간입니다'는 공존할 수 있는(누구나 승인을 신청할 수 있다는) 말인가요, 또는 이러한 선택지가 있다는 것을 보여주시기 위해서 넣은 것인가요?</p>
+                    <p>그리고 이것들은 링크가 아니라 그냥 정보이지요? 어쨌든 이 부분은 디자인은 간단한데 매거진 권한 로직이 나온 부분에 만져볼게용.</p>
+                </div>
+            </div>
+
+            <div id="button-container">
+                <button>apply</button>
+            </div>
+
+            <ul>
+                <li>
+                    <a href="/topics/exampleTopic">예시 토픽의 이름</a>
+                </li>
+                <li>
+                    <a href="/topics/exampleTopic">조금 길지만 이 정도면 말이 되는 토픽의 이름</a>
+                </li>
+                <li>
+                    <a href="/topics/exampleTopic">example topic</a>
+                </li>
+                <li>
+                    <a href="/topics/exampleTopic">Example Topic</a>
+                </li>
+                <li>
+                    <a href="/topics/exampleTopic">이따위 토픽 이름을 짓는 사람이 있을까 모르겠지만 테스트를 위해 만들어 봅시다. 기왕 만드는 김에 조금만 더 길게 만들어 봅시다.
+                        구조를 깨트리지는 않고 본인만 이상하게 보이는군요. 그럼 됐습니다.</a>
+                </li>
+                <li>
+                    <a href="/topics/exampleTopic">Does Nathan test TOPIK?</a>
+                </li>
+                <li>
+                    <a href="/topics/exampleTopic">One more topic</a>
+                </li>
+            </ul>
+
+        </section>
+    </body>
+
+</html>

@@ -1,0 +1,70 @@
+@import "/css/lib/board-base.css";
+
+section .info #title {
+    margin: 15px 0;
+    padding-bottom: 15px;
+}
+
+section .info #introduction {
+    color: black;
+    font-size: 20px;
+}
+
+section .info #introduction i {
+    font-size: 16px;
+    color: lightslategray;
+    transition: 0.3s; /* Vertical Flip */
+    margin-left: 10px;
+}
+
+section .info .panel {
+    padding: 0 8vw;
+    margin-top: 16px;
+    overflow: hidden;
+    max-height: 0; /* Animate Option */
+    transition: max-height 0.2s ease-out; /* Animate Option */
+}
+
+section #button-container {
+    overflow: auto;
+    padding: 30px 0;
+}
+
+section #button-container button {
+    float: right;
+}
+
+section ul {
+    list-style-type: none;
+    padding-left: 0;
+    padding-bottom: 30px;
+    overflow: auto;
+}
+
+section ul li {
+    float: left;
+    height: 100px;
+    width: 45%;
+    margin: 15px 2.5%;
+    padding: 25px;
+    overflow: hidden;
+    border: solid 1px dimgray;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+section ul li a {
+    text-align: center;
+    font-size: 20px;
+}
+
+@media (max-width: 768px) {
+    section ul li {
+        float: none;
+        width: auto;
+        height: auto;
+        margin: 30px 5px;
+    }
+}
