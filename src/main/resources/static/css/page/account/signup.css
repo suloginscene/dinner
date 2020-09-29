@@ -1,1 +1,19 @@
 @import "/css/lib/service-fundamental.css";
+
+section .centered-content form .form-texts {
+    margin: 30px 0;
+}
+
+section .centered-content form .form-texts label {
+    display: block;
+}
+
+section .centered-content form .form-texts label input {
+    padding: 10px;
+}
+
+@media (max-width: 768px) {
+    section .centered-content form .form-texts label input {
+        width: 66vw;
+    }
+}

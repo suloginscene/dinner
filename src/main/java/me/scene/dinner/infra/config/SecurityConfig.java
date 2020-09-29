@@ -26,9 +26,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         ArticleController.URL + "/*", TopicController.URL + "/*", MagazineController.URL + "/*"
                 ).permitAll()
 
-//                .mvcMatchers(HttpMethod.POST,
-//                        "")
-//                .permitAll()
+                .mvcMatchers(HttpMethod.POST,
+                        AccountController.URL_SIGNUP)
+                .permitAll()
 
                 .anyRequest().authenticated()
         ;
