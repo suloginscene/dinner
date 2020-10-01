@@ -28,12 +28,12 @@ public class AccountController {
     }
 
     @PostMapping(URL_SIGNUP)
-    public String signupSubmit(@Valid SignupForm signupForm, Errors errors) {
+    public String signupSubmit(@Valid SignupForm signupForm, Errors errors, Model model) {
         if (errors.hasErrors()) return "page/account/signup";
 
         String email = accountService.storeInTempRepository(signupForm);
-        // TODO notify sending email
-        return "redirect:/";
+        model.addAttribute("emailSendingMessage", email + "로 회원가입 인증메일을 보냈습니다.");
+        return "page/account/emailSend";
     }
 
     @GetMapping(URL_LOGIN)
