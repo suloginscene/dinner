@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+    <div th:replace="layout/layout::head(_, ~{::link}, ~{})">
+        <link rel="stylesheet" href="/css/page/account/verify.css"/>
+    </div>
+
+    <body th:replace="layout/layout::body(~{::section})">
+        <section>
+            <div class="centered-content">
+                <div th:if="${email}">
+                    <div class="message"><span th:text="${email}"></span>에서 인증메일을 확인해주세요.</div>
+                </div>
+                <!-- TODO verified -->
+            </div>
+        </section>
+    </body>
+
+</html>

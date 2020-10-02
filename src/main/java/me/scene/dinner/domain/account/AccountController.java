@@ -6,12 +6,14 @@ import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
 
 @Controller
 public class AccountController {
     public static final String URL_SIGNUP = "/signup";
+    public static final String URL_VERIFY = "/verify";
     public static final String URL_LOGIN = "/login";
 
     private final AccountService accountService;
@@ -28,12 +30,20 @@ public class AccountController {
     }
 
     @PostMapping(URL_SIGNUP)
-    public String signupSubmit(@Valid SignupForm signupForm, Errors errors, Model model) {
+    public String signupSubmit(@Valid SignupForm signupForm, Errors errors) {
         if (errors.hasErrors()) return "page/account/signup";
 
         String email = accountService.storeInTempRepository(signupForm);
-        model.addAttribute("emailSendingMessage", email + "로 회원가입 인증메일을 보냈습니다.");
-        return "page/account/emailSend";
+        String queryString = "?email=" + email + "&token=" + null;
+        return "redirect:" + URL_VERIFY + queryString;
+    }
+
+    @GetMapping(URL_VERIFY)
+    public String verifyEmail(@RequestParam String email, @RequestParam String token, Model model) {
+        if (token.equals("null")) model.addAttribute("email", email);
+
+        // TODO verified
+        return "page/account/verify";
     }
 
     @GetMapping(URL_LOGIN)

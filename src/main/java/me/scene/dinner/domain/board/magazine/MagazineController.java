@@ -1,4 +1,4 @@
-package me.scene.dinner.domain.magazine;
+package me.scene.dinner.domain.board.magazine;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,7 +13,7 @@ public class MagazineController {
     @GetMapping(URL + "/{title}")
     public String readAnArticle(@PathVariable String title, Model model) {
         model.addAttribute("title", title);
-        return "page/magazines/view";
+        return "page/board/magazines/view";
     }
 
 }
