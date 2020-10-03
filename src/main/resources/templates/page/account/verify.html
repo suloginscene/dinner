@@ -11,7 +11,10 @@
                 <div th:if="${email}">
                     <div class="message"><span th:text="${email}"></span>에서 인증메일을 확인해주세요.</div>
                 </div>
-                <!-- TODO verified -->
+                <!-- TODO navigate to Profile page -->
+                <div th:if="${username}">
+                    <div class="message"><span th:text="${username}"></span>님, 가입을 환영합니다.</div>
+                </div>
             </div>
         </section>
     </body>

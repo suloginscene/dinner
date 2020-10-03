@@ -11,12 +11,14 @@ import org.springframework.transaction.annotation.Transactional;
 public class AccountService {
 
     private final SignupFormRepository tempRepository;
+    private final AccountRepository accountRepository;
     private final PasswordEncoder passwordEncoder;
     private final JavaMailSender javaMailSender;
 
     @Autowired
-    public AccountService(SignupFormRepository tempRepository, PasswordEncoder passwordEncoder, JavaMailSender javaMailSender) {
+    public AccountService(SignupFormRepository tempRepository, AccountRepository accountRepository, PasswordEncoder passwordEncoder, JavaMailSender javaMailSender) {
         this.tempRepository = tempRepository;
+        this.accountRepository = accountRepository;
         this.passwordEncoder = passwordEncoder;
         this.javaMailSender = javaMailSender;
     }
@@ -24,6 +26,7 @@ public class AccountService {
     @Transactional
     public String storeInTempRepository(SignupForm signupForm) {
         signupForm.encodePassword(passwordEncoder);
+        signupForm.generateVerificationToken();
         signupForm = tempRepository.save(signupForm);
         sendVerificationMail(signupForm);
         return signupForm.getEmail();
@@ -38,8 +41,16 @@ public class AccountService {
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setTo(signupForm.getEmail());
         mailMessage.setSubject("[Dinner] Verification Mail");
-        mailMessage.setText("Mail content.");
+        mailMessage.setText(signupForm.getVerificationToken());
         return mailMessage;
+    }
+
+    @Transactional
+    public String completeSignup(String email, String token) {
+        SignupForm signupForm = tempRepository.findByEmail(email).orElseThrow();
+        signupForm.validateToken(token);
+        Account account = accountRepository.save(new Account(signupForm));
+        return account.getUsername();
     }
 
 }

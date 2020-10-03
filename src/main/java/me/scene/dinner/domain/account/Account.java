@@ -30,10 +30,10 @@ public class Account {
     protected Account() {
     }
 
-    public Account(String username, String email, String password) {
-        this.username = username;
-        this.email = email;
-        this.password = password;
+    public Account(SignupForm signupForm) {
+        this.username = signupForm.getUsername();
+        this.email = signupForm.getEmail();
+        this.password = signupForm.getPassword();
         roles.add(AccountRole.USER);
     }
 

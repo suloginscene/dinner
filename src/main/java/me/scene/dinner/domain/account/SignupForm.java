@@ -10,6 +10,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.validation.constraints.*;
+import java.util.UUID;
 
 @Entity
 @Getter @Setter
@@ -33,8 +34,17 @@ public class SignupForm {
     @NotNull @AssertTrue
     private Boolean agreement;
 
+    private String verificationToken;
+
     public void encodePassword(PasswordEncoder passwordEncoder) {
         password = passwordEncoder.encode(password);
     }
 
+    public void generateVerificationToken() {
+        verificationToken = UUID.randomUUID().toString();
+    }
+
+    public void validateToken(String token) {
+        if (!token.equals(verificationToken)) throw new RuntimeException();
+    }
 }

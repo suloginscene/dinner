@@ -40,9 +40,14 @@ public class AccountController {
 
     @GetMapping(URL_VERIFY)
     public String verifyEmail(@RequestParam String email, @RequestParam String token, Model model) {
-        if (token.equals("null")) model.addAttribute("email", email);
+        if (token.equals("null")) {
+            model.addAttribute("email", email);
+            return "page/account/verify";
+        }
 
-        // TODO verified
+        String username = accountService.completeSignup(email, token);
+        model.addAttribute("username", username);
+        // TODO navigate to Profile page
         return "page/account/verify";
     }
 

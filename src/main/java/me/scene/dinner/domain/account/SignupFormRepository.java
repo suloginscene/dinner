@@ -6,4 +6,6 @@ import java.util.Optional;
 
 public interface SignupFormRepository extends JpaRepository<SignupForm, Long> {
     Optional<SignupForm> findByUsername(String username);
+
+    Optional<SignupForm> findByEmail(String email);
 }
