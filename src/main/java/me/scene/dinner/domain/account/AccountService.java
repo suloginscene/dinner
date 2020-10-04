@@ -3,6 +3,7 @@ package me.scene.dinner.domain.account;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,16 +39,21 @@ public class AccountService {
     }
 
     private SimpleMailMessage createMailMessage(SignupForm signupForm) {
+        String email = signupForm.getEmail();
+        String verificationToken = signupForm.getVerificationToken();
+        String verificationLink = String.format("%s%s?email=%s&token=%s",
+                "http://scene-cho.cf", AccountController.URL_VERIFY, email, verificationToken);
+
         SimpleMailMessage mailMessage = new SimpleMailMessage();
-        mailMessage.setTo(signupForm.getEmail());
-        mailMessage.setSubject("[Dinner] Verification Mail");
-        mailMessage.setText(signupForm.getVerificationToken());
+        mailMessage.setSubject("[Dinner] Please verify your email address.");
+        mailMessage.setTo(email);
+        mailMessage.setText(verificationLink);
         return mailMessage;
     }
 
     @Transactional
     public String completeSignup(String email, String token) {
-        SignupForm signupForm = tempRepository.findByEmail(email).orElseThrow();
+        SignupForm signupForm = tempRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException(email));
         signupForm.validateToken(token);
         Account account = accountRepository.save(new Account(signupForm));
         return account.getUsername();

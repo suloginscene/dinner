@@ -2,6 +2,7 @@ package me.scene.dinner.domain.account;
 
 import lombok.Getter;
 import lombok.Setter;
+import me.scene.dinner.infra.exception.DinnerException;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -45,6 +46,6 @@ public class SignupForm {
     }
 
     public void validateToken(String token) {
-        if (!token.equals(verificationToken)) throw new RuntimeException();
+        if (!token.equals(verificationToken)) throw new DinnerException("invalid verification token");
     }
 }

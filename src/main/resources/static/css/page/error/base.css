@@ -1,0 +1,29 @@
+section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+section .centered-content {
+    text-align: center;
+    width: 66vw;
+}
+
+section .message {
+    color: black;
+    font-size: 35px;
+}
+
+section hr {
+    border-top: 1px solid dimgray;
+    margin-top: 5vh;
+    margin-bottom: 5vh;
+}
+
+@media (max-width: 768px) {
+
+    section .message {
+        font-size: 27px;
+    }
+
+}
