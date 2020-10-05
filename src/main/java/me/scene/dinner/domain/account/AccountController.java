@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.mail.MessagingException;
 import javax.validation.Valid;
 
 @Controller
@@ -30,7 +31,7 @@ public class AccountController {
     }
 
     @PostMapping(URL_SIGNUP)
-    public String signupSubmit(@Valid SignupForm signupForm, Errors errors) {
+    public String signupSubmit(@Valid SignupForm signupForm, Errors errors) throws MessagingException {
         if (errors.hasErrors()) return "page/account/signup";
 
         String email = accountService.storeInTempRepository(signupForm);

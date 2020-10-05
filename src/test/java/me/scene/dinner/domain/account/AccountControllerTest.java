@@ -1,5 +1,7 @@
 package me.scene.dinner.domain.account;
 
+import me.scene.dinner.infra.mail.MailMessage;
+import me.scene.dinner.infra.mail.MailSender;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -7,8 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -26,7 +26,7 @@ class AccountControllerTest {
     @Autowired MockMvc mockMvc;
     @Autowired SignupFormRepository tempRepository;
     @Autowired AccountRepository accountRepository;
-    @MockBean JavaMailSender javaMailSender;
+    @MockBean MailSender mailSender;
 
     @BeforeEach
     void beforeEach() {
@@ -67,7 +67,7 @@ class AccountControllerTest {
         SignupForm signupForm = tempRepository.findByUsername("scene").orElseThrow();
         assertThat(signupForm.getPassword()).isNotEqualTo("password");
         assertThat(signupForm.getVerificationToken()).isNotNull();
-        then(javaMailSender).should().send(any(SimpleMailMessage.class));
+        then(mailSender).should().send(any(MailMessage.class));
     }
 
     @Test
@@ -148,7 +148,7 @@ class AccountControllerTest {
                         .param("token", "invalid-token")
         )
                 .andExpect(status().isOk())
-                .andExpect(view().name("page/error/dinner"))
+                .andExpect(view().name("page/error/verification"))
         ;
         account = accountRepository.findByUsername(username).orElse(null);
         assertThat(account).isNull();

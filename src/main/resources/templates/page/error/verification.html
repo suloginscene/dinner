@@ -2,13 +2,15 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 
     <div th:replace="layout/layout::head(_, ~{::link}, ~{})">
-        <link rel="stylesheet" href="/css/page/error/runtime.css"/>
+        <link rel="stylesheet" href="/css/page/error/error.css"/>
     </div>
 
     <body th:replace="layout/layout::body(~{::section})">
         <section>
             <div class="centered-content">
-                알 수 없는 오류가 발생했습니다.
+                <div class="message">
+                    인증에 실패했습니다.
+                </div>
             </div>
         </section>
     </body>
