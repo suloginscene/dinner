@@ -41,14 +41,12 @@ public class AccountController {
 
     @GetMapping(URL_VERIFY)
     public String verifyEmail(@RequestParam String email, @RequestParam String token, Model model) {
-        if (token.equals("null")) {
-            model.addAttribute("email", email);
-            return "page/account/verify";
-        }
+        String verifyMessage;
 
-        String username = accountService.completeSignup(email, token);
-        model.addAttribute("username", username);
-        // TODO navigate to Profile page
+        if (token.equals("null")) verifyMessage = email + "로 인증메일을 보냈습니다.";
+        else verifyMessage = accountService.completeSignup(email, token);
+
+        model.addAttribute("verifyMessage", verifyMessage);
         return "page/account/verify";
     }
 

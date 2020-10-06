@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.mail.MessagingException;
+import java.util.Optional;
 
 @Service
 public class AccountService {
@@ -55,10 +56,13 @@ public class AccountService {
 
     @Transactional
     public String completeSignup(String email, String token) {
+        if (accountRepository.findByEmail(email).isPresent()) return "이미 인증된 이메일입니다.(" + email + ")";
+
         SignupForm signupForm = tempRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException(email));
         signupForm.validateToken(token);
         Account account = accountRepository.save(new Account(signupForm));
-        return account.getUsername();
+        tempRepository.delete(signupForm);
+        return account.getUsername() + " 님, 가입을 환영합니다.";
     }
 
 }
