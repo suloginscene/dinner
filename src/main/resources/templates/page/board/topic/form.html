@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+    <div th:replace="layout/layout::head(_,~{::link}, ~{})">
+        <link rel="stylesheet" href="/css/page/board/topic/form.css"/>
+    </div>
+
+    <body th:replace="layout/layout::body(~{::section})">
+        <section>
+            토픽 만들기 페이지
+        </section>
+    </body>
+
+</html>

@@ -2,7 +2,7 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 
     <div th:replace="layout/layout::head(${title},~{::link}, ~{::script})">
-        <link rel="stylesheet" href="/css/page/board/magazines/view.css"/>
+        <link rel="stylesheet" href="/css/page/board/magazine/view.css"/>
         <script src="/js/magazine/accordion.js"></script>
     </div>
 
@@ -20,7 +20,9 @@
             </div>
 
             <div id="button-container">
+                <!-- TODO select button whether principal is creatable -->
                 <button>apply</button>
+                <button onclick="location.href='/topic-form'">create</button>
             </div>
 
             <ul>

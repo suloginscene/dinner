@@ -8,10 +8,16 @@ import org.springframework.web.bind.annotation.PathVariable;
 @Controller
 public class ArticleController {
 
+    public static final String FORM = "/article-form";
     public static final String URL = "/articles";
 
+    @GetMapping(FORM)
+    public String shipArticleForm() {
+        return "page/board/article/form";
+    }
+
     @GetMapping(URL + "/{title}")
-    public String readAnArticle(@PathVariable String title, Model model) {
+    public String showAnArticle(@PathVariable String title, Model model) {
         model.addAttribute("title", title);
         return "page/board/article/view";
     }

@@ -27,7 +27,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .mvcMatchers(HttpMethod.GET,
                         MainController.URL_HOME, MainController.URL_ABOUT,
                         AccountController.URL_SIGNUP, AccountController.URL_VERIFY, AccountController.URL_LOGIN,
-                        ArticleController.URL + "/*", TopicController.URL + "/*", MagazineController.URL + "/*"
+                        MagazineController.FORM, TopicController.FORM, ArticleController.FORM,
+                        MagazineController.URL + "/*", TopicController.URL + "/*", ArticleController.URL + "/*"
                 ).permitAll()
 
                 .mvcMatchers(HttpMethod.POST,
@@ -39,7 +40,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Override
-    public void configure(WebSecurity web) throws Exception {
+    public void configure(WebSecurity web) {
         web.ignoring()
                 .mvcMatchers("/node_modules/**")
                 .mvcMatchers("/fonts/**")
