@@ -7,7 +7,35 @@
 
     <body th:replace="layout/layout::body(~{::section})">
         <section>
-            매거진 만들기 페이지
+            <div class="centered-content">
+                <div class="message">
+                    누구나 매거진을 만들 수 있습니다.
+                </div>
+                <form th:action="@{/#}" th:method="post">
+                    <div class="form-texts">
+                        <div class="magazine-form-info">매거진의 이름을 정해주세요.</div>
+                        <label>
+                            <input type="text" placeholder="매거진 이름은 최대 20자까지 가능합니다.">
+                            <small class="form-text text-danger"></small>
+                        </label>
+                        <div class="magazine-form-info">매거진 소개글을 작성해주세요.</div>
+                        <label>
+                            <input type="text" placeholder="간략한 소개는 최대 30자까지 가능합니다.">
+                            <textarea rows="5" placeholder="자세한 소개는 최대 300자까지 가능합니다."></textarea>
+                            <small class="form-text text-danger"></small>
+                        </label>
+                    </div>
+                    <div class="form-checks">
+                        <div class="magazine-form-info">토픽 개설 권한을 설정해주세요.</div>
+                        <label for="radio-1"><input type="radio" name="creatable" id="radio-1" value="any"/>누구나</label>
+                        <label for="radio-2"><input type="radio" name="creatable" id="radio-2" value="approved"/>승인된 작가들만</label>
+                        <label for="radio-3"><input type="radio" name="creatable" id="radio-3" value="only"/>매거진 관리자만</label>
+                    </div>
+                    <button type="submit">
+                        issue
+                    </button>
+                </form>
+            </div>
         </section>
     </body>
 

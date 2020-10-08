@@ -1,0 +1,10 @@
+section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+section .centered-content {
+    text-align: center;
+    width: 66vw;
+}

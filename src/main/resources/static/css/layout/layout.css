@@ -1,3 +1,7 @@
+@import "/css/layout/font.css";
+@import "/css/layout/button.css";
+@import "/css/layout/navigation.css";
+
 body {
     background-color: ghostwhite;
 }
@@ -20,6 +24,11 @@ footer {
     justify-content: center;
     align-items: center;
     color: dimgray;
+}
+
+hr {
+    border-top: 1px solid dimgray;
+    width: 32px;
 }
 
 @media (max-width: 768px) {
