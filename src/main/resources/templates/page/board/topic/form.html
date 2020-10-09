@@ -7,7 +7,39 @@
 
     <body th:replace="layout/layout::body(~{::section})">
         <section>
-            토픽 만들기 페이지
+            <div class="centered-content">
+                <div class="info">
+                    <div class="message">Palm Tree Canteen</div>
+                    <div> 승인된 작가들만 토픽을 개설할 수 있습니다.</div>
+                    <!-- TODO 승인된 작가만 이 페이지로 들어올 수 있어야겠지? -->
+                    <div>채원 도언 조신</div>
+                    <!-- TODO 이 명단을 여기에서? 여기에서만?-->
+                </div>
+                <form th:action="@{/#}" th:method="post">
+                    <div class="form-texts">
+                        <div class="topic-form-info">토픽의 이름을 정해주세요.</div>
+                        <label>
+                            <input type="text" placeholder="토픽 이름은 최대 20자까지 가능합니다.">
+                            <small class="form-text text-danger"></small>
+                        </label>
+                        <div class="topic-form-info">토픽 소개글을 작성해주세요.</div>
+                        <label>
+                            <input type="text" placeholder="간략한 소개는 최대 30자까지 가능합니다.">
+                            <textarea rows="5" placeholder="자세한 소개는 최대 300자까지 가능합니다."></textarea>
+                            <small class="form-text text-danger"></small>
+                        </label>
+                    </div>
+                    <div class="form-checks">
+                        <div class="topic-form-info">아티클 작성 권한을 설정해주세요.</div>
+                        <label for="radio-1"><input type="radio" name="creatable" id="radio-1" value="any"/>누구나</label>
+                        <label for="radio-2"><input type="radio" name="creatable" id="radio-2" value="approved"/>승인된 작가들만</label>
+                        <label for="radio-3"><input type="radio" name="creatable" id="radio-3" value="only"/>매거진 관리자만</label>
+                    </div>
+                    <button type="submit">
+                        create
+                    </button>
+                </form>
+            </div>
         </section>
     </body>
 
