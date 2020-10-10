@@ -34,26 +34,8 @@ section .centered-content form .form-texts label textarea {
     margin-bottom: 10px;
 }
 
-section .centered-content form .form-checks {
-    margin-bottom: 30px;
-}
-
-section .centered-content form .form-checks label {
-    width: 150px;
-    font-size: 18px;
-}
-
-section .centered-content form .form-checks label input {
-    margin-right: 10px;
-}
-
 @media (max-width: 768px) {
     section .centered-content {
         width: 80vw;
-    }
-
-    section .centered-content form .form-checks label {
-        display: block;
-        width: auto;
     }
 }

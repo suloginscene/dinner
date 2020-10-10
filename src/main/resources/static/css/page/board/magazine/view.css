@@ -1,8 +1,22 @@
 @import "/css/page/board/base.css";
 
 section .info #title {
-    margin: 15px 0;
-    padding-bottom: 15px;
+    padding: 10px 0;
+    margin: 0;
+}
+
+section .info #authorities {
+    padding: 10px 0;
+    margin-bottom: 10px;
+}
+
+section .info #authorities #authority {
+    padding: 5px;
+    border-radius: 5px;
+    background-color: lightgray;
+}
+
+section .info #authorities .writer {
 }
 
 section .info #introduction {
