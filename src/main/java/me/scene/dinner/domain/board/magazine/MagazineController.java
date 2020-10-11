@@ -17,7 +17,7 @@ public class MagazineController {
     }
 
     @GetMapping(URL + "/{title}")
-    public String showAnMagazine(@PathVariable String title, Model model) {
+    public String showMagazine(@PathVariable String title, Model model) {
         model.addAttribute("title", title);
         return "page/board/magazine/view";
     }

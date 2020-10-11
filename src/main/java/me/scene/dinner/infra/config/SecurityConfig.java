@@ -6,6 +6,7 @@ import me.scene.dinner.domain.account.AccountController;
 import me.scene.dinner.domain.board.article.ArticleController;
 import me.scene.dinner.domain.board.magazine.MagazineController;
 import me.scene.dinner.domain.board.topic.TopicController;
+import me.scene.dinner.domain.tag.TagController;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
@@ -28,7 +29,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         MainController.URL_HOME, MainController.URL_ABOUT,
                         AccountController.URL_SIGNUP, AccountController.URL_VERIFY, AccountController.URL_LOGIN,
                         MagazineController.FORM, TopicController.FORM, ArticleController.FORM,
-                        MagazineController.URL + "/*", TopicController.URL + "/*", ArticleController.URL + "/*"
+                        MagazineController.URL + "/*", TopicController.URL + "/*", ArticleController.URL + "/*",
+                        TagController.URL, TagController.URL + "/*"
                 ).permitAll()
 
                 .mvcMatchers(HttpMethod.POST,

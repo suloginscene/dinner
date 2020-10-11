@@ -17,7 +17,7 @@ public class ArticleController {
     }
 
     @GetMapping(URL + "/{title}")
-    public String showAnArticle(@PathVariable String title, Model model) {
+    public String showArticle(@PathVariable String title, Model model) {
         model.addAttribute("title", title);
         return "page/board/article/view";
     }

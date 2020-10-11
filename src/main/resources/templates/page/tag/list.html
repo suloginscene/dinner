@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+    <div th:replace="layout/layout::head(_, ~{::link}, ~{})">
+        <link rel="stylesheet" href="/css/page/tag/list.css"/>
+    </div>
+
+    <body th:replace="layout/layout::body(~{::section})">
+        <section>
+            <div>
+                전체 태그 목록 화면입니다.
+            </div>
+            <a href="/tags/tag">개별 태그</a>
+        </section>
+    </body>
+
+</html>

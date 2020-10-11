@@ -17,7 +17,7 @@ public class TopicController {
     }
 
     @GetMapping(URL + "/{title}")
-    public String showAnTopic(@PathVariable String title, Model model) {
+    public String showTopic(@PathVariable String title, Model model) {
         model.addAttribute("title", title);
         return "page/board/topic/view";
     }
