@@ -17,4 +17,5 @@ public class App {
                 .properties(SPRING_CONFIGS)
                 .run(args);
     }
+
 }

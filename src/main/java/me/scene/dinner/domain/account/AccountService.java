@@ -1,5 +1,6 @@
 package me.scene.dinner.domain.account;
 
+import me.scene.dinner.infra.config.url.URL;
 import me.scene.dinner.infra.mail.MailMessage;
 import me.scene.dinner.infra.mail.MailSender;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,13 +20,15 @@ public class AccountService implements UserDetailsService {
     private final AccountRepository accountRepository;
     private final PasswordEncoder passwordEncoder;
     private final MailSender mailSender;
+    private final URL url;
 
     @Autowired
-    public AccountService(SignupFormRepository tempRepository, AccountRepository accountRepository, PasswordEncoder passwordEncoder, MailSender mailSender) {
+    public AccountService(SignupFormRepository tempRepository, AccountRepository accountRepository, PasswordEncoder passwordEncoder, MailSender mailSender, URL url) {
         this.tempRepository = tempRepository;
         this.accountRepository = accountRepository;
         this.passwordEncoder = passwordEncoder;
         this.mailSender = mailSender;
+        this.url = url;
     }
 
     @Transactional
@@ -46,8 +49,7 @@ public class AccountService implements UserDetailsService {
         String email = signupForm.getEmail();
         String verificationToken = signupForm.getVerificationToken();
         String verificationLink = String.format("%s%s?email=%s&token=%s",
-                // TODO configure domain-name in profile via properties
-                "http://scene-cho.cf", AccountController.URL_VERIFY, email, verificationToken);
+                url.get(), AccountController.URL_VERIFY, email, verificationToken);
 
         MailMessage mailMessage = new MailMessage();
         mailMessage.setSubject("[Dinner] Please verify your email address.");

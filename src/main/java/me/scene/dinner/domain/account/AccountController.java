@@ -1,5 +1,8 @@
 package me.scene.dinner.domain.account;
 
+import me.scene.dinner.MainController;
+import me.scene.dinner.infra.config.url.URL;
+import me.scene.dinner.infra.util.RefererUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -9,6 +12,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.mail.MessagingException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 @Controller
@@ -18,10 +23,12 @@ public class AccountController {
     public static final String URL_LOGIN = "/login";
 
     private final AccountService accountService;
+    private final URL url;
 
     @Autowired
-    public AccountController(AccountService accountService) {
+    public AccountController(AccountService accountService, URL url) {
         this.accountService = accountService;
+        this.url = url;
     }
 
     @GetMapping(URL_SIGNUP)
@@ -51,8 +58,17 @@ public class AccountController {
     }
 
     @GetMapping(URL_LOGIN)
-    public String login() {
+    public String loginPage(HttpServletRequest request) {
+        rememberRedirectingUrl(request);
         return "page/account/login";
+    }
+
+    private void rememberRedirectingUrl(HttpServletRequest request) {
+        String referer = RefererUtils.parse(request, url.get());
+        String redirectTo = (RefererUtils.contextless(referer)) ? MainController.URL_HOME : referer;
+
+        HttpSession session = request.getSession();
+        session.setAttribute("redirectTo", redirectTo);
     }
 
 }

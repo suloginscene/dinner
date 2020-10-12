@@ -1,5 +1,4 @@
-package me.scene.dinner.infra.config;
-
+package me.scene.dinner.infra.config.security;
 
 import me.scene.dinner.MainController;
 import me.scene.dinner.domain.account.AccountController;
@@ -7,18 +6,24 @@ import me.scene.dinner.domain.board.article.ArticleController;
 import me.scene.dinner.domain.board.magazine.MagazineController;
 import me.scene.dinner.domain.board.topic.TopicController;
 import me.scene.dinner.domain.tag.TagController;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+    private final AuthenticationSuccessHandler authenticationSuccessHandler;
+
+    @Autowired
+    public SecurityConfig(AuthenticationSuccessHandler authenticationSuccessHandler) {
+        this.authenticationSuccessHandler = authenticationSuccessHandler;
+    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -42,7 +47,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 
         http.formLogin()
-                .loginPage(AccountController.URL_LOGIN);
+                .loginPage(AccountController.URL_LOGIN)
+                .successHandler(authenticationSuccessHandler);
 
         http.logout()
                 .logoutSuccessUrl(MainController.URL_HOME);
@@ -55,11 +61,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .mvcMatchers("/node_modules/**")
                 .mvcMatchers("/fonts/**")
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations());
-    }
-
-    @Bean
-    PasswordEncoder passwordEncoder() {
-        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 
 }

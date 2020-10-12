@@ -1,5 +1,6 @@
 package me.scene.dinner.domain.account;
 
+import me.scene.dinner.MainController;
 import me.scene.dinner.infra.mail.MailMessage;
 import me.scene.dinner.infra.mail.MailSender;
 import org.junit.jupiter.api.AfterEach;
@@ -15,6 +16,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.then;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
+import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.unauthenticated;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -90,18 +93,18 @@ class AccountControllerTest {
         assertThat(signupForm).isNull();
     }
 
-    private void signupSubmit() throws Exception {
+    private void signupSubmit(String username) throws Exception {
         mockMvc.perform(post(AccountController.URL_SIGNUP)
                 .with(csrf())
-                .param("username", "scene")
-                .param("email", "scene@email.com")
+                .param("username", username)
+                .param("email", username + "@email.com")
                 .param("password", "password")
                 .param("agreement", "true"));
     }
 
     @Test
     void verifyEmail_store() throws Exception {
-        signupSubmit();
+        signupSubmit("scene");
 
         SignupForm signupForm = tempRepository.findByUsername("scene").orElseThrow();
         String username = signupForm.getUsername();
@@ -123,12 +126,13 @@ class AccountControllerTest {
 
     @Test
     void verifyEmail_invalidParams_handleException() throws Exception {
-        signupSubmit();
+        signupSubmit("scene");
 
         SignupForm signupForm = tempRepository.findByUsername("scene").orElseThrow();
         String username = signupForm.getUsername();
         String email = signupForm.getEmail();
         String verificationToken = signupForm.getVerificationToken();
+
         Account account;
 
         mockMvc.perform(
@@ -152,6 +156,78 @@ class AccountControllerTest {
         ;
         account = accountRepository.findByUsername(username).orElse(null);
         assertThat(account).isNull();
+    }
+
+    private void verifyEmail(String username) throws Exception {
+        SignupForm signupForm = tempRepository.findByUsername(username).orElseThrow();
+        mockMvc.perform(get(AccountController.URL_VERIFY)
+                .param("email", signupForm.getEmail())
+                .param("token", signupForm.getVerificationToken()));
+    }
+
+    @Test
+    void loginPage_isCustomizedPage() throws Exception {
+        mockMvc.perform(
+                get(AccountController.URL_LOGIN)
+        )
+                .andExpect(status().isOk())
+                .andExpect(view().name("page/account/login"))
+        ;
+    }
+
+    @Test
+    void loginPage_approachForbiddenPage_beGuidedBySpringSecurity() throws Exception {
+        mockMvc.perform(
+                get("/unauthenticated-user-is-forbidden-to-approach-this-page")
+        )
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrlPattern("**" + AccountController.URL_LOGIN))
+        ;
+    }
+
+    @Test
+    void login_authenticated() throws Exception {
+        signupSubmit("scene");
+        verifyEmail("scene");
+
+        mockMvc.perform(
+                post(AccountController.URL_LOGIN)
+                        .with(csrf())
+                        .param("username", "scene")
+                        .param("password", "password")
+        )
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl(MainController.URL_HOME))
+                .andExpect(authenticated())
+        ;
+    }
+
+    @Test
+    void login_invalidParams_unauthenticated() throws Exception {
+        signupSubmit("scene");
+        verifyEmail("scene");
+
+        mockMvc.perform(
+                post(AccountController.URL_LOGIN)
+                        .with(csrf())
+                        .param("username", "invalid")
+                        .param("password", "password")
+        )
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl(AccountController.URL_LOGIN + "?error"))
+                .andExpect(unauthenticated())
+        ;
+
+        mockMvc.perform(
+                post(AccountController.URL_LOGIN)
+                        .with(csrf())
+                        .param("username", "scene")
+                        .param("password", "invalid")
+        )
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl(AccountController.URL_LOGIN + "?error"))
+                .andExpect(unauthenticated())
+        ;
     }
 
 }

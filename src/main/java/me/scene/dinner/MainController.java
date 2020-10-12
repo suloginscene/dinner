@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 public class MainController {
+
     public static final String URL_HOME = "/";
     public static final String URL_ABOUT = "/about";
 
