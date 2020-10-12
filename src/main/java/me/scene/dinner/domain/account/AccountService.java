@@ -3,6 +3,8 @@ package me.scene.dinner.domain.account;
 import me.scene.dinner.infra.mail.MailMessage;
 import me.scene.dinner.infra.mail.MailSender;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -11,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.mail.MessagingException;
 
 @Service
-public class AccountService {
+public class AccountService implements UserDetailsService {
 
     private final SignupFormRepository tempRepository;
     private final AccountRepository accountRepository;
@@ -44,6 +46,7 @@ public class AccountService {
         String email = signupForm.getEmail();
         String verificationToken = signupForm.getVerificationToken();
         String verificationLink = String.format("%s%s?email=%s&token=%s",
+                // TODO configure domain-name in profile via properties
                 "http://scene-cho.cf", AccountController.URL_VERIFY, email, verificationToken);
 
         MailMessage mailMessage = new MailMessage();
@@ -62,6 +65,14 @@ public class AccountService {
         Account account = accountRepository.save(new Account(signupForm));
         tempRepository.delete(signupForm);
         return account.getUsername() + " 님, 가입을 환영합니다.";
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        Account account = (username.contains("@")) ?
+                accountRepository.findByEmail(username).orElseThrow(() -> new UsernameNotFoundException(username)) :
+                accountRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException(username));
+        return new UserAccount(account);
     }
 
 }

@@ -1,1 +1,39 @@
 @import "/css/page/account/base.css";
+
+section .centered-content {
+    width: 280px;
+}
+
+section .centered-content .message {
+    position: relative;
+    height: 50px;
+}
+
+section .centered-content .message #login-sign {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    margin-left: 3px;
+    font-size: 26px;
+}
+
+section .centered-content .message #link-to-signup {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    margin-right: 3px;
+    font-size: 22px;
+}
+
+section .centered-content form {
+    margin: 10px 0;
+}
+
+section .centered-content form label {
+    display: block;
+}
+
+section .centered-content form label input {
+    padding: 10px;
+    width: 100%;
+}

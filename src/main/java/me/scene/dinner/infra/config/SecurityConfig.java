@@ -39,6 +39,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
                 .anyRequest().authenticated()
         ;
+
+
+        http.formLogin()
+                .loginPage(AccountController.URL_LOGIN);
+
+        http.logout()
+                .logoutSuccessUrl(MainController.URL_HOME);
+
     }
 
     @Override
