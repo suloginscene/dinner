@@ -50,7 +50,7 @@ public class AccountController {
     public String verifyEmail(@RequestParam String email, @RequestParam String token, Model model) {
         String verifyMessage;
 
-        if (token.equals("null")) verifyMessage = email + "로 인증메일을 보냈습니다.";
+        if (token.equals("null")) verifyMessage = email + "<br><small>이메일 인증 후 로그인하실 수 있습니다.</small>";
         else verifyMessage = accountService.completeSignup(email, token);
 
         model.addAttribute("verifyMessage", verifyMessage);

@@ -8,7 +8,9 @@
     <body th:replace="layout/layout::body(~{::section})">
         <section>
             <div class="centered-content">
-                <div class="message" th:text="${verifyMessage}"></div>
+                <div class="message" th:utext="${verifyMessage}"></div>
+                <hr/>
+                <button onclick="location.href='/login'">login</button>
             </div>
         </section>
     </body>

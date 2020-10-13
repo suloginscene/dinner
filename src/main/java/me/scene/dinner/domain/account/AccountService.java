@@ -60,7 +60,7 @@ public class AccountService implements UserDetailsService {
 
     @Transactional
     public String completeSignup(String email, String token) {
-        if (accountRepository.findByEmail(email).isPresent()) return "이미 인증된 이메일입니다.(" + email + ")";
+        if (accountRepository.findByEmail(email).isPresent()) return email + "<br><small>이미 인증된 이메일입니다.</small>";
 
         SignupForm signupForm = tempRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException(email));
         signupForm.validateToken(token);
