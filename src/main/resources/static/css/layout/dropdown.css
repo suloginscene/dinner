@@ -1,19 +1,25 @@
-.dropdown {
-}
-
-.dropdown-content {
-    display: none;
+#dropdown-content {
+    height: 0;
+    transition: 0.7s;
+    overflow: hidden;
     position: absolute;
     right: 0;
     text-align: right;
-    padding: 10px 20px;
+    margin-right: 20px;
+    padding: 7px 15px;
     z-index: 1;
 }
 
-.dropdown-content a {
-    display: block;
+#dropdown-content button {
+    all: unset;
 }
 
-.dropdown:hover .dropdown-content {
+#dropdown-content a {
     display: block;
+    padding: 3px 0;
+    font-size: 18px;
+}
+
+#dropdown:hover #dropdown-content {
+    height: 120px;
 }

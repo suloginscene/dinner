@@ -41,11 +41,14 @@
         </nav>
         <div>
             <button sec:authorize="!isAuthenticated()" onclick="location.href='/login'">login</button>
-            <div class="dropdown">
-                <button sec:authorize="isAuthenticated()">desk</button>
-                <div class="dropdown-content">
-                    <a href="#">id</a>
-                    <a href="#">logout</a>
+            <div sec:authorize="isAuthenticated()" id="dropdown">
+                <button>desk</button>
+                <div id="dropdown-content">
+                    <a href="#" th:text="${#authentication.name}"></a>
+                    <a href="#">notif</a>
+                    <form th:action="@{/logout}" method="post">
+                        <button type="submit">logout</button>
+                    </form>
                 </div>
             </div>
         </div>
