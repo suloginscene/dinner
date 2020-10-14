@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
     <th:block th:fragment="head">
 
@@ -38,7 +39,16 @@
                 <a href="/about">About</a>
             </div>
         </nav>
-        <button onclick="location.href='/login'">login</button>
+        <div>
+            <button sec:authorize="!isAuthenticated()" onclick="location.href='/login'">login</button>
+            <div class="dropdown">
+                <button sec:authorize="isAuthenticated()">desk</button>
+                <div class="dropdown-content">
+                    <a href="#">id</a>
+                    <a href="#">logout</a>
+                </div>
+            </div>
+        </div>
     </header>
 
     <footer th:fragment="footer">
