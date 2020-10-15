@@ -11,7 +11,10 @@
             <div class="info">
                 <h2 id="topic"><a href="/topics/exampleTopic">topic</a></h2>
                 <h1 id="title" th:text="${title}"></h1>
-                <div id="sub-info"><span id="writer"><a href="#">저자</a></span><span id="date">20191203</span></div>
+                <div id="sub-info">
+                    <span id="writer"><a th:href="@{'/accounts/저자'}">저자</a></span>
+                    <span id="date">20191203</span>
+                </div>
             </div>
 
             <article>

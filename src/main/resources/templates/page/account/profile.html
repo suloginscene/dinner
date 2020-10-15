@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+    <div th:replace="layout/layout::head(${name}, ~{::link}, ~{})">
+        <link rel="stylesheet" href="/css/page/account/profile.css"/>
+    </div>
+
+    <body th:replace="layout/layout::body(~{::section})">
+        <section>
+            <div><span th:text="${name}"></span>의 페이지입니다.</div>
+        </section>
+    </body>
+
+</html>

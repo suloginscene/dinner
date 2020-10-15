@@ -13,9 +13,9 @@
                 <h1 id="title" th:text="${title}"></h1>
                 <div id="authorities">
                     <span id="authority">managed</span> by
-                    <a class="writer" href="#">채원</a>
-                    <a class="writer" href="#">도언</a>
-                    <a class="writer" href="#">조신</a>
+                    <a class="writer" th:href="@{'/accounts/채원'}">채원</a>
+                    <a class="writer" th:href="@{'/accounts/도언'}">도언</a>
+                    <a class="writer" th:href="@{'/accounts/조신'}">조신</a>
                 </div>
                 <a href="#" id="introduction">매거진 한 줄 소개를 적는 곳입니다.<i class="fa fa-chevron-down"></i></a>
                 <div class="panel">

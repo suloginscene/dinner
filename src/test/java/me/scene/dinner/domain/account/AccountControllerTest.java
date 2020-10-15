@@ -230,4 +230,21 @@ class AccountControllerTest {
         ;
     }
 
+    // TODO profilePage_nonExistent_handleException
+
+    @Test
+    void profilePage_notOwner_readOnly() throws Exception {
+        signupSubmit("scene");
+        verifyEmail("scene");
+
+        mockMvc.perform(
+                get(AccountController.URL_PROFILE + "/scene")
+        )
+                .andExpect(status().isOk())
+                .andExpect(view().name("page/account/profile"))
+        ;
+    }
+
+    // TODO profilePage_owner_modifiable
+
 }

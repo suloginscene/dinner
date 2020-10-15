@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -21,6 +22,7 @@ public class AccountController {
     public static final String URL_SIGNUP = "/signup";
     public static final String URL_VERIFY = "/verify";
     public static final String URL_LOGIN = "/login";
+    public static final String URL_PROFILE = "/accounts";
 
     private final AccountService accountService;
     private final URL url;
@@ -69,6 +71,12 @@ public class AccountController {
 
         HttpSession session = request.getSession();
         session.setAttribute("redirectTo", redirectTo);
+    }
+
+    @GetMapping(URL_PROFILE + "/{name}")
+    public String profilePage(@PathVariable String name, Model model) {
+        model.addAttribute(name);
+        return "page/account/profile";
     }
 
 }
