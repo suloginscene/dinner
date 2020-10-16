@@ -73,9 +73,14 @@ public class AccountController {
         session.setAttribute("redirectTo", redirectTo);
     }
 
-    @GetMapping(URL_PROFILE + "/{name}")
-    public String profilePage(@PathVariable String name, Model model) {
-        model.addAttribute(name);
+    @GetMapping(URL_PROFILE + "/{username}")
+    public String profilePage(@PathVariable String username, @CurrentUser Account current, Model model) {
+        Profile profile = accountService.extractProfile(username);
+        model.addAttribute("profile", profile);
+
+        boolean isOwner = (current != null) && profile.isOwnedBy(current);
+        model.addAttribute("isOwner", isOwner);
+
         return "page/account/profile";
     }
 

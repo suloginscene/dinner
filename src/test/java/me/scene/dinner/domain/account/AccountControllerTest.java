@@ -29,6 +29,7 @@ class AccountControllerTest {
     @Autowired MockMvc mockMvc;
     @Autowired SignupFormRepository tempRepository;
     @Autowired AccountRepository accountRepository;
+    @Autowired AccountFactory accountFactory;
     @MockBean MailSender mailSender;
 
     @BeforeEach
@@ -93,18 +94,9 @@ class AccountControllerTest {
         assertThat(signupForm).isNull();
     }
 
-    private void signupSubmit(String username) throws Exception {
-        mockMvc.perform(post(AccountController.URL_SIGNUP)
-                .with(csrf())
-                .param("username", username)
-                .param("email", username + "@email.com")
-                .param("password", "password")
-                .param("agreement", "true"));
-    }
-
     @Test
     void verifyEmail_store() throws Exception {
-        signupSubmit("scene");
+        accountFactory.createInTemp("scene");
 
         SignupForm signupForm = tempRepository.findByUsername("scene").orElseThrow();
         String username = signupForm.getUsername();
@@ -126,7 +118,7 @@ class AccountControllerTest {
 
     @Test
     void verifyEmail_invalidParams_handleException() throws Exception {
-        signupSubmit("scene");
+        accountFactory.createInTemp("scene");
 
         SignupForm signupForm = tempRepository.findByUsername("scene").orElseThrow();
         String username = signupForm.getUsername();
@@ -158,13 +150,6 @@ class AccountControllerTest {
         assertThat(account).isNull();
     }
 
-    private void verifyEmail(String username) throws Exception {
-        SignupForm signupForm = tempRepository.findByUsername(username).orElseThrow();
-        mockMvc.perform(get(AccountController.URL_VERIFY)
-                .param("email", signupForm.getEmail())
-                .param("token", signupForm.getVerificationToken()));
-    }
-
     @Test
     void loginPage_isCustomizedPage() throws Exception {
         mockMvc.perform(
@@ -187,8 +172,7 @@ class AccountControllerTest {
 
     @Test
     void login_authenticated() throws Exception {
-        signupSubmit("scene");
-        verifyEmail("scene");
+        accountFactory.createInRegular("scene");
 
         mockMvc.perform(
                 post(AccountController.URL_LOGIN)
@@ -204,8 +188,7 @@ class AccountControllerTest {
 
     @Test
     void login_invalidParams_unauthenticated() throws Exception {
-        signupSubmit("scene");
-        verifyEmail("scene");
+        accountFactory.createInRegular("scene");
 
         mockMvc.perform(
                 post(AccountController.URL_LOGIN)
@@ -230,21 +213,39 @@ class AccountControllerTest {
         ;
     }
 
-    // TODO profilePage_nonExistent_handleException
+    @Test
+    void profilePage_nonExistent_handleException() throws Exception {
+        mockMvc.perform(
+                get(AccountController.URL_PROFILE + "/scene")
+        )
+                .andExpect(status().isOk())
+                .andExpect(view().name("page/error/username_not_found"))
+        ;
+    }
 
     @Test
     void profilePage_notOwner_readOnly() throws Exception {
-        signupSubmit("scene");
-        verifyEmail("scene");
+        accountFactory.createInRegular("scene");
 
         mockMvc.perform(
                 get(AccountController.URL_PROFILE + "/scene")
         )
                 .andExpect(status().isOk())
                 .andExpect(view().name("page/account/profile"))
+                .andExpect(model().attribute("isOwner", false))
         ;
     }
 
-    // TODO profilePage_owner_modifiable
+    @Test
+    @WithAccount(username = "scene")
+    void profilePage_owner_modifiable() throws Exception {
+        mockMvc.perform(
+                get(AccountController.URL_PROFILE + "/scene")
+        )
+                .andExpect(status().isOk())
+                .andExpect(view().name("page/account/profile"))
+                .andExpect(model().attribute("isOwner", true))
+        ;
+    }
 
 }

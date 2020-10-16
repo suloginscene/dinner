@@ -77,4 +77,10 @@ public class AccountService implements UserDetailsService {
         return new UserAccount(account);
     }
 
+    @Transactional
+    public Profile extractProfile(String username) {
+        Account account = accountRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException(username));
+        return new Profile(account);
+    }
+
 }

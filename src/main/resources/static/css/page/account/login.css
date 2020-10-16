@@ -6,7 +6,7 @@ section .centered-content {
 
 section .centered-content .message {
     position: relative;
-    height: 50px;
+    min-height: 50px;
 }
 
 section .centered-content .message #login-sign {
