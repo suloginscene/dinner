@@ -95,6 +95,25 @@ class AccountControllerTest {
     }
 
     @Test
+    void signupSubmit_duplicated_returnErrors() throws Exception {
+        accountFactory.createInRegular("scene");
+
+        mockMvc.perform(
+                post(AccountController.URL_SIGNUP)
+                        .with(csrf())
+                        .param("username", "scene")
+                        .param("email", "scene@email.com")
+                        .param("password", "password")
+                        .param("agreement", "true")
+        )
+                .andExpect(status().isOk())
+                .andExpect(view().name("page/account/signup"))
+                .andExpect(model().hasErrors())
+                .andExpect(model().errorCount(2))
+        ;
+    }
+
+    @Test
     void verifyEmail_store() throws Exception {
         accountFactory.createInTemp("scene");
 

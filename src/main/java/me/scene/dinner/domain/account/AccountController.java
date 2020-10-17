@@ -7,10 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.*;
 
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
@@ -25,12 +23,19 @@ public class AccountController {
     public static final String URL_PROFILE = "/accounts";
 
     private final AccountService accountService;
+    private final SignupFormValidator signupFormValidator;
     private final URL url;
 
     @Autowired
-    public AccountController(AccountService accountService, URL url) {
+    public AccountController(AccountService accountService, URL url, SignupFormValidator signupFormValidator) {
         this.accountService = accountService;
+        this.signupFormValidator = signupFormValidator;
         this.url = url;
+    }
+
+    @InitBinder("signupForm")
+    public void initBinder(WebDataBinder webDataBinder) {
+        webDataBinder.addValidators(signupFormValidator);
     }
 
     @GetMapping(URL_SIGNUP)

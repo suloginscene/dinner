@@ -8,4 +8,9 @@ public interface SignupFormRepository extends JpaRepository<SignupForm, Long> {
     Optional<SignupForm> findByUsername(String username);
 
     Optional<SignupForm> findByEmail(String email);
+
+    boolean existsByUsername(String username);
+
+    boolean existsByEmail(String email);
+
 }
