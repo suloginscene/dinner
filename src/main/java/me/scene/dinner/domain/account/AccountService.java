@@ -1,6 +1,7 @@
 package me.scene.dinner.domain.account;
 
 import me.scene.dinner.infra.config.url.URL;
+import me.scene.dinner.infra.info.ActiveProfile;
 import me.scene.dinner.infra.mail.MailMessage;
 import me.scene.dinner.infra.mail.MailSender;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.PostConstruct;
 import javax.mail.MessagingException;
 
 @Service
@@ -21,14 +23,34 @@ public class AccountService implements UserDetailsService {
     private final PasswordEncoder passwordEncoder;
     private final MailSender mailSender;
     private final URL url;
+    private final ActiveProfile activeProfile;
 
     @Autowired
-    public AccountService(SignupFormRepository tempRepository, AccountRepository accountRepository, PasswordEncoder passwordEncoder, MailSender mailSender, URL url) {
+    public AccountService(SignupFormRepository tempRepository, AccountRepository accountRepository,
+                          PasswordEncoder passwordEncoder, MailSender mailSender, URL url, ActiveProfile activeProfile) {
         this.tempRepository = tempRepository;
         this.accountRepository = accountRepository;
         this.passwordEncoder = passwordEncoder;
         this.mailSender = mailSender;
         this.url = url;
+        this.activeProfile = activeProfile;
+    }
+
+    @PostConstruct
+    public void initAccountRepository() {
+        if (activeProfile.get().equals("local"))
+            createTestAccount();
+    }
+
+    private void createTestAccount() {
+        SignupForm testUser = new SignupForm();
+        testUser.setUsername("username");
+        testUser.setEmail("email" + "@email.com");
+        testUser.setPassword("password");
+        testUser.setAgreement(true);
+        testUser.encodePassword(passwordEncoder);
+        testUser.generateVerificationToken();
+        accountRepository.save(new Account(testUser));
     }
 
     @Transactional

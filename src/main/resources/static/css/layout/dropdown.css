@@ -12,12 +12,25 @@
 
 #dropdown-content button {
     all: unset;
+    cursor: pointer;
 }
 
 #dropdown-content a {
     display: block;
+    text-decoration: none;
+}
+
+#dropdown-content a,
+#dropdown-content button {
     padding: 3px 0;
-    font-size: 18px;
+    font-size: 20px;
+    color: lightslategray;
+    transition: 0.3s;
+}
+
+#dropdown-content a:hover,
+#dropdown-content button:hover {
+    color: dimgray;
 }
 
 #dropdown:hover #dropdown-content {
