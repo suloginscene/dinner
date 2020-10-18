@@ -37,3 +37,7 @@ section .centered-content form label input {
     padding: 10px;
     width: 100%;
 }
+
+#rememberMe {
+    width: unset;
+}

@@ -232,6 +232,8 @@ class AccountControllerTest {
         ;
     }
 
+    // TODO remember-me, email-login & change password
+
     @Test
     void profilePage_nonExistent_handleException() throws Exception {
         mockMvc.perform(
