@@ -9,29 +9,25 @@ import me.scene.dinner.domain.board.topic.TopicController;
 import me.scene.dinner.domain.tag.TagController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
-
-import javax.sql.DataSource;
 
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final AccountService accountService;
-    private final DataSource dataSource;
+    private final PersistentTokenRepository tokenRepository;
     private final AuthenticationSuccessHandler authenticationSuccessHandler;
 
     @Autowired
-    public SecurityConfig(AccountService accountService, DataSource dataSource, AuthenticationSuccessHandler authenticationSuccessHandler) {
+    public SecurityConfig(AccountService accountService, PersistentTokenRepository tokenRepository, AuthenticationSuccessHandler authenticationSuccessHandler) {
         this.accountService = accountService;
-        this.dataSource = dataSource;
+        this.tokenRepository = tokenRepository;
         this.authenticationSuccessHandler = authenticationSuccessHandler;
     }
 
@@ -42,14 +38,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
                 .mvcMatchers(HttpMethod.GET,
                         MainController.URL_HOME, MainController.URL_ABOUT,
-                        AccountController.URL_SIGNUP, AccountController.URL_VERIFY, AccountController.URL_LOGIN, AccountController.URL_PROFILE + "/*",
+                        AccountController.URL_SIGNUP, AccountController.URL_VERIFY, AccountController.URL_LOGIN,
+                        AccountController.URL_FORGOT, AccountController.URL_PROFILE + "/*",
                         MagazineController.FORM, TopicController.FORM, ArticleController.FORM,
                         MagazineController.URL + "/*", TopicController.URL + "/*", ArticleController.URL + "/*",
                         TagController.URL, TagController.URL + "/*"
                 ).permitAll()
 
                 .mvcMatchers(HttpMethod.POST,
-                        AccountController.URL_SIGNUP)
+                        AccountController.URL_SIGNUP, AccountController.URL_FORGOT
+                )
                 .permitAll()
 
                 .anyRequest().authenticated()
@@ -65,15 +63,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.rememberMe()
                 .userDetailsService(accountService)
-                .tokenRepository(tokenRepository());
+                .tokenRepository(tokenRepository);
 
-    }
-
-    @Bean
-    public PersistentTokenRepository tokenRepository() {
-        JdbcTokenRepositoryImpl jdbcTokenRepository = new JdbcTokenRepositoryImpl();
-        jdbcTokenRepository.setDataSource(dataSource);
-        return jdbcTokenRepository;
     }
 
     @Override

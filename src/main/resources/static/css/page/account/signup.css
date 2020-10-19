@@ -12,6 +12,10 @@ section .centered-content form .form-texts label input {
     padding: 10px;
 }
 
+section .centered-content form label small {
+    font-size: 16px;
+}
+
 @media (max-width: 768px) {
     section .centered-content form .form-texts label input {
         width: 66vw;

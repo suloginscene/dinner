@@ -9,32 +9,44 @@
     <body th:replace="layout/layout::body(~{::section})">
         <section>
             <div class="centered-content">
-                <div sec:authorize="!isAuthenticated()">
+                <th:block sec:authorize="!isAuthenticated()">
                     <div class="message">
                         <span id="login-sign">로그인</span><span id="link-to-signup"><a href="/signup">회원가입</a></span>
                     </div>
-                    <form th:action="@{/login}" th:method="post">
-                        <label>
-                            <input type="text" name="username" placeholder="이름 또는 이메일">
-                        </label>
-                        <label>
-                            <input type="password" name="password" placeholder="비밀번호">
-                        </label>
-                        <label>
-                            <input type="checkbox" id="rememberMe" name="remember-me">
-                            <span>로그인 기억하기</span>
-                        </label>
-                        <small th:if="${param.error}" class="form-text text-danger">
-                            이름(이메일)과 비밀번호를 다시 확인해주세요.
-                            <!-- TODO 가입신청 후 메일 인증이 완료되지 않은 경우 로그인할 수 없습니다. -->
-                            <!-- TODO 인증메일이 오지 않았다면(링크) -->
-                            <!-- TODO 비밀번호를 잊어버렸다면(링크) -->
-                        </small>
-                        <hr/>
-                        <button type="submit">login</button>
-                    </form>
-                </div>
-                <div sec:authorize="isAuthenticated()">
+                    <th:block th:unless="${param.forgot}">
+                        <form th:action="@{/login}" th:method="post">
+                            <div class="form-main">
+                                <label><input type="text" name="username" placeholder="이름 또는 이메일"></label>
+                                <label><input type="password" name="password" placeholder="비밀번호"></label>
+                            </div>
+                            <div class="form-sub">
+                                <a id="forgot-password" href="/login?forgot">비밀번호 분실</a>
+                                <label id="remember-me"><input type="checkbox" class="checkbox" name="remember-me"><span>로그인 기억하기</span></label>
+                            </div>
+                            <div th:if="${param.error}" class="form-info text-danger">
+                                이름(이메일)과 비밀번호를 확인해주세요.<br/>
+                                메일 인증 전에는 로그인할 수 없습니다.
+                            </div>
+                            <hr/>
+                            <button type="submit">login</button>
+                        </form>
+                    </th:block>
+                    <th:block th:if="${param.forgot}">
+                        <form th:action="@{/forgot}" th:method="post">
+                            <div class="form-main">
+                                <label><input type="text" name="email" placeholder="이메일"></label>
+                            </div>
+                            <div class="form-info">
+                                인증된 이메일이 있다면<br/>
+                                임의의 새 비밀번호를 전송합니다.
+                                <div class="text-danger">이전의 비밀번호는 사용할 수 없습니다.</div>
+                            </div>
+                            <hr/>
+                            <button type="submit">send</button>
+                        </form>
+                    </th:block>
+                </th:block>
+                <th:block sec:authorize="isAuthenticated()">
                     <div class="message">
                         <span th:text="${#authentication.name}"></span> 님은 로그인 상태입니다.
                     </div>
@@ -42,7 +54,7 @@
                     <form th:action="@{/logout}" th:method="post">
                         <button type="submit">logout</button>
                     </form>
-                </div>
+                </th:block>
             </div>
         </section>
     </body>

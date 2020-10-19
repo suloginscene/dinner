@@ -11,6 +11,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -232,7 +233,39 @@ class AccountControllerTest {
         ;
     }
 
-    // TODO remember-me, email-login & change password
+    @Test
+    @Transactional
+    void forgotPassword_changePassword() throws Exception {
+        accountFactory.createInRegular("scene");
+        Account scene = accountRepository.findByUsername("scene").orElseThrow();
+        String encodedOldPassword = scene.getPassword();
+
+        mockMvc.perform(
+                post(AccountController.URL_FORGOT)
+                        .with(csrf())
+                        .param("email", "scene@email.com")
+        )
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrlPattern(AccountController.URL_FORGOT + "?*"))
+        ;
+        then(mailSender).should().send(any(MailMessage.class));
+
+        String encodedNewPassword = scene.getPassword();
+        assertThat(encodedNewPassword).startsWith("{bcrypt}");
+        assertThat(encodedNewPassword).isNotEqualTo(encodedOldPassword);
+    }
+
+    @Test
+    void forgotPassword_invalidEmail_handleException() throws Exception {
+        mockMvc.perform(
+                post(AccountController.URL_FORGOT)
+                        .with(csrf())
+                        .param("email", "non-existent@email.com")
+        )
+                .andExpect(status().isOk())
+                .andExpect(view().name("page/error/username_not_found"))
+        ;
+    }
 
     @Test
     void profilePage_nonExistent_handleException() throws Exception {

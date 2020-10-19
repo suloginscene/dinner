@@ -63,11 +63,11 @@ public class AccountService implements UserDetailsService {
 
     private void sendVerificationMail(SignupForm signupForm) throws MessagingException {
         signupForm.generateVerificationToken();
-        MailMessage mailMessage = createMailMessage(signupForm);
+        MailMessage mailMessage = createVerificationMailMessage(signupForm);
         mailSender.send(mailMessage);
     }
 
-    private MailMessage createMailMessage(SignupForm signupForm) {
+    private MailMessage createVerificationMailMessage(SignupForm signupForm) {
         String email = signupForm.getEmail();
         String verificationToken = signupForm.getVerificationToken();
         String verificationLink = String.format("%s%s?email=%s&token=%s",
@@ -97,6 +97,23 @@ public class AccountService implements UserDetailsService {
                 accountRepository.findByEmail(username).orElseThrow(() -> new UsernameNotFoundException(username)) :
                 accountRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException(username));
         return new UserAccount(account);
+    }
+
+    @Transactional
+    public String sendNewPassword(String email) throws MessagingException {
+        Account account = accountRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException(email));
+        String newRawPassword = account.changePassword(passwordEncoder);
+        MailMessage mailMessage = createNewPasswordMailMessage(email, newRawPassword);
+        mailSender.send(mailMessage);
+        return account.getUsername();
+    }
+
+    private MailMessage createNewPasswordMailMessage(String email, String newPassword) {
+        MailMessage mailMessage = new MailMessage();
+        mailMessage.setSubject("[Dinner] New Random Password.");
+        mailMessage.setTo(email);
+        mailMessage.setText(newPassword);
+        return mailMessage;
     }
 
     @Transactional

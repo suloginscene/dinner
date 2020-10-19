@@ -20,6 +20,7 @@ public class AccountController {
     public static final String URL_SIGNUP = "/signup";
     public static final String URL_VERIFY = "/verify";
     public static final String URL_LOGIN = "/login";
+    public static final String URL_FORGOT = "/forgot";
     public static final String URL_PROFILE = "/accounts";
 
     private final AccountService accountService;
@@ -76,6 +77,20 @@ public class AccountController {
 
         HttpSession session = request.getSession();
         session.setAttribute("redirectTo", redirectTo);
+    }
+
+    @PostMapping(URL_FORGOT)
+    public String forgotPassword(String email) throws MessagingException {
+        String username = accountService.sendNewPassword(email);
+        String queryString = "?username=" + username + "&email=" + email;
+        return "redirect:" + URL_FORGOT + queryString;
+    }
+
+    @GetMapping(URL_FORGOT)
+    public String waitNewPassword(@RequestParam String username, @RequestParam String email, Model model) {
+        String sendMessage = username + " 님의 이메일(" + email + ")로<br/>임의의 새 비밀번호를 보냈습니다.";
+        model.addAttribute("sendMessage", sendMessage);
+        return "page/account/forgot";
     }
 
     @GetMapping(URL_PROFILE + "/{username}")

@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+    <div th:replace="layout/layout::head(_, ~{::link}, ~{})">
+        <link rel="stylesheet" href="/css/page/account/forgot.css"/>
+    </div>
+
+    <body th:replace="layout/layout::body(~{::section})">
+        <section>
+            <div class="centered-content">
+                <div class="message" th:utext="${sendMessage}"></div>
+                <hr/>
+                <button onclick="location.href='/login'">login</button>
+            </div>
+        </section>
+    </body>
+
+</html>
