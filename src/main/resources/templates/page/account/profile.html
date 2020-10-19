@@ -6,13 +6,34 @@
     </div>
 
     <body th:replace="layout/layout::body(~{::section})">
-        <section>
-            <div>
-                <span th:text="${profile.username}"></span>의 페이지입니다.
+        <section th:with="modifyMode=${param.modify!=null}">
+            <div id="username">
+                <h1 th:text="${profile.username}"></h1>
+                <span th:if="${isOwner}">
+                    <a th:if="${modifyMode}" th:href="@{'/accounts/' + ${#authentication.name}}">보기 모드</a>
+                    <a th:unless="${modifyMode}" th:href="@{'/accounts/' + ${#authentication.name}+'?modify'}">수정 모드</a>
+                </span>
             </div>
-            <!-- TODO change password -->
-            <div th:if="${isOwner}">
-                modifiable!
+            <div id="user-info" th:with="modifiable=${isOwner}and${modifyMode}">
+                <!-- TODO 회원정보 수정 -->
+                <div class="info-category">
+                    <h2>소개</h2>
+                    <div>안녕하세요.<a th:if="${modifiable}" href="#">변경</a></div>
+                    <div>인삿말 외에 필요한 정보는 무엇이 있을까.<a th:if="${modifiable}" href="#">변경</a></div>
+                </div>
+                <div th:if="${isOwner}" class="info-category">
+                    <h2>개인정보</h2>
+                    <div>이메일<a th:if="${modifyMode}" href="#">변경</a></div>
+                    <div>비밀번호
+                        <!-- TODO putMapping or AJAX -->
+                        <form th:if="${modifyMode}" th:action="@{'/accounts/'+${profile.username}}" method="post">
+                            <label><input type="password" name="password"></label>
+                            <button type="submit">변경</button>
+                        </form>
+                        <div th:if="${param.short}" class="text-danger">비밀번호는 8자 이상이어야 합니다.</div>
+                        <div th:if="${param.success}">비밀번호를 변경했습니다.</div>
+                    </div>
+                </div>
             </div>
         </section>
     </body>

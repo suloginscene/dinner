@@ -2,6 +2,7 @@ package me.scene.dinner.domain.account;
 
 import me.scene.dinner.MainController;
 import me.scene.dinner.infra.config.url.URL;
+import me.scene.dinner.infra.exception.ForbiddenException;
 import me.scene.dinner.infra.util.RefererUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -72,11 +73,15 @@ public class AccountController {
     }
 
     private void rememberRedirectingUrl(HttpServletRequest request) {
-        String referer = RefererUtils.parse(request, url.get());
-        String redirectTo = (RefererUtils.contextless(referer)) ? MainController.URL_HOME : referer;
-
         HttpSession session = request.getSession();
-        session.setAttribute("redirectTo", redirectTo);
+
+        String referer = RefererUtils.parse(request, url.get());
+        if (RefererUtils.contextless(referer)) {
+            String oldRedirectTo = (String) session.getAttribute("redirectTo");
+            referer = (oldRedirectTo != null) ? oldRedirectTo : MainController.URL_HOME;
+        }
+
+        session.setAttribute("redirectTo", referer);
     }
 
     @PostMapping(URL_FORGOT)
@@ -102,6 +107,22 @@ public class AccountController {
         model.addAttribute("isOwner", isOwner);
 
         return "page/account/profile";
+    }
+
+    // TODO PutMapping or AJAX
+    @PostMapping(URL_PROFILE + "/{username}")
+    public String updatePassword(@PathVariable String username, @CurrentUser Account current, String password) {
+        if (current == null) throw new ForbiddenException("anonymousUser", username);
+
+        String currentUsername = current.getUsername();
+        if (!currentUsername.equals(username)) throw new ForbiddenException(currentUsername, username);
+
+        if (password.length() < 8)
+            return "redirect:" + URL_PROFILE + "/" + username + "?short";
+
+        accountService.changePassword(username, password);
+
+        return "redirect:" + URL_PROFILE + "/" + username + "?success";
     }
 
 }

@@ -26,6 +26,12 @@ public class ExceptionAdvice {
     }
 
     @ExceptionHandler
+    public String forbiddenException(HttpServletRequest req, ForbiddenException e) {
+        log.warn(templateMessage, "ForbiddenException", e.getMessage(), req.getRequestURI());
+        return "page/error/forbidden";
+    }
+
+    @ExceptionHandler
     public String messagingException(HttpServletRequest req, MessagingException e) {
         log.warn(templateMessage, "MessagingException", e.getMessage(), req.getRequestURI());
         return "page/error/messaging";

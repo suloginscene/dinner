@@ -302,4 +302,69 @@ class AccountControllerTest {
         ;
     }
 
+    // TODO temporary version
+    @Test
+    @Transactional
+    @WithAccount(username = "scene")
+    void changePassword_changed() throws Exception {
+        Account scene = accountRepository.findByUsername("scene").orElseThrow();
+        String encodedOldPassword = scene.getPassword();
+
+        mockMvc.perform(
+                post(AccountController.URL_PROFILE + "/scene")
+                        .with(csrf())
+                        .param("password", "newPassword")
+        )
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl(AccountController.URL_PROFILE + "/scene?success"))
+        ;
+
+        String encodedNewPassword = scene.getPassword();
+        assertThat(encodedNewPassword).startsWith("{bcrypt}");
+        assertThat(encodedNewPassword).isNotEqualTo(encodedOldPassword);
+    }
+
+    // TODO temporary version
+    @Test
+    @Transactional
+    @WithAccount(username = "scene")
+    void changePassword_short_unchanged() throws Exception {
+        Account scene = accountRepository.findByUsername("scene").orElseThrow();
+        String encodedOldPassword = scene.getPassword();
+
+        mockMvc.perform(
+                post(AccountController.URL_PROFILE + "/scene")
+                        .with(csrf())
+                        .param("password", "short")
+        )
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl(AccountController.URL_PROFILE + "/scene?short"))
+        ;
+
+        String encodedNewPassword = scene.getPassword();
+        assertThat(encodedNewPassword).isEqualTo(encodedOldPassword);
+    }
+
+    // TODO temporary version
+    @Test
+    @Transactional
+    void changePassword_notOwner_handleException() throws Exception {
+        accountFactory.createInRegular("scene");
+
+        Account scene = accountRepository.findByUsername("scene").orElseThrow();
+        String encodedOldPassword = scene.getPassword();
+
+        mockMvc.perform(
+                post(AccountController.URL_PROFILE + "/scene")
+                        .with(csrf())
+                        .param("password", "newPassword")
+        )
+                .andExpect(status().isOk())
+                .andExpect(view().name("page/error/forbidden"))
+        ;
+
+        String encodedNewPassword = scene.getPassword();
+        assertThat(encodedNewPassword).isEqualTo(encodedOldPassword);
+    }
+
 }

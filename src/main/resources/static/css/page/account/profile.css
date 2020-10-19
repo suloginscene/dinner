@@ -1,1 +1,36 @@
 @import "/css/page/account/base.css";
+
+section {
+    display: block;
+}
+
+section #username {
+    padding: 10px;
+}
+
+section #username h1 {
+    display: inline;
+    margin-right: 10px;
+}
+
+section #user-info {
+    padding: 10px;
+}
+
+section #user-info .info-category {
+    padding: 10px;
+}
+
+section #user-info .info-category div {
+    padding: 5px 0;
+}
+
+section #user-info .info-category div form {
+    display: inline;
+    margin-left: 10px;
+}
+
+section #user-info .info-category div form button {
+    all: unset;
+    color: blue;
+}

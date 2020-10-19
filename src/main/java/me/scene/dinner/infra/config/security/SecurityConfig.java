@@ -46,7 +46,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 ).permitAll()
 
                 .mvcMatchers(HttpMethod.POST,
-                        AccountController.URL_SIGNUP, AccountController.URL_FORGOT
+                        AccountController.URL_SIGNUP, AccountController.URL_FORGOT, AccountController.URL_PROFILE + "/*"
                 )
                 .permitAll()
 

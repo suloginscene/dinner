@@ -45,4 +45,8 @@ public class Account {
         return newPassword;
     }
 
+    public void changePassword(String rawPassword, PasswordEncoder passwordEncoder) {
+        password = passwordEncoder.encode(rawPassword);
+    }
+
 }

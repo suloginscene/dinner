@@ -122,4 +122,11 @@ public class AccountService implements UserDetailsService {
         return new Profile(account);
     }
 
+    // TODO temp version
+    @Transactional
+    public void changePassword(String username, String password) {
+        Account account = accountRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException(username));
+        account.changePassword(password, passwordEncoder);
+    }
+
 }
