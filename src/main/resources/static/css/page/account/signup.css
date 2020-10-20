@@ -1,23 +1,36 @@
 @import "/css/page/account/base.css";
 
+section .centered-content {
+    width: 320px;
+}
+
 section .centered-content form .form-texts {
     margin: 30px 0;
 }
 
 section .centered-content form .form-texts label {
-    display: block;
+    position: relative;
 }
 
 section .centered-content form .form-texts label input {
+    width: 100%;
     padding: 10px;
+}
+
+section .centered-content form .form-texts label .invalid-feedback,
+section .centered-content form .form-texts label .valid-feedback {
+    position: absolute;
+    right: 0;
+    top: 0;
+    margin: 0 10px 0 0;
+    font-size: 30px;
+    text-align: right;
 }
 
 section .centered-content form label small {
     font-size: 16px;
 }
 
-@media (max-width: 768px) {
-    section .centered-content form .form-texts label input {
-        width: 66vw;
-    }
+section .centered-content form .form-checks label #term-hint {
+    display: none;
 }
