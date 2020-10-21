@@ -13,48 +13,52 @@
         <link rel="stylesheet" href="/node_modules/font-awesome/css/font-awesome.min.css"/>
 
         <link rel="stylesheet" href="/css/layout/layout.css"/>
-        <script src="/js/overlay.js"></script>
-
-        <script src="/js/common/accordion.js"></script>
-        <script src="/js/nav.js"></script>
+        <script src="/js/lib/accordion.js"></script>
+        <script src="/js/common/accounts.js"></script>
+        <script src="/js/common/navbar.js"></script>
+        <script src="/js/common/overlay.js"></script>
+        <script src="/js/common/nav.js"></script>
 
     </th:block>
 
     <header th:fragment="navbar" class="navbar">
         <button onclick="openNav()">menu</button>
-        <nav id="myNav" class="overlay">
-            <button onclick="closeNav()">&times;</button>
-            <div class="overlay-content">
-                <a href="/">Dinner</a>
-                <hr/>
-                <nav>
-                    <a href="#" id="nav-acc">&nbsp;&nbsp;&nbsp;Magazines<i class="fa fa-chevron-down"></i></a>
-                    <ul class="panel">
-                        <li><a href="/magazines/exampleMagazine">Palm Tree Canteen</a></li>
-                        <li><a href="#">Scenes from Spring</a></li>
-                        <li><a href="#">etc</a></li>
-                        <li><a href="/magazine-form"><i class="fa fa-plus"></i></a></li>
-                    </ul>
-                </nav>
-                <a href="/tags">Tags</a>
-                <hr/>
-                <a href="/about">About</a>
-            </div>
-        </nav>
-        <div>
-            <button sec:authorize="!isAuthenticated()" onclick="location.href='/login'">login</button>
-            <div sec:authorize="isAuthenticated()" id="dropdown">
-                <button>desk</button>
-                <div id="dropdown-content">
-                    <a th:href="@{'/accounts/' + ${#authentication.name}}" th:text="${#authentication.name}"></a>
-                    <a href="#">notif</a>
-                    <form th:action="@{/logout}" method="post">
-                        <button type="submit">logout</button>
-                    </form>
-                </div>
+        <div th:replace="::account"></div>
+    </header>
+
+    <nav th:fragment="overlay" id="myNav" class="overlay">
+        <button onclick="closeNav()">&times;</button>
+        <div class="overlay-content">
+            <a href="/">Dinner</a>
+            <hr/>
+            <nav>
+                <a href="#" id="nav-accordion">&nbsp;&nbsp;&nbsp;Magazines<i class="fa fa-chevron-down"></i></a>
+                <ul class="panel">
+                    <li><a href="/magazines/exampleMagazine">Palm Tree Canteen</a></li>
+                    <li><a href="#">Scenes from Spring</a></li>
+                    <li><a href="#">etc</a></li>
+                    <li><a href="/magazine-form"><i class="fa fa-plus"></i></a></li>
+                </ul>
+            </nav>
+            <a href="/tags">Tags</a>
+            <hr/>
+            <a href="/about">About</a>
+        </div>
+    </nav>
+
+    <div th:fragment="account">
+        <button sec:authorize="!isAuthenticated()" onclick="location.href='/login'">login</button>
+        <div sec:authorize="isAuthenticated()" id="account-dropdown">
+            <button>desk</button>
+            <div id="accounts">
+                <a th:href="@{'/accounts/' + ${#authentication.name}}" th:text="${#authentication.name}"></a>
+                <a href="#">notif</a>
+                <form th:action="@{/logout}" method="post">
+                    <button type="submit">logout</button>
+                </form>
             </div>
         </div>
-    </header>
+    </div>
 
     <footer th:fragment="footer">
         Footer

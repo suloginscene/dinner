@@ -1,26 +1,36 @@
 @import "/css/layout/font.css";
 @import "/css/layout/button.css";
 @import "/css/layout/navigation.css";
-@import "/css/layout/dropdown.css";
+@import "/css/layout/accounts.css";
 
 body {
     background-color: ghostwhite;
+    min-height: 100vh;
 }
 
 header {
-    height: 9vh;
+    height: 80px;
     padding: 10px 20px !important;
+    position: fixed !important;
+    z-index: 1;
+    width: 100%;
+    top: 0;
+    transition: top 0.2s ease-in-out;
+}
+
+.scroll-down {
+    top: -80px !important;
 }
 
 section {
-    min-height: 80vh;
-    margin: 0 10vw;
-    padding: 1vh 0;
+    min-height: calc(100vh - 80px);
+    margin: 0 120px;
+    padding: 80px 0;
     border-bottom: 1px solid dimgray;
 }
 
 footer {
-    height: 11vh;
+    height: 80px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -34,8 +44,14 @@ hr {
 
 @media (max-width: 768px) {
 
+    header {
+        background-color: lightgray;
+    }
+
     section {
-        margin: 0 1vw;
+        margin: 0;
+        padding-top: 120px;
+        padding-bottom: 40px;
     }
 
 }

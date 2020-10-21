@@ -38,3 +38,9 @@ section .info {
     right: 15px;
     bottom: 10px;
 }
+
+@media (max-width: 768px) {
+    header, #accounts {
+        background-color: unset;
+    }
+}

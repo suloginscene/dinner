@@ -1,3 +1,3 @@
 window.addEventListener('load', function () {
-    accordion("nav-acc");
+    accordion("nav-accordion");
 });

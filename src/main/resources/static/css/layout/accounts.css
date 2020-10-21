@@ -1,0 +1,51 @@
+#accounts {
+    height: 0;
+    transition: height 0.7s;
+    overflow: hidden;
+    position: absolute;
+    right: 0;
+    text-align: right;
+    margin-right: 20px;
+    padding: 7px 15px;
+    z-index: 2;
+}
+
+#accounts button {
+    all: unset;
+    cursor: pointer;
+}
+
+#accounts a {
+    display: block;
+    text-decoration: none;
+}
+
+#accounts a,
+#accounts button {
+    padding: 3px 0;
+    font-size: 20px;
+    color: lightslategray;
+    transition: color 0.3s;
+}
+
+#accounts a:hover,
+#accounts button:hover {
+    color: dimgray;
+}
+
+.opened #accounts {
+    height: 120px;
+}
+
+@media (max-width: 768px) {
+    #accounts {
+        background-color: lightgray;
+        width: 100%;
+        margin: 0;
+        padding: 15px 30px 0 180px;
+    }
+
+    .opened #accounts {
+        height: 150px;
+    }
+}

@@ -27,3 +27,18 @@ section button:hover {
     background-color: lightpink;
     color: palevioletred;
 }
+
+
+@media (max-width: 768px) {
+
+    button:hover {
+        background-color: lightslategray;
+        color: ghostwhite;
+    }
+
+    section button:hover {
+        background-color: palevioletred;
+        color: ghostwhite;
+    }
+
+}
