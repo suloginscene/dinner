@@ -14,6 +14,8 @@ public class Magazine {
     @Id @GeneratedValue
     private Long id;
 
+    private Long manager;
+
     private String title;
 
     private String shortExplanation;
