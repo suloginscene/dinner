@@ -1,1 +1,39 @@
 @import "/css/page/board/base.css";
+
+section {
+    padding-top: 120px;
+    padding-bottom: 40px;
+}
+
+section form {
+    height: calc(100vh - 245px);
+}
+
+section form #bar {
+    height: 50px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+section form #bar label {
+    margin: 0;
+}
+
+section form #bar #title {
+    width: 50%;
+}
+
+section form #bar #title input {
+    padding: 10px;
+    width: 100%;
+}
+
+section form #bar button {
+    height: 100%;
+}
+
+section form #editor {
+    height: calc(100% - 60px);
+}

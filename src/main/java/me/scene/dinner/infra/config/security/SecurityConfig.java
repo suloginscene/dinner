@@ -40,7 +40,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         MainController.URL_HOME, MainController.URL_ABOUT,
                         AccountController.URL_SIGNUP, AccountController.URL_VERIFY, AccountController.URL_LOGIN,
                         AccountController.URL_FORGOT, AccountController.URL_PROFILE + "/*",
-                        MagazineController.FORM, TopicController.FORM, ArticleController.FORM,
                         MagazineController.URL + "/*", TopicController.URL + "/*", ArticleController.URL + "/*",
                         TagController.URL, TagController.URL + "/*"
                 ).permitAll()

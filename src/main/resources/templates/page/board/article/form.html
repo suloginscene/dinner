@@ -7,7 +7,19 @@
 
     <body th:replace="layout/layout::body(~{::section})">
         <section>
-            아티클 만들기 페이지
+            <form th:action="@{/articles}" th:method="post" th:object="${articleForm}">
+                <div id="bar">
+                    <label id="title"><input type="text" th:field="*{title}" placeholder="새 아티클"></label>
+                    <label><input type="text" th:field="*{content}" id="content" hidden></label>
+                    <button type="submit" id="form-submit">save</button>
+                </div>
+                <div id="editor">
+                    <div id="tui-editor"></div>
+                    <th:block th:replace="lib/tui::imports"></th:block>
+                    <script th:replace="lib/tui::load"></script>
+                </div>
+            </form>
+            <script th:replace="lib/tui::submit"></script>
         </section>
     </body>
 
