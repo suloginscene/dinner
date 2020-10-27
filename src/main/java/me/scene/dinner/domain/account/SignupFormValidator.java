@@ -29,6 +29,10 @@ public class SignupFormValidator implements Validator {
         String username = signupForm.getUsername();
         String email = signupForm.getEmail();
 
+        if (username.equals("anonymousUser")) {
+            errors.rejectValue("username", "invalid.username", "사용 할 수 없는 이름입니다.");
+        }
+
         if (accountRepository.existsByUsername(username) || tempRepository.existsByUsername(username)) {
             errors.rejectValue("username", "duplicated.username", "이미 사용 중인 이름입니다.");
         }

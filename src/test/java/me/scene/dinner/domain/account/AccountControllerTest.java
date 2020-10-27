@@ -77,6 +77,8 @@ class AccountControllerTest {
 
     @Test
     void signupSubmit_invalidParams_returnErrors() throws Exception {
+        SignupForm signupForm;
+
         mockMvc.perform(
                 post(AccountController.URL_SIGNUP)
                         .with(csrf())
@@ -91,7 +93,24 @@ class AccountControllerTest {
                 .andExpect(model().errorCount(4))
         ;
 
-        SignupForm signupForm = tempRepository.findByUsername("[unacceptable]").orElse(null);
+        signupForm = tempRepository.findByUsername("[unacceptable]").orElse(null);
+        assertThat(signupForm).isNull();
+
+        mockMvc.perform(
+                post(AccountController.URL_SIGNUP)
+                        .with(csrf())
+                        .param("username", "anonymousUser")
+                        .param("email", "valid@email.com")
+                        .param("password", "validPassword")
+                        .param("agreement", "true")
+        )
+                .andExpect(status().isOk())
+                .andExpect(view().name("page/account/signup"))
+                .andExpect(model().hasErrors())
+                .andExpect(model().errorCount(1))
+        ;
+
+        signupForm = tempRepository.findByUsername("anonymousUser").orElse(null);
         assertThat(signupForm).isNull();
     }
 

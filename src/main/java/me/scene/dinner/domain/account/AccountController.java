@@ -111,17 +111,13 @@ public class AccountController {
 
     // TODO PutMapping or AJAX
     @PostMapping(URL_PROFILE + "/{username}")
-    public String updatePassword(@PathVariable String username, @CurrentUser Account current, String password) {
-        if (current == null) throw new ForbiddenException("anonymousUser", username);
-
-        String currentUsername = current.getUsername();
+    public String changePassword(@PathVariable String username, @CurrentUser Account current, String password) {
+        String currentUsername = (current != null) ? current.getUsername() : "anonymousUser";
         if (!currentUsername.equals(username)) throw new ForbiddenException(currentUsername, username);
 
-        if (password.length() < 8)
-            return "redirect:" + URL_PROFILE + "/" + username + "?short";
+        if (password.length() < 8) return "redirect:" + URL_PROFILE + "/" + username + "?short";
 
-        accountService.changePassword(username, password);
-
+        accountService.changePassword(currentUsername, password);
         return "redirect:" + URL_PROFILE + "/" + username + "?success";
     }
 

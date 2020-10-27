@@ -20,6 +20,7 @@ public class ArticleController {
 
     @GetMapping(URL + "/{title}")
     public String showArticle(@PathVariable String title, Model model) {
+        // TODO
         model.addAttribute("title", title);
         return "page/board/article/view";
     }
@@ -27,6 +28,7 @@ public class ArticleController {
     @PostMapping(URL)
     public String createArticle(ArticleForm articleForm) {
         System.out.println(articleForm.getContent());
+        // TODO
         String title = null;
         return "redirect:" + URL + "/" + title;
     }
