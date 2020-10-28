@@ -2,23 +2,33 @@ package me.scene.dinner.domain.board.article;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import me.scene.dinner.domain.account.Account;
 import me.scene.dinner.domain.board.topic.Topic;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
+
+import static javax.persistence.FetchType.*;
 
 @Entity
 @Getter @EqualsAndHashCode(of = "id")
 public class Article {
+
+    protected Article() {
+    }
+
+    public Article(Account current, ArticleForm articleForm) {
+        this.writer = current.getId();
+        this.topic = articleForm.getTopic();
+        this.title = articleForm.getTitle();
+        this.content = articleForm.getContent();
+    }
 
     @Id @GeneratedValue
     private Long id;
 
     private Long writer;
 
-    @ManyToOne
+    @ManyToOne(fetch = LAZY)
     private Topic topic;
 
     private String title;

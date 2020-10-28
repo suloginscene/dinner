@@ -33,6 +33,7 @@
             <appender-ref ref="CONSOLE"/>
         </root>
         <logger name="me.scene.dinner" level="DEBUG"/>
+        <logger name="org.hibernate.SQL" level="DEBUG"/>
     </springProfile>
     <springProfile name="dev">
         <root level="INFO">
