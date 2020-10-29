@@ -16,9 +16,9 @@ public class Article {
     protected Article() {
     }
 
-    public Article(Account current, ArticleForm articleForm) {
+    public Article(Account current, Topic topic, ArticleForm articleForm) {
         this.writer = current.getId();
-        this.topic = articleForm.getTopic();
+        this.topic = topic;
         this.title = articleForm.getTitle();
         this.content = articleForm.getContent();
     }

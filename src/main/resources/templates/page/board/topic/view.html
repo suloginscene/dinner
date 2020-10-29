@@ -9,20 +9,20 @@
         <section>
 
             <div class="info">
-                <h2 id="magazine"><a href="/magazines/exampleMagazine">magazine</a></h2>
+                <h2 id="magazine"><a href="/board/magazines">magazine</a></h2>
                 <h1 id="title" th:text="${title}"></h1>
                 <div id="introduction">어떤 글을 쓰는지에 대한 한 줄 소개를 적는 곳입니다.</div>
             </div>
 
             <div id="button-container">
                 <!-- TODO select button whether principal is writable -->
-                <button onclick="location.href='/article-form'">write</button>
+                <button onclick="location.href='/board-form/magazine/topic'">write</button>
             </div>
 
             <ul>
                 <li>
                     <div class="article-info">
-                        <a href="/articles/exampleArticle">예시 아티클</a>
+                        <a href="/board/magazine/topic/articles">예시 아티클</a>
                         <div class="article-sub-info">
                             <a class="article-writer" th:href="@{'/accounts/저자'}">저자</a>
                             <span class="article-date">20100101</span>
@@ -32,7 +32,7 @@
                 </li>
                 <li>
                     <div class="article-info">
-                        <a href="/articles/exampleArticle">엄청나게 긴 아티클의 제목과 엄청나게 긴 저자의 이름이 만나면 어떻게 되는지 봅시다.</a>
+                        <a href="/board/magazine/topic/articles">엄청나게 긴 아티클의 제목과 엄청나게 긴 저자의 이름이 만나면 어떻게 되는지 봅시다.</a>
                         <div class="article-sub-info">
                             <a href="#">이렇게 되는구나를 느끼는 이상한 사람</a>
                             <span>20100101</span>
@@ -42,7 +42,7 @@
                 </li>
                 <li>
                     <div class="article-info">
-                        <a href="/articles/exampleArticle">예시 아티클</a>
+                        <a href="/board/magazine/topic/articles">예시 아티클</a>
                         <div class="article-sub-info">
                             <a href="#">저자</a>
                             <span>20100101</span>
@@ -52,7 +52,7 @@
                 </li>
                 <li>
                     <div class="article-info">
-                        <a href="/articles/exampleArticle">예시 아티클</a>
+                        <a href="/board/magazine/topic/articles">예시 아티클</a>
                         <div class="article-sub-info">
                             <a href="#">저자</a>
                             <span>20100101</span>

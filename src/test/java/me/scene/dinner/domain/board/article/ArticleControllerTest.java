@@ -3,7 +3,7 @@ package me.scene.dinner.domain.board.article;
 import me.scene.dinner.domain.account.AccountController;
 import me.scene.dinner.domain.account.AccountRepository;
 import me.scene.dinner.domain.account.WithAccount;
-import me.scene.dinner.domain.board.topic.TopicController;
+import me.scene.dinner.domain.board.UrlUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -41,7 +41,7 @@ class ArticleControllerTest {
     @WithAccount(username = "scene")
     void articleCreatePage_hasForm() throws Exception {
         mockMvc.perform(
-                get(TopicController.ARTICLE_FORM)
+                get(UrlUtils.form("magazine", "topic"))
         )
                 .andExpect(status().isOk())
                 .andExpect(view().name("page/board/article/form"))
@@ -52,7 +52,7 @@ class ArticleControllerTest {
     @Test
     void articleCreatePage_unauthenticated() throws Exception {
         mockMvc.perform(
-                get(TopicController.ARTICLE_FORM)
+                get(UrlUtils.form("magazine", "topic"))
         )
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrlPattern("**" + AccountController.URL_LOGIN))
@@ -65,13 +65,13 @@ class ArticleControllerTest {
     @WithAccount(username = "scene")
     void articleSubmit_save() throws Exception {
         mockMvc.perform(
-                post(ArticleController.URL)
+                post(UrlUtils.post("magazine", "topic"))
                         .with(csrf())
                         .param("title", "title")
                         .param("content", "content")
         )
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrlPattern(ArticleController.URL + "/*"))
+                .andExpect(redirectedUrlPattern(UrlUtils.read("*", "*", "*")))
         ;
 
         Article article = articleRepository.findByTitle("title").orElseThrow();
@@ -82,7 +82,7 @@ class ArticleControllerTest {
     @WithAccount(username = "scene")
     void articleSubmit_invalid_notSave() throws Exception {
         mockMvc.perform(
-                post(ArticleController.URL)
+                post(UrlUtils.post("magazine", "topic"))
                         .with(csrf())
                         .param("title", "a".repeat(31))
                         .param("content", "")

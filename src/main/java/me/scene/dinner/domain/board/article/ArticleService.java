@@ -1,6 +1,7 @@
 package me.scene.dinner.domain.board.article;
 
 import me.scene.dinner.domain.account.Account;
+import me.scene.dinner.domain.board.topic.Topic;
 import me.scene.dinner.domain.board.topic.TopicRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,12 +21,14 @@ public class ArticleService {
     }
 
     @Transactional
-    public Long createArticle(Account current, ArticleForm articleForm) {
+    public String createArticle(Account current, String topic, ArticleForm articleForm) {
         // TODO
 //        Topic topic = topicRepository.findByTitle(articleForm.getTopic()).orElseThrow();
-        Article article = new Article(current, articleForm);
+        Topic topic1 = new Topic();
+        topicRepository.save(topic1);
+        Article article = new Article(current, topic1, articleForm);
         article = articleRepository.save(article);
-        return article.getId();
+        return article.getTitle();
     }
 
 }

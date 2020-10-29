@@ -2,7 +2,6 @@ package me.scene.dinner.domain.board.article;
 
 import lombok.Getter;
 import lombok.Setter;
-import me.scene.dinner.domain.board.topic.Topic;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotBlank;
@@ -16,6 +15,7 @@ public class ArticleForm {
     @NotBlank
     private String content;
 
-    private Topic topic;
+    @NotBlank
+    private String topic;
 
 }

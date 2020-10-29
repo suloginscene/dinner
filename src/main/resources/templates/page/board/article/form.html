@@ -7,7 +7,7 @@
 
     <body th:replace="layout/layout::body(~{::section})">
         <section>
-            <form th:action="@{/articles}" th:method="post" th:object="${articleForm}">
+            <form th:action="@{/board/magazine/topic}" th:method="post" th:object="${articleForm}">
                 <div id="bar">
                     <label id="title"><input type="text" th:field="*{title}" placeholder="새 아티클"></label>
                     <label><input type="text" th:field="*{content}" id="content" hidden></label>

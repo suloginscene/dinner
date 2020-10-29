@@ -3,9 +3,7 @@ package me.scene.dinner.infra.config.security;
 import me.scene.dinner.MainController;
 import me.scene.dinner.domain.account.AccountController;
 import me.scene.dinner.domain.account.AccountService;
-import me.scene.dinner.domain.board.article.ArticleController;
-import me.scene.dinner.domain.board.magazine.MagazineController;
-import me.scene.dinner.domain.board.topic.TopicController;
+import me.scene.dinner.domain.board.UrlUtils;
 import me.scene.dinner.domain.tag.TagController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
@@ -34,13 +32,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
+        // TODO url
         http.authorizeRequests()
 
                 .mvcMatchers(HttpMethod.GET,
                         MainController.URL_HOME, MainController.URL_ABOUT,
                         AccountController.URL_SIGNUP, AccountController.URL_VERIFY, AccountController.URL_LOGIN,
                         AccountController.URL_FORGOT, AccountController.URL_PROFILE + "/*",
-                        MagazineController.URL + "/*", TopicController.URL + "/*", ArticleController.URL + "/*",
+                        UrlUtils.read("*"), UrlUtils.read("*", "*"), UrlUtils.read("*", "*", "*"),
                         TagController.URL, TagController.URL + "/*"
                 ).permitAll()
 
