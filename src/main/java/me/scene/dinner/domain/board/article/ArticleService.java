@@ -3,6 +3,7 @@ package me.scene.dinner.domain.board.article;
 import me.scene.dinner.domain.account.Account;
 import me.scene.dinner.domain.board.topic.Topic;
 import me.scene.dinner.domain.board.topic.TopicRepository;
+import me.scene.dinner.infra.exception.BoardNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,7 +29,12 @@ public class ArticleService {
         topicRepository.save(topic1);
         Article article = new Article(current, topic1, articleForm);
         article = articleRepository.save(article);
-        return article.getTitle();
+        return article.getUrl();
+    }
+
+    @Transactional(readOnly = true)
+    public Article findByUrl(String url) {
+        return articleRepository.findByUrl(url).orElseThrow(() -> new BoardNotFoundException(url));
     }
 
 }

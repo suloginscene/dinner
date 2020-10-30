@@ -20,6 +20,12 @@ public class ExceptionAdvice {
     }
 
     @ExceptionHandler
+    public String boardNotFoundException(HttpServletRequest req, BoardNotFoundException e) {
+        log.warn(templateMessage, "BoardNotFoundException", e.getMessage(), req.getRequestURI());
+        return "page/error/board_not_found";
+    }
+
+    @ExceptionHandler
     public String verificationException(HttpServletRequest req, VerificationException e) {
         log.warn(templateMessage, "VerificationException", e.getMessage(), req.getRequestURI());
         return "page/error/verification";

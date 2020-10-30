@@ -7,6 +7,8 @@ import me.scene.dinner.domain.board.topic.Topic;
 
 import javax.persistence.*;
 
+import java.time.LocalDateTime;
+
 import static javax.persistence.FetchType.*;
 
 @Entity
@@ -19,8 +21,10 @@ public class Article {
     public Article(Account current, Topic topic, ArticleForm articleForm) {
         this.writer = current.getId();
         this.topic = topic;
+        this.url = articleForm.getUrl();
         this.title = articleForm.getTitle();
         this.content = articleForm.getContent();
+        this.date = LocalDateTime.now();
     }
 
     @Id @GeneratedValue
@@ -31,8 +35,12 @@ public class Article {
     @ManyToOne(fetch = LAZY)
     private Topic topic;
 
+    private String url;
+
     private String title;
 
     private String content;
+
+    private LocalDateTime date;
 
 }

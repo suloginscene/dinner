@@ -38,15 +38,16 @@ public class AccountService implements UserDetailsService {
 
     @PostConstruct
     public void initAccountRepository() {
-        if (activeProfile.get().equals("local"))
+        if (activeProfile.get().equals("local")) {
             createTestAccount();
+        }
     }
 
     private void createTestAccount() {
         SignupForm testUser = new SignupForm();
-        testUser.setUsername("username");
+        testUser.setUsername("test");
         testUser.setEmail("email" + "@email.com");
-        testUser.setPassword("password");
+        testUser.setPassword("testPassword");
         testUser.setAgreement(true);
         testUser.encodePassword(passwordEncoder);
         testUser.generateVerificationToken();
@@ -127,6 +128,12 @@ public class AccountService implements UserDetailsService {
     public void changePassword(String username, String password) {
         Account account = accountRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException(username));
         account.changePassword(password, passwordEncoder);
+    }
+
+    public String findUsernameById(Long writerId) {
+        Account account = accountRepository.findById(writerId).orElse(null);
+        if (account == null) return "anonymousUser";
+        else return account.getUsername();
     }
 
 }

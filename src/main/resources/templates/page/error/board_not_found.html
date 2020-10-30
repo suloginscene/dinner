@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+    <div th:replace="layout/layout::head(_, ~{::link}, ~{})">
+        <link rel="stylesheet" href="/css/page/error/error.css"/>
+    </div>
+
+    <body th:replace="layout/layout::body(~{::section})">
+        <section>
+            <div class="centered-content">
+                <div class="message">
+                    게시물을 찾을 수 없습니다.
+                </div>
+            </div>
+        </section>
+    </body>
+
+</html>

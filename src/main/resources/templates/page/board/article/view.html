@@ -9,33 +9,15 @@
         <section>
 
             <div class="info">
-                <h2 id="topic"><a href="/board/magazine/topic">topic</a></h2>
+                <h2 id="topic"><a th:href="@{'/board'+'/'+${magazine}+'/'+${topic}}" th:text="${topic}"></a></h2>
                 <h1 id="title" th:text="${title}"></h1>
                 <div id="sub-info">
-                    <span id="writer"><a th:href="@{'/accounts/저자'}">저자</a></span>
-                    <span id="date">20191203</span>
+                    <span id="writer"><a th:href="@{'/accounts/'+${writer}}" th:text="${writer}"></a></span>
+                    <span id="date" th:text="${date}"></span>
                 </div>
             </div>
 
-            <article>
-
-                <h2>한국어</h2>
-                <p>헌법재판소는 법관의 자격을 가진 9인의 재판관으로 구성하며, 재판관은 대통령이 임명한다. 국교는 인정되지 아니하며, 종교와 정치는 분리된다. 국회의원의 선거구와 비례대표제 기타 선거에 관한 사항은 법률로 정한다. 국군은 국가의 안전보장과 국토방위의 신성한 의무를 수행함을 사명으로 하며, 그 정치적 중립성은 준수된다. 모든 국민은 신속한 재판을 받을 권리를 가진다. 형사피고인은 상당한 이유가 없는 한 지체없이 공개재판을 받을 권리를 가진다. 정부는 회계연도마다 예산안을 편성하여 회계연도 개시 90일전까지 국회에 제출하고, 국회는 회계연도 개시 30일전까지 이를 의결하여야 한다.</p>
-                <h3>소제목</h3>
-                <p>대통령은 법률이 정하는 바에 의하여 사면·감형 또는 복권을 명할 수 있다. 국무회의는 정부의 권한에 속하는 중요한 정책을 심의한다. 대통령은 법률이 정하는 바에 의하여 훈장 기타의 영전을 수여한다. 선거와 국민투표의 공정한 관리 및 정당에 관한 사무를 처리하기 위하여 선거관리위원회를 둔다. 군사재판을 관할하기 위하여 특별법원으로서 군사법원을 둘 수 있다. 감사원의 조직·직무범위·감사위원의 자격·감사대상공무원의 범위 기타 필요한 사항은 법률로 정한다. 대법원장의 임기는 6년으로 하며, 중임할 수 없다.</p>
-                <p>대통령은 국가의 원수이며, 외국에 대하여 국가를 대표한다. 제1항의 탄핵소추는 국회재적의원 3분의 1 이상의 발의가 있어야 하며, 그 의결은 국회재적의원 과반수의 찬성이 있어야 한다. 다만, 대통령에 대한 탄핵소추는 국회재적의원 과반수의 발의와 국회재적의원 3분의 2 이상의 찬성이 있어야 한다.</p>
-                <h3>길이가 매우 긴 소제목은 이렇게 된다는 것을 보여주는 소제목까지 써도 한 줄이 넘어가지 않아서 더 길게 써보는 소제목</h3>
-                <p>대한민국의 영토는 한반도와 그 부속도서로 한다. 선거에 관한 경비는 법률이 정하는 경우를 제외하고는 정당 또는 후보자에게 부담시킬 수 없다. 국회는 의장 1인과 부의장 2인을 선출한다. 광물 기타 중요한 지하자원·수산자원·수력과 경제상 이용할 수 있는 자연력은 법률이 정하는 바에 의하여 일정한 기간 그 채취·개발 또는 이용을 특허할 수 있다. 공무원의 직무상 불법행위로 손해를 받은 국민은 법률이 정하는 바에 의하여 국가 또는 공공단체에 정당한 배상을 청구할 수 있다. 이 경우 공무원 자신의 책임은 면제되지 아니한다. 국무회의는 대통령·국무총리와 15인 이상 30인 이하의 국무위원으로 구성한다.</p>
-
-                <h2>Latin</h2>
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ornare arcu dui vivamus arcu felis bibendum. Vitae sapien pellentesque habitant morbi tristique. Est pellentesque elit ullamcorper dignissim cras. Amet facilisis magna etiam tempor orci eu lobortis. Congue mauris rhoncus aenean vel elit scelerisque mauris. Aliquam malesuada bibendum arcu vitae elementum curabitur vitae. Et tortor consequat id porta nibh venenatis cras sed. Odio ut sem nulla pharetra diam sit amet nisl. At volutpat diam ut venenatis tellus in metus vulputate. Augue lacus viverra vitae congue eu consequat ac.</p>
-                <h3>SubTitle</h3>
-                <p>Eleifend mi in nulla posuere sollicitudin aliquam ultrices. Convallis tellus id interdum velit. Massa tincidunt dui ut ornare lectus sit amet est placerat. Porttitor rhoncus dolor purus non enim praesent. Sit amet risus nullam eget felis eget. Enim neque volutpat ac tincidunt vitae. Fermentum odio eu feugiat pretium nibh ipsum consequat nisl. Massa id neque aliquam vestibulum morbi blandit. At ultrices mi tempus imperdiet. Egestas erat imperdiet sed euismod. Faucibus turpis in eu mi bibendum neque egestas congue.</p>
-                <p>Gravida rutrum quisque non tellus orci ac auctor augue mauris. Netus et malesuada fames ac turpis egestas sed tempus. Magna fringilla urna porttitor rhoncus dolor purus. Sagittis orci a scelerisque purus semper. Vitae tortor condimentum lacinia quis vel eros. A lacus vestibulum sed arcu.</p>
-                <h3>SubTitle which has very long body showing how it does work and I don't know how can I write more longer</h3>
-                <p>Quam id leo in vitae turpis. Ac turpis egestas maecenas pharetra. Platea dictumst vestibulum rhoncus est pellentesque elit ullamcorper. Nunc sed blandit libero volutpat sed. Ipsum dolor sit amet consectetur adipiscing. Vestibulum rhoncus est pellentesque elit ullamcorper dignissim cras tincidunt lobortis. In metus vulputate eu scelerisque felis imperdiet. Pharetra pharetra massa massa ultricies mi quis hendrerit. Habitant morbi tristique senectus et netus. Aliquam faucibus purus in massa tempor nec feugiat nisl. Scelerisque eleifend donec pretium vulputate sapien nec. Diam sit amet nisl suscipit adipiscing bibendum est ultricies.</p>
-
-            </article>
+            <article th:utext="${content}"></article>
 
             <div>
                 댓글

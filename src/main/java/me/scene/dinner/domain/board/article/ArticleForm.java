@@ -5,12 +5,16 @@ import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 
 @Getter @Setter
 public class ArticleForm {
 
-    @NotBlank @Length(min = 1, max = 30)
+    @NotBlank @Length(max = 30)
     private String title;
+
+    @NotBlank @Pattern(regexp = "^[a-z0-9\\-]{2,20}$")
+    private String url;
 
     @NotBlank
     private String content;
