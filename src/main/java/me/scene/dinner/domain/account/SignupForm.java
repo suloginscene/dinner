@@ -20,19 +20,22 @@ public class SignupForm {
     @Id @GeneratedValue
     Long id;
 
-    @NotBlank @Length(min = 2, max = 16)
-    @Pattern(regexp = "^[가-힣a-zA-Z0-9\\-_.]{2,16}$")
+    @Length(min = 2, max = 16, message = "이름은 2자 이상, 16자 이하여야 합니다.")
+    @Pattern(regexp = "^[가-힣a-zA-Z0-9\\-_.]{2,16}$", message = "이름은 한글, 영어, 숫자와 -_.으로 이루어져야 합니다.")
     @Column(unique = true)
     private String username;
 
-    @NotBlank @Email
+    @NotBlank(message = "이메일은 공백일 수 없습니다.")
+    @Email(message = "올바른 이메일이 필요합니다.")
     @Column(unique = true)
     private String email;
 
-    @NotBlank @Length(min = 8)
+    @NotBlank(message = "비밀번호는 공백일 수 없습니다.")
+    @Length(min = 8, message = "비밀번호는 8자 이상이어야 합니다.")
     private String password;
 
-    @NotNull @AssertTrue
+    @NotNull(message = "가입에는 동의가 필요합니다.")
+    @AssertTrue(message = "가입에는 동의가 필요합니다.")
     private Boolean agreement;
 
     private String verificationToken;
@@ -48,4 +51,5 @@ public class SignupForm {
     public void validateToken(String token) {
         if (!token.equals(verificationToken)) throw new VerificationException(email);
     }
+
 }

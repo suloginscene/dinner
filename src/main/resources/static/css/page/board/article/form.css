@@ -47,6 +47,16 @@ section form #bar button {
     right: 0;
 }
 
+section form #error-message {
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+section form #error-message span {
+    display: inline;
+    margin-right: 15px;
+}
+
 section form #editor {
     height: calc(100% - 60px);
 }

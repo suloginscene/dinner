@@ -5,13 +5,16 @@ import me.scene.dinner.domain.account.AccountService;
 import me.scene.dinner.domain.account.CurrentUser;
 import me.scene.dinner.domain.board.article.Article;
 import me.scene.dinner.domain.board.article.ArticleForm;
+import me.scene.dinner.domain.board.article.ArticleFormValidator;
 import me.scene.dinner.domain.board.article.ArticleService;
 import me.scene.dinner.infra.util.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
@@ -37,14 +40,21 @@ public class BoardController {
 
     private final AccountService accountService;
     private final ArticleService articleService;
+    private final ArticleFormValidator articleFormValidator;
 
     @Autowired
-    public BoardController(AccountService accountService, ArticleService articleService) {
+    public BoardController(AccountService accountService, ArticleService articleService, ArticleFormValidator articleFormValidator) {
         this.accountService = accountService;
         this.articleService = articleService;
+        this.articleFormValidator = articleFormValidator;
     }
 
-    // TODO articleForm binder to validate url in topic
+
+    @InitBinder("articleForm")
+    public void initBinder(WebDataBinder webDataBinder) {
+        webDataBinder.addValidators(articleFormValidator);
+    }
+
 
     @GetMapping(MAGAZINE_FORM)
     public String shipMagazineForm() {
@@ -74,16 +84,19 @@ public class BoardController {
     public String shipArticleForm(@PathVariable String magazine, @PathVariable String topic, Model model) {
         model.addAttribute("magazine", magazine);
         model.addAttribute("topic", topic);
-        model.addAttribute("articleForm", new ArticleForm());
+        ArticleForm articleForm = new ArticleForm();
+        articleForm.setParentUrl("/" + magazine + "/" + topic + "/");
+        model.addAttribute("articleForm", articleForm);
         return "page/board/article/form";
     }
 
     @PostMapping(ARTICLE_POST)
-    public String createArticle(@PathVariable String magazine, @PathVariable String topic, @CurrentUser Account current, @Valid ArticleForm articleForm, Errors errors) {
+    public String createArticle(@PathVariable String magazine, @PathVariable String topic,
+                                @CurrentUser Account current, @Valid ArticleForm articleForm, Errors errors) {
         if (errors.hasErrors()) return "page/board/article/form";
 
         String url = articleService.createArticle(current, topic, articleForm);
-        String path = "/board" + "/" + magazine + "/" + topic + "/" + url;
+        String path = "/board" + url;
         return "redirect:" + path;
     }
 
@@ -91,7 +104,8 @@ public class BoardController {
     public String showArticle(@PathVariable String magazine, @PathVariable String topic, @PathVariable String article, Model model) {
         model.addAttribute("magazine", magazine);
         model.addAttribute("topic", topic);
-        Article comp = articleService.findByUrl(article);
+        String url = "/" + magazine + "/" + topic + "/" + article;
+        Article comp = articleService.findByUrl(url);
         model.addAttribute("writer", accountService.findUsernameById(comp.getWriter()));
         model.addAttribute("title", comp.getTitle());
         model.addAttribute("content", comp.getContent());

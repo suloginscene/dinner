@@ -36,6 +36,7 @@ public class ArticleFactory {
 
         ArticleForm articleForm = new ArticleForm();
         articleForm.setTitle(title);
+        articleForm.setParentUrl("/magazine/topic/");
         articleForm.setUrl(title);
 
         Article article = new Article(scene, topic, articleForm);

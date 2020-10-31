@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -65,10 +66,12 @@ class ArticleControllerTest {
 
     @Test
     @WithAccount(username = "scene")
+    @Transactional
     void articleSubmit_save() throws Exception {
         mockMvc.perform(
                 post(UrlUtils.post("magazine", "topic"))
                         .with(csrf())
+                        .param("parentUrl", "/magazine/topic/")
                         .param("title", "title")
                         .param("content", "content")
                         .param("url", "article")
@@ -87,6 +90,7 @@ class ArticleControllerTest {
         mockMvc.perform(
                 post(UrlUtils.post("magazine", "topic"))
                         .with(csrf())
+                        .param("parentUrl", "/magazine/topic/")
                         .param("title", "")
                         .param("content", "")
                         .param("url", "한국어")

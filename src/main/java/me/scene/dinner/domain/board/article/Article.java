@@ -21,7 +21,7 @@ public class Article {
     public Article(Account current, Topic topic, ArticleForm articleForm) {
         this.writer = current.getId();
         this.topic = topic;
-        this.url = articleForm.getUrl();
+        this.url = articleForm.getParentUrl() + articleForm.getUrl();
         this.title = articleForm.getTitle();
         this.content = articleForm.getContent();
         this.date = LocalDateTime.now();
@@ -35,10 +35,12 @@ public class Article {
     @ManyToOne(fetch = LAZY)
     private Topic topic;
 
+    @Column(unique = true)
     private String url;
 
     private String title;
 
+    @Lob
     private String content;
 
     private LocalDateTime date;

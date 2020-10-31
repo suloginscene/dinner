@@ -50,3 +50,7 @@ section p {
     margin-bottom: 10px;
 }
 
+section article p img {
+    width: 100%;
+}
+
