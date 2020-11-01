@@ -1,9 +1,10 @@
 package me.scene.dinner.domain.board.article;
 
-import me.scene.dinner.domain.account.AccountController;
-import me.scene.dinner.domain.account.AccountRepository;
+import me.scene.dinner.domain.account.domain.AccountRepository;
 import me.scene.dinner.domain.account.WithAccount;
-import me.scene.dinner.domain.board.UrlUtils;
+import me.scene.dinner.infra.util.UrlUtils;
+import me.scene.dinner.domain.board.domain.Article;
+import me.scene.dinner.domain.board.domain.ArticleRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -58,7 +59,7 @@ class ArticleControllerTest {
                 get(UrlUtils.form("magazine", "topic"))
         )
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrlPattern("**" + AccountController.URL_LOGIN))
+                .andExpect(redirectedUrlPattern("**/login"))
         ;
     }
     // TODO
@@ -114,7 +115,7 @@ class ArticleControllerTest {
                         .param("content", "valid")
         )
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrlPattern("**" + AccountController.URL_LOGIN))
+                .andExpect(redirectedUrlPattern("**/login"))
         ;
 
         Article article = articleRepository.findByTitle("valid").orElse(null);

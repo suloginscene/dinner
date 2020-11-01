@@ -1,10 +1,9 @@
 package me.scene.dinner.domain.board.article;
 
-import me.scene.dinner.domain.account.Account;
+import me.scene.dinner.domain.account.domain.Account;
 import me.scene.dinner.domain.account.AccountFactory;
-import me.scene.dinner.domain.account.AccountRepository;
-import me.scene.dinner.domain.board.topic.Topic;
-import me.scene.dinner.domain.board.topic.TopicRepository;
+import me.scene.dinner.domain.account.domain.AccountRepository;
+import me.scene.dinner.domain.board.domain.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;

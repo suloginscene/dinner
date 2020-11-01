@@ -1,6 +1,10 @@
 package me.scene.dinner.domain.account;
 
-import me.scene.dinner.MainController;
+import me.scene.dinner.domain.MainController;
+import me.scene.dinner.domain.account.domain.Account;
+import me.scene.dinner.domain.account.domain.AccountRepository;
+import me.scene.dinner.domain.account.domain.SignupForm;
+import me.scene.dinner.domain.account.domain.SignupFormRepository;
 import me.scene.dinner.infra.mail.MailMessage;
 import me.scene.dinner.infra.mail.MailSender;
 import org.junit.jupiter.api.AfterEach;
@@ -47,7 +51,7 @@ class AccountControllerTest {
     @Test
     void signupPage_hasSignupForm() throws Exception {
         mockMvc.perform(
-                get(AccountController.URL_SIGNUP)
+                get("/signup")
         )
                 .andExpect(status().isOk())
                 .andExpect(view().name("page/account/signup"))
@@ -58,7 +62,7 @@ class AccountControllerTest {
     @Test
     void signupSubmit_encodeStoreSend() throws Exception {
         mockMvc.perform(
-                post(AccountController.URL_SIGNUP)
+                post("/signup")
                         .with(csrf())
                         .param("username", "scene")
                         .param("email", "scene@email.com")
@@ -66,7 +70,7 @@ class AccountControllerTest {
                         .param("agreement", "true")
         )
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrlPattern(AccountController.URL_VERIFY + "?*"))
+                .andExpect(redirectedUrlPattern("/verify?*"))
         ;
 
         SignupForm signupForm = tempRepository.findByUsername("scene").orElseThrow();
@@ -80,7 +84,7 @@ class AccountControllerTest {
         SignupForm signupForm;
 
         mockMvc.perform(
-                post(AccountController.URL_SIGNUP)
+                post("/signup")
                         .with(csrf())
                         .param("username", "[unacceptable]")
                         .param("email", "notAnEmail")
@@ -97,7 +101,7 @@ class AccountControllerTest {
         assertThat(signupForm).isNull();
 
         mockMvc.perform(
-                post(AccountController.URL_SIGNUP)
+                post("/signup")
                         .with(csrf())
                         .param("username", "anonymousUser")
                         .param("email", "valid@email.com")
@@ -119,7 +123,7 @@ class AccountControllerTest {
         accountFactory.createInRegular("scene");
 
         mockMvc.perform(
-                post(AccountController.URL_SIGNUP)
+                post("/signup")
                         .with(csrf())
                         .param("username", "scene")
                         .param("email", "scene@email.com")
@@ -143,7 +147,7 @@ class AccountControllerTest {
         String verificationToken = signupForm.getVerificationToken();
 
         mockMvc.perform(
-                get(AccountController.URL_VERIFY)
+                get("/verify")
                         .param("email", email)
                         .param("token", verificationToken)
         )
@@ -167,7 +171,7 @@ class AccountControllerTest {
         Account account;
 
         mockMvc.perform(
-                get(AccountController.URL_VERIFY)
+                get("/verify")
                         .param("email", "invalid@email.com")
                         .param("token", verificationToken)
         )
@@ -178,7 +182,7 @@ class AccountControllerTest {
         assertThat(account).isNull();
 
         mockMvc.perform(
-                get(AccountController.URL_VERIFY)
+                get("/verify")
                         .param("email", email)
                         .param("token", "invalid-token")
         )
@@ -192,7 +196,7 @@ class AccountControllerTest {
     @Test
     void loginPage_isCustomizedPage() throws Exception {
         mockMvc.perform(
-                get(AccountController.URL_LOGIN)
+                get("/login")
         )
                 .andExpect(status().isOk())
                 .andExpect(view().name("page/account/login"))
@@ -205,7 +209,7 @@ class AccountControllerTest {
                 get("/unauthenticated-user-is-forbidden-to-approach-this-page")
         )
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrlPattern("**" + AccountController.URL_LOGIN))
+                .andExpect(redirectedUrlPattern("**/login"))
         ;
     }
 
@@ -214,7 +218,7 @@ class AccountControllerTest {
         accountFactory.createInRegular("scene");
 
         mockMvc.perform(
-                post(AccountController.URL_LOGIN)
+                post("/login")
                         .with(csrf())
                         .param("username", "scene")
                         .param("password", "password")
@@ -230,24 +234,24 @@ class AccountControllerTest {
         accountFactory.createInRegular("scene");
 
         mockMvc.perform(
-                post(AccountController.URL_LOGIN)
+                post("/login")
                         .with(csrf())
                         .param("username", "invalid")
                         .param("password", "password")
         )
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl(AccountController.URL_LOGIN + "?error"))
+                .andExpect(redirectedUrl("/login?error"))
                 .andExpect(unauthenticated())
         ;
 
         mockMvc.perform(
-                post(AccountController.URL_LOGIN)
+                post("/login")
                         .with(csrf())
                         .param("username", "scene")
                         .param("password", "invalid")
         )
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl(AccountController.URL_LOGIN + "?error"))
+                .andExpect(redirectedUrl("/login?error"))
                 .andExpect(unauthenticated())
         ;
     }
@@ -260,12 +264,12 @@ class AccountControllerTest {
         String encodedOldPassword = scene.getPassword();
 
         mockMvc.perform(
-                post(AccountController.URL_FORGOT)
+                post("/forgot")
                         .with(csrf())
                         .param("email", "scene@email.com")
         )
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrlPattern(AccountController.URL_FORGOT + "?*"))
+                .andExpect(redirectedUrlPattern("/forgot?*"))
         ;
         then(mailSender).should().send(any(MailMessage.class));
 
@@ -277,7 +281,7 @@ class AccountControllerTest {
     @Test
     void forgotPassword_invalidEmail_handleException() throws Exception {
         mockMvc.perform(
-                post(AccountController.URL_FORGOT)
+                post("/forgot")
                         .with(csrf())
                         .param("email", "non-existent@email.com")
         )
@@ -289,7 +293,7 @@ class AccountControllerTest {
     @Test
     void profilePage_nonExistent_handleException() throws Exception {
         mockMvc.perform(
-                get(AccountController.URL_PROFILE + "/scene")
+                get("/accounts/scene")
         )
                 .andExpect(status().isOk())
                 .andExpect(view().name("page/error/username_not_found"))
@@ -301,7 +305,7 @@ class AccountControllerTest {
         accountFactory.createInRegular("scene");
 
         mockMvc.perform(
-                get(AccountController.URL_PROFILE + "/scene")
+                get("/accounts/scene")
         )
                 .andExpect(status().isOk())
                 .andExpect(view().name("page/account/profile"))
@@ -313,7 +317,7 @@ class AccountControllerTest {
     @WithAccount(username = "scene")
     void profilePage_owner_modifiable() throws Exception {
         mockMvc.perform(
-                get(AccountController.URL_PROFILE + "/scene")
+                get("/accounts/scene")
         )
                 .andExpect(status().isOk())
                 .andExpect(view().name("page/account/profile"))
@@ -330,12 +334,12 @@ class AccountControllerTest {
         String encodedOldPassword = scene.getPassword();
 
         mockMvc.perform(
-                post(AccountController.URL_PROFILE + "/scene")
+                post("/accounts/scene")
                         .with(csrf())
                         .param("password", "newPassword")
         )
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl(AccountController.URL_PROFILE + "/scene?success"))
+                .andExpect(redirectedUrl("/accounts/scene?success"))
         ;
 
         String encodedNewPassword = scene.getPassword();
@@ -352,12 +356,12 @@ class AccountControllerTest {
         String encodedOldPassword = scene.getPassword();
 
         mockMvc.perform(
-                post(AccountController.URL_PROFILE + "/scene")
+                post("/accounts/scene")
                         .with(csrf())
                         .param("password", "short")
         )
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl(AccountController.URL_PROFILE + "/scene?short"))
+                .andExpect(redirectedUrl("/accounts/scene?short"))
         ;
 
         String encodedNewPassword = scene.getPassword();
@@ -374,7 +378,7 @@ class AccountControllerTest {
         String encodedOldPassword = scene.getPassword();
 
         mockMvc.perform(
-                post(AccountController.URL_PROFILE + "/scene")
+                post("/accounts/scene")
                         .with(csrf())
                         .param("password", "newPassword")
         )

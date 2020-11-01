@@ -1,7 +1,5 @@
 package me.scene.dinner.infra.util;
 
-import me.scene.dinner.domain.account.AccountController;
-
 import javax.servlet.http.HttpServletRequest;
 
 public class RefererUtils {
@@ -23,9 +21,9 @@ public class RefererUtils {
     public static boolean contextless(String referer) {
         return referer == null
                 || referer.equals("external")
-                || referer.startsWith(AccountController.URL_LOGIN)
-                || referer.startsWith(AccountController.URL_VERIFY)
-                || referer.startsWith(AccountController.URL_SIGNUP);
+                || referer.startsWith("/login")
+                || referer.startsWith("/verify")
+                || referer.startsWith("signup");
     }
 
 }
