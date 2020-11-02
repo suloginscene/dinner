@@ -100,7 +100,7 @@ class BoardControllerTest {
     }
 
     @Test
-    void showMagazine_hasMagazine() throws Exception {
+    void showMagazine_hasMagazineDto() throws Exception {
         Account scene = accountFactory.createInRegular("scene");
         Magazine magazine = Magazine.create(scene, "title", "short", "long", "OPEN");
         Long id = magazineService.save(magazine);
@@ -110,7 +110,7 @@ class BoardControllerTest {
         )
                 .andExpect(status().isOk())
                 .andExpect(view().name("page/board/magazine/view"))
-                .andExpect(model().attributeExists("magazine"))
+                .andExpect(model().attributeExists("magazineDto"))
         ;
     }
 

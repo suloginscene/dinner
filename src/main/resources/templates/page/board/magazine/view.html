@@ -1,27 +1,27 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 
-    <div th:replace="layout/layout::head(${title},~{::link}, ~{::script})">
+    <div th:replace="layout/layout::head(${magazineDto.title},~{::link}, ~{::script})">
         <link rel="stylesheet" href="/css/page/board/magazine/view.css"/>
         <script src="/js/page/magazine.js"></script>
     </div>
 
     <body th:replace="layout/layout::body(~{::section})">
-        <section>
+        <section th:object="${magazineDto}">
 
             <div class="info">
-                <h1 id="title" th:text="${title}"></h1>
+                <h1 id="title" th:text="*{title}"></h1>
                 <div id="authorities">
-                    <span id="authority">managed</span> by
-                    <a class="writer" th:href="@{'/accounts/채원'}">채원</a>
-                    <a class="writer" th:href="@{'/accounts/도언'}">도언</a>
-                    <a class="writer" th:href="@{'/accounts/조신'}">조신</a>
+                    <span id="authority" th:text="*{magazinePolicy}"></span> by <span th:text="*{manager}"></span>
+                    <div th:each="writer:*{writers}">
+                        written by
+                        <a class="writer" th:href="@{'/accounts/'+${writer}}" th:text="${writer}"></a>
+                    </div>
                 </div>
-                <a href="#" id="introduction">매거진 한 줄 소개를 적는 곳입니다.<i class="fa fa-chevron-down"></i></a>
-                <div class="panel">
-                    <p>매거진에 대한 긴 소개를 적는 곳입니다.</p>
-                    <p>기이이이이 이이이 이이이이 이이 이이인 소개애애애 애애애.</p>
-                </div>
+                <a href="#" id="introduction">
+                    <span th:text="*{shortExplanation}"></span> <i class="fa fa-chevron-down"></i>
+                </a>
+                <div class="panel" th:text="*{longExplanation}"></div>
             </div>
 
             <div id="button-container">

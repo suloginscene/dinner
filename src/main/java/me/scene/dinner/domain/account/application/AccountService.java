@@ -3,6 +3,7 @@ package me.scene.dinner.domain.account.application;
 import me.scene.dinner.domain.account.domain.*;
 import me.scene.dinner.infra.environment.ActiveProfile;
 import me.scene.dinner.infra.environment.URL;
+import me.scene.dinner.infra.exception.UseridNotFoundException;
 import me.scene.dinner.infra.mail.MailMessage;
 import me.scene.dinner.infra.mail.MailSender;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -135,6 +136,10 @@ public class AccountService implements UserDetailsService {
         Account account = accountRepository.findById(writerId).orElse(null);
         if (account == null) return "anonymousUser";
         else return account.getUsername();
+    }
+
+    public Account find(Long id) {
+        return accountRepository.findById(id).orElseThrow(() -> new UseridNotFoundException(id));
     }
 
 }

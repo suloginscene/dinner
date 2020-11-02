@@ -16,7 +16,13 @@ public class ExceptionAdvice {
     @ExceptionHandler
     public String usernameNotFoundException(HttpServletRequest req, UsernameNotFoundException e) {
         log.warn(templateMessage, "UsernameNotFoundException", e.getMessage(), req.getRequestURI());
-        return "page/error/username_not_found";
+        return "page/error/user_not_found";
+    }
+
+    @ExceptionHandler
+    public String useridNotFoundException(HttpServletRequest req, UseridNotFoundException e) {
+        log.warn(templateMessage, "UseridNotFoundException", e.getMessage(), req.getRequestURI());
+        return "page/error/user_not_found";
     }
 
     @ExceptionHandler

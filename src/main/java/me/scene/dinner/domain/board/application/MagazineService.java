@@ -24,11 +24,11 @@ public class MagazineService {
     }
 
     public Magazine find(Long id) {
-        return magazineRepository.findById(id).orElseThrow(() -> new BoardNotFoundException("magazine not found"));
+        return magazineRepository.findById(id).orElseThrow(() -> new BoardNotFoundException("magazine", "id", id.toString()));
     }
 
     public Magazine find(String title) {
-        return magazineRepository.findByTitle(title).orElseThrow(() -> new BoardNotFoundException("magazine not found"));
+        return magazineRepository.findByTitle(title).orElseThrow(() -> new BoardNotFoundException("magazine", "title", title));
     }
 
 }

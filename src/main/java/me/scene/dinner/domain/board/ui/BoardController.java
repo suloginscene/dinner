@@ -4,10 +4,8 @@ import me.scene.dinner.domain.account.application.AccountService;
 import me.scene.dinner.domain.account.domain.Account;
 import me.scene.dinner.domain.board.application.ArticleService;
 import me.scene.dinner.domain.board.application.MagazineService;
-import me.scene.dinner.domain.board.domain.Article;
 import me.scene.dinner.domain.board.domain.Magazine;
 import me.scene.dinner.infra.security.CurrentUser;
-import me.scene.dinner.infra.util.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,6 +17,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.validation.Valid;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 public class BoardController {
@@ -68,8 +68,22 @@ public class BoardController {
     @GetMapping("/magazines/{magazineId}")
     public String showMagazine(@PathVariable Long magazineId, Model model) {
         Magazine magazine = magazineService.find(magazineId);
-        model.addAttribute("magazine", magazine);
+        MagazineDto magazineDto = extractDto(magazine);
+        model.addAttribute("magazineDto", magazineDto);
         return "page/board/magazine/view";
+    }
+
+    private MagazineDto extractDto(Magazine magazine) {
+        String manager = accountService.find(magazine.getManagerId()).getUsername();
+        List<String> writers = magazine.getWriterIds().stream()
+                .map(accountService::find)
+                .map(Account::getUsername)
+                .collect(Collectors.toList());
+        String title = magazine.getTitle();
+        String shortExplanation = magazine.getShortExplanation();
+        String longExplanation = magazine.getLongExplanation();
+        String magazinePolicy = magazine.getMagazinePolicy().name();
+        return MagazineDto.create(manager, writers, title, shortExplanation, longExplanation, magazinePolicy);
     }
 
     @GetMapping("/magazines/{magazineId}/topic-form")
@@ -110,11 +124,11 @@ public class BoardController {
         model.addAttribute("magazine", magazine);
         model.addAttribute("topic", topic);
         String url = "/" + magazine + "/" + topic + "/" + article;
-        Article comp = articleService.findByUrl(url);
-        model.addAttribute("writer", accountService.findUsernameById(comp.getWriter()));
-        model.addAttribute("title", comp.getTitle());
-        model.addAttribute("content", comp.getContent());
-        model.addAttribute("date", DateUtils.format(comp.getDate()));
+//        Article comp = articleService.findByUrl(url);
+//        model.addAttribute("writer", accountService.findUsernameById(comp.getWriter()));
+//        model.addAttribute("title", comp.getTitle());
+//        model.addAttribute("content", comp.getContent());
+//        model.addAttribute("date", DateUtils.format(comp.getDate()));
         return "page/board/article/view";
     }
 

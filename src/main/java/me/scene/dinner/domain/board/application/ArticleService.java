@@ -1,9 +1,11 @@
 package me.scene.dinner.domain.board.application;
 
 import me.scene.dinner.domain.account.domain.Account;
-import me.scene.dinner.domain.board.domain.*;
+import me.scene.dinner.domain.board.domain.Article;
+import me.scene.dinner.domain.board.domain.ArticleRepository;
+import me.scene.dinner.domain.board.domain.Topic;
+import me.scene.dinner.domain.board.domain.TopicRepository;
 import me.scene.dinner.domain.board.ui.ArticleForm;
-import me.scene.dinner.infra.exception.BoardNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,9 +34,9 @@ public class ArticleService {
         return article.getUrl();
     }
 
-    @Transactional(readOnly = true)
-    public Article findByUrl(String url) {
-        return articleRepository.findByUrl(url).orElseThrow(() -> new BoardNotFoundException(url));
-    }
+//    @Transactional(readOnly = true)
+//    public Article findByUrl(String url) {
+//        return articleRepository.findByUrl(url).orElseThrow(() -> new BoardNotFoundException(url));
+//    }
 
 }

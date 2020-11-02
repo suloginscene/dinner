@@ -4,9 +4,11 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import me.scene.dinner.domain.account.domain.Account;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
+
+import static javax.persistence.FetchType.EAGER;
 
 @Entity
 @Getter @EqualsAndHashCode(of = "id")
@@ -16,6 +18,9 @@ public class Magazine {
     private Long id;
 
     private Long managerId;
+
+    @ElementCollection(fetch = EAGER)
+    private final List<Long> writerIds = new ArrayList<>();
 
     private String title;
 
