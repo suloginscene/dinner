@@ -2,6 +2,7 @@ package me.scene.dinner.domain.board.application;
 
 import me.scene.dinner.domain.account.domain.Account;
 import me.scene.dinner.domain.board.domain.*;
+import me.scene.dinner.domain.board.ui.ArticleForm;
 import me.scene.dinner.infra.exception.BoardNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

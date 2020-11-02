@@ -24,15 +24,15 @@ public class AccountFactory {
     }
 
     @Transactional
-    public void createInTemp(String username) {
+    public SignupForm createInTemp(String username) {
         SignupForm signupForm = completeSignupForm(username);
-        tempRepository.save(signupForm);
+        return tempRepository.save(signupForm);
     }
 
     @Transactional
-    public void createInRegular(String username) {
+    public Account createInRegular(String username) {
         SignupForm signupForm = completeSignupForm(username);
-        accountRepository.save(new Account(signupForm));
+        return accountRepository.save(new Account(signupForm));
     }
 
     private SignupForm completeSignupForm(String username) {

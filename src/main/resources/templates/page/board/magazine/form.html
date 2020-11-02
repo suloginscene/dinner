@@ -11,25 +11,29 @@
                 <div class="message">
                     누구나 매거진을 만들 수 있습니다.
                 </div>
-                <form th:action="@{/#}" th:method="post">
+                <form th:action="@{/magazines}" th:method="post" th:object="${magazineForm}">
                     <div class="form-texts">
                         <div class="magazine-form-info">매거진의 이름을 정해주세요.</div>
                         <label>
-                            <input type="text" placeholder="매거진 이름은 최대 20자까지 가능합니다.">
-                            <small class="form-text text-danger"></small>
+                            <input th:field="*{title}" type="text" placeholder="매거진 이름은 최대 20자까지 가능합니다.">
+                            <small th:if="${#fields.hasErrors('title')}" th:errors="*{title}" class="form-text text-danger"></small>
                         </label>
                         <div class="magazine-form-info">매거진 소개글을 작성해주세요.</div>
                         <label>
-                            <input type="text" placeholder="간략한 소개는 최대 30자까지 가능합니다.">
-                            <textarea rows="5" placeholder="자세한 소개는 최대 300자까지 가능합니다."></textarea>
-                            <small class="form-text text-danger"></small>
+                            <input th:field="*{shortExplanation}" type="text" placeholder="간략한 소개는 최대 30자까지 가능합니다.">
+                            <small th:if="${#fields.hasErrors('shortExplanation')}" th:errors="*{shortExplanation}" class="form-text text-danger"></small>
+                        </label>
+                        <label>
+                            <textarea th:field="*{longExplanation}" rows="5" placeholder="자세한 소개는 최대 250자까지 가능합니다."></textarea>
+                            <small th:if="${#fields.hasErrors('longExplanation')}" th:errors="*{longExplanation}" class="form-text text-danger"></small>
                         </label>
                     </div>
                     <div class="form-checks">
-                        <div class="magazine-form-info">매거진 성격?을 설정해주세요.</div>
-                        <label for="radio-1"><input type="radio" name="creatable" id="radio-1" value="open"/>open</label>
-                        <label for="radio-2"><input type="radio" name="creatable" id="radio-2" value="managed"/>managed</label>
-                        <label for="radio-3"><input type="radio" name="creatable" id="radio-3" value="exclusive"/>exclusive</label>
+                        <div class="magazine-form-info">매거진 성격을 설정해주세요.</div>
+                        <label for="radio-1"><input th:field="*{magazinePolicy}" type="radio" id="radio-1" value="OPEN"/>open</label>
+                        <label for="radio-2"><input th:field="*{magazinePolicy}" type="radio" id="radio-2" value="MANAGED"/>managed</label>
+                        <label for="radio-3"><input th:field="*{magazinePolicy}" type="radio" id="radio-3" value="EXCLUSIVE"/>exclusive</label>
+                        <small th:if="${#fields.hasErrors('magazinePolicy')}" th:errors="*{magazinePolicy}" class="form-text text-danger"></small>
                     </div>
                     <button type="submit">
                         issue

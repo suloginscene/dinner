@@ -1,6 +1,5 @@
 package me.scene.dinner.domain.board.ui;
 
-import me.scene.dinner.domain.board.domain.ArticleForm;
 import me.scene.dinner.domain.board.domain.ArticleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

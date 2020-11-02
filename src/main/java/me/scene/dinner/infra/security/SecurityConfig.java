@@ -3,7 +3,6 @@ package me.scene.dinner.infra.security;
 import me.scene.dinner.domain.MainController;
 import me.scene.dinner.domain.account.application.AccountService;
 import me.scene.dinner.domain.tag.ui.TagController;
-import me.scene.dinner.infra.util.UrlUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.http.HttpMethod;
@@ -36,7 +35,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .mvcMatchers(HttpMethod.GET,
                         MainController.URL_HOME, MainController.URL_ABOUT,
                         "/signup", "/verify", "/login", "/forgot", "/accounts/*",
-                        UrlUtils.read("*"), UrlUtils.read("*", "*"), UrlUtils.read("*", "*", "*"),
+                        "/magazines/*", "/topics/*", "/articles/*",
                         TagController.URL, TagController.URL + "/*"
                 ).permitAll()
 

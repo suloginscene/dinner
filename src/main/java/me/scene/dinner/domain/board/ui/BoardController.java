@@ -3,8 +3,9 @@ package me.scene.dinner.domain.board.ui;
 import me.scene.dinner.domain.account.application.AccountService;
 import me.scene.dinner.domain.account.domain.Account;
 import me.scene.dinner.domain.board.application.ArticleService;
+import me.scene.dinner.domain.board.application.MagazineService;
 import me.scene.dinner.domain.board.domain.Article;
-import me.scene.dinner.domain.board.domain.ArticleForm;
+import me.scene.dinner.domain.board.domain.Magazine;
 import me.scene.dinner.infra.security.CurrentUser;
 import me.scene.dinner.infra.util.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,28 +23,16 @@ import javax.validation.Valid;
 @Controller
 public class BoardController {
 
-    private static final String FORM = "/board-form";
-    private static final String BOARD = "/board";
-
-    private static final String MAGAZINE_FORM = FORM;
-    private static final String TOPIC_FORM = FORM + "/{magazine}";
-    private static final String ARTICLE_FORM = FORM + "/{magazine}" + "/{topic}";
-
-    private static final String MAGAZINE_POST = BOARD;
-    private static final String TOPIC_POST = BOARD + "/{magazine}";
-    private static final String ARTICLE_POST = BOARD + "/{magazine}" + "/{topic}";
-
-    private static final String MAGAZINE_READ = BOARD + "/{magazine}";
-    private static final String TOPIC_READ = BOARD + "/{magazine}" + "/{topic}";
-    private static final String ARTICLE_READ = BOARD + "/{magazine}" + "/{topic}" + "/{article}";
-
     private final AccountService accountService;
+    private final MagazineService magazineService;
     private final ArticleService articleService;
+
     private final ArticleFormValidator articleFormValidator;
 
     @Autowired
-    public BoardController(AccountService accountService, ArticleService articleService, ArticleFormValidator articleFormValidator) {
+    public BoardController(AccountService accountService, MagazineService magazineService, ArticleService articleService, ArticleFormValidator articleFormValidator) {
         this.accountService = accountService;
+        this.magazineService = magazineService;
         this.articleService = articleService;
         this.articleFormValidator = articleFormValidator;
     }
@@ -55,31 +44,47 @@ public class BoardController {
     }
 
 
-    @GetMapping(MAGAZINE_FORM)
-    public String shipMagazineForm() {
+    @GetMapping("/magazine-form")
+    public String shipMagazineForm(Model model) {
+        MagazineForm magazineForm = new MagazineForm();
+        model.addAttribute("magazineForm", magazineForm);
         return "page/board/magazine/form";
     }
 
-    @GetMapping(MAGAZINE_READ)
-    public String showMagazine(@PathVariable String magazine, Model model) {
-        model.addAttribute("title", magazine);
-        return "page/board/magazine/view";
+    @PostMapping("/magazines")
+    public String createMagazine(@CurrentUser Account current, @Valid MagazineForm form, Errors errors) {
+        if (errors.hasErrors()) {
+            return "page/board/magazine/form";
+        }
+
+        Magazine magazine = Magazine.create(current,
+                form.getTitle(), form.getShortExplanation(), form.getLongExplanation(), form.getMagazinePolicy());
+        Long id = magazineService.save(magazine);
+        String url = "/magazines/" + id;
+        return "redirect:" + url;
     }
 
 
-    @GetMapping(TOPIC_FORM)
+    @GetMapping("/magazines/{magazineId}")
+    public String showMagazine(@PathVariable Long magazineId, Model model) {
+        Magazine magazine = magazineService.find(magazineId);
+        model.addAttribute("magazine", magazine);
+        return "page/board/magazine/view";
+    }
+
+    @GetMapping("/magazines/{magazineId}/topic-form")
     public String shipTopicForm(@PathVariable String magazine) {
         return "page/board/topic/form";
     }
 
-    @GetMapping(TOPIC_READ)
+
+    @GetMapping("/topics/{topicId}")
     public String showTopic(@PathVariable String magazine, @PathVariable String topic, Model model) {
         model.addAttribute("title", topic);
         return "page/board/topic/view";
     }
 
-
-    @GetMapping(ARTICLE_FORM)
+    @GetMapping("/topics/{topicId}/article-form")
     public String shipArticleForm(@PathVariable String magazine, @PathVariable String topic, Model model) {
         model.addAttribute("magazine", magazine);
         model.addAttribute("topic", topic);
@@ -89,7 +94,8 @@ public class BoardController {
         return "page/board/article/form";
     }
 
-    @PostMapping(ARTICLE_POST)
+
+    @PostMapping("/articles")
     public String createArticle(@PathVariable String magazine, @PathVariable String topic,
                                 @CurrentUser Account current, @Valid ArticleForm articleForm, Errors errors) {
         if (errors.hasErrors()) return "page/board/article/form";
@@ -99,7 +105,7 @@ public class BoardController {
         return "redirect:" + path;
     }
 
-    @GetMapping(ARTICLE_READ)
+    @GetMapping("/articles/{articleId}")
     public String showArticle(@PathVariable String magazine, @PathVariable String topic, @PathVariable String article, Model model) {
         model.addAttribute("magazine", magazine);
         model.addAttribute("topic", topic);

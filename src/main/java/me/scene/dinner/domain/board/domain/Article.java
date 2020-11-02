@@ -3,6 +3,7 @@ package me.scene.dinner.domain.board.domain;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import me.scene.dinner.domain.account.domain.Account;
+import me.scene.dinner.domain.board.ui.ArticleForm;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;

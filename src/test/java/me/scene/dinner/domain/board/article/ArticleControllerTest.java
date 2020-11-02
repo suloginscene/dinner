@@ -2,7 +2,6 @@ package me.scene.dinner.domain.board.article;
 
 import me.scene.dinner.domain.account.domain.AccountRepository;
 import me.scene.dinner.domain.account.WithAccount;
-import me.scene.dinner.infra.util.UrlUtils;
 import me.scene.dinner.domain.board.domain.Article;
 import me.scene.dinner.domain.board.domain.ArticleRepository;
 import org.junit.jupiter.api.AfterEach;
@@ -45,7 +44,7 @@ class ArticleControllerTest {
     @WithAccount(username = "scene")
     void articleCreatePage_hasForm() throws Exception {
         mockMvc.perform(
-                get(UrlUtils.form("magazine", "topic"))
+                get("/topic/1/article-form")
         )
                 .andExpect(status().isOk())
                 .andExpect(view().name("page/board/article/form"))
@@ -56,7 +55,7 @@ class ArticleControllerTest {
     @Test
     void articleCreatePage_unauthenticated_beGuidedBySpringSecurity() throws Exception {
         mockMvc.perform(
-                get(UrlUtils.form("magazine", "topic"))
+                get("/topic/1/article-form")
         )
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrlPattern("**/login"))
@@ -70,7 +69,7 @@ class ArticleControllerTest {
     @Transactional
     void articleSubmit_save() throws Exception {
         mockMvc.perform(
-                post(UrlUtils.post("magazine", "topic"))
+                post("/articles")
                         .with(csrf())
                         .param("parentUrl", "/magazine/topic/")
                         .param("title", "title")
@@ -78,7 +77,7 @@ class ArticleControllerTest {
                         .param("url", "article")
         )
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrlPattern(UrlUtils.read("*", "*", "*")))
+                .andExpect(redirectedUrlPattern("/articles/*"))
         ;
 
         Article article = articleRepository.findByTitle("title").orElseThrow();
@@ -89,7 +88,7 @@ class ArticleControllerTest {
     @WithAccount(username = "scene")
     void articleSubmit_invalidParam_notSave() throws Exception {
         mockMvc.perform(
-                post(UrlUtils.post("magazine", "topic"))
+                post("/articles")
                         .with(csrf())
                         .param("parentUrl", "/magazine/topic/")
                         .param("title", "")
@@ -109,7 +108,7 @@ class ArticleControllerTest {
     @Test
     void articleSubmit_unauthenticated_beGuidedBySpringSecurity() throws Exception {
         mockMvc.perform(
-                post(UrlUtils.post("magazine", "topic"))
+                post("/articles")
                         .with(csrf())
                         .param("title", "valid")
                         .param("content", "valid")
@@ -130,7 +129,7 @@ class ArticleControllerTest {
         articleFactory.create("article");
 
         mockMvc.perform(
-                get(UrlUtils.read("magazine", "topic", "article"))
+                get("/articles/1")
         )
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -142,7 +141,7 @@ class ArticleControllerTest {
     @Test
     void articleRead_nonExistent_handleException() throws Exception {
         mockMvc.perform(
-                get(UrlUtils.read("magazine", "topic", "article"))
+                get("/articles/1")
         )
                 .andExpect(status().isOk())
                 .andExpect(view().name("page/error/board_not_found"))

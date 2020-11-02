@@ -4,6 +4,7 @@ import me.scene.dinner.domain.account.domain.Account;
 import me.scene.dinner.domain.account.AccountFactory;
 import me.scene.dinner.domain.account.domain.AccountRepository;
 import me.scene.dinner.domain.board.domain.*;
+import me.scene.dinner.domain.board.ui.ArticleForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
