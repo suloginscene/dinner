@@ -1,9 +1,9 @@
 package me.scene.dinner.domain.board.ui;
 
-import me.scene.dinner.domain.account.AccountFactory;
 import me.scene.dinner.domain.account.WithAccount;
 import me.scene.dinner.domain.account.domain.Account;
 import me.scene.dinner.domain.account.domain.AccountRepository;
+import me.scene.dinner.domain.account.domain.TempAccount;
 import me.scene.dinner.domain.board.application.MagazineService;
 import me.scene.dinner.domain.board.domain.Magazine;
 import me.scene.dinner.domain.board.domain.MagazinePolicy;
@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,7 +29,7 @@ class BoardControllerTest {
 
     @Autowired MockMvc mockMvc;
     @Autowired AccountRepository accountRepository;
-    @Autowired AccountFactory accountFactory;
+    @Autowired PasswordEncoder passwordEncoder;
     @Autowired MagazineService magazineService;
 
     @Test
@@ -101,8 +102,11 @@ class BoardControllerTest {
 
     @Test
     void showMagazine_hasMagazineDto() throws Exception {
-        Account scene = accountFactory.createInRegular("scene");
-        Magazine magazine = Magazine.create(scene, "title", "short", "long", "OPEN");
+        TempAccount tempAccount = TempAccount.create("scene", "scene@email.com", "password", passwordEncoder);
+        Account account = Account.create(tempAccount);
+        accountRepository.save(account);
+
+        Magazine magazine = Magazine.create(account, "title", "short", "long", "OPEN");
         Long id = magazineService.save(magazine);
 
         mockMvc.perform(

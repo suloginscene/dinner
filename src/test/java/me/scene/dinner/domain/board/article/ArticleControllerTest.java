@@ -27,7 +27,6 @@ class ArticleControllerTest {
     @Autowired MockMvc mockMvc;
     @Autowired ArticleRepository articleRepository;
     @Autowired AccountRepository accountRepository;
-    @Autowired ArticleFactory articleFactory;
 
     @BeforeEach
     void beforeEach() {
@@ -126,7 +125,7 @@ class ArticleControllerTest {
 
     @Test
     void articleRead_showArticle() throws Exception {
-        articleFactory.create("article");
+//        articleFactory.create("article");
 
         mockMvc.perform(
                 get("/articles/1")

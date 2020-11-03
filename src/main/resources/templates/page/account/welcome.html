@@ -2,16 +2,15 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 
     <div th:replace="layout/layout::head(_, ~{::link}, ~{})">
-        <link rel="stylesheet" href="/css/page/error/error.css"/>
+        <link rel="stylesheet" href="/css/page/account/welcome.css"/>
     </div>
 
     <body th:replace="layout/layout::body(~{::section})">
         <section>
             <div class="centered-content">
-                <div class="message">
-                    인증에 실패했습니다.<br>
-                    이미 인증된 계정이거나, 잘못된 인증 링크를 입력하셨습니다.
-                </div>
+                <div><span class="message" th:text="${email}"></span> 님, 가입을 환영합니다.</div>
+                <hr/>
+                <button onclick="location.href='/login'">login</button>
             </div>
         </section>
     </body>

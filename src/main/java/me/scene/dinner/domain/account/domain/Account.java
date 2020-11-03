@@ -2,12 +2,12 @@ package me.scene.dinner.domain.account.domain;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
+
+import static javax.persistence.FetchType.EAGER;
 
 @Entity
 @Getter @EqualsAndHashCode(of = "id")
@@ -25,28 +25,24 @@ public class Account {
     @Column
     private String password;
 
-    @ElementCollection(fetch = FetchType.EAGER)
+    @ElementCollection(fetch = EAGER)
     @Enumerated(EnumType.STRING)
     private final Set<AccountRole> roles = new HashSet<>();
 
     protected Account() {
     }
 
-    public Account(SignupForm signupForm) {
-        username = signupForm.getUsername();
-        email = signupForm.getEmail();
-        password = signupForm.getPassword();
-        roles.add(AccountRole.USER);
+    public static Account create(TempAccount tempAccount) {
+        Account account = new Account();
+        account.username = tempAccount.getUsername();
+        account.email = tempAccount.getEmail();
+        account.password = tempAccount.getPassword();
+        account.roles.add(AccountRole.USER);
+        return account;
     }
 
-    public String changePassword(PasswordEncoder passwordEncoder) {
-        String newPassword = UUID.randomUUID().toString();
-        password = passwordEncoder.encode(newPassword);
-        return newPassword;
-    }
-
-    public void changePassword(String rawPassword, PasswordEncoder passwordEncoder) {
-        password = passwordEncoder.encode(rawPassword);
+    public void changePassword(String encodedPassword) {
+        password = encodedPassword;
     }
 
 }

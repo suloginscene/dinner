@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 
-    <div th:replace="layout/layout::head(${profile.username}, ~{::link}, ~{})">
-        <link rel="stylesheet" href="/css/page/account/profile.css"/>
+    <div th:replace="layout/layout::head(${accountDto.username}, ~{::link}, ~{})">
+        <link rel="stylesheet" href="/css/page/account/accountDto.css"/>
     </div>
 
     <body th:replace="layout/layout::body(~{::section})">
         <section th:with="modifyMode=${param.modify!=null}">
             <div id="username">
-                <h1 th:text="${profile.username}"></h1>
+                <h1 th:text="${accountDto.username}"></h1>
                 <span th:if="${isOwner}">
                     <a th:if="${modifyMode}" th:href="@{'/accounts/' + ${#authentication.name}}">보기 모드</a>
                     <a th:unless="${modifyMode}" th:href="@{'/accounts/' + ${#authentication.name}+'?modify'}">수정 모드</a>
@@ -26,7 +26,7 @@
                     <div>이메일<a th:if="${modifyMode}" href="#">변경</a></div>
                     <div>비밀번호
                         <!-- TODO putMapping or AJAX -->
-                        <form th:if="${modifyMode}" th:action="@{'/accounts/'+${profile.username}}" method="post">
+                        <form th:if="${modifyMode}" th:action="@{'/accounts/'+${accountDto.username}}" method="post">
                             <label><input type="password" name="password"></label>
                             <button type="submit">변경</button>
                         </form>

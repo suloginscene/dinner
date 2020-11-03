@@ -10,7 +10,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 
 @EnableWebSecurity
@@ -18,13 +17,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final AccountService accountService;
     private final PersistentTokenRepository tokenRepository;
-    private final AuthenticationSuccessHandler authenticationSuccessHandler;
 
     @Autowired
-    public SecurityConfig(AccountService accountService, PersistentTokenRepository tokenRepository, AuthenticationSuccessHandler authenticationSuccessHandler) {
+    public SecurityConfig(AccountService accountService, PersistentTokenRepository tokenRepository) {
         this.accountService = accountService;
         this.tokenRepository = tokenRepository;
-        this.authenticationSuccessHandler = authenticationSuccessHandler;
     }
 
     @Override
@@ -34,13 +31,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
                 .mvcMatchers(HttpMethod.GET,
                         MainController.URL_HOME, MainController.URL_ABOUT,
-                        "/signup", "/verify", "/login", "/forgot", "/accounts/*",
+                        "/signup", "/verify", "/login", "/forgot", "/sent", "/@*",
                         "/magazines/*", "/topics/*", "/articles/*",
                         TagController.URL, TagController.URL + "/*"
                 ).permitAll()
 
                 .mvcMatchers(HttpMethod.POST,
-                        "/signup", "/forgot", "accounts/*"
+                        "/signup", "/forgot"
                 )
                 .permitAll()
 
@@ -49,8 +46,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 
         http.formLogin()
-                .loginPage("/login")
-                .successHandler(authenticationSuccessHandler);
+                .loginPage("/login");
 
         http.logout()
                 .logoutSuccessUrl(MainController.URL_HOME);

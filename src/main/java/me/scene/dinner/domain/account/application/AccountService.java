@@ -1,9 +1,13 @@
 package me.scene.dinner.domain.account.application;
 
-import me.scene.dinner.domain.account.domain.*;
+import me.scene.dinner.domain.account.domain.Account;
+import me.scene.dinner.domain.account.domain.AccountRepository;
+import me.scene.dinner.domain.account.domain.TempAccount;
+import me.scene.dinner.domain.account.domain.TempAccountRepository;
 import me.scene.dinner.infra.environment.ActiveProfile;
 import me.scene.dinner.infra.environment.URL;
 import me.scene.dinner.infra.exception.UseridNotFoundException;
+import me.scene.dinner.infra.exception.VerificationException;
 import me.scene.dinner.infra.mail.MailMessage;
 import me.scene.dinner.infra.mail.MailSender;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,11 +20,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
 import javax.mail.MessagingException;
+import java.util.UUID;
 
-@Service
+@Service @Transactional(readOnly = true)
 public class AccountService implements UserDetailsService {
 
-    private final SignupFormRepository tempRepository;
+    private final TempAccountRepository tempRepository;
     private final AccountRepository accountRepository;
     private final PasswordEncoder passwordEncoder;
     private final MailSender mailSender;
@@ -28,7 +33,7 @@ public class AccountService implements UserDetailsService {
     private final ActiveProfile activeProfile;
 
     @Autowired
-    public AccountService(SignupFormRepository tempRepository, AccountRepository accountRepository,
+    public AccountService(TempAccountRepository tempRepository, AccountRepository accountRepository,
                           PasswordEncoder passwordEncoder, MailSender mailSender, URL url, ActiveProfile activeProfile) {
         this.tempRepository = tempRepository;
         this.accountRepository = accountRepository;
@@ -39,60 +44,60 @@ public class AccountService implements UserDetailsService {
     }
 
     @PostConstruct
-    public void initAccountRepository() {
+    public void initialAccount() {
         if (activeProfile.get().equals("local")) {
-            createTestAccount();
+            TempAccount tempAccount = TempAccount.create("test", "test@email.com", "testPassword", passwordEncoder);
+            Account account = Account.create(tempAccount);
+            accountRepository.save(account);
         }
     }
 
-    private void createTestAccount() {
-        SignupForm testUser = new SignupForm();
-        testUser.setUsername("test");
-        testUser.setEmail("email" + "@email.com");
-        testUser.setPassword("testPassword");
-        testUser.setAgreement(true);
-        testUser.encodePassword(passwordEncoder);
-        testUser.generateVerificationToken();
-        accountRepository.save(new Account(testUser));
+
+    public Account find(Long id) {
+        return accountRepository.findById(id).orElseThrow(() -> new UseridNotFoundException(id));
     }
 
-    @Transactional
-    public String storeInTempRepository(SignupForm signupForm) throws MessagingException {
-        sendVerificationMail(signupForm);
-        signupForm.encodePassword(passwordEncoder);
-        signupForm = tempRepository.save(signupForm);
-        return signupForm.getEmail();
-    }
 
-    private void sendVerificationMail(SignupForm signupForm) throws MessagingException {
-        signupForm.generateVerificationToken();
-        MailMessage mailMessage = createVerificationMailMessage(signupForm);
+    private void send(String subject, String to, String text) throws MessagingException {
+        MailMessage mailMessage = new MailMessage();
+        mailMessage.setSubject(subject);
+        mailMessage.setTo(to);
+        mailMessage.setText(text);
         mailSender.send(mailMessage);
     }
 
-    private MailMessage createVerificationMailMessage(SignupForm signupForm) {
-        String email = signupForm.getEmail();
-        String verificationToken = signupForm.getVerificationToken();
-        String verificationLink = String.format("%s%s?email=%s&token=%s",
-                url.get(), "/verify", email, verificationToken);
 
-        MailMessage mailMessage = new MailMessage();
-        mailMessage.setSubject("[Dinner] Please verify your email address.");
-        mailMessage.setTo(email);
-        mailMessage.setText(verificationLink);
-        return mailMessage;
+    // signup ----------------------------------------------------------------------------------------------------------
+
+    @Transactional
+    public void saveInTemp(String username, String email, String password) {
+        TempAccount tempAccount = TempAccount.create(username, email, password, passwordEncoder);
+        tempRepository.save(tempAccount);
+    }
+
+    public void sendVerificationMail(String email) throws MessagingException {
+        TempAccount tempAccount = tempRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException(email));
+
+        send("[Dinner] Please verify your email address.", email,
+                "Verification Link: " + (url + "/verify?email=" + email + "&token=" + tempAccount.getVerificationToken()));
+    }
+
+    public void verify(String email, String token) {
+        if (accountRepository.existsByEmail(email)) throw new VerificationException("already verified: " + email);
+        TempAccount temp = tempRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException(email));
+        if (!token.equals(temp.getVerificationToken())) throw new VerificationException("invalid token of " + email);
     }
 
     @Transactional
-    public String completeSignup(String email, String token) {
-        if (accountRepository.findByEmail(email).isPresent()) return email + "<br><small>이미 인증된 이메일입니다.</small>";
-
-        SignupForm signupForm = tempRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException(email));
-        signupForm.validateToken(token);
-        Account account = accountRepository.save(new Account(signupForm));
-        tempRepository.delete(signupForm);
-        return account.getUsername() + " 님, 가입을 환영합니다.";
+    public void transferFromTempToRegular(String email) {
+        TempAccount tempAccount = tempRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException(email));
+        Account account = Account.create(tempAccount);
+        accountRepository.save(account);
+        tempRepository.delete(tempAccount);
     }
+
+
+    // login -----------------------------------------------------------------------------------------------------------
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -103,43 +108,24 @@ public class AccountService implements UserDetailsService {
     }
 
     @Transactional
-    public String sendNewPassword(String email) throws MessagingException {
+    public void sendTempPassword(String email) throws MessagingException {
         Account account = accountRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException(email));
-        String newRawPassword = account.changePassword(passwordEncoder);
-        MailMessage mailMessage = createNewPasswordMailMessage(email, newRawPassword);
-        mailSender.send(mailMessage);
-        return account.getUsername();
+
+        String tempRawPassword = UUID.randomUUID().toString();
+        account.changePassword(passwordEncoder.encode(tempRawPassword));
+
+        String subject = "[Dinner] New Random Password.";
+        String text = "New password: " + tempRawPassword;
+        send(subject, email, text);
     }
 
-    private MailMessage createNewPasswordMailMessage(String email, String newPassword) {
-        MailMessage mailMessage = new MailMessage();
-        mailMessage.setSubject("[Dinner] New Random Password.");
-        mailMessage.setTo(email);
-        mailMessage.setText(newPassword);
-        return mailMessage;
-    }
+
+    // ?? --------------------------------------------------------------------------------------------------------------
 
     @Transactional
-    public Profile extractProfile(String username) {
+    public AccountDto extractProfile(String username) {
         Account account = accountRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException(username));
-        return new Profile(account);
-    }
-
-    // TODO temp version
-    @Transactional
-    public void changePassword(String username, String password) {
-        Account account = accountRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException(username));
-        account.changePassword(password, passwordEncoder);
-    }
-
-    public String findUsernameById(Long writerId) {
-        Account account = accountRepository.findById(writerId).orElse(null);
-        if (account == null) return "anonymousUser";
-        else return account.getUsername();
-    }
-
-    public Account find(Long id) {
-        return accountRepository.findById(id).orElseThrow(() -> new UseridNotFoundException(id));
+        return new AccountDto(account);
     }
 
 }

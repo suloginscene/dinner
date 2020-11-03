@@ -8,7 +8,8 @@ public class URL {
         this.url = url;
     }
 
-    public String get() {
+    @Override
+    public String toString() {
         return url;
     }
 
