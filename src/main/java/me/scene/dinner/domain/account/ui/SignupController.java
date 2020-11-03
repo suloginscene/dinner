@@ -44,7 +44,7 @@ public class SignupController {
         if (errors.hasErrors()) return "page/account/signup";
 
         String email = form.getEmail();
-        accountService.saveInTemp(form.getUsername(), email, form.getPassword());
+        accountService.saveTemp(form.getUsername(), email, form.getPassword());
         accountService.sendVerificationMail(email);
         return "redirect:" + ("/sent?email=" + email);
     }

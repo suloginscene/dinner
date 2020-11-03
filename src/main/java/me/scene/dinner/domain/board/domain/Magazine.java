@@ -2,7 +2,6 @@ package me.scene.dinner.domain.board.domain;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import me.scene.dinner.domain.account.domain.Account;
 
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
@@ -36,9 +35,9 @@ public class Magazine {
     protected Magazine() {
     }
 
-    public static Magazine create(Account current, String title, String shortExplanation, String longExplanation, String magazinePolicy) {
+    public static Magazine create(Long managerId, String title, String shortExplanation, String longExplanation, String magazinePolicy) {
         Magazine magazine = new Magazine();
-        magazine.managerId = current.getId();
+        magazine.managerId = managerId;
         magazine.title = title;
         magazine.shortExplanation = shortExplanation;
         magazine.longExplanation = longExplanation;

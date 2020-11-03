@@ -2,7 +2,6 @@ package me.scene.dinner.domain.account.application;
 
 import lombok.Getter;
 import me.scene.dinner.domain.account.domain.Account;
-import me.scene.dinner.domain.account.domain.AccountRole;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 
@@ -16,8 +15,7 @@ public class UserAccount extends User {
     public UserAccount(Account account) {
         super(account.getUsername(), account.getPassword(),
                 account.getRoles().stream()
-                        .map(AccountRole::toString)
-                        .map(SimpleGrantedAuthority::new)
+                        .map(r -> new SimpleGrantedAuthority(r.toString()))
                         .collect(Collectors.toSet()));
         this.account = account;
     }

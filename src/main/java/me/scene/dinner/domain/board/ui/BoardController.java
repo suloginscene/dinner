@@ -1,10 +1,7 @@
 package me.scene.dinner.domain.board.ui;
 
-import me.scene.dinner.domain.account.application.AccountService;
 import me.scene.dinner.domain.account.domain.Account;
 import me.scene.dinner.domain.board.application.ArticleService;
-import me.scene.dinner.domain.board.application.MagazineService;
-import me.scene.dinner.domain.board.domain.Magazine;
 import me.scene.dinner.infra.security.CurrentUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -17,22 +14,16 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.validation.Valid;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Controller
 public class BoardController {
 
-    private final AccountService accountService;
-    private final MagazineService magazineService;
     private final ArticleService articleService;
 
     private final ArticleFormValidator articleFormValidator;
 
     @Autowired
-    public BoardController(AccountService accountService, MagazineService magazineService, ArticleService articleService, ArticleFormValidator articleFormValidator) {
-        this.accountService = accountService;
-        this.magazineService = magazineService;
+    public BoardController(ArticleService articleService, ArticleFormValidator articleFormValidator) {
         this.articleService = articleService;
         this.articleFormValidator = articleFormValidator;
     }
@@ -43,48 +34,6 @@ public class BoardController {
         webDataBinder.addValidators(articleFormValidator);
     }
 
-
-    @GetMapping("/magazine-form")
-    public String shipMagazineForm(Model model) {
-        MagazineForm magazineForm = new MagazineForm();
-        model.addAttribute("magazineForm", magazineForm);
-        return "page/board/magazine/form";
-    }
-
-    @PostMapping("/magazines")
-    public String createMagazine(@CurrentUser Account current, @Valid MagazineForm form, Errors errors) {
-        if (errors.hasErrors()) {
-            return "page/board/magazine/form";
-        }
-
-        Magazine magazine = Magazine.create(current,
-                form.getTitle(), form.getShortExplanation(), form.getLongExplanation(), form.getMagazinePolicy());
-        Long id = magazineService.save(magazine);
-        String url = "/magazines/" + id;
-        return "redirect:" + url;
-    }
-
-
-    @GetMapping("/magazines/{magazineId}")
-    public String showMagazine(@PathVariable Long magazineId, Model model) {
-        Magazine magazine = magazineService.find(magazineId);
-        MagazineDto magazineDto = extractDto(magazine);
-        model.addAttribute("magazineDto", magazineDto);
-        return "page/board/magazine/view";
-    }
-
-    private MagazineDto extractDto(Magazine magazine) {
-        String manager = accountService.find(magazine.getManagerId()).getUsername();
-        List<String> writers = magazine.getWriterIds().stream()
-                .map(accountService::find)
-                .map(Account::getUsername)
-                .collect(Collectors.toList());
-        String title = magazine.getTitle();
-        String shortExplanation = magazine.getShortExplanation();
-        String longExplanation = magazine.getLongExplanation();
-        String magazinePolicy = magazine.getMagazinePolicy().name();
-        return MagazineDto.create(manager, writers, title, shortExplanation, longExplanation, magazinePolicy);
-    }
 
     @GetMapping("/magazines/{magazineId}/topic-form")
     public String shipTopicForm(@PathVariable String magazine) {

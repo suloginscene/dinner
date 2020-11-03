@@ -1,17 +1,17 @@
 package me.scene.dinner.domain.board.ui;
 
-import me.scene.dinner.domain.account.WithAccount;
 import me.scene.dinner.domain.account.domain.Account;
 import me.scene.dinner.domain.account.domain.AccountRepository;
-import me.scene.dinner.domain.account.domain.TempAccount;
+import me.scene.dinner.domain.account.utils.AccountFactory;
+import me.scene.dinner.domain.account.utils.WithAccount;
 import me.scene.dinner.domain.board.application.MagazineService;
 import me.scene.dinner.domain.board.domain.Magazine;
 import me.scene.dinner.domain.board.domain.MagazinePolicy;
+import me.scene.dinner.domain.board.domain.MagazineRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,12 +25,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Transactional
 @SpringBootTest
 @AutoConfigureMockMvc
-class BoardControllerTest {
+class MagazineControllerTest {
 
     @Autowired MockMvc mockMvc;
+    @Autowired AccountFactory accountFactory;
     @Autowired AccountRepository accountRepository;
-    @Autowired PasswordEncoder passwordEncoder;
     @Autowired MagazineService magazineService;
+    @Autowired MagazineRepository magazineRepository;
 
     @Test
     @WithAccount(username = "scene")
@@ -68,7 +69,7 @@ class BoardControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrlPattern("/magazines/*"))
         ;
-        Magazine magazine = magazineService.find("Test Magazine");
+        Magazine magazine = magazineRepository.findByTitle("Test Magazine").orElseThrow();
         assertThat(magazine.getShortExplanation()).isEqualTo("This is short explanation.");
         assertThat(magazine.getLongExplanation()).isEqualTo("This is long explanation of test magazine.");
         assertThat(magazine.getMagazinePolicy()).isEqualTo(MagazinePolicy.OPEN);
@@ -102,12 +103,8 @@ class BoardControllerTest {
 
     @Test
     void showMagazine_hasMagazineDto() throws Exception {
-        TempAccount tempAccount = TempAccount.create("scene", "scene@email.com", "password", passwordEncoder);
-        Account account = Account.create(tempAccount);
-        accountRepository.save(account);
-
-        Magazine magazine = Magazine.create(account, "title", "short", "long", "OPEN");
-        Long id = magazineService.save(magazine);
+        Account account = accountFactory.create("scene", "scene@email.com", "password");
+        Long id = magazineService.save(account.getId(), "title", "short", "long", "OPEN");
 
         mockMvc.perform(
                 get("/magazines/" + id)

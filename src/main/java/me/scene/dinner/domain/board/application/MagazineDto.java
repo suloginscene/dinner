@@ -1,4 +1,4 @@
-package me.scene.dinner.domain.board.ui;
+package me.scene.dinner.domain.board.application;
 
 import lombok.Getter;
 import lombok.Setter;

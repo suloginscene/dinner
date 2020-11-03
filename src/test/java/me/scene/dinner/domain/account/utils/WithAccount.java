@@ -1,4 +1,4 @@
-package me.scene.dinner.domain.account;
+package me.scene.dinner.domain.account.utils;
 
 import org.springframework.security.test.context.support.WithSecurityContext;
 

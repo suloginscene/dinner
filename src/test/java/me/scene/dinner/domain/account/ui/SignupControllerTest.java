@@ -1,5 +1,6 @@
 package me.scene.dinner.domain.account.ui;
 
+import me.scene.dinner.domain.account.utils.AccountFactory;
 import me.scene.dinner.domain.account.domain.Account;
 import me.scene.dinner.domain.account.domain.AccountRepository;
 import me.scene.dinner.domain.account.domain.TempAccount;
@@ -11,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,14 +31,8 @@ class SignupControllerTest {
     @Autowired MockMvc mockMvc;
     @Autowired TempAccountRepository tempAccountRepository;
     @Autowired AccountRepository accountRepository;
-    @Autowired PasswordEncoder passwordEncoder;
+    @Autowired AccountFactory accountFactory;
     @MockBean MailSender mailSender;
-
-    private TempAccount savedTempAccount() {
-        TempAccount tempAccount = TempAccount.create("scene", "scene@email.com", "password", passwordEncoder);
-        return tempAccountRepository.save(tempAccount);
-    }
-
 
     @Test
     void getForm_hasForm() throws Exception {
@@ -109,9 +103,7 @@ class SignupControllerTest {
 
     @Test
     void postForm_duplicated_returnErrors() throws Exception {
-        TempAccount tempAccount = savedTempAccount();
-        Account account = Account.create(tempAccount);
-        accountRepository.save(account);
+        accountFactory.create("scene", "scene@email.com", "password");
 
         mockMvc.perform(
                 post("/signup")
@@ -130,7 +122,7 @@ class SignupControllerTest {
 
     @Test
     void verify_store() throws Exception {
-        TempAccount tempAccount = savedTempAccount();
+        TempAccount tempAccount = accountFactory.createTemp("scene", "scene@email.com", "password");
 
         String username = tempAccount.getUsername();
         String email = tempAccount.getEmail();
@@ -149,7 +141,7 @@ class SignupControllerTest {
 
     @Test
     void verify_invalidParams_handleException() throws Exception {
-        TempAccount tempAccount = savedTempAccount();
+        TempAccount tempAccount = accountFactory.createTemp("scene", "scene@email.com", "password");
 
         String username = tempAccount.getUsername();
         String email = tempAccount.getEmail();

@@ -1,7 +1,7 @@
 package me.scene.dinner.domain.board.article;
 
 import me.scene.dinner.domain.account.domain.AccountRepository;
-import me.scene.dinner.domain.account.WithAccount;
+import me.scene.dinner.domain.account.utils.WithAccount;
 import me.scene.dinner.domain.board.domain.Article;
 import me.scene.dinner.domain.board.domain.ArticleRepository;
 import org.junit.jupiter.api.AfterEach;

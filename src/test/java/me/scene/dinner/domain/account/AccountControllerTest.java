@@ -4,6 +4,7 @@ import me.scene.dinner.domain.account.domain.Account;
 import me.scene.dinner.domain.account.domain.AccountRepository;
 import me.scene.dinner.domain.account.domain.TempAccount;
 import me.scene.dinner.domain.account.domain.TempAccountRepository;
+import me.scene.dinner.domain.account.utils.WithAccount;
 import me.scene.dinner.infra.mail.MailSender;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

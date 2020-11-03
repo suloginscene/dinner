@@ -1,9 +1,8 @@
 package me.scene.dinner.domain.account.ui;
 
 import me.scene.dinner.domain.MainController;
+import me.scene.dinner.domain.account.utils.AccountFactory;
 import me.scene.dinner.domain.account.domain.Account;
-import me.scene.dinner.domain.account.domain.AccountRepository;
-import me.scene.dinner.domain.account.domain.TempAccount;
 import me.scene.dinner.infra.mail.MailMessage;
 import me.scene.dinner.infra.mail.MailSender;
 import org.junit.jupiter.api.Test;
@@ -11,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,16 +29,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class LoginControllerTest {
 
     @Autowired MockMvc mockMvc;
-    @Autowired AccountRepository accountRepository;
-    @Autowired PasswordEncoder passwordEncoder;
+    @Autowired AccountFactory accountFactory;
     @MockBean MailSender mailSender;
-
-    private void saveAccount() {
-        TempAccount tempAccount = TempAccount.create("scene", "scene@email.com", "password", passwordEncoder);
-        Account account = Account.create(tempAccount);
-        accountRepository.save(account);
-    }
-
 
     @Test
     void page_isCustomized() throws Exception {
@@ -54,7 +44,7 @@ class LoginControllerTest {
 
     @Test
     void login_authenticated() throws Exception {
-        saveAccount();
+        accountFactory.create("scene", "scene@email.com", "password");
 
         mockMvc.perform(
                 post("/login")
@@ -70,7 +60,7 @@ class LoginControllerTest {
 
     @Test
     void login_invalidParams_unauthenticated() throws Exception {
-        saveAccount();
+        accountFactory.create("scene", "scene@email.com", "password");
 
         mockMvc.perform(
                 post("/login")
@@ -97,9 +87,8 @@ class LoginControllerTest {
 
     @Test
     void forgot_changeEncodeSend() throws Exception {
-        saveAccount();
+        Account scene = accountFactory.create("scene", "scene@email.com", "password");
 
-        Account scene = accountRepository.findByUsername("scene").orElseThrow();
         String encodedOldPassword = scene.getPassword();
         mockMvc.perform(
                 post("/forgot")

@@ -52,6 +52,9 @@ public class AccountService implements UserDetailsService {
         }
     }
 
+    public TempAccount findTemp(Long id) {
+        return tempRepository.findById(id).orElseThrow(() -> new UseridNotFoundException(id));
+    }
 
     public Account find(Long id) {
         return accountRepository.findById(id).orElseThrow(() -> new UseridNotFoundException(id));
@@ -70,9 +73,10 @@ public class AccountService implements UserDetailsService {
     // signup ----------------------------------------------------------------------------------------------------------
 
     @Transactional
-    public void saveInTemp(String username, String email, String password) {
+    public Long saveTemp(String username, String email, String password) {
         TempAccount tempAccount = TempAccount.create(username, email, password, passwordEncoder);
-        tempRepository.save(tempAccount);
+        tempAccount = tempRepository.save(tempAccount);
+        return tempAccount.getId();
     }
 
     public void sendVerificationMail(String email) throws MessagingException {
@@ -89,11 +93,12 @@ public class AccountService implements UserDetailsService {
     }
 
     @Transactional
-    public void transferFromTempToRegular(String email) {
+    public Long transferFromTempToRegular(String email) {
         TempAccount tempAccount = tempRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException(email));
         Account account = Account.create(tempAccount);
-        accountRepository.save(account);
+        account = accountRepository.save(account);
         tempRepository.delete(tempAccount);
+        return account.getId();
     }
 
 
@@ -114,9 +119,7 @@ public class AccountService implements UserDetailsService {
         String tempRawPassword = UUID.randomUUID().toString();
         account.changePassword(passwordEncoder.encode(tempRawPassword));
 
-        String subject = "[Dinner] New Random Password.";
-        String text = "New password: " + tempRawPassword;
-        send(subject, email, text);
+        send("[Dinner] New Random Password.", email, "New password: " + tempRawPassword);
     }
 
 
