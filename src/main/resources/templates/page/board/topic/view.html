@@ -1,17 +1,22 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 
-    <div th:replace="layout/layout::head(${title},~{::link}, ~{})">
+    <div th:replace="layout/layout::head(${topicDto.title},~{::link}, ~{::script})">
         <link rel="stylesheet" href="/css/page/board/topic/view.css"/>
+        <script src="/js/page/acc_board_magazine.js"></script>
     </div>
 
     <body th:replace="layout/layout::body(~{::section})">
-        <section>
+        <section th:object="${topicDto}">
 
             <div class="info">
-                <h2 id="magazine"><a href="/board/magazines">magazine</a></h2>
-                <h1 id="title" th:text="${title}"></h1>
-                <div id="introduction">어떤 글을 쓰는지에 대한 한 줄 소개를 적는 곳입니다.</div>
+                <h2 id="magazine"><a th:href="'/magazines/'+*{magazineId}" th:text="*{magazine}"></a></h2>
+                <h1 id="title" th:text="*{title}"></h1>
+                <div>Opened by <span th:text="*{manager}"></span></div>
+                <a href="#" id="introduction">
+                    <span th:text="*{shortExplanation}"></span> <i class="fa fa-chevron-down"></i>
+                </a>
+                <div class="panel" th:text="*{longExplanation}"></div>
             </div>
 
             <div id="button-container">

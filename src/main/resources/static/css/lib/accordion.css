@@ -1,0 +1,20 @@
+
+section .info #introduction {
+    color: black;
+    font-size: 20px;
+}
+
+section .info #introduction i {
+    font-size: 16px;
+    color: lightslategray;
+    transition: 0.3s; /* Vertical Flip */
+    margin-left: 10px;
+}
+
+section .info .panel {
+    padding: 0 8vw;
+    margin-top: 16px;
+    overflow: hidden;
+    max-height: 0; /* Animate Option */
+    transition: max-height 0.2s ease-out; /* Animate Option */
+}

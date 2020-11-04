@@ -1,4 +1,5 @@
 @import "/css/page/board/base.css";
+@import "/css/lib/accordion.css";
 
 section .info #magazine {
     font-size: 30px;
@@ -8,11 +9,6 @@ section .info #magazine {
 
 section .info #title {
     margin: 15px 0;
-}
-
-section .info #introduction {
-    font-size: 20px;
-    padding: 15px;
 }
 
 section #button-container {

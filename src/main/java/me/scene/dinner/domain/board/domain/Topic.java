@@ -18,10 +18,25 @@ public class Topic {
     @ManyToOne
     private Magazine magazine;
 
+    private Long managerId;
+
     private String title;
 
     private String shortExplanation;
 
     private String longExplanation;
+
+    protected Topic() {
+    }
+
+    public static Topic create(Magazine magazine, Long managerId, String title, String shortExplanation, String longExplanation) {
+        Topic topic = new Topic();
+        topic.magazine = magazine;
+        topic.managerId = managerId;
+        topic.title = title;
+        topic.shortExplanation = shortExplanation;
+        topic.longExplanation = longExplanation;
+        return topic;
+    }
 
 }

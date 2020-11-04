@@ -30,6 +30,10 @@ public class MagazineService {
         return magazine.getId();
     }
 
+    public Magazine find(Long id) {
+        return magazineRepository.findById(id).orElseThrow(() -> new BoardNotFoundException("magazine", "id", id.toString()));
+    }
+
     public MagazineDto extractDto(Long magazineId) {
         Magazine magazine = magazineRepository.findById(magazineId).orElseThrow(() -> new BoardNotFoundException("magazine", "id", magazineId.toString()));
 
@@ -37,7 +41,7 @@ public class MagazineService {
         List<String> writers = magazine.getWriterIds().stream()
                 .map((id) -> accountService.find(id).getUsername())
                 .collect(Collectors.toList());
-        return MagazineDto.create(manager, writers,
+        return MagazineDto.create(magazineId, manager, writers,
                 magazine.getTitle(), magazine.getShortExplanation(), magazine.getLongExplanation(), magazine.getMagazinePolicy().name());
     }
 
