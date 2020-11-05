@@ -1,0 +1,9 @@
+{
+  "properties": [
+    {
+      "name": "dinner.url",
+      "type": "java.lang.String",
+      "description": "Description for dinner.url."
+    }
+  ]
+}
