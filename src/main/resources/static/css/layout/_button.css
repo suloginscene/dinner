@@ -1,16 +1,19 @@
 button {
-    width: 80px;
-    height: 40px;
-    font-size: 18px;
     padding: 6px 12px;
     border: 0;
     border-radius: 100vw;
     transition: 0.4s;
+}
+
+header button {
+    width: 80px;
+    height: 40px;
+    font-size: 18px;
     background-color: lightslategray;
     color: ghostwhite;
 }
 
-button:hover {
+header button:hover {
     background-color: lightgrey;
     color: dimgray;
 }
@@ -31,13 +34,8 @@ section button:hover {
 
 @media (max-width: 768px) {
 
-    button:hover {
+    header button:hover {
         background-color: lightslategray;
-        color: ghostwhite;
-    }
-
-    section button:hover {
-        background-color: palevioletred;
         color: ghostwhite;
     }
 

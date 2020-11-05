@@ -1,4 +1,4 @@
-const navbar = function () {
+const scrollSensibleNavbar = function () {
 
     let scrolled = false;
     let hidden = false;
@@ -17,7 +17,7 @@ const navbar = function () {
         const top = window.scrollY;
         const scrollDown = (last < top);
         last = top;
-        if (hidden === scrollDown) return;
+        if (scrollDown === hidden) return;
 
         $dropdown.removeClass('opened');
         $navbar.toggleClass('scroll-down');
@@ -30,4 +30,4 @@ const navbar = function () {
 
 };
 
-window.addEventListener('load', navbar);
+window.addEventListener('load', scrollSensibleNavbar);

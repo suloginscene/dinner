@@ -5,7 +5,7 @@ import me.scene.dinner.domain.account.domain.AccountRepository;
 import me.scene.dinner.domain.account.domain.TempAccount;
 import me.scene.dinner.domain.account.domain.TempAccountRepository;
 import me.scene.dinner.domain.account.utils.WithAccount;
-import me.scene.dinner.infra.mail.MailSender;
+import me.scene.dinner.domain.account.application.MailSender;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;

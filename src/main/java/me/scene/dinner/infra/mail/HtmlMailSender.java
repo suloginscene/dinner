@@ -1,5 +1,6 @@
 package me.scene.dinner.infra.mail;
 
+import me.scene.dinner.domain.account.application.MailSender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -22,7 +23,13 @@ public class HtmlMailSender implements MailSender {
     }
 
     @Override
-    public void send(MailMessage mailMessage) throws MessagingException {
+    public void send(String subject, String to, String text) throws MessagingException {
+
+        MailMessage mailMessage = new MailMessage();
+        mailMessage.setSubject(subject);
+        mailMessage.setTo(to);
+        mailMessage.setText(text);
+
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
 
         MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, false, StandardCharsets.UTF_8.name());
@@ -31,6 +38,7 @@ public class HtmlMailSender implements MailSender {
         mimeMessageHelper.setText(mailMessage.getText());
 
         javaMailSender.send(mimeMessage);
+
     }
 
 }

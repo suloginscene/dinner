@@ -3,8 +3,7 @@ package me.scene.dinner.domain.account.ui;
 import me.scene.dinner.domain.MainController;
 import me.scene.dinner.domain.account.utils.AccountFactory;
 import me.scene.dinner.domain.account.domain.Account;
-import me.scene.dinner.infra.mail.MailMessage;
-import me.scene.dinner.infra.mail.MailSender;
+import me.scene.dinner.domain.account.application.MailSender;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -15,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.then;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
@@ -101,7 +101,7 @@ class LoginControllerTest {
         String encodedNewPassword = scene.getPassword();
         assertThat(encodedNewPassword).isNotEqualTo(encodedOldPassword);
         assertThat(encodedNewPassword).startsWith("{bcrypt}");
-        then(mailSender).should().send(any(MailMessage.class));
+        then(mailSender).should().send(anyString(), anyString(), anyString());
     }
 
     @Test

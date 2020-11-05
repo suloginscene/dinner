@@ -1,6 +1,6 @@
-const accounts = function () {
+const dropdown = function (target) {
 
-    const $dropdown = $('#account-dropdown');
+    const $dropdown = $(target);
 
     const open = function () {
         $dropdown.addClass('opened');
@@ -16,5 +16,3 @@ const accounts = function () {
     $dropdown.bind('mouseleave', close);
 
 };
-
-window.addEventListener('load', accounts);

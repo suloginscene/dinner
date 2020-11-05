@@ -1,17 +1,28 @@
-const accordion = function (target) {
+const accordion = function (accordion) {
 
-    const el = document.getElementById(target);
+    const $accordion = $(accordion);
+    const $chevron = $accordion.children('i');
+    const $panel = $accordion.next();
 
-    el.addEventListener("click", function () {
-        const chevron = el.lastElementChild;
+    const open = function () {
+        $panel.css('max-height', $panel.prop('scrollHeight'));
+    }
 
-        this.classList.toggle("active");
-        chevron.classList.toggle("fa-flip-vertical");
+    const close = function () {
+        $panel.css('max-height', 0);
+    }
 
-        let magazine_panel = this.nextElementSibling;
+    const toggle = function () {
 
-        if (magazine_panel.style.maxHeight) magazine_panel.style.maxHeight = null;
-        else magazine_panel.style.maxHeight = magazine_panel.scrollHeight + "px";
-    });
+        $accordion.toggleClass("active");
+        $chevron.toggleClass("fa-flip-vertical");
+
+        const closed = $panel.css('max-height') === '0px';
+        closed ? open() : close();
+
+    };
+
+
+    $accordion.bind("click", toggle);
 
 };

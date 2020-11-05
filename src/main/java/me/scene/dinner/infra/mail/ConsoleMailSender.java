@@ -1,6 +1,7 @@
 package me.scene.dinner.infra.mail;
 
 import lombok.extern.slf4j.Slf4j;
+import me.scene.dinner.domain.account.application.MailSender;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
@@ -10,8 +11,8 @@ import org.springframework.stereotype.Component;
 public class ConsoleMailSender implements MailSender {
 
     @Override
-    public void send(MailMessage mailMessage) {
-        log.info(mailMessage.toString());
+    public void send(String subject, String to, String text) {
+        log.info("[" + subject + "] " + to + ", " + text);
     }
 
 }

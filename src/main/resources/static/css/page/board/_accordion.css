@@ -1,10 +1,9 @@
-
-section .info #introduction {
+section .info #board-accordion {
     color: black;
     font-size: 20px;
 }
 
-section .info #introduction i {
+section .info #board-accordion i {
     font-size: 16px;
     color: lightslategray;
     transition: 0.3s; /* Vertical Flip */

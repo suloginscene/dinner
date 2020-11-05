@@ -8,8 +8,6 @@ import me.scene.dinner.infra.environment.ActiveProfile;
 import me.scene.dinner.infra.environment.URL;
 import me.scene.dinner.infra.exception.UseridNotFoundException;
 import me.scene.dinner.infra.exception.VerificationException;
-import me.scene.dinner.infra.mail.MailMessage;
-import me.scene.dinner.infra.mail.MailSender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -61,15 +59,6 @@ public class AccountService implements UserDetailsService {
     }
 
 
-    private void send(String subject, String to, String text) throws MessagingException {
-        MailMessage mailMessage = new MailMessage();
-        mailMessage.setSubject(subject);
-        mailMessage.setTo(to);
-        mailMessage.setText(text);
-        mailSender.send(mailMessage);
-    }
-
-
     // signup ----------------------------------------------------------------------------------------------------------
 
     @Transactional
@@ -82,7 +71,7 @@ public class AccountService implements UserDetailsService {
     public void sendVerificationMail(String email) throws MessagingException {
         TempAccount tempAccount = tempRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException(email));
 
-        send("[Dinner] Please verify your email address.", email,
+        mailSender.send("[Dinner] Please verify your email address.", email,
                 "Verification Link: " + (url + "/verify?email=" + email + "&token=" + tempAccount.getVerificationToken()));
     }
 
@@ -119,7 +108,7 @@ public class AccountService implements UserDetailsService {
         String tempRawPassword = UUID.randomUUID().toString();
         account.changePassword(passwordEncoder.encode(tempRawPassword));
 
-        send("[Dinner] New Random Password.", email, "New password: " + tempRawPassword);
+        mailSender.send("[Dinner] New Random Password.", email, "New password: " + tempRawPassword);
     }
 
 

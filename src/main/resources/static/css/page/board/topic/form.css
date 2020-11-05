@@ -1,5 +1,5 @@
-@import "/css/page/centered.css";
-@import "/css/page/board/base.css";
+@import "/css/page/board/_base.css";
+@import "/css/lib/_centered.css";
 
 section .centered-content .message {
     font-size: 32px;

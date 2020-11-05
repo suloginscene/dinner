@@ -3,7 +3,7 @@
 
     <div th:replace="layout/layout::head(${magazineDto.title},~{::link}, ~{::script})">
         <link rel="stylesheet" href="/css/page/board/magazine/view.css"/>
-        <script src="/js/page/acc_board_magazine.js"></script>
+        <script src="/js/page/acc_board.js"></script>
     </div>
 
     <body th:replace="layout/layout::body(~{::section})">
@@ -18,7 +18,7 @@
                         <a class="writer" th:href="@{'/accounts/'+${writer}}" th:text="${writer}"></a>
                     </div>
                 </div>
-                <a href="#" id="introduction">
+                <a href="#" id="board-accordion">
                     <span th:text="*{shortExplanation}"></span> <i class="fa fa-chevron-down"></i>
                 </a>
                 <div class="panel" th:text="*{longExplanation}"></div>

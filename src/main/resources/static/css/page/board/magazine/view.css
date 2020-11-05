@@ -1,5 +1,5 @@
-@import "/css/page/board/base.css";
-@import "/css/lib/accordion.css";
+@import "/css/page/board/_base.css";
+@import "/css/page/board/_accordion.css";
 
 section .info #title {
     padding: 10px 0;
