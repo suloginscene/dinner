@@ -29,46 +29,16 @@
                 </form>
             </div>
 
-            <ul>
+            <ul th:each="articleDto:*{articleDtoList}">
                 <li>
                     <div class="article-info">
-                        <a href="/board/magazine/topic/articles">예시 아티클</a>
+                        <a th:href="@{'/articles/'+${articleDto.id}}" th:text="${articleDto.title}"></a>
                         <div class="article-sub-info">
-                            <a class="article-writer" th:href="@{'/accounts/저자'}">저자</a>
-                            <span class="article-date">20100101</span>
+                            <a class="article-writer" th:href="@{'/@'+${articleDto.writer}}" th:text="${articleDto.writer}"></a>
+                            <span class="article-date" th:text="${articleDto.createAt}"></span>
                         </div>
                     </div>
-                    <p>헌법재판소는 법관의 자격을 가진 9인의 재판관으로 구성하며, 재판관은 대통령이 임명한다. 국교는 인정되지 아니하며, 종교와 정치는 분리된다. 국회의원의 선거구와 비례대표제 기타 선거에 관한 사항은 법률로 정한다. 국군은 국가의 안전보장과 국토방위의 신성한 의무를 수행함을 사명으로 하며, 그 정치적 중립성은 준수된다. 모든 국민은 신속한 재판을 받을 권리를 가진다. 형사피고인은 상당한 이유가 없는 한 지체없이 공개재판을 받을 권리를 가진다. 정부는 회계연도마다 예산안을 편성하여 회계연도 개시 90일전까지 국회에 제출하고, 국회는 회계연도 개시 30일전까지 이를 의결하여야 한다.</p>
-                </li>
-                <li>
-                    <div class="article-info">
-                        <a href="/board/magazine/topic/articles">엄청나게 긴 아티클의 제목과 엄청나게 긴 저자의 이름이 만나면 어떻게 되는지 봅시다.</a>
-                        <div class="article-sub-info">
-                            <a href="#">이렇게 되는구나를 느끼는 이상한 사람</a>
-                            <span>20100101</span>
-                        </div>
-                    </div>
-                    <p>대통령은 법률이 정하는 바에 의하여 사면·감형 또는 복권을 명할 수 있다. 국무회의는 정부의 권한에 속하는 중요한 정책을 심의한다. 대통령은 법률이 정하는 바에 의하여 훈장 기타의 영전을 수여한다. 선거와 국민투표의 공정한 관리 및 정당에 관한 사무를 처리하기 위하여 선거관리위원회를 둔다. 군사재판을 관할하기 위하여 특별법원으로서 군사법원을 둘 수 있다. 감사원의 조직·직무범위·감사위원의 자격·감사대상공무원의 범위 기타 필요한 사항은 법률로 정한다. 대법원장의 임기는 6년으로 하며, 중임할 수 없다.</p>
-                </li>
-                <li>
-                    <div class="article-info">
-                        <a href="/board/magazine/topic/articles">예시 아티클</a>
-                        <div class="article-sub-info">
-                            <a href="#">저자</a>
-                            <span>20100101</span>
-                        </div>
-                    </div>
-                    <p>대통령은 국가의 원수이며, 외국에 대하여 국가를 대표한다. 제1항의 탄핵소추는 국회재적의원 3분의 1 이상의 발의가 있어야 하며, 그 의결은 국회재적의원 과반수의 찬성이 있어야 한다. 다만, 대통령에 대한 탄핵소추는 국회재적의원 과반수의 발의와 국회재적의원 3분의 2 이상의 찬성이 있어야 한다.</p>
-                </li>
-                <li>
-                    <div class="article-info">
-                        <a href="/board/magazine/topic/articles">예시 아티클</a>
-                        <div class="article-sub-info">
-                            <a href="#">저자</a>
-                            <span>20100101</span>
-                        </div>
-                    </div>
-                    <p>대한민국의 영토는 한반도와 그 부속도서로 한다. 선거에 관한 경비는 법률이 정하는 경우를 제외하고는 정당 또는 후보자에게 부담시킬 수 없다. 국회는 의장 1인과 부의장 2인을 선출한다. 광물 기타 중요한 지하자원·수산자원·수력과 경제상 이용할 수 있는 자연력은 법률이 정하는 바에 의하여 일정한 기간 그 채취·개발 또는 이용을 특허할 수 있다. 공무원의 직무상 불법행위로 손해를 받은 국민은 법률이 정하는 바에 의하여 국가 또는 공공단체에 정당한 배상을 청구할 수 있다. 이 경우 공무원 자신의 책임은 면제되지 아니한다. 국무회의는 대통령·국무총리와 15인 이상 30인 이하의 국무위원으로 구성한다.</p>
+                    <p th:utext="${articleDto.content}"></p>
                 </li>
             </ul>
 

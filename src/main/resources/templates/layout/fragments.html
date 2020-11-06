@@ -35,9 +35,11 @@
             <nav>
                 <a href="#" id="nav-accordion">&nbsp;&nbsp;&nbsp;Magazines<i class="fa fa-chevron-down"></i></a>
                 <ul class="panel">
-                    <li><a href="/board/exampleMagazine">Palm Tree Canteen</a></li>
-                    <li><a href="#">Scenes from Spring</a></li>
-                    <li><a href="#">etc</a></li>
+                    <!-- TODO toAJAX / semi batch -->
+                    <th:block th:each="magazine:${magazineDtoList}">
+                        <li><a th:href="@{'/magazines/'+${magazine.id}}" th:text="${magazine.title}"></a></li>
+                    </th:block>
+                    <li><a href="/magazines">etc</a></li>
                     <li><a href="/magazine-form"><i class="fa fa-plus"></i></a></li>
                 </ul>
             </nav>

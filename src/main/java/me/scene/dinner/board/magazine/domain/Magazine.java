@@ -2,11 +2,9 @@ package me.scene.dinner.board.magazine.domain;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import me.scene.dinner.board.topic.domain.Topic;
 
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,6 +30,10 @@ public class Magazine {
 
     private MagazinePolicy magazinePolicy;
 
+    @OneToMany(mappedBy = "magazine")
+    private final List<Topic> topics = new ArrayList<>();
+
+
     protected Magazine() {
     }
 
@@ -43,6 +45,10 @@ public class Magazine {
         magazine.longExplanation = longExplanation;
         magazine.magazinePolicy = MagazinePolicy.valueOf(magazinePolicy);
         return magazine;
+    }
+
+    public void add(Topic topic) {
+        topics.add(topic);
     }
 
 }

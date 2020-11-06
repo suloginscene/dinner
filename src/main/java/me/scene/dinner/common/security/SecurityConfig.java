@@ -31,7 +31,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .mvcMatchers(HttpMethod.GET,
                         "/", "/about",
                         "/signup", "/verify", "/login", "/forgot", "/sent", "/@*",
-                        "/magazines/*", "/topics/*", "/articles/*",
+                        "/magazines", "/magazines/*", "/topics/*", "/articles/*",
                         TagController.URL, TagController.URL + "/*"
                 ).permitAll()
 

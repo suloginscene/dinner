@@ -9,6 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service @Transactional(readOnly = true)
 public class TopicService {
 
@@ -37,11 +40,17 @@ public class TopicService {
 
     public TopicDto extractDto(Long topicId) {
         Topic topic = topicRepository.findById(topicId).orElseThrow(() -> new TopicNotFoundException(topicId));
+        return extractDto(topic);
+    }
 
+    public TopicDto extractDto(Topic topic) {
         Magazine magazine = topic.getMagazine();
         String manager = accountService.find(topic.getManagerId()).getUsername();
-        return TopicDto.create(topicId, magazine.getId(), magazine.getTitle(), manager,
-                topic.getTitle(), topic.getShortExplanation(), topic.getLongExplanation());
+        List<String> articleWriters = topic.getArticles().stream()
+                .map(a -> accountService.find(a.getWriterId()).getUsername())
+                .collect(Collectors.toList());
+        return TopicDto.create(topic.getId(), magazine.getId(), magazine.getTitle(), manager,
+                topic.getTitle(), topic.getShortExplanation(), topic.getLongExplanation(), topic.getArticles(), articleWriters);
     }
 
 }

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @Controller
 public class MagazineController {
@@ -46,6 +47,13 @@ public class MagazineController {
         MagazineDto magazineDto = magazineService.extractDto(magazineId);
         model.addAttribute("magazineDto", magazineDto);
         return "page/board/magazine/view";
+    }
+
+    @GetMapping("/magazines")
+    public String magazineList(Model model) {
+        List<MagazineDto> magazineDtoList = magazineService.findAllAsDto();
+        model.addAttribute("magazineDtoList", magazineDtoList);
+        return "page/board/magazine/list";
     }
 
 }

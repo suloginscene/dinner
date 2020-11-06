@@ -33,15 +33,29 @@ public class MagazineService {
         return magazineRepository.findById(id).orElseThrow(() -> new MagazineNotFoundException(id));
     }
 
+    public List<MagazineDto> findAllAsDto() {
+        return magazineRepository.findAll().stream()
+                .map(this::extractDto)
+                .collect(Collectors.toList());
+    }
+
     public MagazineDto extractDto(Long magazineId) {
         Magazine magazine = magazineRepository.findById(magazineId).orElseThrow(() -> new MagazineNotFoundException(magazineId));
+        return extractDto(magazine);
+    }
 
+    public MagazineDto extractDto(Magazine magazine) {
         String manager = accountService.find(magazine.getManagerId()).getUsername();
         List<String> writers = magazine.getWriterIds().stream()
                 .map((id) -> accountService.find(id).getUsername())
                 .collect(Collectors.toList());
-        return MagazineDto.create(magazineId, manager, writers,
-                magazine.getTitle(), magazine.getShortExplanation(), magazine.getLongExplanation(), magazine.getMagazinePolicy().name());
+        List<String> topicManagers = magazine.getTopics().stream()
+                .map(t -> accountService.find(t.getManagerId()).getUsername())
+                .collect(Collectors.toList());
+
+        return MagazineDto.create(magazine.getId(), manager, writers,
+                magazine.getTitle(), magazine.getShortExplanation(), magazine.getLongExplanation(),
+                magazine.getMagazinePolicy().name(), magazine.getTopics(), topicManagers);
     }
 
 }

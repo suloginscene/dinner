@@ -33,6 +33,7 @@ public class Article {
 
     public static Article create(Topic topic, Long writerId, String title, String content) {
         Article article = new Article();
+        topic.add(article);
         article.topic = topic;
         article.writerId = writerId;
         article.title = title;
