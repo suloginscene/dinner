@@ -7,30 +7,23 @@
 
     <body th:replace="layout/layout::body(~{::section})">
         <section>
-            <form th:action="@{'/board'+'/'+${magazine}+ '/'+${topic}}" th:method="post" th:object="${articleForm}">
+            <form th:action="@{/articles}" th:method="post" th:object="${articleForm}">
+                <label>
+                    <input type="text" name="topicId" th:value="${topicId}" hidden>
+                </label>
                 <div id="bar">
                     <label id="title">
                         <input type="text" th:field="*{title}" placeholder="새 아티클">
-                    </label>
-                    <label>
-                        <input type="text" th:field="*{parentUrl}" hidden>
-                    </label>
-                    <label id="url">
-                        <span id="url-prefix" th:text="'/'+${magazine}+'/'+${topic}+'/'"></span>
-                        <input type="text" th:field="*{url}" placeholder="url (소문자, 숫자, -)">
-                    </label>
-                    <label>
-                        <input type="text" th:field="*{content}" id="content" hidden>
                     </label>
                     <button type="submit" id="form-submit">save</button>
                 </div>
                 <div id="error-message">
                     <span th:if="${#fields.hasErrors('title')}" th:errors="*{title}" class="form-text text-danger"></span>
-                    <span th:if="${#fields.hasErrors('parentUrl')}" th:errors="*{parentUrl}" class="form-text text-danger"></span>
-                    <span th:if="${#fields.hasErrors('url')}" th:errors="*{url}" class="form-text text-danger"></span>
                     <span th:if="${#fields.hasErrors('content')}" th:errors="*{content}" class="form-text text-danger"></span>
-                    <span th:if="${#fields.hasErrors('topic')}" th:errors="*{topic}" class="form-text text-danger"></span>
                 </div>
+                <label>
+                    <input type="text" th:field="*{content}" id="content" hidden>
+                </label>
                 <div id="editor">
                     <div id="tui-editor"></div>
                     <th:block th:replace="lib/tui::imports"></th:block>
@@ -42,5 +35,3 @@
     </body>
 
 </html>
-
-<!-- TODO temp repository-->

@@ -12,8 +12,8 @@ section form {
 section form #bar {
     height: 50px;
     margin-bottom: 10px;
-    position: relative;
     display: flex;
+    justify-content: space-between;
     align-items: center;
 }
 
@@ -31,20 +31,8 @@ section form #bar #title input {
     width: 100%;
 }
 
-section form #bar #url {
-    margin: 0 10px;
-}
-
-section form #bar #url input {
-    padding: 10px;
-    width: 200px;
-    margin: 0;
-}
-
 section form #bar button {
     height: 100%;
-    position: absolute;
-    right: 0;
 }
 
 section form #error-message {
@@ -60,52 +48,3 @@ section form #error-message span {
 section form #editor {
     height: calc(100% - 60px);
 }
-
-@media (max-width: 1280px) {
-
-    section form #bar #url-prefix {
-        display: none;
-    }
-}
-
-@media (max-width: 1024px) {
-
-    section form #bar {
-        height: auto;
-        display: block;
-    }
-
-    section form #bar #title {
-        width: calc(100% - 150px);
-    }
-
-    section form #bar #title input {
-        margin-bottom: 10px;
-    }
-
-    section form #bar #url {
-        width: calc(100% - 150px);
-        margin: 0;
-    }
-
-    section form #bar #url-prefix {
-        display: inline-block;
-    }
-
-    section form #bar button {
-        height: calc(100% - 40px);
-        top: 20px;
-    }
-
-    section form #editor {
-        height: calc(100% - 120px);
-    }
-
-}
-
-@media (max-width: 480px) {
-    section form #bar #url-prefix {
-        display: none;
-    }
-}
-

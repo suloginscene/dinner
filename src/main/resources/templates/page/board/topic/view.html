@@ -21,7 +21,12 @@
 
             <div id="button-container">
                 <!-- TODO select button whether principal is writable -->
-                <button onclick="location.href='/board-form/magazine/topic'">write</button>
+                <form action="/article-form" method="get">
+                    <label>
+                        <input type="text" name="topicId" th:value="*{id}" hidden>
+                    </label>
+                    <button type="submit">write</button>
+                </form>
             </div>
 
             <ul>
