@@ -9,8 +9,8 @@
     <body th:replace="layout/layout::body(~{::section})">
         <section>
             <h1>All Magazines</h1>
-            <ul th:each="magazineDto:${magazineDtoList}">
-                <li><a th:href="@{'/magazines/'+${magazineDto.id}}" th:text="${magazineDto.title}"></a></li>
+            <ul th:each="magazine:${magazines}">
+                <li><a th:href="@{'/magazines/'+${magazine.id}}" th:text="${magazine.title}"></a></li>
             </ul>
         </section>
     </body>

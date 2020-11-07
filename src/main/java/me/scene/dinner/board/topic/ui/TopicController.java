@@ -1,7 +1,6 @@
 package me.scene.dinner.board.topic.ui;
 
 import me.scene.dinner.account.domain.Account;
-import me.scene.dinner.board.topic.application.TopicDto;
 import me.scene.dinner.board.topic.application.TopicService;
 import me.scene.dinner.common.security.CurrentUser;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,9 +27,8 @@ public class TopicController {
 
     @GetMapping("/topic-form")
     public String shipTopicForm(@RequestParam Long magazineId, Model model) {
-        TopicForm topicForm = new TopicForm();
         model.addAttribute("magazineId", magazineId);
-        model.addAttribute("topicForm", topicForm);
+        model.addAttribute("topicForm", new TopicForm());
         return "page/board/topic/form";
     }
 
@@ -39,15 +37,13 @@ public class TopicController {
                               @Valid TopicForm form, Errors errors) {
         if (errors.hasErrors()) return "page/board/topic/form";
 
-        Long id = topicService.save(magazineId, current.getId(),
-                form.getTitle(), form.getShortExplanation(), form.getLongExplanation());
+        Long id = topicService.save(magazineId, current.getUsername(), form.getTitle(), form.getShortExplanation(), form.getLongExplanation());
         return "redirect:" + ("/topics/" + id);
     }
 
     @GetMapping("/topics/{topicId}")
     public String showTopic(@PathVariable Long topicId, Model model) {
-        TopicDto topicDto = topicService.extractDto(topicId);
-        model.addAttribute("topicDto", topicDto);
+        model.addAttribute("topic", topicService.find(topicId));
         return "page/board/topic/view";
     }
 

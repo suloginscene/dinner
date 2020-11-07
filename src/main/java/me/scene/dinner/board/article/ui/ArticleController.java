@@ -1,7 +1,6 @@
 package me.scene.dinner.board.article.ui;
 
 import me.scene.dinner.account.domain.Account;
-import me.scene.dinner.board.article.application.ArticleDto;
 import me.scene.dinner.board.article.application.ArticleService;
 import me.scene.dinner.common.security.CurrentUser;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,9 +27,8 @@ public class ArticleController {
 
     @GetMapping("/article-form")
     public String shipArticleForm(@RequestParam Long topicId, Model model) {
-        ArticleForm articleForm = new ArticleForm();
         model.addAttribute("topicId", topicId);
-        model.addAttribute("articleForm", articleForm);
+        model.addAttribute("articleForm", new ArticleForm());
         return "page/board/article/form";
     }
 
@@ -39,15 +37,13 @@ public class ArticleController {
                                 @Valid ArticleForm form, Errors errors) {
         if (errors.hasErrors()) return "page/board/article/form";
 
-        Long id = articleService.save(topicId, current.getId(),
-                form.getTitle(), form.getContent());
+        Long id = articleService.save(topicId, current.getUsername(), form.getTitle(), form.getContent());
         return "redirect:" + ("/articles/" + id);
     }
 
     @GetMapping("/articles/{articleId}")
     public String showArticle(@PathVariable Long articleId, Model model) {
-        ArticleDto articleDto = articleService.extractDto(articleId);
-        model.addAttribute("articleDto", articleDto);
+        model.addAttribute("article", articleService.find(articleId));
         return "page/board/article/view";
     }
 

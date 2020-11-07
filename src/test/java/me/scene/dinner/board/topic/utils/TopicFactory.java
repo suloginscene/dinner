@@ -15,8 +15,8 @@ public class TopicFactory {
         this.topicService = topicService;
     }
 
-    public Topic create(Long magazineId, Long managerId, String title, String shortExplanation, String longExplanation) {
-        Long id = topicService.save(magazineId, managerId, title, shortExplanation, longExplanation);
+    public Topic create(Long magazineId, String manager, String title, String shortExplanation, String longExplanation) {
+        Long id = topicService.save(magazineId, manager, title, shortExplanation, longExplanation);
         return topicService.find(id);
     }
 

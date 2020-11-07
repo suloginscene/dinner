@@ -1,7 +1,7 @@
 package me.scene.dinner;
 
-import me.scene.dinner.board.magazine.application.MagazineDto;
 import me.scene.dinner.board.magazine.application.MagazineService;
+import me.scene.dinner.board.magazine.domain.Magazine;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
@@ -34,8 +34,8 @@ public class MainController {
         model.addAttribute("version", DateTimeFormatter.ISO_DATE_TIME.format(startedAt));
 
         // TODO AJAX / semi batch
-        List<MagazineDto> magazineDtoList = magazineService.findAllAsDto();
-        model.addAttribute("magazineDtoList", magazineDtoList);
+        List<Magazine> magazines = magazineService.findAll();
+        model.addAttribute("magazines", magazines);
 
         return "page/main/home";
     }

@@ -65,8 +65,8 @@ class ArticleControllerTest {
     @WithAccount(username = "scene")
     void createArticle_saveAndShow() throws Exception {
         Account account = accountFactory.create("magazineManager", "magazine_manager@email.com", "password");
-        Magazine magazine = magazineFactory.create(account.getId(), "title", "short", "long", "OPEN");
-        Topic topic = topicFactory.create(magazine.getId(), account.getId(), "title", "short", "long");
+        Magazine magazine = magazineFactory.create(account.getUsername(), "title", "short", "long", "OPEN");
+        Topic topic = topicFactory.create(magazine.getId(), account.getUsername(), "title", "short", "long");
 
         mockMvc.perform(
                 post("/articles")
@@ -81,7 +81,7 @@ class ArticleControllerTest {
         Article article = articleRepository.findByTitle("Test Article").orElseThrow();
         assertThat(article.getContent()).isEqualTo("This is test article.");
         assertThat(article.getTopic()).isEqualTo(topic);
-        assertThat(article.getWriterId()).isEqualTo(accountRepository.findByUsername("scene").orElseThrow().getId());
+        assertThat(article.getWriter()).isEqualTo(accountRepository.findByUsername("scene").orElseThrow().getUsername());
     }
 
     @Test
@@ -111,18 +111,18 @@ class ArticleControllerTest {
     }
 
     @Test
-    void showArticle_hasArticleDto() throws Exception {
+    void showArticle_hasArticle() throws Exception {
         Account account = accountFactory.create("scene", "scene@email.com", "password");
-        Magazine magazine = magazineFactory.create(account.getId(), "title", "short", "long", "OPEN");
-        Topic topic = topicFactory.create(magazine.getId(), account.getId(), "title", "short", "long");
-        Long id = articleService.save(topic.getId(), account.getId(), "title", "content");
+        Magazine magazine = magazineFactory.create(account.getUsername(), "title", "short", "long", "OPEN");
+        Topic topic = topicFactory.create(magazine.getId(), account.getUsername(), "title", "short", "long");
+        Long id = articleService.save(topic.getId(), account.getUsername(), "title", "content");
 
         mockMvc.perform(
                 get("/articles/" + id)
         )
                 .andExpect(status().isOk())
                 .andExpect(view().name("page/board/article/view"))
-                .andExpect(model().attributeExists("articleDto"))
+                .andExpect(model().attributeExists("article"))
         ;
     }
 

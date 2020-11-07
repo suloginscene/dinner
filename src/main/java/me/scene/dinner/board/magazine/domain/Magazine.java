@@ -17,10 +17,10 @@ public class Magazine {
     @Id @GeneratedValue
     private Long id;
 
-    private Long managerId;
+    private String manager;
 
     @ElementCollection(fetch = EAGER)
-    private final List<Long> writerIds = new ArrayList<>();
+    private final List<String> writers = new ArrayList<>();
 
     private String title;
 
@@ -37,9 +37,9 @@ public class Magazine {
     protected Magazine() {
     }
 
-    public static Magazine create(Long managerId, String title, String shortExplanation, String longExplanation, String magazinePolicy) {
+    public static Magazine create(String manager, String title, String shortExplanation, String longExplanation, String magazinePolicy) {
         Magazine magazine = new Magazine();
-        magazine.managerId = managerId;
+        magazine.manager = manager;
         magazine.title = title;
         magazine.shortExplanation = shortExplanation;
         magazine.longExplanation = longExplanation;

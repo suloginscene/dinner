@@ -21,7 +21,7 @@ public class Topic {
     @ManyToOne(fetch = LAZY)
     private Magazine magazine;
 
-    private Long managerId;
+    private String manager;
 
     private String title;
 
@@ -36,11 +36,11 @@ public class Topic {
     protected Topic() {
     }
 
-    public static Topic create(Magazine magazine, Long managerId, String title, String shortExplanation, String longExplanation) {
+    public static Topic create(Magazine magazine, String manager, String title, String shortExplanation, String longExplanation) {
         Topic topic = new Topic();
         magazine.add(topic);
         topic.magazine = magazine;
-        topic.managerId = managerId;
+        topic.manager = manager;
         topic.title = title;
         topic.shortExplanation = shortExplanation;
         topic.longExplanation = longExplanation;

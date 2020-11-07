@@ -1,21 +1,24 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 
-    <div th:replace="layout/layout::head(${magazineDto.title},~{::link}, ~{::script})">
+    <div th:replace="layout/layout::head(${magazine.title},~{::link}, ~{::script})">
         <link rel="stylesheet" href="/css/page/board/magazine/view.css"/>
         <script src="/js/page/acc_board.js"></script>
     </div>
 
     <body th:replace="layout/layout::body(~{::section})">
-        <section th:object="${magazineDto}">
+        <section th:object="${magazine}">
 
             <div class="info">
                 <h1 id="title" th:text="*{title}"></h1>
                 <div id="authorities">
-                    <span id="authority" th:text="*{magazinePolicy}"></span> by <span th:text="*{manager}"></span>
-                    <div th:each="writer:*{writers}">
-                        written by
-                        <a class="writer" th:href="@{'/accounts/'+${writer}}" th:text="${writer}"></a>
+                    <span id="authority" th:text="*{magazinePolicy}"></span> by
+                    <a th:href="'/@'+*{manager}" th:text="*{manager}"></a>
+                    <div>
+                        <span>written by</span>
+                        <th:block th:each="writer:*{writers}">
+                            <a class="writer" th:href="@{'/@'+${writer}}" th:text="${writer}"></a>
+                        </th:block>
                     </div>
                 </div>
                 <a href="#" id="board-accordion">
@@ -35,9 +38,9 @@
                 </form>
             </div>
 
-            <ul th:each="topicDto:*{topicDtoList}">
+            <ul th:each="topic:*{topics}">
                 <li>
-                    <a th:href="@{'/topics/'+${topicDto.id}}" th:text="${topicDto.title}"></a>
+                    <a th:href="@{'/topics/'+${topic.id}}" th:text="${topic.title}"></a>
                 </li>
             </ul>
 

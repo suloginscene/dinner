@@ -62,7 +62,7 @@ class TopicControllerTest {
     @WithAccount(username = "scene")
     void createTopic_saveAndShow() throws Exception {
         Account account = accountFactory.create("magazineManager", "magazine_manager@email.com", "password");
-        Magazine magazine = magazineFactory.create(account.getId(), "title", "short", "long", "OPEN");
+        Magazine magazine = magazineFactory.create(account.getUsername(), "title", "short", "long", "OPEN");
 
         mockMvc.perform(
                 post("/topics")
@@ -79,7 +79,7 @@ class TopicControllerTest {
         assertThat(topic.getShortExplanation()).isEqualTo("This is short explanation.");
         assertThat(topic.getLongExplanation()).isEqualTo("This is long explanation of test magazine.");
         assertThat(topic.getMagazine()).isEqualTo(magazine);
-        assertThat(topic.getManagerId()).isEqualTo(accountRepository.findByUsername("scene").orElseThrow().getId());
+        assertThat(topic.getManager()).isEqualTo(accountRepository.findByUsername("scene").orElseThrow().getUsername());
     }
 
     @Test
@@ -109,17 +109,17 @@ class TopicControllerTest {
     }
 
     @Test
-    void showTopic_hasTopicDto() throws Exception {
+    void showTopic_hasTopic() throws Exception {
         Account account = accountFactory.create("scene", "scene@email.com", "password");
-        Magazine magazine = magazineFactory.create(account.getId(), "title", "short", "long", "OPEN");
-        Long id = topicService.save(magazine.getId(), account.getId(), "title", "short", "long");
+        Magazine magazine = magazineFactory.create(account.getUsername(), "title", "short", "long", "OPEN");
+        Long id = topicService.save(magazine.getId(), account.getUsername(), "title", "short", "long");
 
         mockMvc.perform(
                 get("/topics/" + id)
         )
                 .andExpect(status().isOk())
                 .andExpect(view().name("page/board/topic/view"))
-                .andExpect(model().attributeExists("topicDto"))
+                .andExpect(model().attributeExists("topic"))
         ;
     }
 

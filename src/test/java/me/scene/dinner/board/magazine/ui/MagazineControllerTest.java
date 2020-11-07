@@ -73,7 +73,7 @@ class MagazineControllerTest {
         assertThat(magazine.getShortExplanation()).isEqualTo("This is short explanation.");
         assertThat(magazine.getLongExplanation()).isEqualTo("This is long explanation of test magazine.");
         assertThat(magazine.getMagazinePolicy()).isEqualTo(MagazinePolicy.OPEN);
-        assertThat(magazine.getManagerId()).isEqualTo(accountRepository.findByUsername("scene").orElseThrow().getId());
+        assertThat(magazine.getManager()).isEqualTo(accountRepository.findByUsername("scene").orElseThrow().getUsername());
     }
 
     @Test
@@ -102,16 +102,16 @@ class MagazineControllerTest {
     }
 
     @Test
-    void showMagazine_hasMagazineDto() throws Exception {
+    void showMagazine_hasMagazine() throws Exception {
         Account account = accountFactory.create("scene", "scene@email.com", "password");
-        Long id = magazineService.save(account.getId(), "title", "short", "long", "OPEN");
+        Long id = magazineService.save(account.getUsername(), "title", "short", "long", "OPEN");
 
         mockMvc.perform(
                 get("/magazines/" + id)
         )
                 .andExpect(status().isOk())
                 .andExpect(view().name("page/board/magazine/view"))
-                .andExpect(model().attributeExists("magazineDto"))
+                .andExpect(model().attributeExists("magazine"))
         ;
     }
 

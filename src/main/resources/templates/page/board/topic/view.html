@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 
-    <div th:replace="layout/layout::head(${topicDto.title},~{::link}, ~{::script})">
+    <div th:replace="layout/layout::head(${topic.title},~{::link}, ~{::script})">
         <link rel="stylesheet" href="/css/page/board/topic/view.css"/>
         <script src="/js/page/acc_board.js"></script>
     </div>
 
     <body th:replace="layout/layout::body(~{::section})">
-        <section th:object="${topicDto}">
+        <section th:object="${topic}">
 
             <div class="info">
-                <h2 id="magazine"><a th:href="'/magazines/'+*{magazineId}" th:text="*{magazine}"></a></h2>
+                <h2 id="magazine"><a th:href="'/magazines/'+*{magazine.id}" th:text="*{magazine.title}"></a></h2>
                 <h1 id="title" th:text="*{title}"></h1>
                 <div>Opened by <span th:text="*{manager}"></span></div>
                 <a href="#" id="board-accordion">
@@ -29,16 +29,16 @@
                 </form>
             </div>
 
-            <ul th:each="articleDto:*{articleDtoList}">
+            <ul th:each="article:*{articles}">
                 <li>
                     <div class="article-info">
-                        <a th:href="@{'/articles/'+${articleDto.id}}" th:text="${articleDto.title}"></a>
+                        <a th:href="@{'/articles/'+${article.id}}" th:text="${article.title}"></a>
                         <div class="article-sub-info">
-                            <a class="article-writer" th:href="@{'/@'+${articleDto.writer}}" th:text="${articleDto.writer}"></a>
-                            <span class="article-date" th:text="${articleDto.createAt}"></span>
+                            <a class="article-writer" th:href="@{'/@'+${article.writer}}" th:text="${article.writer}"></a>
+                            <span class="article-date" th:text="${article.createdAt}"></span>
                         </div>
                     </div>
-                    <p th:utext="${articleDto.content}"></p>
+                    <p th:utext="${article.content}"></p>
                 </li>
             </ul>
 

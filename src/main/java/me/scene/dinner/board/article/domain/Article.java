@@ -19,26 +19,26 @@ public class Article {
     @ManyToOne(fetch = LAZY)
     private Topic topic;
 
-    private Long writerId;
+    private String writer;
 
     private String title;
 
     @Lob
     private String content;
 
-    private LocalDateTime localDateTime;
+    private LocalDateTime createdAt;
 
     protected Article() {
     }
 
-    public static Article create(Topic topic, Long writerId, String title, String content) {
+    public static Article create(Topic topic, String writer, String title, String content) {
         Article article = new Article();
         topic.add(article);
         article.topic = topic;
-        article.writerId = writerId;
+        article.writer = writer;
         article.title = title;
         article.content = content;
-        article.localDateTime = LocalDateTime.now();
+        article.createdAt = LocalDateTime.now();
         return article;
     }
 
