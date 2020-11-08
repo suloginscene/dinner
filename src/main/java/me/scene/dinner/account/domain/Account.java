@@ -29,6 +29,9 @@ public class Account {
     @Enumerated(EnumType.STRING)
     private final Set<AccountRole> roles = new HashSet<>();
 
+    @Embedded
+    private Profile profile;
+
     protected Account() {
     }
 
@@ -43,6 +46,10 @@ public class Account {
 
     public void changePassword(String encodedPassword) {
         password = encodedPassword;
+    }
+
+    public void update(Profile profile) {
+        this.profile = profile;
     }
 
 }

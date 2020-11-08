@@ -1,39 +1,22 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 
-    <div th:replace="layout/layout::head(${accountDto.username}, ~{::link}, ~{})">
-        <link rel="stylesheet" href="/css/page/account/accountDto.css"/>
+    <div th:replace="layout/layout::head(${account.username}, ~{::link}, ~{})">
+        <link rel="stylesheet" href="/css/page/account/profile.css"/>
     </div>
 
     <body th:replace="layout/layout::body(~{::section})">
-        <section th:with="modifyMode=${param.modify!=null}">
-            <div id="username">
-                <h1 th:text="${accountDto.username}"></h1>
-                <span th:if="${isOwner}">
-                    <a th:if="${modifyMode}" th:href="@{'/accounts/' + ${#authentication.name}}">보기 모드</a>
-                    <a th:unless="${modifyMode}" th:href="@{'/accounts/' + ${#authentication.name}+'?modify'}">수정 모드</a>
-                </span>
+        <section>
+            <div>
+                <h1 th:text="${account.username}"></h1>
+                <a th:if="${isOwner}" href="/config">수정</a>
             </div>
-            <div id="user-info" th:with="modifiable=${isOwner}and${modifyMode}">
-                <!-- TODO 회원정보 수정 -->
-                <div class="info-category">
-                    <h2>소개</h2>
-                    <div>안녕하세요.<a th:if="${modifiable}" href="#">변경</a></div>
-                    <div>인삿말 외에 필요한 정보는 무엇이 있을까.<a th:if="${modifiable}" href="#">변경</a></div>
-                </div>
-                <div th:if="${isOwner}" class="info-category">
-                    <h2>개인정보</h2>
-                    <div>이메일<a th:if="${modifyMode}" href="#">변경</a></div>
-                    <div>비밀번호
-                        <!-- TODO putMapping or AJAX -->
-                        <form th:if="${modifyMode}" th:action="@{'/accounts/'+${accountDto.username}}" method="post">
-                            <label><input type="password" name="password"></label>
-                            <button type="submit">변경</button>
-                        </form>
-                        <div th:if="${param.short}" class="text-danger">비밀번호는 8자 이상이어야 합니다.</div>
-                        <div th:if="${param.success}">비밀번호를 변경했습니다.</div>
-                    </div>
-                </div>
+            <div>
+                <div>이름<span th:text="${account.username}"></span></div>
+                <div>이메일<span th:text="${account.email}"></span></div>
+            </div>
+            <div>
+                <div>간략한 소개<span th:text="${account.profile?.shortIntroduction}"></span></div>
             </div>
         </section>
     </body>

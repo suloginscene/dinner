@@ -33,14 +33,6 @@ public class AccountService implements UserDetailsService {
         this.mailSender = mailSender;
     }
 
-    public TempAccount findTemp(Long id) {
-        return tempRepository.findById(id).orElseThrow(() -> new UseridNotFoundException(id));
-    }
-
-    public Account find(Long id) {
-        return accountRepository.findById(id).orElseThrow(() -> new UseridNotFoundException(id));
-    }
-
 
     // signup ----------------------------------------------------------------------------------------------------------
 
@@ -95,12 +87,23 @@ public class AccountService implements UserDetailsService {
     }
 
 
-    // ?? --------------------------------------------------------------------------------------------------------------
+    // profile --------------------------------------------------------------------------------------------------------------
+
+    public Account find(String username) {
+        return accountRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException(username));
+    }
 
     @Transactional
-    public AccountDto extractProfile(String username) {
-        Account account = accountRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException(username));
-        return new AccountDto(account);
+    public void changeShortIntroduction(String username, String shortIntroduction) {
+        Account account = find(username);
+        Profile profile = new Profile(shortIntroduction);
+        account.update(profile);
+    }
+
+    @Transactional
+    public void changePassword(String username, String password) {
+        Account account = find(username);
+        account.changePassword(passwordEncoder.encode(password));
     }
 
 }

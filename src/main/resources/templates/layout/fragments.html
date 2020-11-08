@@ -54,7 +54,7 @@
         <div sec:authorize="isAuthenticated()" id="account-dropdown">
             <button>desk</button>
             <div id="accounts">
-                <a th:href="@{'/accounts/' + ${#authentication.name}}" th:text="${#authentication.name}"></a>
+                <a th:href="@{'/@' + ${#authentication.name}}" th:text="${#authentication.name}"></a>
                 <a href="#">notif</a>
                 <form th:action="@{/logout}" method="post">
                     <button type="submit">logout</button>
