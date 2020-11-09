@@ -54,6 +54,26 @@ class LoginControllerTest {
                 .andExpect(redirectedUrl("/"))
                 .andExpect(authenticated())
         ;
+
+        mockMvc.perform(
+                post("/logout")
+                        .with(csrf())
+        )
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/"))
+                .andExpect(unauthenticated())
+        ;
+
+        mockMvc.perform(
+                post("/login")
+                        .with(csrf())
+                        .param("username", "scene@email.com")
+                        .param("password", "password")
+        )
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/"))
+                .andExpect(authenticated())
+        ;
     }
 
     @Test
@@ -80,6 +100,16 @@ class LoginControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/login?error"))
                 .andExpect(unauthenticated())
+        ;
+    }
+
+    @Test
+    void forgotPage_exists() throws Exception {
+        mockMvc.perform(
+                get("/forgot")
+        )
+                .andExpect(status().isOk())
+                .andExpect(view().name("page/account/forgot"))
         ;
     }
 

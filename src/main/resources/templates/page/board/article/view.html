@@ -17,6 +17,10 @@
                 </div>
             </div>
 
+            <form th:unless="*{published}" th:action="@{'/articles/'+${article.id}}" method="post">
+                <button type="submit">publish</button>
+            </form>
+
             <article th:utext="*{content}"></article>
 
             <div>

@@ -2,6 +2,7 @@ package me.scene.dinner.board.article.domain;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import me.scene.dinner.board.article.application.PublicationException;
 import me.scene.dinner.board.topic.domain.Topic;
 
 import javax.persistence.*;
@@ -26,9 +27,9 @@ public class Article {
     @Lob
     private String content;
 
-    private LocalDateTime createdAt;
+    private boolean published;
 
-    private String preview;
+    private LocalDateTime createdAt;
 
     protected Article() {
     }
@@ -40,9 +41,18 @@ public class Article {
         article.writer = writer;
         article.title = title;
         article.content = content;
+        article.published = false;
         article.createdAt = LocalDateTime.now();
-        article.preview = (content.length() > 255) ? content.substring(0, 255) : content;
         return article;
+    }
+
+    public void checkPublicity(String client) {
+        if (!isPublished() && !client.equals(writer)) throw new PublicationException(id);
+    }
+
+    public void publish(String client) {
+        if (!client.equals(writer)) throw new PublicationException(id);
+        published = true;
     }
 
 }

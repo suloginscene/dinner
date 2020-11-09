@@ -2,9 +2,8 @@ package me.scene.dinner.common.exception;
 
 import lombok.extern.slf4j.Slf4j;
 import me.scene.dinner.account.application.AlreadyVerifiedException;
-import me.scene.dinner.account.application.UseridNotFoundException;
 import me.scene.dinner.account.domain.VerificationException;
-import me.scene.dinner.board.common.BoardNotFoundException;
+import me.scene.dinner.board.article.application.PublicationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -51,12 +50,6 @@ public class ExceptionAdvice {
     // custom exception ------------------------------------------------------------------------------------------------
 
     @ExceptionHandler
-    public String useridNotFoundException(HttpServletRequest req, UseridNotFoundException e) {
-        warn(req, e);
-        return "error/user_not_found";
-    }
-
-    @ExceptionHandler
     public String boardNotFoundException(HttpServletRequest req, BoardNotFoundException e) {
         warn(req, e);
         return "error/board_not_found";
@@ -74,8 +67,20 @@ public class ExceptionAdvice {
         return "error/already_verified";
     }
 
+    @ExceptionHandler
+    public String PublicationException(HttpServletRequest req, PublicationException e) {
+        warn(req, e);
+        return "error/publication";
+    }
+
 
     // unspecified exception -----------------------------------------------------------------------------------------------
+
+    @ExceptionHandler
+    public String runtimeException(HttpServletRequest req, RuntimeException e) {
+        error(req, e);
+        return "error/unknown";
+    }
 
     @ExceptionHandler
     public String exception(HttpServletRequest req, Exception e) {

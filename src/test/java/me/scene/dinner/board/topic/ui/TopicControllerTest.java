@@ -37,7 +37,7 @@ class TopicControllerTest {
 
     @Test
     @WithAccount(username = "scene")
-    void topicCreatePage_hasForm() throws Exception {
+    void createPage_hasForm() throws Exception {
         mockMvc.perform(
                 get("/topic-form")
                         .param("magazineId", "1")
@@ -49,7 +49,7 @@ class TopicControllerTest {
     }
 
     @Test
-    void topicCreatePage_unauthenticated_beGuidedBySpringSecurity() throws Exception {
+    void createPage_unauthenticated_beGuidedBySpringSecurity() throws Exception {
         mockMvc.perform(
                 get("/topic-form")
         )
@@ -60,7 +60,7 @@ class TopicControllerTest {
 
     @Test
     @WithAccount(username = "scene")
-    void createTopic_saveAndShow() throws Exception {
+    void create_saveAndShow() throws Exception {
         Account account = accountFactory.create("magazineManager", "magazine_manager@email.com", "password");
         Magazine magazine = magazineFactory.create(account.getUsername(), "title", "short", "long", "OPEN");
 
@@ -83,7 +83,7 @@ class TopicControllerTest {
     }
 
     @Test
-    void createTopic_unauthenticated_beGuidedBySpringSecurity() throws Exception {
+    void create_unauthenticated_beGuidedBySpringSecurity() throws Exception {
         mockMvc.perform(
                 post("/topics").with(csrf())
         )
@@ -94,7 +94,7 @@ class TopicControllerTest {
 
     @Test
     @WithAccount(username = "scene")
-    void createTopic_invalidParam_returnErrors() throws Exception {
+    void create_invalidParam_returnErrors() throws Exception {
         mockMvc.perform(
                 post("/topics")
                         .with(csrf())
@@ -109,7 +109,7 @@ class TopicControllerTest {
     }
 
     @Test
-    void showTopic_hasTopic() throws Exception {
+    void show_hasTopic() throws Exception {
         Account account = accountFactory.create("scene", "scene@email.com", "password");
         Magazine magazine = magazineFactory.create(account.getUsername(), "title", "short", "long", "OPEN");
         Long id = topicService.save(magazine.getId(), account.getUsername(), "title", "short", "long");
@@ -120,6 +120,20 @@ class TopicControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("page/board/topic/view"))
                 .andExpect(model().attributeExists("topic"))
+        ;
+    }
+
+    @Test
+    void show_nonExistent_handleException() throws Exception {
+        Account account = accountFactory.create("scene", "scene@email.com", "password");
+        Magazine magazine = magazineFactory.create(account.getUsername(), "title", "short", "long", "OPEN");
+        Long id = topicService.save(magazine.getId(), account.getUsername(), "title", "short", "long");
+
+        mockMvc.perform(
+                get("/topics/" + (id + 1))
+        )
+                .andExpect(status().isOk())
+                .andExpect(view().name("error/board_not_found"))
         ;
     }
 

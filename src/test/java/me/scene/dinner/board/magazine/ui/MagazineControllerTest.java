@@ -35,7 +35,7 @@ class MagazineControllerTest {
 
     @Test
     @WithAccount(username = "scene")
-    void magazineCreatePage_hasForm() throws Exception {
+    void createPage_hasForm() throws Exception {
         mockMvc.perform(
                 get("/magazine-form")
         )
@@ -46,7 +46,7 @@ class MagazineControllerTest {
     }
 
     @Test
-    void magazineCreatePage_unauthenticated_beGuidedBySpringSecurity() throws Exception {
+    void createPage_unauthenticated_beGuidedBySpringSecurity() throws Exception {
         mockMvc.perform(
                 get("/magazine-form")
         )
@@ -57,7 +57,7 @@ class MagazineControllerTest {
 
     @Test
     @WithAccount(username = "scene")
-    void createMagazine_saveAndShow() throws Exception {
+    void create_saveAndShow() throws Exception {
         mockMvc.perform(
                 post("/magazines")
                         .param("title", "Test Magazine")
@@ -77,7 +77,7 @@ class MagazineControllerTest {
     }
 
     @Test
-    void createMagazine_unauthenticated_beGuidedBySpringSecurity() throws Exception {
+    void create_unauthenticated_beGuidedBySpringSecurity() throws Exception {
         mockMvc.perform(
                 post("/magazines").with(csrf())
         )
@@ -88,7 +88,7 @@ class MagazineControllerTest {
 
     @Test
     @WithAccount(username = "scene")
-    void createMagazine_invalidParam_returnErrors() throws Exception {
+    void create_invalidParam_returnErrors() throws Exception {
         mockMvc.perform(
                 post("/magazines")
                         .with(csrf())
@@ -102,7 +102,21 @@ class MagazineControllerTest {
     }
 
     @Test
-    void showMagazine_hasMagazine() throws Exception {
+    void showList_hasMagazines() throws Exception {
+        Account account = accountFactory.create("scene", "scene@email.com", "password");
+        magazineService.save(account.getUsername(), "title", "short", "long", "OPEN");
+
+        mockMvc.perform(
+                get("/magazines")
+        )
+                .andExpect(status().isOk())
+                .andExpect(view().name("page/board/magazine/list"))
+                .andExpect(model().attributeExists("magazines"))
+        ;
+    }
+
+    @Test
+    void show_hasMagazine() throws Exception {
         Account account = accountFactory.create("scene", "scene@email.com", "password");
         Long id = magazineService.save(account.getUsername(), "title", "short", "long", "OPEN");
 
@@ -112,6 +126,19 @@ class MagazineControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("page/board/magazine/view"))
                 .andExpect(model().attributeExists("magazine"))
+        ;
+    }
+
+    @Test
+    void show_nonExistent_handleException() throws Exception {
+        Account account = accountFactory.create("scene", "scene@email.com", "password");
+        Long id = magazineService.save(account.getUsername(), "title", "short", "long", "OPEN");
+
+        mockMvc.perform(
+                get("/magazines/" + (id + 1))
+        )
+                .andExpect(status().isOk())
+                .andExpect(view().name("error/board_not_found"))
         ;
     }
 

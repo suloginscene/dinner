@@ -2,6 +2,7 @@ package me.scene.dinner.account.ui;
 
 import me.scene.dinner.account.application.AccountService;
 import me.scene.dinner.account.domain.Account;
+import me.scene.dinner.account.domain.Profile;
 import me.scene.dinner.account.utils.AccountFactory;
 import me.scene.dinner.account.utils.WithAccount;
 import org.junit.jupiter.api.Test;
@@ -107,7 +108,8 @@ class ProfileControllerTest {
                 .andExpect(redirectedUrl("/@scene"))
         ;
         Account account = accountService.find("scene");
-        assertThat(account.getProfile().getShortIntroduction()).isEqualTo("short");
+        Profile profile = account.getProfile();
+        assertThat(profile).isEqualTo(new Profile("short"));
     }
 
     @Test

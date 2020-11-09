@@ -1,4 +1,4 @@
-package me.scene.dinner.board.common;
+package me.scene.dinner.common.exception;
 
 public class BoardNotFoundException extends IllegalArgumentException {
 

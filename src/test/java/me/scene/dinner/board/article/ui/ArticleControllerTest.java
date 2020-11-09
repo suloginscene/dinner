@@ -40,7 +40,7 @@ class ArticleControllerTest {
 
     @Test
     @WithAccount(username = "scene")
-    void articleCreatePage_hasForm() throws Exception {
+    void createPage_hasForm() throws Exception {
         mockMvc.perform(
                 get("/article-form")
                         .param("topicId", "1")
@@ -52,7 +52,7 @@ class ArticleControllerTest {
     }
 
     @Test
-    void articleCreatePage_unauthenticated_beGuidedBySpringSecurity() throws Exception {
+    void createPage_unauthenticated_beGuidedBySpringSecurity() throws Exception {
         mockMvc.perform(
                 get("/article-form")
         )
@@ -63,7 +63,7 @@ class ArticleControllerTest {
 
     @Test
     @WithAccount(username = "scene")
-    void createArticle_saveAndShow() throws Exception {
+    void create_saveAndShow() throws Exception {
         Account account = accountFactory.create("magazineManager", "magazine_manager@email.com", "password");
         Magazine magazine = magazineFactory.create(account.getUsername(), "title", "short", "long", "OPEN");
         Topic topic = topicFactory.create(magazine.getId(), account.getUsername(), "title", "short", "long");
@@ -85,7 +85,7 @@ class ArticleControllerTest {
     }
 
     @Test
-    void createArticle_unauthenticated_beGuidedBySpringSecurity() throws Exception {
+    void create_unauthenticated_beGuidedBySpringSecurity() throws Exception {
         mockMvc.perform(
                 post("/articles").with(csrf())
         )
@@ -96,7 +96,7 @@ class ArticleControllerTest {
 
     @Test
     @WithAccount(username = "scene")
-    void createArticle_invalidParam_returnErrors() throws Exception {
+    void create_invalidParam_returnErrors() throws Exception {
         mockMvc.perform(
                 post("/articles")
                         .with(csrf())
@@ -111,7 +111,55 @@ class ArticleControllerTest {
     }
 
     @Test
-    void showArticle_hasArticle() throws Exception {
+    void show_hasArticle() throws Exception {
+        Account account = accountFactory.create("scene", "scene@email.com", "password");
+        Magazine magazine = magazineFactory.create(account.getUsername(), "title", "short", "long", "OPEN");
+        Topic topic = topicFactory.create(magazine.getId(), account.getUsername(), "title", "short", "long");
+        Long id = articleService.save(topic.getId(), account.getUsername(), "title", "content");
+        articleService.publish(id, account.getUsername());
+
+        mockMvc.perform(
+                get("/articles/" + id)
+        )
+                .andExpect(status().isOk())
+                .andExpect(view().name("page/board/article/view"))
+                .andExpect(model().attributeExists("article"))
+        ;
+    }
+
+    @Test
+    void show_nonExistent_handleException() throws Exception {
+        Account account = accountFactory.create("scene", "scene@email.com", "password");
+        Magazine magazine = magazineFactory.create(account.getUsername(), "title", "short", "long", "OPEN");
+        Topic topic = topicFactory.create(magazine.getId(), account.getUsername(), "title", "short", "long");
+        Long id = articleService.save(topic.getId(), account.getUsername(), "title", "content");
+
+        mockMvc.perform(
+                get("/articles/" + (id + 1))
+        )
+                .andExpect(status().isOk())
+                .andExpect(view().name("error/board_not_found"))
+        ;
+    }
+
+    @Test
+    @WithAccount(username = "scene")
+    void unpublished_byWriter_hasArticle() throws Exception {
+        Magazine magazine = magazineFactory.create("scene", "title", "short", "long", "OPEN");
+        Topic topic = topicFactory.create(magazine.getId(), "scene", "title", "short", "long");
+        Long id = articleService.save(topic.getId(), "scene", "title", "content");
+
+        mockMvc.perform(
+                get("/articles/" + id)
+        )
+                .andExpect(status().isOk())
+                .andExpect(view().name("page/board/article/view"))
+                .andExpect(model().attributeExists("article"))
+        ;
+    }
+
+    @Test
+    void unpublished_byStranger_handleException() throws Exception {
         Account account = accountFactory.create("scene", "scene@email.com", "password");
         Magazine magazine = magazineFactory.create(account.getUsername(), "title", "short", "long", "OPEN");
         Topic topic = topicFactory.create(magazine.getId(), account.getUsername(), "title", "short", "long");
@@ -121,9 +169,45 @@ class ArticleControllerTest {
                 get("/articles/" + id)
         )
                 .andExpect(status().isOk())
-                .andExpect(view().name("page/board/article/view"))
-                .andExpect(model().attributeExists("article"))
+                .andExpect(view().name("error/publication"))
         ;
+    }
+
+    @Test
+    @WithAccount(username = "scene")
+    void publish_published() throws Exception {
+        Magazine magazine = magazineFactory.create("scene", "title", "short", "long", "OPEN");
+        Topic topic = topicFactory.create(magazine.getId(), "scene", "title", "short", "long");
+        Long id = articleService.save(topic.getId(), "scene", "title", "content");
+
+        mockMvc.perform(
+                post("/articles/" + id)
+                        .with(csrf())
+        )
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/articles/" + id))
+        ;
+        Article article = articleService.find(id, "scene");
+        assertThat(article.isPublished()).isTrue();
+    }
+
+    @Test
+    @WithAccount(username = "stranger")
+    void publish_byStranger_handleException() throws Exception {
+        Account account = accountFactory.create("scene", "scene@email.com", "password");
+        Magazine magazine = magazineFactory.create(account.getUsername(), "title", "short", "long", "OPEN");
+        Topic topic = topicFactory.create(magazine.getId(), account.getUsername(), "title", "short", "long");
+        Long id = articleService.save(topic.getId(), account.getUsername(), "title", "content");
+
+        mockMvc.perform(
+                post("/articles/" + id)
+                        .with(csrf())
+        )
+                .andExpect(status().isOk())
+                .andExpect(view().name("error/publication"))
+        ;
+        Article article = articleService.find(id, "scene");
+        assertThat(article.isPublished()).isFalse();
     }
 
 }

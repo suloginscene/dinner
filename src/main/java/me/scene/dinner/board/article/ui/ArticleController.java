@@ -42,9 +42,17 @@ public class ArticleController {
     }
 
     @GetMapping("/articles/{articleId}")
-    public String showArticle(@PathVariable Long articleId, Model model) {
-        model.addAttribute("article", articleService.find(articleId));
+    public String showArticle(@PathVariable Long articleId, @CurrentUser Account current, Model model) {
+        String username = (current != null) ? current.getUsername() : "anonymousUser";
+        model.addAttribute("article", articleService.find(articleId, username));
         return "page/board/article/view";
+    }
+
+    @PostMapping("/articles/{articleId}")
+    public String publish(@PathVariable Long articleId, @CurrentUser Account current) {
+        String username = (current != null) ? current.getUsername() : "anonymousUser";
+        articleService.publish(articleId, username);
+        return "redirect:" + ("/articles/" + articleId);
     }
 
 }

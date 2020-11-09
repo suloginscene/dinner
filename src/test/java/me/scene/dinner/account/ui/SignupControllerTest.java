@@ -170,4 +170,28 @@ class SignupControllerTest {
         assertThat(account).isNull();
     }
 
+    @Test
+    void verify_alreadyVerified_handleException() throws Exception {
+        TempAccount tempAccount = accountFactory.createTemp("scene", "scene@email.com", "password");
+
+        String email = tempAccount.getEmail();
+        String verificationToken = tempAccount.getVerificationToken();
+        mockMvc.perform(
+                get("/verify")
+                        .param("email", email)
+                        .param("token", verificationToken)
+        )
+                .andExpect(status().isOk())
+                .andExpect(view().name("page/account/welcome"))
+        ;
+
+        mockMvc.perform(
+                get("/verify")
+                        .param("email", email)
+                        .param("token", verificationToken)
+        )
+                .andExpect(status().isOk())
+                .andExpect(view().name("error/already_verified"))
+        ;
+    }
 }

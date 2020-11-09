@@ -30,8 +30,9 @@
             </div>
 
             <ul th:each="article:*{articles}">
-                <li>
+                <li th:if="${article.published}or${#authentication.name}==${article.writer}">
                     <div class="article-info">
+                        <span th:unless="${article.published}">temp</span>
                         <a th:href="@{'/articles/'+${article.id}}" th:text="${article.title}"></a>
                         <div class="article-sub-info">
                             <a class="article-writer" th:href="@{'/@'+${article.writer}}" th:text="${article.writer}"></a>

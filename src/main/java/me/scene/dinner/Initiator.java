@@ -67,7 +67,8 @@ public class Initiator implements ApplicationRunner {
     }
 
     private void registerInitialArticle(Long topicId, String writer, String title, String content) {
-        articleService.save(topicId, writer, title, content);
+        Long id = articleService.save(topicId, writer, title, content);
+        articleService.publish(id, writer);
     }
 
 }

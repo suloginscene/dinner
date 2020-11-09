@@ -26,8 +26,16 @@ public class ArticleService {
         return article.getId();
     }
 
-    public Article find(Long id) {
-        return articleRepository.findById(id).orElseThrow(() -> new ArticleNotFoundException(id));
+    public Article find(Long id, String current) {
+        Article article = articleRepository.findById(id).orElseThrow(() -> new ArticleNotFoundException(id));
+        article.checkPublicity(current);
+        return article;
+    }
+
+    @Transactional
+    public void publish(Long id, String current) {
+        Article article = articleRepository.findById(id).orElseThrow(() -> new ArticleNotFoundException(id));
+        article.publish(current);
     }
 
 }
