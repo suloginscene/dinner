@@ -28,6 +28,8 @@ public class Article {
 
     private LocalDateTime createdAt;
 
+    private String preview;
+
     protected Article() {
     }
 
@@ -39,6 +41,7 @@ public class Article {
         article.title = title;
         article.content = content;
         article.createdAt = LocalDateTime.now();
+        article.preview = (content.length() > 255) ? content.substring(0, 255) : content;
         return article;
     }
 

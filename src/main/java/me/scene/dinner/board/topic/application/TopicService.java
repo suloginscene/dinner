@@ -1,5 +1,6 @@
 package me.scene.dinner.board.topic.application;
 
+import me.scene.dinner.board.article.domain.Article;
 import me.scene.dinner.board.magazine.application.MagazineService;
 import me.scene.dinner.board.topic.domain.Topic;
 import me.scene.dinner.board.topic.domain.TopicRepository;
@@ -27,7 +28,10 @@ public class TopicService {
     }
 
     public Topic find(Long id) {
-        return topicRepository.findById(id).orElseThrow(() -> new TopicNotFoundException(id));
+        Topic topic = topicRepository.findById(id).orElseThrow(() -> new TopicNotFoundException(id));
+        // Todo
+        topic.getArticles().forEach(Article::getContent);
+        return topic;
     }
 
 }
