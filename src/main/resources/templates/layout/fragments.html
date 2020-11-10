@@ -36,13 +36,10 @@
             <nav>
                 <a href="#" id="nav-accordion">&nbsp;&nbsp;&nbsp;Magazines<i class="fa fa-chevron-down"></i></a>
                 <ul class="panel">
-
-                    <!-- TODO toAJAX / semi batch -->
-                    <th:block th:each="magazine:${magazines}">
-                        <li><a th:href="@{'/magazines/'+${magazine.id}}" th:text="${magazine.title}"></a></li>
-                    </th:block>
-
-                    <li><a href="/magazines">etc</a></li>
+                    <script type="text/template" id="magazine-template">
+                        <li><a href="/magazines/{id}">{title}</a></li>
+                    </script>
+                    <li><a href="/magazines" id="magazine-list">etc</a></li>
                     <li><a href="/magazine-form"><i class="fa fa-plus"></i></a></li>
                 </ul>
             </nav>

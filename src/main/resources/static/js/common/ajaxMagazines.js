@@ -1,18 +1,22 @@
 const ajaxMagazines = function () {
 
-    const onSuccess = function (data) {
-        console.log("success!")
-        console.log(data)
-    }
+    const loadMagazinesOnNav = function (magazineArr) {
+        const template = document.querySelector("#magazine-template").innerHTML;
 
-    console.log("get!")
+        const $magazineStackBase = $('#magazine-list');
+        magazineArr.forEach(function (m) {
+            const el = template.replace("{id}", m.id).replace("{title}", m.title);
+            $magazineStackBase.before(el);
+        });
+    };
+
 
     $.ajax({
         type: 'get',
         url: '/api/magazines',
-        success: onSuccess,
-    })
+        success: loadMagazinesOnNav,
+    });
 
-}
+};
 
 window.addEventListener('load', ajaxMagazines);

@@ -7,7 +7,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 @Controller
 public class MainController {
@@ -25,7 +24,7 @@ public class MainController {
     @GetMapping("/")
     public String home(Model model) {
         model.addAttribute("activeProfile", environment.getActiveProfiles()[0]);
-        model.addAttribute("version", DateTimeFormatter.ISO_DATE_TIME.format(startedAt));
+        model.addAttribute("version", startedAt);
         return "page/main/home";
     }
 
