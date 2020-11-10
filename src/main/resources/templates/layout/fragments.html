@@ -19,6 +19,7 @@
         <script src="/js/common/acc_nav.js"></script>
         <script src="/js/common/scrollSensibleNavbar.js"></script>
         <script src="/js/common/overLayingNav.js"></script>
+        <script src="/js/common/ajaxMagazines.js"></script>
 
     </th:block>
 
@@ -35,10 +36,12 @@
             <nav>
                 <a href="#" id="nav-accordion">&nbsp;&nbsp;&nbsp;Magazines<i class="fa fa-chevron-down"></i></a>
                 <ul class="panel">
+
                     <!-- TODO toAJAX / semi batch -->
                     <th:block th:each="magazine:${magazines}">
                         <li><a th:href="@{'/magazines/'+${magazine.id}}" th:text="${magazine.title}"></a></li>
                     </th:block>
+
                     <li><a href="/magazines">etc</a></li>
                     <li><a href="/magazine-form"><i class="fa fa-plus"></i></a></li>
                 </ul>

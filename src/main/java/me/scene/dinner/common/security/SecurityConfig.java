@@ -29,9 +29,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
 
                 .mvcMatchers(HttpMethod.GET,
-                        "/", "/about",
+                        "/", "/about", "/api/magazines", "/magazines",
                         "/signup", "/verify", "/login", "/forgot", "/sent", "/@*",
-                        "/magazines", "/magazines/*", "/topics/*", "/articles/*",
+                        "/magazines/*", "/topics/*", "/articles/*",
                         TagController.URL, TagController.URL + "/*"
                 ).permitAll()
 
@@ -45,7 +45,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 
         http.formLogin()
-                .loginPage("/login");
+                .loginPage("/login")
+                .successHandler(new LoginSuccessHandler("/"));
 
         http.logout()
                 .logoutSuccessUrl("/");

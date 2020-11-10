@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
     <div th:replace="layout/layout::head(${article.title},~{::link}, ~{})">
         <link rel="stylesheet" href="/css/page/board/article/view.css"/>
@@ -13,7 +14,7 @@
                 <h1 id="title" th:text="*{title}"></h1>
                 <div id="sub-info">
                     <span id="writer"><a th:href="'/@'+*{writer}" th:text="*{writer}"></a></span>
-                    <span id="date" th:text="*{createdAt}"></span>
+                    <span id="date" th:text="*{#temporals.format(createdAt, 'yyyy-MM-dd HH:mm')}"></span>
                 </div>
             </div>
 
@@ -23,15 +24,20 @@
 
             <article th:utext="*{content}"></article>
 
-            <div>
-                <ul th:each="reply:*{replies}">
-                    <li>
-                        <span><a th:href="@{'/@'+${reply.writer}}" th:text="${reply.writer}"></a></span>
-                        <span th:text="${reply.content}"></span>
-                        <span th:text="${reply.createdAt}"></span>
-                    </li>
-                </ul>
+            <ul th:each="reply:*{replies}">
+                <li>
+                    <span><a th:href="@{'/@'+${reply.writer}}" th:text="${reply.writer}"></a></span>
+                    <span th:text="${reply.content}"></span>
+                    <span th:text="${#temporals.format(reply.createdAt, 'yyyy-MM-dd HH:mm')}"></span>
+                </li>
+            </ul>
+
+            <div sec:authorize="!isAuthenticated()">
+                Reply need login.
+            </div>
+            <div sec:authorize="isAuthenticated()">
                 <form th:action="@{/replies}" th:method="post">
+                    <span th:text="${#authentication.name}"></span>
                     <label>
                         <input type="text" name="articleId" th:value="*{id}" hidden>
                         <input type="text" name="content" placeholder="reply">

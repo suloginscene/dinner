@@ -1,5 +1,6 @@
 package me.scene.dinner.board.magazine.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import me.scene.dinner.board.topic.domain.Topic;
@@ -17,20 +18,24 @@ public class Magazine {
     @Id @GeneratedValue
     private Long id;
 
+    @JsonIgnore
     private String manager;
 
-    @ElementCollection(fetch = EAGER)
+    @ElementCollection(fetch = EAGER) @JsonIgnore
     private final List<String> writers = new ArrayList<>();
 
     private String title;
 
+    @JsonIgnore
     private String shortExplanation;
 
+    @JsonIgnore
     private String longExplanation;
 
+    @JsonIgnore
     private MagazinePolicy magazinePolicy;
 
-    @OneToMany(mappedBy = "magazine")
+    @OneToMany(mappedBy = "magazine") @JsonIgnore
     private final List<Topic> topics = new ArrayList<>();
 
 

@@ -102,20 +102,6 @@ class MagazineControllerTest {
     }
 
     @Test
-    void showList_hasMagazines() throws Exception {
-        Account account = accountFactory.create("scene", "scene@email.com", "password");
-        magazineService.save(account.getUsername(), "title", "short", "long", "OPEN");
-
-        mockMvc.perform(
-                get("/magazines")
-        )
-                .andExpect(status().isOk())
-                .andExpect(view().name("page/board/magazine/list"))
-                .andExpect(model().attributeExists("magazines"))
-        ;
-    }
-
-    @Test
     void show_hasMagazine() throws Exception {
         Account account = accountFactory.create("scene", "scene@email.com", "password");
         Long id = magazineService.save(account.getUsername(), "title", "short", "long", "OPEN");

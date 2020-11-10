@@ -33,4 +33,6 @@ public class MagazineService {
         return magazineRepository.findAll();
     }
 
+    // TODO findBests
+
 }

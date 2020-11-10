@@ -24,12 +24,6 @@ public class MagazineController {
     }
 
 
-    @GetMapping("/magazines")
-    public String magazineList(Model model) {
-        model.addAttribute("magazines", magazineService.findAll());
-        return "page/board/magazine/list";
-    }
-
     @GetMapping("/magazine-form")
     public String shipMagazineForm(Model model) {
         model.addAttribute("magazineForm", new MagazineForm());
@@ -48,6 +42,12 @@ public class MagazineController {
     public String showMagazine(@PathVariable Long magazineId, Model model) {
         model.addAttribute("magazine", magazineService.find(magazineId));
         return "page/board/magazine/view";
+    }
+
+    @GetMapping("/magazines")
+    public String showList(Model model) {
+        model.addAttribute("magazines", magazineService.findAll());
+        return "page/board/magazine/list";
     }
 
 }
