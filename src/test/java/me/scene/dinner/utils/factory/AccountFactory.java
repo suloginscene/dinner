@@ -1,4 +1,4 @@
-package me.scene.dinner.account.utils;
+package me.scene.dinner.utils.factory;
 
 import me.scene.dinner.account.application.AccountService;
 import me.scene.dinner.account.domain.Account;

@@ -2,15 +2,15 @@ package me.scene.dinner.board.article.ui;
 
 import me.scene.dinner.account.domain.Account;
 import me.scene.dinner.account.domain.AccountRepository;
-import me.scene.dinner.account.utils.AccountFactory;
-import me.scene.dinner.account.utils.WithAccount;
 import me.scene.dinner.board.article.application.ArticleService;
 import me.scene.dinner.board.article.domain.Article;
 import me.scene.dinner.board.article.domain.ArticleRepository;
 import me.scene.dinner.board.magazine.domain.Magazine;
-import me.scene.dinner.board.magazine.utils.MagazineFactory;
 import me.scene.dinner.board.topic.domain.Topic;
-import me.scene.dinner.board.topic.utils.TopicFactory;
+import me.scene.dinner.utils.authentication.WithAccount;
+import me.scene.dinner.utils.factory.AccountFactory;
+import me.scene.dinner.utils.factory.MagazineFactory;
+import me.scene.dinner.utils.factory.TopicFactory;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -22,7 +22,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @Transactional
@@ -102,7 +101,6 @@ class ArticleControllerTest {
                         .with(csrf())
                         .param("topicId", "1")
         )
-                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(view().name("page/board/article/form"))
                 .andExpect(model().hasErrors())

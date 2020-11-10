@@ -2,12 +2,12 @@ package me.scene.dinner.board.magazine.ui;
 
 import me.scene.dinner.account.domain.Account;
 import me.scene.dinner.account.domain.AccountRepository;
-import me.scene.dinner.account.utils.AccountFactory;
-import me.scene.dinner.account.utils.WithAccount;
 import me.scene.dinner.board.magazine.application.MagazineService;
 import me.scene.dinner.board.magazine.domain.Magazine;
 import me.scene.dinner.board.magazine.domain.MagazinePolicy;
 import me.scene.dinner.board.magazine.domain.MagazineRepository;
+import me.scene.dinner.utils.authentication.WithAccount;
+import me.scene.dinner.utils.factory.AccountFactory;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;

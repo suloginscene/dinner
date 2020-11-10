@@ -24,7 +24,20 @@
             <article th:utext="*{content}"></article>
 
             <div>
-                댓글
+                <ul th:each="reply:*{replies}">
+                    <li>
+                        <span><a th:href="@{'/@'+${reply.writer}}" th:text="${reply.writer}"></a></span>
+                        <span th:text="${reply.content}"></span>
+                        <span th:text="${reply.createdAt}"></span>
+                    </li>
+                </ul>
+                <form th:action="@{/replies}" th:method="post">
+                    <label>
+                        <input type="text" name="articleId" th:value="*{id}" hidden>
+                        <input type="text" name="content" placeholder="reply">
+                    </label>
+                    <button type="submit">write</button>
+                </form>
             </div>
 
         </section>

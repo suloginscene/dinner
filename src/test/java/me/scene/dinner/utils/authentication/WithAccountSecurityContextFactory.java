@@ -1,6 +1,7 @@
-package me.scene.dinner.account.utils;
+package me.scene.dinner.utils.authentication;
 
 import me.scene.dinner.account.application.AccountService;
+import me.scene.dinner.utils.factory.AccountFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;

@@ -3,10 +3,13 @@ package me.scene.dinner.board.article.domain;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import me.scene.dinner.board.article.application.PublicationException;
+import me.scene.dinner.board.reply.domain.Reply;
 import me.scene.dinner.board.topic.domain.Topic;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import static javax.persistence.FetchType.LAZY;
 
@@ -31,6 +34,9 @@ public class Article {
 
     private LocalDateTime createdAt;
 
+    @OneToMany(mappedBy = "article")
+    private final List<Reply> replies = new ArrayList<>();
+
     protected Article() {
     }
 
@@ -53,6 +59,10 @@ public class Article {
     public void publish(String client) {
         if (!client.equals(writer)) throw new PublicationException(id);
         published = true;
+    }
+
+    public void add(Reply reply) {
+        replies.add(reply);
     }
 
 }

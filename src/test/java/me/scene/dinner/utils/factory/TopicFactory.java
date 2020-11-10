@@ -1,4 +1,4 @@
-package me.scene.dinner.board.topic.utils;
+package me.scene.dinner.utils.factory;
 
 import me.scene.dinner.board.topic.application.TopicService;
 import me.scene.dinner.board.topic.domain.Topic;

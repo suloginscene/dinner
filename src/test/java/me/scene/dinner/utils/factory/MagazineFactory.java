@@ -1,4 +1,4 @@
-package me.scene.dinner.board.magazine.utils;
+package me.scene.dinner.utils.factory;
 
 import me.scene.dinner.board.magazine.application.MagazineService;
 import me.scene.dinner.board.magazine.domain.Magazine;
