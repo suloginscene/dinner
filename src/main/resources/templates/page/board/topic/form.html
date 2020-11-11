@@ -17,7 +17,8 @@
                 <form th:action="@{/topics}" th:method="post" th:object="${topicForm}">
                     <div class="form-texts">
                         <label>
-                            <input type="text" name="magazineId" th:value="${magazineId}" hidden>
+                            <input type="text" name="magazineId" th:value="*{magazineId}" hidden>
+                            <small th:if="${#fields.hasErrors('magazineId')}" th:errors="*{magazineId}" class="form-text text-danger"></small>
                         </label>
                         <div class="topic-form-info">토픽의 이름을 정해주세요.</div>
                         <label>

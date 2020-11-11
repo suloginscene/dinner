@@ -29,8 +29,8 @@
                 </form>
             </div>
 
-            <ul th:each="article:*{articles}">
-                <li th:if="${article.published}or${#authentication.name}==${article.writer}">
+            <ul>
+                <li th:each="article:*{articles}" th:if="${article.published}or${#authentication.name}==${article.writer}">
                     <div class="article-info">
                         <span th:unless="${article.published}">temp</span>
                         <a th:href="@{'/articles/'+${article.id}}" th:text="${article.title}"></a>

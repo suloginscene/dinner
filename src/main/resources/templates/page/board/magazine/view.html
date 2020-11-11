@@ -38,8 +38,8 @@
                 </form>
             </div>
 
-            <ul th:each="topic:*{topics}">
-                <li>
+            <ul>
+                <li th:each="topic:*{topics}">
                     <a th:href="@{'/topics/'+${topic.id}}" th:text="${topic.title}"></a>
                 </li>
             </ul>

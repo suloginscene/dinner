@@ -27,17 +27,17 @@ public class ArticleController {
 
     @GetMapping("/article-form")
     public String shipArticleForm(@RequestParam Long topicId, Model model) {
-        model.addAttribute("topicId", topicId);
-        model.addAttribute("articleForm", new ArticleForm());
+        ArticleForm articleForm = new ArticleForm();
+        articleForm.setTopicId(topicId);
+        model.addAttribute("articleForm", articleForm);
         return "page/board/article/form";
     }
 
     @PostMapping("/articles")
-    public String createArticle(@RequestParam Long topicId, @CurrentUser Account current,
-                                @Valid ArticleForm form, Errors errors) {
+    public String createArticle(@CurrentUser Account current, @Valid ArticleForm form, Errors errors) {
         if (errors.hasErrors()) return "page/board/article/form";
 
-        Long id = articleService.save(topicId, current.getUsername(), form.getTitle(), form.getContent());
+        Long id = articleService.save(form.getTopicId(), current.getUsername(), form.getTitle(), form.getContent());
         return "redirect:" + ("/articles/" + id);
     }
 

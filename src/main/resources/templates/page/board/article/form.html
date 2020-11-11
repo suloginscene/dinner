@@ -8,8 +8,13 @@
     <body th:replace="layout/layout::body(~{::section})">
         <section>
             <form th:action="@{/articles}" th:method="post" th:object="${articleForm}">
-                <label>
-                    <input type="text" name="topicId" th:value="${topicId}" hidden>
+                <div id="error-message">
+                    <span th:if="${#fields.hasErrors('topicId')}" th:errors="*{topicId}" class="form-text text-danger"></span>
+                    <span th:if="${#fields.hasErrors('title')}" th:errors="*{title}" class="form-text text-danger"></span>
+                    <span th:if="${#fields.hasErrors('content')}" th:errors="*{content}" class="form-text text-danger"></span>
+                </div>
+                <label hidden>
+                    <input type="text" name="topicId" th:value="*{topicId}" hidden>
                 </label>
                 <div id="bar">
                     <label id="title">
@@ -17,20 +22,23 @@
                     </label>
                     <button type="submit" id="form-submit">save</button>
                 </div>
-                <div id="error-message">
-                    <span th:if="${#fields.hasErrors('title')}" th:errors="*{title}" class="form-text text-danger"></span>
-                    <span th:if="${#fields.hasErrors('content')}" th:errors="*{content}" class="form-text text-danger"></span>
-                </div>
-                <label>
-                    <input type="text" th:field="*{content}" id="content" hidden>
+
+                <!-- TODO editor -->
+                <label id="editor" style="width: 100%">
+                    <textarea th:field="*{content}" id="content" placeholder="본문"
+                              style="height: 100%; width: 100%; padding: 10px"></textarea>
                 </label>
-                <div id="editor">
-                    <div id="tui-editor"></div>
-                    <th:block th:replace="lib/tui::imports"></th:block>
-                    <script th:replace="lib/tui::load"></script>
-                </div>
+
+                <!--                <label>-->
+                <!--                    <input type="text" th:field="*{content}" id="content" hidden>-->
+                <!--                </label>-->
+                <!--                <div id="editor">-->
+                <!--                    <div id="tui-editor"></div>-->
+                <!--                    <th:block th:replace="lib/tui::imports"></th:block>-->
+                <!--                    <script th:replace="lib/tui::load"></script>-->
+                <!--                </div>-->
             </form>
-            <script th:replace="lib/tui::submit"></script>
+            <!--            <script th:replace="lib/tui::submit"></script>-->
         </section>
     </body>
 

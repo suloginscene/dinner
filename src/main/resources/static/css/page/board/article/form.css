@@ -36,6 +36,9 @@ section form #bar button {
 }
 
 section form #error-message {
+    position: absolute;
+    top: 80px;
+    width: calc(100% - 240px);
     margin-bottom: 10px;
     text-align: center;
 }

@@ -32,7 +32,6 @@ section #button-container button {
 section ul {
     list-style-type: none;
     padding-left: 0;
-    padding-bottom: 30px;
     overflow: auto;
 }
 

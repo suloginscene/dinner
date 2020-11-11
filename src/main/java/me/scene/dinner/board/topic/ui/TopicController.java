@@ -27,17 +27,17 @@ public class TopicController {
 
     @GetMapping("/topic-form")
     public String shipTopicForm(@RequestParam Long magazineId, Model model) {
-        model.addAttribute("magazineId", magazineId);
-        model.addAttribute("topicForm", new TopicForm());
+        TopicForm topicForm = new TopicForm();
+        topicForm.setMagazineId(magazineId);
+        model.addAttribute("topicForm", topicForm);
         return "page/board/topic/form";
     }
 
     @PostMapping("/topics")
-    public String createTopic(@RequestParam Long magazineId, @CurrentUser Account current,
-                              @Valid TopicForm form, Errors errors) {
+    public String createTopic(@CurrentUser Account current, @Valid TopicForm form, Errors errors) {
         if (errors.hasErrors()) return "page/board/topic/form";
 
-        Long id = topicService.save(magazineId, current.getUsername(), form.getTitle(), form.getShortExplanation(), form.getLongExplanation());
+        Long id = topicService.save(form.getMagazineId(), current.getUsername(), form.getTitle(), form.getShortExplanation(), form.getLongExplanation());
         return "redirect:" + ("/topics/" + id);
     }
 
