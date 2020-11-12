@@ -178,6 +178,10 @@ class ArticleControllerTest {
         Topic topic = topicFactory.create(magazine.getId(), "scene", "title", "short", "long");
         Long id = articleService.save(topic.getId(), "scene", "title", "content");
 
+        Article unpublished = articleService.find(id, "scene");
+        assertThat(unpublished.isPublished()).isFalse();
+        assertThat(magazine.getWriters()).doesNotContain("scene");
+
         mockMvc.perform(
                 post("/articles/" + id)
                         .with(csrf())
@@ -185,8 +189,9 @@ class ArticleControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/articles/" + id))
         ;
-        Article article = articleService.find(id, "scene");
-        assertThat(article.isPublished()).isTrue();
+        Article published = articleService.find(id, "scene");
+        assertThat(published.isPublished()).isTrue();
+        assertThat(magazine.getWriters()).contains("scene");
     }
 
     @Test

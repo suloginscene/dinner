@@ -9,7 +9,7 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import static javax.persistence.FetchType.EAGER;
+import static javax.persistence.FetchType.LAZY;
 
 @Entity
 @Getter @EqualsAndHashCode(of = "id")
@@ -21,7 +21,7 @@ public class Magazine {
     @JsonIgnore
     private String manager;
 
-    @ElementCollection(fetch = EAGER) @JsonIgnore
+    @ElementCollection(fetch = LAZY) @JsonIgnore
     private final List<String> writers = new ArrayList<>();
 
     private String title;
@@ -54,6 +54,10 @@ public class Magazine {
 
     public void add(Topic topic) {
         topics.add(topic);
+    }
+
+    public void register(String writer) {
+        writers.add(writer);
     }
 
 }

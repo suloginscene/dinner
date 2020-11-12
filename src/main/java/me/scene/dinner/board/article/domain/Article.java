@@ -59,6 +59,7 @@ public class Article {
     public void publish(String client) {
         if (!client.equals(writer)) throw new PublicationException(id);
         published = true;
+        topic.register(writer);
     }
 
     public void add(Reply reply) {

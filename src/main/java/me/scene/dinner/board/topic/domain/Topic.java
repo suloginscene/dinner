@@ -51,4 +51,8 @@ public class Topic {
         articles.add(article);
     }
 
+    public void register(String writer) {
+        magazine.register(writer);
+    }
+
 }

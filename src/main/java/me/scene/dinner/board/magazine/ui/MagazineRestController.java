@@ -13,6 +13,7 @@ import java.util.List;
 public class MagazineRestController {
 
     private final MagazineService magazineService;
+    private List<Magazine> magazines;
 
     @Autowired
     public MagazineRestController(MagazineService magazineService) {
@@ -21,8 +22,13 @@ public class MagazineRestController {
 
     @GetMapping("/api/magazines")
     public ResponseEntity<List<Magazine>> magazineList() {
-        // TODO findBest
-        return ResponseEntity.ok(magazineService.findAll());
+
+        if (magazines == null) {
+            // TODO findBest
+            magazines = magazineService.findAll();
+        }
+
+        return ResponseEntity.ok(magazines);
     }
 
 }
