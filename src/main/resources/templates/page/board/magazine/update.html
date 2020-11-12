@@ -6,19 +6,19 @@
     </div>
 
     <body th:replace="layout/layout::body(~{::section})">
-        <section>
+        <section th:object="${updateForm}">
             <div class="centered-content">
                 <div class="message">
-                    누구나 매거진을 만들 수 있습니다.
+                    매거진을 수정할 수 있습니다.
                 </div>
-                <form th:action="@{/magazines}" th:method="post" th:object="${magazineForm}">
+                <form th:action="'/magazines/'+*{id}" th:method="put">
                     <div class="form-texts">
-                        <div class="magazine-form-info">매거진의 이름을 정해주세요.</div>
+                        <div class="magazine-form-info">매거진 이름을 변경할 수 있습니다.</div>
                         <label>
                             <input th:field="*{title}" type="text" placeholder="매거진 이름은 최대 20자까지 가능합니다.">
                             <small th:if="${#fields.hasErrors('title')}" th:errors="*{title}" class="form-text text-danger"></small>
                         </label>
-                        <div class="magazine-form-info">매거진 소개글을 작성해주세요.</div>
+                        <div class="magazine-form-info">매거진 소개글을 변경할 수 있습니다.</div>
                         <label>
                             <input th:field="*{shortExplanation}" type="text" placeholder="간략한 소개는 최대 30자까지 가능합니다.">
                             <small th:if="${#fields.hasErrors('shortExplanation')}" th:errors="*{shortExplanation}" class="form-text text-danger"></small>
@@ -29,14 +29,19 @@
                         </label>
                     </div>
                     <div class="form-checks">
-                        <div class="magazine-form-info">매거진 성격을 설정해주세요.</div>
-                        <label for="radio-1"><input th:field="*{policy}" type="radio" id="radio-1" value="OPEN"/>open</label>
-                        <label for="radio-2"><input th:field="*{policy}" type="radio" id="radio-2" value="MANAGED"/>managed</label>
-                        <label for="radio-3"><input th:field="*{policy}" type="radio" id="radio-3" value="EXCLUSIVE"/>exclusive</label>
-                        <small th:if="${#fields.hasErrors('policy')}" th:errors="*{policy}" class="form-text text-danger"></small>
+                        <div class="magazine-form-info">매거진 성격은 변경할 수 없습니다.</div>
+                        <div th:text="*{policy}"></div>
+                    </div>
+                    <div hidden>
+                        <label>
+                            <input type="text" th:field="*{id}" th:value="*{id}">
+                        </label>
+                        <label>
+                            <input type="text" th:field="*{policy}" th:value="*{policy}">
+                        </label>
                     </div>
                     <button type="submit">
-                        issue
+                        update
                     </button>
                 </form>
             </div>

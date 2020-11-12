@@ -2,9 +2,9 @@ package me.scene.dinner.board.article.domain;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import me.scene.dinner.board.article.application.PublicationException;
 import me.scene.dinner.board.reply.domain.Reply;
 import me.scene.dinner.board.topic.domain.Topic;
+import me.scene.dinner.common.exception.NotOwnerException;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -41,7 +41,7 @@ public class Article {
     }
 
     public static Article create(Topic topic, String writer, String title, String content) {
-        topic.getMagazine().authorize(writer);
+        topic.getMagazine().checkAuthorization(writer);
 
         Article article = new Article();
         topic.add(article);
@@ -54,14 +54,12 @@ public class Article {
         return article;
     }
 
-    public void checkPublicity(String client) {
-        if (isPublished()) return;
-        if (client.equals(writer)) return;
-        throw new PublicationException(id);
+    public void confirmWriter(String current) {
+        if (!current.equals(writer)) throw new NotOwnerException(current);
     }
 
-    public void publish(String client) {
-        if (!client.equals(writer)) throw new PublicationException(id);
+    public void publish(String current) {
+        confirmWriter(current);
         published = true;
         topic.register(writer);
     }

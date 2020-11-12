@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import me.scene.dinner.board.topic.domain.Topic;
+import me.scene.dinner.common.exception.NotOwnerException;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -55,8 +56,15 @@ public class Magazine {
         return magazine;
     }
 
-    public void add(Topic topic) {
-        topics.add(topic);
+    public void update(String current, String title, String shortExplanation, String longExplanation) {
+        confirmManager(current);
+        this.title = title;
+        this.shortExplanation = shortExplanation;
+        this.longExplanation = longExplanation;
+    }
+
+    public void confirmManager(String current) {
+        if (!current.equals(manager)) throw new NotOwnerException(current);
     }
 
     public void register(String writer) {
@@ -72,7 +80,7 @@ public class Magazine {
         authorizedWriters.add(writer);
     }
 
-    public void authorize(String username) {
+    public void checkAuthorization(String username) {
 
         if (policy == Policy.OPEN) {
             return;
@@ -87,8 +95,12 @@ public class Magazine {
             if (authorizedWriters.contains(username)) return;
         }
 
-        throw new AuthorizationException(username);
+        throw new PolicyAuthException(username);
 
+    }
+
+    public void add(Topic topic) {
+        topics.add(topic);
     }
 
 }

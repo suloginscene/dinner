@@ -17,7 +17,7 @@ public class ArticleFactory {
 
     public Article create(Long topicId, String writer, String title, String content) {
         Long id = articleService.save(topicId, writer, title, content);
-        Article article = articleService.find(id, writer);
+        Article article = articleService.find(id);
         article.publish(writer);
         return article;
     }

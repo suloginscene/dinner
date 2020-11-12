@@ -123,7 +123,7 @@ class ArticleControllerTest {
                         .with(csrf())
         )
                 .andExpect(status().isOk())
-                .andExpect(view().name("error/authorization"))
+                .andExpect(view().name("error/access"))
         ;
 
         Magazine managed = magazineFactory.create(account.getUsername(), "title", "short", "long", "MANAGED");
@@ -136,7 +136,7 @@ class ArticleControllerTest {
                         .with(csrf())
         )
                 .andExpect(status().isOk())
-                .andExpect(view().name("error/authorization"))
+                .andExpect(view().name("error/access"))
         ;
     }
 
@@ -238,7 +238,7 @@ class ArticleControllerTest {
                 get("/articles/" + id)
         )
                 .andExpect(status().isOk())
-                .andExpect(view().name("error/publication"))
+                .andExpect(view().name("error/access"))
         ;
     }
 
@@ -249,7 +249,7 @@ class ArticleControllerTest {
         Topic topic = topicFactory.create(magazine.getId(), "scene", "title", "short", "long");
         Long id = articleService.save(topic.getId(), "scene", "title", "content");
 
-        Article unpublished = articleService.find(id, "scene");
+        Article unpublished = articleService.find(id);
         assertThat(unpublished.isPublished()).isFalse();
         assertThat(magazine.getWriters()).doesNotContain("scene");
 
@@ -260,7 +260,7 @@ class ArticleControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/articles/" + id))
         ;
-        Article published = articleService.find(id, "scene");
+        Article published = articleService.find(id);
         assertThat(published.isPublished()).isTrue();
         assertThat(magazine.getWriters()).contains("scene");
     }
@@ -278,9 +278,9 @@ class ArticleControllerTest {
                         .with(csrf())
         )
                 .andExpect(status().isOk())
-                .andExpect(view().name("error/publication"))
+                .andExpect(view().name("error/access"))
         ;
-        Article article = articleService.find(id, "scene");
+        Article article = articleService.find(id);
         assertThat(article.isPublished()).isFalse();
     }
 

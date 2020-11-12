@@ -4,8 +4,8 @@ import me.scene.dinner.account.domain.Account;
 import me.scene.dinner.account.domain.AccountRepository;
 import me.scene.dinner.board.magazine.application.MagazineService;
 import me.scene.dinner.board.magazine.domain.Magazine;
-import me.scene.dinner.board.magazine.domain.Policy;
 import me.scene.dinner.board.magazine.domain.MagazineRepository;
+import me.scene.dinner.board.magazine.domain.Policy;
 import me.scene.dinner.utils.authentication.WithAccount;
 import me.scene.dinner.utils.factory.AccountFactory;
 import org.junit.jupiter.api.Test;
@@ -17,9 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @Transactional
@@ -60,11 +58,11 @@ class MagazineControllerTest {
     void create_saveAndShow() throws Exception {
         mockMvc.perform(
                 post("/magazines")
+                        .with(csrf())
                         .param("title", "Test Magazine")
                         .param("shortExplanation", "This is short explanation.")
                         .param("longExplanation", "This is long explanation of test magazine.")
-                        .param("magazinePolicy", "OPEN")
-                        .with(csrf())
+                        .param("policy", "OPEN")
         )
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrlPattern("/magazines/*"))
@@ -93,7 +91,6 @@ class MagazineControllerTest {
                 post("/magazines")
                         .with(csrf())
         )
-                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(view().name("page/board/magazine/form"))
                 .andExpect(model().hasErrors())
@@ -125,6 +122,78 @@ class MagazineControllerTest {
         )
                 .andExpect(status().isOk())
                 .andExpect(view().name("error/board_not_found"))
+        ;
+    }
+
+    @Test
+    @WithAccount(username = "scene")
+    void updatePage_hasForm() throws Exception {
+        Long id = magazineService.save("scene", "title", "short", "long", "OPEN");
+
+        mockMvc.perform(
+                get("/magazines/" + id + "/form")
+        )
+                .andExpect(status().isOk())
+                .andExpect(view().name("page/board/magazine/update"))
+                .andExpect(model().attributeExists("updateForm"))
+        ;
+    }
+
+    @Test
+    @WithAccount(username = "scene")
+    void updatePage_byStranger_handleException() throws Exception {
+        Account account = accountFactory.create("magazineManager", "manager@email.com", "password");
+        Long id = magazineService.save(account.getUsername(), "title", "short", "long", "OPEN");
+
+        mockMvc.perform(
+                get("/magazines/" + id + "/form")
+        )
+                .andExpect(status().isOk())
+                .andExpect(view().name("error/access"))
+        ;
+    }
+
+    @Test
+    @WithAccount(username = "scene")
+    void update_updated() throws Exception {
+        Long id = magazineService.save("scene", "title", "short", "long", "OPEN");
+
+        mockMvc.perform(
+                put("/magazines/" + id)
+                        .with(csrf())
+                        .param("id", id.toString())
+                        .param("title", "Updated")
+                        .param("shortExplanation", "Updated short.")
+                        .param("longExplanation", "Updated long.")
+                        .param("policy", "OPEN")
+        )
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/magazines/" + id))
+        ;
+
+        Magazine magazine = magazineService.find(id);
+        assertThat(magazine.getTitle()).isEqualTo("Updated");
+        assertThat(magazine.getShortExplanation()).isEqualTo("Updated short.");
+        assertThat(magazine.getLongExplanation()).isEqualTo("Updated long.");
+    }
+
+    @Test
+    @WithAccount(username = "scene")
+    void update_byStranger_handleException() throws Exception {
+        Account account = accountFactory.create("magazineManager", "manager@email.com", "password");
+        Long id = magazineService.save(account.getUsername(), "title", "short", "long", "OPEN");
+
+        mockMvc.perform(
+                put("/magazines/" + id)
+                        .with(csrf())
+                        .param("id", id.toString())
+                        .param("title", "Updated")
+                        .param("shortExplanation", "Updated short.")
+                        .param("longExplanation", "Updated long.")
+                        .param("policy", "OPEN")
+        )
+                .andExpect(status().isOk())
+                .andExpect(view().name("error/access"))
         ;
     }
 

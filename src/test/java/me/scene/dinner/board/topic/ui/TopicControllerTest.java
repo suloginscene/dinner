@@ -121,7 +121,7 @@ class TopicControllerTest {
                         .with(csrf())
         )
                 .andExpect(status().isOk())
-                .andExpect(view().name("error/authorization"))
+                .andExpect(view().name("error/access"))
         ;
 
         Magazine managed = magazineFactory.create(account.getUsername(), "title", "short", "long", "MANAGED");
@@ -134,7 +134,7 @@ class TopicControllerTest {
                         .with(csrf())
         )
                 .andExpect(status().isOk())
-                .andExpect(view().name("error/authorization"))
+                .andExpect(view().name("error/access"))
         ;
     }
 

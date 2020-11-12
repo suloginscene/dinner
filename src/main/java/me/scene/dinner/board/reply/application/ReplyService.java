@@ -21,7 +21,7 @@ public class ReplyService {
 
     @Transactional
     public void save(Long articleId, String writer, String content) {
-        Reply reply = Reply.create(articleService.find(articleId, writer), writer, content);
+        Reply reply = Reply.create(articleService.find(articleId), writer, content);
         replyRepository.save(reply);
     }
 

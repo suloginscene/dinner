@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
     <div th:replace="layout/layout::head(${magazine.title},~{::link}, ~{::script})">
         <link rel="stylesheet" href="/css/page/board/magazine/view.css"/>
@@ -27,15 +28,19 @@
                 <div class="panel" th:text="*{longExplanation}"></div>
             </div>
 
-            <div id="button-container">
+            <div id="button-container" sec:authorize="isAuthenticated()">
+                <form th:if="${#authentication.name}==*{manager}" th:action="'/magazines/'+*{id}+'/form'" method="get">
+                    <button type="submit">update</button>
+                </form>
                 <!-- TODO select button whether principal is creatable -->
-                <button>apply</button>
                 <form action="/topic-form" method="get">
                     <label>
                         <input type="text" name="magazineId" th:value="*{id}" hidden>
                     </label>
                     <button type="submit">create</button>
                 </form>
+                <button>apply</button>
+
             </div>
 
             <ul>

@@ -2,6 +2,7 @@ package me.scene.dinner.board.article.ui;
 
 import me.scene.dinner.account.domain.Account;
 import me.scene.dinner.board.article.application.ArticleService;
+import me.scene.dinner.board.article.domain.Article;
 import me.scene.dinner.common.security.CurrentUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -43,15 +44,17 @@ public class ArticleController {
 
     @GetMapping("/articles/{articleId}")
     public String showArticle(@PathVariable Long articleId, @CurrentUser Account current, Model model) {
-        String username = (current != null) ? current.getUsername() : "anonymousUser";
-        model.addAttribute("article", articleService.find(articleId, username));
+        Article article = articleService.find(articleId);
+        if (!article.isPublished()) {
+            article.confirmWriter((current != null) ? current.getUsername() : "anonymousUser");
+        }
+        model.addAttribute("article", article);
         return "page/board/article/view";
     }
 
     @PostMapping("/articles/{articleId}")
     public String publish(@PathVariable Long articleId, @CurrentUser Account current) {
-        String username = (current != null) ? current.getUsername() : "anonymousUser";
-        articleService.publish(articleId, username);
+        articleService.publish(articleId, (current != null) ? current.getUsername() : "anonymousUser");
         return "redirect:" + ("/articles/" + articleId);
     }
 

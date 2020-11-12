@@ -3,8 +3,7 @@ package me.scene.dinner.common.exception;
 import lombok.extern.slf4j.Slf4j;
 import me.scene.dinner.account.application.AlreadyVerifiedException;
 import me.scene.dinner.account.domain.VerificationException;
-import me.scene.dinner.board.article.application.PublicationException;
-import me.scene.dinner.board.magazine.domain.AuthorizationException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -47,6 +46,12 @@ public class ExceptionAdvice {
         return "error/messaging";
     }
 
+    @ExceptionHandler
+    public String accessDeniedException(HttpServletRequest req, AccessDeniedException e) {
+        warn(req, e);
+        return "error/access";
+    }
+
 
     // custom exception ------------------------------------------------------------------------------------------------
 
@@ -68,28 +73,11 @@ public class ExceptionAdvice {
         return "error/already_verified";
     }
 
-    @ExceptionHandler
-    public String PublicationException(HttpServletRequest req, PublicationException e) {
-        warn(req, e);
-        return "error/publication";
-    }
-
-    @ExceptionHandler
-    public String AuthorizationException(HttpServletRequest req, AuthorizationException e) {
-        warn(req, e);
-        return "error/authorization";
-    }
 
     // unspecified exception -----------------------------------------------------------------------------------------------
 
     @ExceptionHandler
     public String runtimeException(HttpServletRequest req, RuntimeException e) {
-        error(req, e);
-        return "error/unknown";
-    }
-
-    @ExceptionHandler
-    public String exception(HttpServletRequest req, Exception e) {
         error(req, e);
         return "error/unknown";
     }

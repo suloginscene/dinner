@@ -19,8 +19,8 @@ public class MagazineService {
     }
 
     @Transactional
-    public Long save(String manager, String title, String shortExplanation, String longExplanation, String magazinePolicy) {
-        Magazine magazine = Magazine.create(manager, title, shortExplanation, longExplanation, magazinePolicy);
+    public Long save(String manager, String title, String shortExplanation, String longExplanation, String policy) {
+        Magazine magazine = Magazine.create(manager, title, shortExplanation, longExplanation, policy);
         magazine = magazineRepository.save(magazine);
         return magazine.getId();
     }
@@ -34,5 +34,17 @@ public class MagazineService {
     }
 
     // TODO findBests
+
+    @Transactional
+    public void update(Long id, String current, String title, String shortExplanation, String longExplanation) {
+        Magazine magazine = find(id);
+        magazine.update(current, title, shortExplanation, longExplanation);
+    }
+
+    // TODO applyToManagedMagazine(send Mail)
+    // TODO exitFromManagedMagazine(send Mail)
+
+    // TODO registerAsAuthorizedWriter(in page, by Search, send Mail)
+    // TODO eliminatedAuthorization(in page, send Mail)
 
 }
