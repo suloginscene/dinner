@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import me.scene.dinner.account.application.AlreadyVerifiedException;
 import me.scene.dinner.account.domain.VerificationException;
 import me.scene.dinner.board.article.application.PublicationException;
+import me.scene.dinner.board.magazine.domain.AuthorizationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -73,6 +74,11 @@ public class ExceptionAdvice {
         return "error/publication";
     }
 
+    @ExceptionHandler
+    public String AuthorizationException(HttpServletRequest req, AuthorizationException e) {
+        warn(req, e);
+        return "error/authorization";
+    }
 
     // unspecified exception -----------------------------------------------------------------------------------------------
 

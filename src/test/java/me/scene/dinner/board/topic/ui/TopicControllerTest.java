@@ -20,7 +20,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @Transactional
@@ -83,6 +82,21 @@ class TopicControllerTest {
     }
 
     @Test
+    @WithAccount(username = "scene")
+    void create_invalidParam_returnErrors() throws Exception {
+        mockMvc.perform(
+                post("/topics")
+                        .with(csrf())
+                        .param("magazineId", "1")
+        )
+                .andExpect(status().isOk())
+                .andExpect(view().name("page/board/topic/form"))
+                .andExpect(model().hasErrors())
+                .andExpect(model().errorCount(3))
+        ;
+    }
+
+    @Test
     void create_unauthenticated_beGuidedBySpringSecurity() throws Exception {
         mockMvc.perform(
                 post("/topics").with(csrf())
@@ -94,17 +108,72 @@ class TopicControllerTest {
 
     @Test
     @WithAccount(username = "scene")
-    void create_invalidParam_returnErrors() throws Exception {
+    void create_unauthorized_handleException() throws Exception {
+        Account account = accountFactory.create("magazineManager", "magazine_manager@email.com", "password");
+
+        Magazine exclusive = magazineFactory.create(account.getUsername(), "title", "short", "long", "EXCLUSIVE");
         mockMvc.perform(
                 post("/topics")
+                        .param("magazineId", exclusive.getId().toString())
+                        .param("title", "Test Topic")
+                        .param("shortExplanation", "This is short explanation.")
+                        .param("longExplanation", "This is long explanation of test magazine.")
                         .with(csrf())
-                        .param("magazineId", "1")
         )
-                .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(view().name("page/board/topic/form"))
-                .andExpect(model().hasErrors())
-                .andExpect(model().errorCount(3))
+                .andExpect(view().name("error/authorization"))
+        ;
+
+        Magazine managed = magazineFactory.create(account.getUsername(), "title", "short", "long", "MANAGED");
+        mockMvc.perform(
+                post("/topics")
+                        .param("magazineId", managed.getId().toString())
+                        .param("title", "Test Topic")
+                        .param("shortExplanation", "This is short explanation.")
+                        .param("longExplanation", "This is long explanation of test magazine.")
+                        .with(csrf())
+        )
+                .andExpect(status().isOk())
+                .andExpect(view().name("error/authorization"))
+        ;
+    }
+
+    @Test
+    @WithAccount(username = "scene")
+    void create_exclusiveByManager_success() throws Exception {
+        Account scene = accountRepository.findByUsername("scene").orElseThrow();
+        Magazine exclusive = magazineFactory.create(scene.getUsername(), "title", "short", "long", "EXCLUSIVE");
+
+        mockMvc.perform(
+                post("/topics")
+                        .param("magazineId", exclusive.getId().toString())
+                        .param("title", "Test Topic")
+                        .param("shortExplanation", "This is short explanation.")
+                        .param("longExplanation", "This is long explanation of test magazine.")
+                        .with(csrf())
+        )
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrlPattern("/topics/*"))
+        ;
+    }
+
+    @Test
+    @WithAccount(username = "scene")
+    void create_managedByAuthorized_success() throws Exception {
+        Account account = accountFactory.create("magazineManager", "magazine_manager@email.com", "password");
+        Magazine managed = magazineFactory.create(account.getUsername(), "title", "short", "long", "MANAGED");
+        managed.registerAsAuthorizedWriter("scene");
+
+        mockMvc.perform(
+                post("/topics")
+                        .param("magazineId", managed.getId().toString())
+                        .param("title", "Test Topic")
+                        .param("shortExplanation", "This is short explanation.")
+                        .param("longExplanation", "This is long explanation of test magazine.")
+                        .with(csrf())
+        )
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrlPattern("/topics/*"))
         ;
     }
 

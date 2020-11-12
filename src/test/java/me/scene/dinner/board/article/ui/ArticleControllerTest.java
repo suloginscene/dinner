@@ -84,16 +84,6 @@ class ArticleControllerTest {
     }
 
     @Test
-    void create_unauthenticated_beGuidedBySpringSecurity() throws Exception {
-        mockMvc.perform(
-                post("/articles").with(csrf())
-        )
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrlPattern("**/login"))
-        ;
-    }
-
-    @Test
     @WithAccount(username = "scene")
     void create_invalidParam_returnErrors() throws Exception {
         mockMvc.perform(
@@ -105,6 +95,87 @@ class ArticleControllerTest {
                 .andExpect(view().name("page/board/article/form"))
                 .andExpect(model().hasErrors())
                 .andExpect(model().errorCount(2))
+        ;
+    }
+
+    @Test
+    void create_unauthenticated_beGuidedBySpringSecurity() throws Exception {
+        mockMvc.perform(
+                post("/articles").with(csrf())
+        )
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrlPattern("**/login"))
+        ;
+    }
+
+    @Test
+    @WithAccount(username = "scene")
+    void create_unauthorized_handleException() throws Exception {
+        Account account = accountFactory.create("magazineManager", "magazine_manager@email.com", "password");
+
+        Magazine exclusive = magazineFactory.create(account.getUsername(), "title", "short", "long", "EXCLUSIVE");
+        Topic exclusiveTopic = topicFactory.create(exclusive.getId(), account.getUsername(), "title", "short", "long");
+        mockMvc.perform(
+                post("/articles")
+                        .param("topicId", exclusiveTopic.getId().toString())
+                        .param("title", "Test Article")
+                        .param("content", "This is test article.")
+                        .with(csrf())
+        )
+                .andExpect(status().isOk())
+                .andExpect(view().name("error/authorization"))
+        ;
+
+        Magazine managed = magazineFactory.create(account.getUsername(), "title", "short", "long", "MANAGED");
+        Topic managedTopic = topicFactory.create(managed.getId(), account.getUsername(), "title", "short", "long");
+        mockMvc.perform(
+                post("/articles")
+                        .param("topicId", managedTopic.getId().toString())
+                        .param("title", "Test Article")
+                        .param("content", "This is test article.")
+                        .with(csrf())
+        )
+                .andExpect(status().isOk())
+                .andExpect(view().name("error/authorization"))
+        ;
+    }
+
+    @Test
+    @WithAccount(username = "scene")
+    void create_exclusiveByManager_success() throws Exception {
+        Account scene = accountRepository.findByUsername("scene").orElseThrow();
+        Magazine exclusive = magazineFactory.create(scene.getUsername(), "title", "short", "long", "EXCLUSIVE");
+        Topic topic = topicFactory.create(exclusive.getId(), scene.getUsername(), "title", "short", "long");
+
+        mockMvc.perform(
+                post("/articles")
+                        .param("topicId", topic.getId().toString())
+                        .param("title", "Test Article")
+                        .param("content", "This is test article.")
+                        .with(csrf())
+        )
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrlPattern("/articles/*"))
+        ;
+    }
+
+    @Test
+    @WithAccount(username = "scene")
+    void create_managedByAuthorized_success() throws Exception {
+        Account account = accountFactory.create("magazineManager", "magazine_manager@email.com", "password");
+        Magazine managed = magazineFactory.create(account.getUsername(), "title", "short", "long", "MANAGED");
+        Topic topic = topicFactory.create(managed.getId(), account.getUsername(), "title", "short", "long");
+        managed.registerAsAuthorizedWriter("scene");
+
+        mockMvc.perform(
+                post("/articles")
+                        .param("topicId", topic.getId().toString())
+                        .param("title", "Test Article")
+                        .param("content", "This is test article.")
+                        .with(csrf())
+        )
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrlPattern("/articles/*"))
         ;
     }
 

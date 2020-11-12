@@ -41,6 +41,8 @@ public class Article {
     }
 
     public static Article create(Topic topic, String writer, String title, String content) {
+        topic.getMagazine().authorize(writer);
+
         Article article = new Article();
         topic.add(article);
         article.topic = topic;
@@ -53,7 +55,9 @@ public class Article {
     }
 
     public void checkPublicity(String client) {
-        if (!isPublished() && !client.equals(writer)) throw new PublicationException(id);
+        if (isPublished()) return;
+        if (client.equals(writer)) return;
+        throw new PublicationException(id);
     }
 
     public void publish(String client) {

@@ -4,7 +4,7 @@ import me.scene.dinner.account.domain.Account;
 import me.scene.dinner.account.domain.AccountRepository;
 import me.scene.dinner.board.magazine.application.MagazineService;
 import me.scene.dinner.board.magazine.domain.Magazine;
-import me.scene.dinner.board.magazine.domain.MagazinePolicy;
+import me.scene.dinner.board.magazine.domain.Policy;
 import me.scene.dinner.board.magazine.domain.MagazineRepository;
 import me.scene.dinner.utils.authentication.WithAccount;
 import me.scene.dinner.utils.factory.AccountFactory;
@@ -72,7 +72,7 @@ class MagazineControllerTest {
         Magazine magazine = magazineRepository.findByTitle("Test Magazine").orElseThrow();
         assertThat(magazine.getShortExplanation()).isEqualTo("This is short explanation.");
         assertThat(magazine.getLongExplanation()).isEqualTo("This is long explanation of test magazine.");
-        assertThat(magazine.getMagazinePolicy()).isEqualTo(MagazinePolicy.OPEN);
+        assertThat(magazine.getPolicy()).isEqualTo(Policy.OPEN);
         assertThat(magazine.getManager()).isEqualTo(accountRepository.findByUsername("scene").orElseThrow().getUsername());
     }
 

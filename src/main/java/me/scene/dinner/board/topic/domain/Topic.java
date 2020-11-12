@@ -37,6 +37,8 @@ public class Topic {
     }
 
     public static Topic create(Magazine magazine, String manager, String title, String shortExplanation, String longExplanation) {
+        magazine.authorize(manager);
+
         Topic topic = new Topic();
         magazine.add(topic);
         topic.magazine = magazine;

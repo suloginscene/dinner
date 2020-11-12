@@ -1,5 +1,5 @@
 package me.scene.dinner.board.magazine.domain;
 
-public enum MagazinePolicy {
+public enum Policy {
     OPEN, MANAGED, EXCLUSIVE
 }

@@ -7,7 +7,7 @@ import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
-import static javax.persistence.FetchType.EAGER;
+import static javax.persistence.FetchType.LAZY;
 
 @Entity
 @Getter @EqualsAndHashCode(of = "id")
@@ -25,8 +25,7 @@ public class Account {
     @Column
     private String password;
 
-    @ElementCollection(fetch = EAGER)
-    @Enumerated(EnumType.STRING)
+    @ElementCollection(fetch = LAZY) @Enumerated(EnumType.STRING)
     private final Set<AccountRole> roles = new HashSet<>();
 
     @Embedded

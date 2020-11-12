@@ -24,6 +24,9 @@ public class Magazine {
     @ElementCollection(fetch = LAZY) @JsonIgnore
     private final List<String> writers = new ArrayList<>();
 
+    @ElementCollection(fetch = LAZY) @JsonIgnore
+    private final List<String> authorizedWriters = new ArrayList<>();
+
     private String title;
 
     @JsonIgnore
@@ -32,8 +35,8 @@ public class Magazine {
     @JsonIgnore
     private String longExplanation;
 
-    @JsonIgnore
-    private MagazinePolicy magazinePolicy;
+    @JsonIgnore @Enumerated(EnumType.STRING)
+    private Policy policy;
 
     @OneToMany(mappedBy = "magazine") @JsonIgnore
     private final List<Topic> topics = new ArrayList<>();
@@ -48,7 +51,7 @@ public class Magazine {
         magazine.title = title;
         magazine.shortExplanation = shortExplanation;
         magazine.longExplanation = longExplanation;
-        magazine.magazinePolicy = MagazinePolicy.valueOf(magazinePolicy);
+        magazine.policy = Policy.valueOf(magazinePolicy);
         return magazine;
     }
 
@@ -57,7 +60,35 @@ public class Magazine {
     }
 
     public void register(String writer) {
+        if (writers.contains(writer)) return;
+
         writers.add(writer);
+    }
+
+    public void registerAsAuthorizedWriter(String writer) {
+        if (policy != Policy.MANAGED) throw new IllegalStateException("Not Managed Magazine");
+        if (authorizedWriters.contains(writer)) return;
+
+        authorizedWriters.add(writer);
+    }
+
+    public void authorize(String username) {
+
+        if (policy == Policy.OPEN) {
+            return;
+        }
+
+        if (policy == Policy.EXCLUSIVE) {
+            if (manager.equals(username)) return;
+        }
+
+        if (policy == Policy.MANAGED) {
+            if (manager.equals(username)) return;
+            if (authorizedWriters.contains(username)) return;
+        }
+
+        throw new AuthorizationException(username);
+
     }
 
 }
