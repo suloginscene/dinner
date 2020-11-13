@@ -197,4 +197,23 @@ class MagazineControllerTest {
         ;
     }
 
+    @Test
+    @WithAccount(username = "scene")
+    void update_invalidParam_redirected() throws Exception {
+        Long id = magazineService.save("scene", "title", "short", "long", "OPEN");
+
+        mockMvc.perform(
+                put("/magazines/" + id)
+                        .with(csrf())
+                        .param("id", "")
+                        .param("title", "")
+                        .param("shortExplanation", "")
+                        .param("longExplanation", "")
+                        .param("policy", "")
+        )
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/magazines/" + id + "/form"))
+        ;
+    }
+
 }

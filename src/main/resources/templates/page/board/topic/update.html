@@ -6,25 +6,19 @@
     </div>
 
     <body th:replace="layout/layout::body(~{::section})">
-        <section>
+        <section th:object="${updateForm}">
             <div class="centered-content">
-                <div class="info">
-                    <div class="message">
-                        <div>Create New Topic</div>
-                    </div>
+                <div class="message">
+                    토픽을 수정할 수 있습니다.
                 </div>
-                <form th:action="@{/topics}" th:method="post" th:object="${topicForm}">
+                <form th:action="'/topics/'+*{id}" th:method="put">
                     <div class="form-texts">
-                        <label>
-                            <input type="text" name="magazineId" th:value="*{magazineId}" hidden>
-                            <small th:if="${#fields.hasErrors('magazineId')}" th:errors="*{magazineId}" class="form-text text-danger"></small>
-                        </label>
-                        <div class="topic-form-info">토픽의 이름을 정해주세요.</div>
+                        <div class="topic-form-info">토픽 이름을 변경할 수 있습니다.</div>
                         <label>
                             <input th:field="*{title}" type="text" placeholder="토픽 이름은 최대 20자까지 가능합니다.">
                             <small th:if="${#fields.hasErrors('title')}" th:errors="*{title}" class="form-text text-danger"></small>
                         </label>
-                        <div class="topic-form-info">토픽 소개글을 작성해주세요.</div>
+                        <div class="topic-form-info">토픽 소개글을 변경할 수 있습니다.</div>
                         <label>
                             <input th:field="*{shortExplanation}" type="text" placeholder="간략한 소개는 최대 30자까지 가능합니다.">
                             <small th:if="${#fields.hasErrors('shortExplanation')}" th:errors="*{shortExplanation}" class="form-text text-danger"></small>
@@ -34,8 +28,11 @@
                             <small th:if="${#fields.hasErrors('longExplanation')}" th:errors="*{longExplanation}" class="form-text text-danger"></small>
                         </label>
                     </div>
+                    <label hidden>
+                        <input type="text" th:field="*{magazineId}" th:value="*{magazineId}">
+                    </label>
                     <button type="submit">
-                        create
+                        update
                     </button>
                 </form>
             </div>

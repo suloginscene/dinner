@@ -73,7 +73,8 @@ public class MagazineController {
 
     @PutMapping("/magazines/{magazineId}")
     public String update(@PathVariable Long magazineId, @CurrentUser Account current, @Valid MagazineForm form, Errors errors) {
-        if (errors.hasErrors()) return "page/board/magazine/update";
+        // TODO js validation
+        if (errors.hasErrors()) return "redirect:" + ("/magazines/" + magazineId + "/form");
 
         magazineService.update(magazineId, current.getUsername(), form.getTitle(), form.getShortExplanation(), form.getLongExplanation());
         return "redirect:" + ("/magazines/" + magazineId);

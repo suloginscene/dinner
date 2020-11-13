@@ -31,12 +31,7 @@
                     <div class="form-checks">
                         <div class="magazine-form-info">매거진 성격은 변경할 수 없습니다.</div>
                         <div th:text="*{policy}"></div>
-                    </div>
-                    <div hidden>
-                        <label>
-                            <input type="text" th:field="*{id}" th:value="*{id}">
-                        </label>
-                        <label>
+                        <label hidden>
                             <input type="text" th:field="*{policy}" th:value="*{policy}">
                         </label>
                     </div>

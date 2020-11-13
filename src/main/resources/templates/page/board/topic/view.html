@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
     <div th:replace="layout/layout::head(${topic.title},~{::link}, ~{::script})">
         <link rel="stylesheet" href="/css/page/board/topic/view.css"/>
@@ -19,7 +20,10 @@
                 <div class="panel" th:text="*{longExplanation}"></div>
             </div>
 
-            <div id="button-container">
+            <div id="button-container" sec:authorize="isAuthenticated()">
+                <form th:if="${#authentication.name}==*{manager}" th:action="'/topics/'+*{id}+'/form'" method="get">
+                    <button type="submit">update</button>
+                </form>
                 <!-- TODO select button whether principal is writable -->
                 <form action="/article-form" method="get">
                     <label>

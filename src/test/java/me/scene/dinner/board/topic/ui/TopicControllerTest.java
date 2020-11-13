@@ -18,8 +18,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @Transactional
@@ -203,6 +203,102 @@ class TopicControllerTest {
         )
                 .andExpect(status().isOk())
                 .andExpect(view().name("error/board_not_found"))
+        ;
+    }
+
+    @Test
+    @WithAccount(username = "scene")
+    void updatePage_hasForm() throws Exception {
+        Magazine magazine = magazineFactory.create("scene", "title", "short", "long", "OPEN");
+        Long id = topicService.save(magazine.getId(), "scene", "title", "short", "long");
+
+        mockMvc.perform(
+                get("/topics/" + id + "/form")
+        )
+                .andExpect(status().isOk())
+                .andExpect(view().name("page/board/topic/update"))
+                .andExpect(model().attributeExists("updateForm"))
+        ;
+    }
+
+    @Test
+    @WithAccount(username = "scene")
+    void updatePage_byStranger_handleException() throws Exception {
+        Account account = accountFactory.create("magazineManager", "manager@email.com", "password");
+        Magazine magazine = magazineFactory.create(account.getUsername(), "title", "short", "long", "OPEN");
+        Long id = topicService.save(magazine.getId(), account.getUsername(), "title", "short", "long");
+
+        mockMvc.perform(
+                get("/topics/" + id + "/form")
+        )
+                .andExpect(status().isOk())
+                .andExpect(view().name("error/access"))
+        ;
+    }
+
+    @Test
+    @WithAccount(username = "scene")
+    void update_updated() throws Exception {
+        Magazine magazine = magazineFactory.create("scene", "title", "short", "long", "OPEN");
+        Long id = topicService.save(magazine.getId(), "scene", "title", "short", "long");
+
+        mockMvc.perform(
+                put("/topics/" + id)
+                        .with(csrf())
+                        .param("id", id.toString())
+                        .param("magazineId", magazine.getId().toString())
+                        .param("title", "Updated")
+                        .param("shortExplanation", "Updated short.")
+                        .param("longExplanation", "Updated long.")
+        )
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/topics/" + id))
+        ;
+
+        Topic topic = topicService.find(id);
+        assertThat(topic.getTitle()).isEqualTo("Updated");
+        assertThat(topic.getShortExplanation()).isEqualTo("Updated short.");
+        assertThat(topic.getLongExplanation()).isEqualTo("Updated long.");
+    }
+
+    @Test
+    @WithAccount(username = "scene")
+    void update_byStranger_handleException() throws Exception {
+        Account account = accountFactory.create("magazineManager", "manager@email.com", "password");
+        Magazine magazine = magazineFactory.create(account.getUsername(), "title", "short", "long", "OPEN");
+        Long id = topicService.save(magazine.getId(), account.getUsername(), "title", "short", "long");
+
+        mockMvc.perform(
+                put("/topics/" + id)
+                        .with(csrf())
+                        .param("id", id.toString())
+                        .param("magazineId", magazine.getId().toString())
+                        .param("title", "Updated")
+                        .param("shortExplanation", "Updated short.")
+                        .param("longExplanation", "Updated long.")
+        )
+                .andExpect(status().isOk())
+                .andExpect(view().name("error/access"))
+        ;
+    }
+
+    @Test
+    @WithAccount(username = "scene")
+    void update_invalidParam_redirected() throws Exception {
+        Magazine magazine = magazineFactory.create("scene", "title", "short", "long", "OPEN");
+        Long id = topicService.save(magazine.getId(), "scene", "title", "short", "long");
+
+        mockMvc.perform(
+                put("/topics/" + id)
+                        .with(csrf())
+                        .param("id", "")
+                        .param("magazineId", "")
+                        .param("title", "")
+                        .param("shortExplanation", "")
+                        .param("longExplanation", "")
+        )
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/topics/" + id + "/form"))
         ;
     }
 

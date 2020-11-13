@@ -4,6 +4,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import me.scene.dinner.board.article.domain.Article;
 import me.scene.dinner.board.magazine.domain.Magazine;
+import me.scene.dinner.common.exception.NotOwnerException;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -49,12 +50,23 @@ public class Topic {
         return topic;
     }
 
-    public void add(Article article) {
-        articles.add(article);
+    public void confirmManager(String current) {
+        if (!current.equals(manager)) throw new NotOwnerException(current);
     }
 
     public void register(String writer) {
         magazine.register(writer);
+    }
+
+    public void add(Article article) {
+        articles.add(article);
+    }
+
+    public void update(String current, String title, String shortExplanation, String longExplanation) {
+        confirmManager(current);
+        this.title = title;
+        this.shortExplanation = shortExplanation;
+        this.longExplanation = longExplanation;
     }
 
 }
