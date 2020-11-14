@@ -8,10 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -55,6 +52,33 @@ public class ArticleController {
     @PostMapping("/articles/{articleId}")
     public String publish(@PathVariable Long articleId, @CurrentUser Account current) {
         articleService.publish(articleId, (current != null) ? current.getUsername() : "anonymousUser");
+        return "redirect:" + ("/articles/" + articleId);
+    }
+
+    @GetMapping("/articles/{articleId}/form")
+    public String updateForm(@PathVariable Long articleId, @CurrentUser Account current, Model model) {
+        Article article = articleService.find(articleId);
+        article.confirmWriter(current.getUsername());
+
+        model.addAttribute("updateForm", updateForm(article));
+        return "page/board/article/update";
+    }
+
+    private ArticleForm updateForm(Article a) {
+        ArticleForm f = new ArticleForm();
+        f.setId(a.getId());
+        f.setTopicId(a.getTopic().getId());
+        f.setTitle(a.getTitle());
+        f.setContent(a.getContent());
+        return f;
+    }
+
+    @PutMapping("/articles/{articleId}")
+    public String update(@PathVariable Long articleId, @CurrentUser Account current, @Valid ArticleForm form, Errors errors) {
+        // TODO js validation
+        if (errors.hasErrors()) return "redirect:" + ("/articles/" + articleId + "/form");
+
+        articleService.update(articleId, current.getUsername(), form.getTitle(), form.getContent());
         return "redirect:" + ("/articles/" + articleId);
     }
 

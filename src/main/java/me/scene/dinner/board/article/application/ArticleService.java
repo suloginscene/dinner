@@ -3,6 +3,7 @@ package me.scene.dinner.board.article.application;
 import me.scene.dinner.board.article.domain.Article;
 import me.scene.dinner.board.article.domain.ArticleRepository;
 import me.scene.dinner.board.topic.application.TopicService;
+import me.scene.dinner.board.topic.domain.Topic;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,6 +35,12 @@ public class ArticleService {
     public void publish(Long id, String current) {
         Article article = find(id);
         article.publish(current);
+    }
+
+    @Transactional
+    public void update(Long id, String current, String title, String content) {
+        Article article = find(id);
+        article.update(current, title, content);
     }
 
 }

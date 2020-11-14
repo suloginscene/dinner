@@ -18,9 +18,14 @@
                 </div>
             </div>
 
-            <form th:unless="*{published}" th:action="@{'/articles/'+${article.id}}" method="post">
-                <button type="submit">publish</button>
-            </form>
+            <div id="button-container" sec:authorize="isAuthenticated()">
+                <form th:if="${!article.published}and${#authentication.name}==${article.writer}" th:action="'/articles/'+*{id}" method="post">
+                    <button type="submit">publish</button>
+                </form>
+                <form th:if="${#authentication.name}==*{writer}" th:action="'/articles/'+*{id}+'/form'" method="get">
+                    <button type="submit">update</button>
+                </form>
+            </div>
 
             <article th:utext="*{content}"></article>
 

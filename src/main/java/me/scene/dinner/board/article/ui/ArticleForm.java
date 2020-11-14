@@ -10,6 +10,8 @@ import javax.validation.constraints.NotNull;
 @Getter @Setter
 public class ArticleForm {
 
+    private Long id;
+
     @NotNull(message = "토픽 ID가 있어야 합니다.")
     private Long topicId;
 

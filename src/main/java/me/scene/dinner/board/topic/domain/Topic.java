@@ -50,6 +50,13 @@ public class Topic {
         return topic;
     }
 
+    public void update(String current, String title, String shortExplanation, String longExplanation) {
+        confirmManager(current);
+        this.title = title;
+        this.shortExplanation = shortExplanation;
+        this.longExplanation = longExplanation;
+    }
+
     public void confirmManager(String current) {
         if (!current.equals(manager)) throw new NotOwnerException(current);
     }
@@ -60,13 +67,6 @@ public class Topic {
 
     public void add(Article article) {
         articles.add(article);
-    }
-
-    public void update(String current, String title, String shortExplanation, String longExplanation) {
-        confirmManager(current);
-        this.title = title;
-        this.shortExplanation = shortExplanation;
-        this.longExplanation = longExplanation;
     }
 
 }

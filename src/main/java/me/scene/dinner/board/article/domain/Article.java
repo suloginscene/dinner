@@ -54,6 +54,12 @@ public class Article {
         return article;
     }
 
+    public void update(String current, String title, String content) {
+        confirmWriter(current);
+        this.title = title;
+        this.content = content;
+    }
+
     public void confirmWriter(String current) {
         if (!current.equals(writer)) throw new NotOwnerException(current);
     }
