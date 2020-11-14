@@ -7,12 +7,7 @@
 
     <body th:replace="layout/layout::body(~{::section})">
         <section>
-            <form th:action="'/articles/'+*{id}" th:method="put" th:object="${updateForm}">
-                <div id="error-message">
-                    <span th:if="${#fields.hasErrors('topicId')}" th:errors="*{topicId}" class="form-text text-danger"></span>
-                    <span th:if="${#fields.hasErrors('title')}" th:errors="*{title}" class="form-text text-danger"></span>
-                    <span th:if="${#fields.hasErrors('content')}" th:errors="*{content}" class="form-text text-danger"></span>
-                </div>
+            <form th:action="'/articles/'+${id}" th:method="put" th:object="${updateForm}">
                 <label hidden>
                     <input type="text" name="topicId" th:value="*{topicId}" hidden>
                 </label>

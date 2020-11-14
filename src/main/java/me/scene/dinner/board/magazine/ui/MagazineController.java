@@ -57,13 +57,13 @@ public class MagazineController {
         Magazine magazine = magazineService.find(magazineId);
         magazine.confirmManager(current.getUsername());
 
+        model.addAttribute("id", magazineId);
         model.addAttribute("updateForm", updateForm(magazine));
         return "page/board/magazine/update";
     }
 
     private MagazineForm updateForm(Magazine m) {
         MagazineForm f = new MagazineForm();
-        f.setId(m.getId());
         f.setTitle(m.getTitle());
         f.setShortExplanation(m.getShortExplanation());
         f.setLongExplanation(m.getLongExplanation());

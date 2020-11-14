@@ -11,21 +11,18 @@
                 <div class="message">
                     토픽을 수정할 수 있습니다.
                 </div>
-                <form th:action="'/topics/'+*{id}" th:method="put">
+                <form th:action="'/topics/'+${id}" th:method="put">
                     <div class="form-texts">
                         <div class="topic-form-info">토픽 이름을 변경할 수 있습니다.</div>
                         <label>
                             <input th:field="*{title}" type="text" placeholder="토픽 이름은 최대 20자까지 가능합니다.">
-                            <small th:if="${#fields.hasErrors('title')}" th:errors="*{title}" class="form-text text-danger"></small>
                         </label>
                         <div class="topic-form-info">토픽 소개글을 변경할 수 있습니다.</div>
                         <label>
                             <input th:field="*{shortExplanation}" type="text" placeholder="간략한 소개는 최대 30자까지 가능합니다.">
-                            <small th:if="${#fields.hasErrors('shortExplanation')}" th:errors="*{shortExplanation}" class="form-text text-danger"></small>
                         </label>
                         <label>
                             <textarea th:field="*{longExplanation}" rows="5" placeholder="자세한 소개는 최대 250자까지 가능합니다."></textarea>
-                            <small th:if="${#fields.hasErrors('longExplanation')}" th:errors="*{longExplanation}" class="form-text text-danger"></small>
                         </label>
                     </div>
                     <label hidden>

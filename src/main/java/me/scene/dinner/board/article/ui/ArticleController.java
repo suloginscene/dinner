@@ -60,13 +60,13 @@ public class ArticleController {
         Article article = articleService.find(articleId);
         article.confirmWriter(current.getUsername());
 
+        model.addAttribute("id", articleId);
         model.addAttribute("updateForm", updateForm(article));
         return "page/board/article/update";
     }
 
     private ArticleForm updateForm(Article a) {
         ArticleForm f = new ArticleForm();
-        f.setId(a.getId());
         f.setTopicId(a.getTopic().getId());
         f.setTitle(a.getTitle());
         f.setContent(a.getContent());

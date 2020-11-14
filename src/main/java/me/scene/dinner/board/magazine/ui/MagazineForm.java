@@ -10,8 +10,6 @@ import javax.validation.constraints.NotBlank;
 @Getter @Setter @ToString
 public class MagazineForm {
 
-    private Long id;
-
     @NotBlank(message = "제목을 적어주세요.")
     @Length(max = 20, message = "제목은 최대 30자까지 가능합니다.")
     private String title;

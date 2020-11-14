@@ -50,13 +50,13 @@ public class TopicController {
         Topic topic = topicService.find(topicId);
         topic.confirmManager(current.getUsername());
 
+        model.addAttribute("id", topicId);
         model.addAttribute("updateForm", updateForm(topic));
         return "page/board/topic/update";
     }
 
     private TopicForm updateForm(Topic t) {
         TopicForm f = new TopicForm();
-        f.setId(t.getId());
         f.setMagazineId(t.getMagazine().getId());
         f.setTitle(t.getTitle());
         f.setShortExplanation(t.getShortExplanation());
