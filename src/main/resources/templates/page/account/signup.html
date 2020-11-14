@@ -3,7 +3,7 @@
 
     <div th:replace="layout/layout::head(_, ~{::link}, ~{::script})">
         <link rel="stylesheet" href="/css/page/account/signup.css"/>
-        <script src="/js/page/validate.js"></script>
+        <script src="/js/page/valid_signup.js"></script>
     </div>
 
     <body th:replace="layout/layout::body(~{::section})">
@@ -12,8 +12,7 @@
                 <div class="message">
                     회원가입
                 </div>
-                <form th:object="${accountForm}" th:action="@{/signup}" th:method="post"
-                      id="signup-form" novalidate>
+                <form th:object="${accountForm}" th:action="@{/signup}" th:method="post" id="signup-form" novalidate>
                     <div class="form-texts">
                         <label>
                             <input type="text" th:field="*{username}" placeholder="이름 (2~16자의 한글/영어/숫자/-_.)"

@@ -1,9 +1,8 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 
-    <div th:replace="layout/layout::head(_,~{::link}, ~{::script})">
+    <div th:replace="layout/layout::head(_,~{::link}, ~{})">
         <link rel="stylesheet" href="/css/page/board/magazine/list.css"/>
-        <script src="/js/page/acc_board.js"></script>
     </div>
 
     <body th:replace="layout/layout::body(~{::section})">
