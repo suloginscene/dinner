@@ -1,27 +1,31 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 
-    <div th:replace="layout/layout::head(_,~{::link}, ~{})">
+    <div th:replace="layout/layout::head(_,~{::link}, ~{::script})">
         <link rel="stylesheet" href="/css/page/board/article/form.css"/>
+        <script src="/js/page/valid_board.js"></script>
     </div>
 
     <body th:replace="layout/layout::body(~{::section})">
         <section>
-            <form th:action="'/articles/'+${id}" th:method="put" th:object="${updateForm}">
+            <form th:action="'/articles/'+${id}" th:method="put" th:object="${updateForm}" id="board-form" novalidate>
                 <label hidden>
                     <input type="text" name="topicId" th:value="*{topicId}" hidden>
                 </label>
                 <div id="bar">
                     <label id="title">
-                        <input type="text" th:field="*{title}" placeholder="새 아티클">
+                        <input type="text" th:field="*{title}" placeholder="새 아티클" required maxlength="30">
+                        <small class="invalid-feedback"><i class="fa fa-ban"></i></small>
+                        <small class="valid-feedback"><i class="fa fa-check"></i></small>
                     </label>
                     <button type="submit" id="form-submit">save</button>
                 </div>
 
                 <!-- TODO editor -->
                 <label id="editor" style="width: 100%">
-                    <textarea th:field="*{content}" id="content" placeholder="본문"
-                              style="height: 100%; width: 100%; padding: 10px"></textarea>
+                    <textarea th:field="*{content}" id="content" placeholder="본문" style="height: 100%; width: 100%; padding: 10px" required></textarea>
+                    <small class="invalid-feedback"><i class="fa fa-ban"></i></small>
+                    <small class="valid-feedback"><i class="fa fa-check"></i></small>
                 </label>
 
                 <!--                <label>-->

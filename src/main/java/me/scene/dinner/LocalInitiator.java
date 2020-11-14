@@ -14,7 +14,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 @Component
-public class Initiator implements ApplicationRunner {
+public class LocalInitiator implements ApplicationRunner {
 
     private final Environment environment;
     private final AccountService accountService;
@@ -23,7 +23,7 @@ public class Initiator implements ApplicationRunner {
     private final ArticleService articleService;
 
     @Autowired
-    public Initiator(Environment environment, AccountService accountService, MagazineService magazineService, TopicService topicService, ArticleService articleService) {
+    public LocalInitiator(Environment environment, AccountService accountService, MagazineService magazineService, TopicService topicService, ArticleService articleService) {
         this.environment = environment;
         this.accountService = accountService;
         this.magazineService = magazineService;

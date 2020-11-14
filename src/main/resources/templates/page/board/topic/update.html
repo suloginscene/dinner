@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 
-    <div th:replace="layout/layout::head(_,~{::link}, ~{})">
+    <div th:replace="layout/layout::head(_,~{::link}, ~{::script})">
         <link rel="stylesheet" href="/css/page/board/topic/form.css"/>
+        <script src="/js/page/valid_board.js"></script>
     </div>
 
     <body th:replace="layout/layout::body(~{::section})">
@@ -11,18 +12,24 @@
                 <div class="message">
                     토픽을 수정할 수 있습니다.
                 </div>
-                <form th:action="'/topics/'+${id}" th:method="put">
+                <form th:action="'/topics/'+${id}" th:method="put" id="board-form" novalidate>
                     <div class="form-texts">
                         <div class="topic-form-info">토픽 이름을 변경할 수 있습니다.</div>
                         <label>
-                            <input th:field="*{title}" type="text" placeholder="토픽 이름은 최대 20자까지 가능합니다.">
+                            <input th:field="*{title}" type="text" placeholder="토픽 이름은 최대 20자까지 가능합니다." required maxlength="20">
+                            <small class="invalid-feedback"><i class="fa fa-ban"></i></small>
+                            <small class="valid-feedback"><i class="fa fa-check"></i></small>
                         </label>
                         <div class="topic-form-info">토픽 소개글을 변경할 수 있습니다.</div>
                         <label>
-                            <input th:field="*{shortExplanation}" type="text" placeholder="간략한 소개는 최대 30자까지 가능합니다.">
+                            <input th:field="*{shortExplanation}" type="text" placeholder="간략한 소개는 최대 30자까지 가능합니다." required maxlength="30">
+                            <small class="invalid-feedback"><i class="fa fa-ban"></i></small>
+                            <small class="valid-feedback"><i class="fa fa-check"></i></small>
                         </label>
                         <label>
-                            <textarea th:field="*{longExplanation}" rows="5" placeholder="자세한 소개는 최대 250자까지 가능합니다."></textarea>
+                            <textarea th:field="*{longExplanation}" rows="5" placeholder="자세한 소개는 최대 250자까지 가능합니다." required maxlength="250"></textarea>
+                            <small class="invalid-feedback"><i class="fa fa-ban"></i></small>
+                            <small class="valid-feedback"><i class="fa fa-check"></i></small>
                         </label>
                     </div>
                     <label hidden>

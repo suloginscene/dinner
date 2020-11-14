@@ -23,6 +23,7 @@ public class MagazineRestController {
     @GetMapping("/api/magazines")
     public ResponseEntity<List<Magazine>> magazineList() {
 
+        // TODO @Scheduled cron
         if (magazines == null) {
             // TODO findBest
             magazines = magazineService.findAll();

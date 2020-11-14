@@ -1,0 +1,13 @@
+label {
+    position: relative;
+}
+
+.invalid-feedback,
+.valid-feedback {
+    position: absolute;
+    right: 0;
+    top: 0;
+    margin: 0 10px 0 0;
+    font-size: 30px;
+    text-align: right;
+}
