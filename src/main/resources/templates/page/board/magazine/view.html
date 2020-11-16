@@ -32,6 +32,9 @@
                 <form th:if="${#authentication.name}==*{manager}" th:action="'/magazines/'+*{id}+'/form'" method="get">
                     <button type="submit">update</button>
                 </form>
+                <form th:if="${#authentication.name}==*{manager}and*{topics.size()}==0" th:action="'/magazines/'+*{id}" th:method="delete">
+                    <button type="submit">delete</button>
+                </form>
                 <!-- TODO select button whether principal is creatable -->
                 <form action="/topic-form" method="get">
                     <label>

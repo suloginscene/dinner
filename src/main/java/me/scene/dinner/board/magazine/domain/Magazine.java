@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import me.scene.dinner.board.topic.domain.Topic;
+import me.scene.dinner.common.exception.NotDeletableException;
 import me.scene.dinner.common.exception.NotOwnerException;
 
 import javax.persistence.*;
@@ -97,6 +98,11 @@ public class Magazine {
 
         throw new PolicyAuthException(username);
 
+    }
+
+    public void confirmDeletable() {
+        if (topics.isEmpty()) return;
+        throw new NotDeletableException(title);
     }
 
     public void add(Topic topic) {

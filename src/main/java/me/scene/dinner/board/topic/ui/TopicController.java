@@ -73,4 +73,10 @@ public class TopicController {
         return "redirect:" + ("/topics/" + topicId);
     }
 
+    @DeleteMapping("/topics/{topicId}")
+    public String delete(@PathVariable Long topicId, @CurrentUser Account current) {
+        Long magazineId = topicService.delete(topicId, current.getUsername());
+        return "redirect:" + ("/magazines/" + magazineId);
+    }
+
 }

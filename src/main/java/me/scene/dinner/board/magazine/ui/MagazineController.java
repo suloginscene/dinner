@@ -8,10 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -73,11 +70,16 @@ public class MagazineController {
 
     @PutMapping("/magazines/{magazineId}")
     public String update(@PathVariable Long magazineId, @CurrentUser Account current, @Valid MagazineForm form, Errors errors) {
-        // TODO js validation
         if (errors.hasErrors()) return "redirect:" + ("/magazines/" + magazineId + "/form");
 
         magazineService.update(magazineId, current.getUsername(), form.getTitle(), form.getShortExplanation(), form.getLongExplanation());
         return "redirect:" + ("/magazines/" + magazineId);
+    }
+
+    @DeleteMapping("/magazines/{magazineId}")
+    public String delete(@PathVariable Long magazineId, @CurrentUser Account current) {
+        magazineService.delete(magazineId, current.getUsername());
+        return "redirect:" + ("/");
     }
 
 }

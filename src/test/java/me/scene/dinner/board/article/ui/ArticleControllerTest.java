@@ -7,6 +7,7 @@ import me.scene.dinner.board.article.domain.Article;
 import me.scene.dinner.board.article.domain.ArticleRepository;
 import me.scene.dinner.board.magazine.domain.Magazine;
 import me.scene.dinner.board.topic.domain.Topic;
+import me.scene.dinner.common.exception.BoardNotFoundException;
 import me.scene.dinner.utils.authentication.WithAccount;
 import me.scene.dinner.utils.factory.AccountFactory;
 import me.scene.dinner.utils.factory.MagazineFactory;
@@ -19,6 +20,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -379,6 +382,41 @@ class ArticleControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/articles/" + id + "/form"))
         ;
+    }
+
+    @Test
+    @WithAccount(username = "scene")
+    void delete_deleted() throws Exception {
+        Magazine magazine = magazineFactory.create("scene", "title", "short", "long", "OPEN");
+        Topic topic = topicFactory.create(magazine.getId(), "scene", "title", "short", "long");
+        Long id = articleService.save(topic.getId(), "scene", "title", "content");
+
+        mockMvc.perform(
+                delete("/articles/" + id)
+                        .with(csrf())
+        )
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/topics/" + topic.getId()))
+        ;
+        assertThrows(BoardNotFoundException.class, () -> articleService.find(id));
+    }
+
+    @Test
+    @WithAccount(username = "scene")
+    void delete_byStranger_handleException() throws Exception {
+        Account account = accountFactory.create("magazineManager", "manager@email.com", "password");
+        Magazine magazine = magazineFactory.create(account.getUsername(), "title", "short", "long", "OPEN");
+        Topic topic = topicFactory.create(magazine.getId(), account.getUsername(), "title", "short", "long");
+        Long id = articleService.save(topic.getId(), account.getUsername(), "title", "content");
+
+        mockMvc.perform(
+                delete("/articles/" + id)
+                        .with(csrf())
+        )
+                .andExpect(status().isOk())
+                .andExpect(view().name("error/access"))
+        ;
+        assertDoesNotThrow(() -> articleService.find(id));
     }
 
 }

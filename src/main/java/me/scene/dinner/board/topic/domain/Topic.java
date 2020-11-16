@@ -4,6 +4,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import me.scene.dinner.board.article.domain.Article;
 import me.scene.dinner.board.magazine.domain.Magazine;
+import me.scene.dinner.common.exception.NotDeletableException;
 import me.scene.dinner.common.exception.NotOwnerException;
 
 import javax.persistence.*;
@@ -63,6 +64,11 @@ public class Topic {
 
     public void register(String writer) {
         magazine.register(writer);
+    }
+
+    public void confirmDeletable() {
+        if (articles.isEmpty()) return;
+        throw new NotDeletableException(title);
     }
 
     public void add(Article article) {

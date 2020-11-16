@@ -41,6 +41,14 @@ public class MagazineService {
         magazine.update(current, title, shortExplanation, longExplanation);
     }
 
+    @Transactional
+    public void delete(Long id, String current) {
+        Magazine magazine = find(id);
+        magazine.confirmManager(current);
+        magazine.confirmDeletable();
+        magazineRepository.delete(magazine);
+    }
+
     // TODO applyToManagedMagazine(send Mail)
     // TODO exitFromManagedMagazine(send Mail)
 

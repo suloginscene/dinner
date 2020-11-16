@@ -6,8 +6,10 @@ import me.scene.dinner.board.magazine.domain.Magazine;
 import me.scene.dinner.board.topic.application.TopicService;
 import me.scene.dinner.board.topic.domain.Topic;
 import me.scene.dinner.board.topic.domain.TopicRepository;
+import me.scene.dinner.common.exception.BoardNotFoundException;
 import me.scene.dinner.utils.authentication.WithAccount;
 import me.scene.dinner.utils.factory.AccountFactory;
+import me.scene.dinner.utils.factory.ArticleFactory;
 import me.scene.dinner.utils.factory.MagazineFactory;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,9 +19,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @Transactional
@@ -33,6 +36,7 @@ class TopicControllerTest {
     @Autowired MagazineFactory magazineFactory;
     @Autowired TopicService topicService;
     @Autowired TopicRepository topicRepository;
+    @Autowired ArticleFactory articleFactory;
 
     @Test
     @WithAccount(username = "scene")
@@ -300,6 +304,56 @@ class TopicControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/topics/" + id + "/form"))
         ;
+    }
+
+    @Test
+    @WithAccount(username = "scene")
+    void delete_deleted() throws Exception {
+        Magazine magazine = magazineFactory.create("scene", "title", "short", "long", "OPEN");
+        Long id = topicService.save(magazine.getId(), "scene", "title", "short", "long");
+
+        mockMvc.perform(
+                delete("/topics/" + id)
+                        .with(csrf())
+        )
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/magazines/" + magazine.getId()))
+        ;
+        assertThrows(BoardNotFoundException.class, () -> topicService.find(id));
+    }
+
+    @Test
+    @WithAccount(username = "scene")
+    void delete_byStranger_handleException() throws Exception {
+        Account account = accountFactory.create("magazineManager", "manager@email.com", "password");
+        Magazine magazine = magazineFactory.create(account.getUsername(), "title", "short", "long", "OPEN");
+        Long id = topicService.save(magazine.getId(), account.getUsername(), "title", "short", "long");
+
+        mockMvc.perform(
+                delete("/topics/" + id)
+                        .with(csrf())
+        )
+                .andExpect(status().isOk())
+                .andExpect(view().name("error/access"))
+        ;
+        assertDoesNotThrow(() -> topicService.find(id));
+    }
+
+    @Test
+    @WithAccount(username = "scene")
+    void delete_hasChild_handleException() throws Exception {
+        Magazine magazine = magazineFactory.create("scene", "title", "short", "long", "OPEN");
+        Long id = topicService.save(magazine.getId(), "scene", "title", "short", "long");
+        articleFactory.create(id, "scene", "title", "content");
+
+        mockMvc.perform(
+                delete("/topics/" + id)
+                        .with(csrf())
+        )
+                .andExpect(status().isOk())
+                .andExpect(view().name("error/not_deletable"))
+        ;
+        assertDoesNotThrow(() -> topicService.find(id));
     }
 
 }

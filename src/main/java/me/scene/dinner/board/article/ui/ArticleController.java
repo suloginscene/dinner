@@ -75,11 +75,16 @@ public class ArticleController {
 
     @PutMapping("/articles/{articleId}")
     public String update(@PathVariable Long articleId, @CurrentUser Account current, @Valid ArticleForm form, Errors errors) {
-        // TODO js validation
         if (errors.hasErrors()) return "redirect:" + ("/articles/" + articleId + "/form");
 
         articleService.update(articleId, current.getUsername(), form.getTitle(), form.getContent());
         return "redirect:" + ("/articles/" + articleId);
+    }
+
+    @DeleteMapping("/articles/{articleId}")
+    public String delete(@PathVariable Long articleId, @CurrentUser Account current) {
+        Long topicId = articleService.delete(articleId, current.getUsername());
+        return "redirect:" + ("/topics/" + topicId);
     }
 
 }

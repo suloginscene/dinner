@@ -73,6 +73,11 @@ public class ExceptionAdvice {
         return "error/already_verified";
     }
 
+    @ExceptionHandler
+    public String NotDeletableException(HttpServletRequest req, NotDeletableException e) {
+        warn(req, e);
+        return "error/not_deletable";
+    }
 
     // unspecified exception -----------------------------------------------------------------------------------------------
 
