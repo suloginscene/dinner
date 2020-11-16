@@ -20,6 +20,7 @@ public class MagazineRestController {
         this.magazineService = magazineService;
     }
 
+    // TODO domain event publishing
     @GetMapping("/api/magazines")
     public ResponseEntity<List<Magazine>> magazineList() {
 
@@ -31,5 +32,6 @@ public class MagazineRestController {
 
         return ResponseEntity.ok(magazines);
     }
+
 
 }

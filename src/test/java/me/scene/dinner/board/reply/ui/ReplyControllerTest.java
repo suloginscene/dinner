@@ -3,7 +3,10 @@ package me.scene.dinner.board.reply.ui;
 import me.scene.dinner.account.domain.Account;
 import me.scene.dinner.board.article.domain.Article;
 import me.scene.dinner.board.magazine.domain.Magazine;
+import me.scene.dinner.board.reply.application.ReplyNotFoundException;
 import me.scene.dinner.board.reply.application.ReplyService;
+import me.scene.dinner.board.reply.domain.Reply;
+import me.scene.dinner.board.reply.domain.ReplyRepository;
 import me.scene.dinner.board.topic.domain.Topic;
 import me.scene.dinner.utils.authentication.WithAccount;
 import me.scene.dinner.utils.factory.AccountFactory;
@@ -17,11 +20,21 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrlPattern;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 @Transactional
 @SpringBootTest
@@ -34,6 +47,7 @@ class ReplyControllerTest {
     @Autowired TopicFactory topicFactory;
     @Autowired ArticleFactory articleFactory;
     @Autowired ReplyService replyService;
+    @Autowired ReplyRepository replyRepository;
 
     @Test
     @WithAccount(username = "scene")
@@ -80,6 +94,49 @@ class ReplyControllerTest {
                 .andExpect(model().attribute("article", article))
         ;
         assertThat(article.getReplies()).anyMatch((r) -> r.getContent().equals("This is test reply."));
+    }
+
+    @Test
+    @WithAccount(username = "scene")
+    void delete_deleted() throws Exception {
+        Magazine magazine = magazineFactory.create("scene", "title", "short", "long", "OPEN");
+        Topic topic = topicFactory.create(magazine.getId(), "scene", "title", "short", "long");
+        Article article = articleFactory.create(topic.getId(), "scene", "title", "content");
+        replyService.save(article.getId(), "scene", "content");
+        List<Reply> replies = replyRepository.findAll();
+        if (replies.size() != 1) fail("Illegal Test State");
+        Long id = replies.get(0).getId();
+
+        mockMvc.perform(
+                delete("/replies/" + id)
+                        .with(csrf())
+        )
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/articles/" + article.getId()))
+        ;
+        assertThrows(RuntimeException.class, () -> replyRepository.findById(id).orElseThrow());
+    }
+
+    @Test
+    @WithAccount(username = "scene")
+    void delete_byStranger_handleException() throws Exception {
+        Account account = accountFactory.create("magazineManager", "manager@email.com", "password");
+        Magazine magazine = magazineFactory.create(account.getUsername(), "title", "short", "long", "OPEN");
+        Topic topic = topicFactory.create(magazine.getId(), account.getUsername(), "title", "short", "long");
+        Article article = articleFactory.create(topic.getId(), account.getUsername(), "title", "content");
+        replyService.save(article.getId(), account.getUsername(), "content");
+        List<Reply> replies = replyRepository.findAll();
+        if (replies.size() != 1) fail("Illegal Test State");
+        Long id = replies.get(0).getId();
+
+        mockMvc.perform(
+                delete("/replies/" + id)
+                        .with(csrf())
+        )
+                .andExpect(status().isOk())
+                .andExpect(view().name("error/access"))
+        ;
+        assertDoesNotThrow(() -> replyRepository.findById(id).orElseThrow());
     }
 
 }

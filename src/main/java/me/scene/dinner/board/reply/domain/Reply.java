@@ -3,6 +3,7 @@ package me.scene.dinner.board.reply.domain;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import me.scene.dinner.board.article.domain.Article;
+import me.scene.dinner.common.exception.NotOwnerException;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -39,6 +40,10 @@ public class Reply {
         reply.content = content;
         reply.createdAt = LocalDateTime.now();
         return reply;
+    }
+
+    public void confirmWriter(String current) {
+        if (!current.equals(writer)) throw new NotOwnerException(current);
     }
 
 }

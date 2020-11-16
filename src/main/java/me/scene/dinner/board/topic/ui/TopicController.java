@@ -66,7 +66,6 @@ public class TopicController {
 
     @PutMapping("/topics/{topicId}")
     public String update(@PathVariable Long topicId, @CurrentUser Account current, @Valid TopicForm form, Errors errors) {
-        // TODO js validation
         if (errors.hasErrors()) return "redirect:" + ("/topics/" + topicId + "/form");
 
         topicService.update(topicId, current.getUsername(), form.getTitle(), form.getShortExplanation(), form.getLongExplanation());

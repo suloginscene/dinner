@@ -64,6 +64,7 @@ public class Article {
         if (!current.equals(writer)) throw new NotOwnerException(current);
     }
 
+    // TODO 도메인 이벤트 퍼블리싱
     public void publish(String current) {
         confirmWriter(current);
         published = true;
