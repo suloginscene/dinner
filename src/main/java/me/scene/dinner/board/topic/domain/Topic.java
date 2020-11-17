@@ -75,4 +75,12 @@ public class Topic {
         articles.add(article);
     }
 
+    public void remove(Article article) {
+        articles.remove(article);
+    }
+
+    public void exit() {
+        magazine.remove(this);
+    }
+
 }

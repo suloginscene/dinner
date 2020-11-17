@@ -46,4 +46,8 @@ public class Reply {
         if (!current.equals(writer)) throw new NotOwnerException(current);
     }
 
+    public void exit() {
+        article.remove(this);
+    }
+
 }

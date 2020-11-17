@@ -5,8 +5,14 @@ import lombok.Getter;
 import me.scene.dinner.board.reply.domain.Reply;
 import me.scene.dinner.board.topic.domain.Topic;
 import me.scene.dinner.common.exception.NotOwnerException;
+import org.springframework.data.domain.AbstractAggregateRoot;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,8 +20,8 @@ import java.util.List;
 import static javax.persistence.FetchType.LAZY;
 
 @Entity
-@Getter @EqualsAndHashCode(of = "id")
-public class Article {
+@Getter @EqualsAndHashCode(of = "id", callSuper = false)
+public class Article extends AbstractAggregateRoot<Article> {
 
     @Id @GeneratedValue
     private Long id;
@@ -64,7 +70,6 @@ public class Article {
         if (!current.equals(writer)) throw new NotOwnerException(current);
     }
 
-    // TODO 도메인 이벤트 퍼블리싱
     public void publish(String current) {
         confirmWriter(current);
         published = true;
@@ -73,6 +78,18 @@ public class Article {
 
     public void add(Reply reply) {
         replies.add(reply);
+    }
+
+    public void remove(Reply reply) {
+        replies.remove(reply);
+    }
+
+    public void exit() {
+        topic.remove(this);
+    }
+
+    public void registerEvent() {
+        registerEvent(new ArticleDeletedEvent(this, replies));
     }
 
 }

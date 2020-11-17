@@ -46,8 +46,15 @@ public class ArticleService {
     public Long delete(Long id, String current) {
         Article article = find(id);
         article.confirmWriter(current);
+        article.exit();
+        publishEvent(article);
         articleRepository.delete(article);
         return article.getTopic().getId();
+    }
+
+    private void publishEvent(Article article) {
+        article.registerEvent();
+        articleRepository.save(article);
     }
 
 }

@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -320,6 +321,7 @@ class TopicControllerTest {
                 .andExpect(redirectedUrl("/magazines/" + magazine.getId()))
         ;
         assertThrows(BoardNotFoundException.class, () -> topicService.find(id));
+        assertThat(magazine.getTopics().size()).isEqualTo(0);
     }
 
     @Test

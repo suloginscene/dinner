@@ -109,4 +109,8 @@ public class Magazine {
         topics.add(topic);
     }
 
+    public void remove(Topic topic) {
+        topics.remove(topic);
+    }
+
 }

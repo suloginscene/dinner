@@ -1,15 +1,13 @@
 package me.scene.dinner.board.reply.application;
 
 import me.scene.dinner.board.article.application.ArticleService;
-import me.scene.dinner.board.article.domain.Article;
+import me.scene.dinner.board.article.domain.ArticleDeletedEvent;
 import me.scene.dinner.board.reply.domain.Reply;
 import me.scene.dinner.board.reply.domain.ReplyRepository;
-import me.scene.dinner.common.exception.BoardNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 
 @Service @Transactional(readOnly = true)
 public class ReplyService {
@@ -37,8 +35,14 @@ public class ReplyService {
     public Long delete(Long id, String current) {
         Reply reply = find(id);
         reply.confirmWriter(current);
+        reply.exit();
         replyRepository.delete(reply);
         return reply.getArticle().getId();
+    }
+
+    @EventListener @Transactional
+    public void onApplicationEvent(ArticleDeletedEvent event) {
+        replyRepository.deleteAll(event.getReplies());
     }
 
 }

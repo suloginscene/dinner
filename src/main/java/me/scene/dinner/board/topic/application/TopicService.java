@@ -45,6 +45,7 @@ public class TopicService {
         Topic topic = find(id);
         topic.confirmManager(current);
         topic.confirmDeletable();
+        topic.exit();
         topicRepository.delete(topic);
         return topic.getMagazine().getId();
     }

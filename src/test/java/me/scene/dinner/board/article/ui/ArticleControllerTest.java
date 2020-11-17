@@ -6,6 +6,9 @@ import me.scene.dinner.board.article.application.ArticleService;
 import me.scene.dinner.board.article.domain.Article;
 import me.scene.dinner.board.article.domain.ArticleRepository;
 import me.scene.dinner.board.magazine.domain.Magazine;
+import me.scene.dinner.board.reply.application.ReplyService;
+import me.scene.dinner.board.reply.domain.Reply;
+import me.scene.dinner.board.reply.domain.ReplyRepository;
 import me.scene.dinner.board.topic.domain.Topic;
 import me.scene.dinner.common.exception.BoardNotFoundException;
 import me.scene.dinner.utils.authentication.WithAccount;
@@ -19,13 +22,22 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrlPattern;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 @Transactional
 @SpringBootTest
@@ -39,6 +51,8 @@ class ArticleControllerTest {
     @Autowired TopicFactory topicFactory;
     @Autowired ArticleService articleService;
     @Autowired ArticleRepository articleRepository;
+    @Autowired ReplyService replyService;
+    @Autowired ReplyRepository replyRepository;
 
     @Test
     @WithAccount(username = "scene")
@@ -399,6 +413,7 @@ class ArticleControllerTest {
                 .andExpect(redirectedUrl("/topics/" + topic.getId()))
         ;
         assertThrows(BoardNotFoundException.class, () -> articleService.find(id));
+        assertThat(topic.getArticles().size()).isEqualTo(0);
     }
 
     @Test
@@ -417,6 +432,32 @@ class ArticleControllerTest {
                 .andExpect(view().name("error/access"))
         ;
         assertDoesNotThrow(() -> articleService.find(id));
+    }
+
+    @Test
+    @WithAccount(username = "scene")
+    void delete_hasReply_removeRecursivelyByDomainEvent() throws Exception {
+        Magazine magazine = magazineFactory.create("scene", "title", "short", "long", "OPEN");
+        Topic topic = topicFactory.create(magazine.getId(), "scene", "title", "short", "long");
+        Long targetArticleId = articleService.save(topic.getId(), "scene", "title", "content");
+        replyService.save(targetArticleId, "replyWriter", "it will be deleted");
+
+        Long anotherArticleId = articleService.save(topic.getId(), "scene", "title", "content");
+        replyService.save(anotherArticleId, "replyWriter", "it will survive");
+        if (replyRepository.findAll().size() != 2) fail("Illegal Test State");
+
+        mockMvc.perform(
+                delete("/articles/" + targetArticleId)
+                        .with(csrf())
+        )
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/topics/" + topic.getId()))
+        ;
+        assertThrows(BoardNotFoundException.class, () -> articleService.find(targetArticleId));
+
+        List<Reply> replies = replyRepository.findAll();
+        assertThat(replies.size()).isEqualTo(1);
+        assertThat(replies.get(0).getContent()).isEqualTo("it will survive");
     }
 
 }

@@ -3,7 +3,6 @@ package me.scene.dinner.board.reply.ui;
 import me.scene.dinner.account.domain.Account;
 import me.scene.dinner.board.article.domain.Article;
 import me.scene.dinner.board.magazine.domain.Magazine;
-import me.scene.dinner.board.reply.application.ReplyNotFoundException;
 import me.scene.dinner.board.reply.application.ReplyService;
 import me.scene.dinner.board.reply.domain.Reply;
 import me.scene.dinner.board.reply.domain.ReplyRepository;
@@ -21,6 +20,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -114,7 +114,8 @@ class ReplyControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/articles/" + article.getId()))
         ;
-        assertThrows(RuntimeException.class, () -> replyRepository.findById(id).orElseThrow());
+        assertThrows(NoSuchElementException.class, () -> replyRepository.findById(id).orElseThrow());
+        assertThat(article.getReplies().size()).isEqualTo(0);
     }
 
     @Test
