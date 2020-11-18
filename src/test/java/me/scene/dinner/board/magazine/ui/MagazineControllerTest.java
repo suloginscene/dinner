@@ -58,7 +58,7 @@ class MagazineControllerTest {
     @Autowired TopicRepository topicRepository;
 
     @AfterEach
-    void clearAfter() {
+    void clear() {
         accountRepository.deleteAll();
         topicRepository.deleteAll();
         magazineRepository.deleteAll();

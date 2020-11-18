@@ -1,17 +1,22 @@
 package me.scene.dinner.board.reply.ui;
 
 import me.scene.dinner.account.domain.Account;
+import me.scene.dinner.account.domain.AccountRepository;
 import me.scene.dinner.board.article.domain.Article;
+import me.scene.dinner.board.article.domain.ArticleRepository;
 import me.scene.dinner.board.magazine.domain.Magazine;
+import me.scene.dinner.board.magazine.domain.MagazineRepository;
 import me.scene.dinner.board.reply.application.ReplyService;
 import me.scene.dinner.board.reply.domain.Reply;
 import me.scene.dinner.board.reply.domain.ReplyRepository;
 import me.scene.dinner.board.topic.domain.Topic;
+import me.scene.dinner.board.topic.domain.TopicRepository;
 import me.scene.dinner.utils.authentication.WithAccount;
 import me.scene.dinner.utils.factory.AccountFactory;
 import me.scene.dinner.utils.factory.ArticleFactory;
 import me.scene.dinner.utils.factory.MagazineFactory;
 import me.scene.dinner.utils.factory.TopicFactory;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -36,20 +41,36 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
-@Transactional
 @SpringBootTest
 @AutoConfigureMockMvc
 class ReplyControllerTest {
 
     @Autowired MockMvc mockMvc;
+
+    @Autowired ReplyService replyService;
+
     @Autowired AccountFactory accountFactory;
     @Autowired MagazineFactory magazineFactory;
     @Autowired TopicFactory topicFactory;
     @Autowired ArticleFactory articleFactory;
-    @Autowired ReplyService replyService;
+
+    @Autowired AccountRepository accountRepository;
+    @Autowired MagazineRepository magazineRepository;
+    @Autowired TopicRepository topicRepository;
+    @Autowired ArticleRepository articleRepository;
     @Autowired ReplyRepository replyRepository;
 
+    @AfterEach
+    void clear() {
+        accountRepository.deleteAll();
+        replyRepository.deleteAll();
+        articleRepository.deleteAll();
+        topicRepository.deleteAll();
+        magazineRepository.deleteAll();
+    }
+
     @Test
+    @Transactional
     @WithAccount(username = "scene")
     void create_saveAndShowArticle() throws Exception {
         Account account = accountFactory.create("magazineManager", "magazine_manager@email.com", "password");
@@ -80,6 +101,7 @@ class ReplyControllerTest {
     }
 
     @Test
+    @Transactional
     void show_hasReply() throws Exception {
         Account account = accountFactory.create("scene", "scene@email.com", "password");
         Magazine magazine = magazineFactory.create(account.getUsername(), "title", "short", "long", "OPEN");
@@ -97,6 +119,7 @@ class ReplyControllerTest {
     }
 
     @Test
+    @Transactional
     @WithAccount(username = "scene")
     void delete_deleted() throws Exception {
         Magazine magazine = magazineFactory.create("scene", "title", "short", "long", "OPEN");

@@ -2,7 +2,9 @@ package me.scene.dinner.board.topic.ui;
 
 import me.scene.dinner.account.domain.Account;
 import me.scene.dinner.account.domain.AccountRepository;
+import me.scene.dinner.board.article.domain.ArticleRepository;
 import me.scene.dinner.board.magazine.domain.Magazine;
+import me.scene.dinner.board.magazine.domain.MagazineRepository;
 import me.scene.dinner.board.topic.application.TopicService;
 import me.scene.dinner.board.topic.domain.Topic;
 import me.scene.dinner.board.topic.domain.TopicRepository;
@@ -11,6 +13,7 @@ import me.scene.dinner.utils.authentication.WithAccount;
 import me.scene.dinner.utils.factory.AccountFactory;
 import me.scene.dinner.utils.factory.ArticleFactory;
 import me.scene.dinner.utils.factory.MagazineFactory;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -20,24 +23,42 @@ import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrlPattern;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
-@Transactional
 @SpringBootTest
 @AutoConfigureMockMvc
 class TopicControllerTest {
 
     @Autowired MockMvc mockMvc;
-    @Autowired AccountFactory accountFactory;
-    @Autowired AccountRepository accountRepository;
-    @Autowired MagazineFactory magazineFactory;
+
     @Autowired TopicService topicService;
-    @Autowired TopicRepository topicRepository;
+
+    @Autowired AccountFactory accountFactory;
+    @Autowired MagazineFactory magazineFactory;
     @Autowired ArticleFactory articleFactory;
+
+    @Autowired AccountRepository accountRepository;
+    @Autowired MagazineRepository magazineRepository;
+    @Autowired TopicRepository topicRepository;
+    @Autowired ArticleRepository articleRepository;
+
+    @AfterEach
+    void clear() {
+        accountRepository.deleteAll();
+        articleRepository.deleteAll();
+        topicRepository.deleteAll();
+        magazineRepository.deleteAll();
+    }
 
     @Test
     @WithAccount(username = "scene")
@@ -63,6 +84,7 @@ class TopicControllerTest {
     }
 
     @Test
+    @Transactional
     @WithAccount(username = "scene")
     void create_saveAndShow() throws Exception {
         Account account = accountFactory.create("magazineManager", "magazine_manager@email.com", "password");
@@ -163,6 +185,7 @@ class TopicControllerTest {
     }
 
     @Test
+    @Transactional
     @WithAccount(username = "scene")
     void create_managedByAuthorized_success() throws Exception {
         Account account = accountFactory.create("magazineManager", "magazine_manager@email.com", "password");
@@ -183,6 +206,7 @@ class TopicControllerTest {
     }
 
     @Test
+    @Transactional
     void show_hasTopic() throws Exception {
         Account account = accountFactory.create("scene", "scene@email.com", "password");
         Magazine magazine = magazineFactory.create(account.getUsername(), "title", "short", "long", "OPEN");
@@ -308,6 +332,7 @@ class TopicControllerTest {
     }
 
     @Test
+    @Transactional
     @WithAccount(username = "scene")
     void delete_deleted() throws Exception {
         Magazine magazine = magazineFactory.create("scene", "title", "short", "long", "OPEN");

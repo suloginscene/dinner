@@ -6,15 +6,18 @@ import me.scene.dinner.board.article.application.ArticleService;
 import me.scene.dinner.board.article.domain.Article;
 import me.scene.dinner.board.article.domain.ArticleRepository;
 import me.scene.dinner.board.magazine.domain.Magazine;
+import me.scene.dinner.board.magazine.domain.MagazineRepository;
 import me.scene.dinner.board.reply.application.ReplyService;
 import me.scene.dinner.board.reply.domain.Reply;
 import me.scene.dinner.board.reply.domain.ReplyRepository;
 import me.scene.dinner.board.topic.domain.Topic;
+import me.scene.dinner.board.topic.domain.TopicRepository;
 import me.scene.dinner.common.exception.BoardNotFoundException;
 import me.scene.dinner.utils.authentication.WithAccount;
 import me.scene.dinner.utils.factory.AccountFactory;
 import me.scene.dinner.utils.factory.MagazineFactory;
 import me.scene.dinner.utils.factory.TopicFactory;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -39,20 +42,33 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
-@Transactional
 @SpringBootTest
 @AutoConfigureMockMvc
 class ArticleControllerTest {
 
     @Autowired MockMvc mockMvc;
+
+    @Autowired ArticleService articleService;
+
     @Autowired AccountFactory accountFactory;
-    @Autowired AccountRepository accountRepository;
     @Autowired MagazineFactory magazineFactory;
     @Autowired TopicFactory topicFactory;
-    @Autowired ArticleService articleService;
-    @Autowired ArticleRepository articleRepository;
     @Autowired ReplyService replyService;
+
+    @Autowired AccountRepository accountRepository;
+    @Autowired MagazineRepository magazineRepository;
+    @Autowired TopicRepository topicRepository;
+    @Autowired ArticleRepository articleRepository;
     @Autowired ReplyRepository replyRepository;
+
+    @AfterEach
+    void clear() {
+        accountRepository.deleteAll();
+        replyRepository.deleteAll();
+        articleRepository.deleteAll();
+        topicRepository.deleteAll();
+        magazineRepository.deleteAll();
+    }
 
     @Test
     @WithAccount(username = "scene")
@@ -78,6 +94,7 @@ class ArticleControllerTest {
     }
 
     @Test
+    @Transactional
     @WithAccount(username = "scene")
     void create_saveAndShow() throws Exception {
         Account account = accountFactory.create("magazineManager", "magazine_manager@email.com", "password");
@@ -177,6 +194,7 @@ class ArticleControllerTest {
     }
 
     @Test
+    @Transactional
     @WithAccount(username = "scene")
     void create_managedByAuthorized_success() throws Exception {
         Account account = accountFactory.create("magazineManager", "magazine_manager@email.com", "password");
@@ -197,6 +215,7 @@ class ArticleControllerTest {
     }
 
     @Test
+    @Transactional
     void show_hasArticle() throws Exception {
         Account account = accountFactory.create("scene", "scene@email.com", "password");
         Magazine magazine = magazineFactory.create(account.getUsername(), "title", "short", "long", "OPEN");
@@ -229,6 +248,7 @@ class ArticleControllerTest {
     }
 
     @Test
+    @Transactional
     @WithAccount(username = "scene")
     void unpublished_byWriter_hasArticle() throws Exception {
         Magazine magazine = magazineFactory.create("scene", "title", "short", "long", "OPEN");
@@ -260,6 +280,7 @@ class ArticleControllerTest {
     }
 
     @Test
+    @Transactional
     @WithAccount(username = "scene")
     void publish_published() throws Exception {
         Magazine magazine = magazineFactory.create("scene", "title", "short", "long", "OPEN");
@@ -399,6 +420,7 @@ class ArticleControllerTest {
     }
 
     @Test
+    @Transactional
     @WithAccount(username = "scene")
     void delete_deleted() throws Exception {
         Magazine magazine = magazineFactory.create("scene", "title", "short", "long", "OPEN");
