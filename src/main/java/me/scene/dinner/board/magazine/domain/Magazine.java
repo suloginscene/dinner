@@ -6,16 +6,23 @@ import lombok.Getter;
 import me.scene.dinner.board.topic.domain.Topic;
 import me.scene.dinner.common.exception.NotDeletableException;
 import me.scene.dinner.common.exception.NotOwnerException;
+import org.springframework.data.domain.AbstractAggregateRoot;
 
-import javax.persistence.*;
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
 
 import static javax.persistence.FetchType.LAZY;
 
 @Entity
-@Getter @EqualsAndHashCode(of = "id")
-public class Magazine {
+@Getter @EqualsAndHashCode(of = "id", callSuper = false)
+public class Magazine extends AbstractAggregateRoot<Magazine> {
 
     @Id @GeneratedValue
     private Long id;
@@ -54,6 +61,7 @@ public class Magazine {
         magazine.shortExplanation = shortExplanation;
         magazine.longExplanation = longExplanation;
         magazine.policy = Policy.valueOf(magazinePolicy);
+        magazine.registerEvent(new MagazineChangedEvent(magazine));
         return magazine;
     }
 
@@ -62,6 +70,7 @@ public class Magazine {
         this.title = title;
         this.shortExplanation = shortExplanation;
         this.longExplanation = longExplanation;
+        registerEvent(new MagazineChangedEvent(this));
     }
 
     public void confirmManager(String current) {
@@ -111,6 +120,10 @@ public class Magazine {
 
     public void remove(Topic topic) {
         topics.remove(topic);
+    }
+
+    public void registerDeletedEvent() {
+        registerEvent(new MagazineChangedEvent(this, true));
     }
 
 }

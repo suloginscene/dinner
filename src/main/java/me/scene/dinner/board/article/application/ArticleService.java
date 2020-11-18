@@ -47,13 +47,13 @@ public class ArticleService {
         Article article = find(id);
         article.confirmWriter(current);
         article.exit();
+        article.registerEvent();
         publishEvent(article);
         articleRepository.delete(article);
         return article.getTopic().getId();
     }
 
     private void publishEvent(Article article) {
-        article.registerEvent();
         articleRepository.save(article);
     }
 

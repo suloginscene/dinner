@@ -33,12 +33,16 @@ public class MagazineService {
         return magazineRepository.findAll();
     }
 
-    // TODO findBests
+    public List<Magazine> findBest() {
+        // TODO findBest
+        return magazineRepository.findAll();
+    }
 
     @Transactional
     public void update(Long id, String current, String title, String shortExplanation, String longExplanation) {
         Magazine magazine = find(id);
         magazine.update(current, title, shortExplanation, longExplanation);
+        publishEvent(magazine);
     }
 
     @Transactional
@@ -46,6 +50,8 @@ public class MagazineService {
         Magazine magazine = find(id);
         magazine.confirmManager(current);
         magazine.confirmDeletable();
+        magazine.registerDeletedEvent();
+        publishEvent(magazine);
         magazineRepository.delete(magazine);
     }
 
@@ -54,5 +60,9 @@ public class MagazineService {
 
     // TODO registerAsAuthorizedWriter(in page, by Search, send Mail)
     // TODO eliminatedAuthorization(in page, send Mail)
+
+    private void publishEvent(Magazine magazine) {
+        magazineRepository.save(magazine);
+    }
 
 }
