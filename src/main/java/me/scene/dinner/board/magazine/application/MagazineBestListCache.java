@@ -33,7 +33,6 @@ public class MagazineBestListCache {
 
     @EventListener
     public void onApplicationEvent(MagazineChangedEvent event) {
-        System.out.println("onApplicationEvent!!!");
         Magazine source = event.getSource();
 
         if (bestMagazines.contains(source) || bestMagazines.size() < 5) {

@@ -182,7 +182,7 @@ class ArticleControllerTest {
         Account account = accountFactory.create("magazineManager", "magazine_manager@email.com", "password");
         Magazine managed = magazineFactory.create(account.getUsername(), "title", "short", "long", "MANAGED");
         Topic topic = topicFactory.create(managed.getId(), account.getUsername(), "title", "short", "long");
-        managed.registerAsAuthorizedWriter("scene");
+        managed.addAuthorizedWriter("scene");
 
         mockMvc.perform(
                 post("/articles")
@@ -404,6 +404,8 @@ class ArticleControllerTest {
         Magazine magazine = magazineFactory.create("scene", "title", "short", "long", "OPEN");
         Topic topic = topicFactory.create(magazine.getId(), "scene", "title", "short", "long");
         Long id = articleService.save(topic.getId(), "scene", "title", "content");
+        articleService.publish(id, "scene");
+        if (!magazine.getWriters().contains("scene")) fail("Illegal Test State");
 
         mockMvc.perform(
                 delete("/articles/" + id)
@@ -414,6 +416,7 @@ class ArticleControllerTest {
         ;
         assertThrows(BoardNotFoundException.class, () -> articleService.find(id));
         assertThat(topic.getArticles().size()).isEqualTo(0);
+        assertThat(magazine.getWriters()).doesNotContain("scene");
     }
 
     @Test

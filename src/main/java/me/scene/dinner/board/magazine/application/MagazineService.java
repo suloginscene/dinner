@@ -18,13 +18,6 @@ public class MagazineService {
         this.magazineRepository = magazineRepository;
     }
 
-    @Transactional
-    public Long save(String manager, String title, String shortExplanation, String longExplanation, String policy) {
-        Magazine magazine = Magazine.create(manager, title, shortExplanation, longExplanation, policy);
-        magazine = magazineRepository.save(magazine);
-        return magazine.getId();
-    }
-
     public Magazine find(Long id) {
         return magazineRepository.findById(id).orElseThrow(() -> new MagazineNotFoundException(id));
     }
@@ -39,6 +32,12 @@ public class MagazineService {
     }
 
     @Transactional
+    public Long save(String manager, String title, String shortExplanation, String longExplanation, String policy) {
+        Magazine magazine = Magazine.create(manager, title, shortExplanation, longExplanation, policy);
+        return magazineRepository.save(magazine).getId();
+    }
+
+    @Transactional
     public void update(Long id, String current, String title, String shortExplanation, String longExplanation) {
         Magazine magazine = find(id);
         magazine.update(current, title, shortExplanation, longExplanation);
@@ -48,9 +47,7 @@ public class MagazineService {
     @Transactional
     public void delete(Long id, String current) {
         Magazine magazine = find(id);
-        magazine.confirmManager(current);
-        magazine.confirmDeletable();
-        magazine.registerDeletedEvent();
+        magazine.beforeDelete(current);
         publishEvent(magazine);
         magazineRepository.delete(magazine);
     }

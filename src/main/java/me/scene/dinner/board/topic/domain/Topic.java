@@ -7,7 +7,11 @@ import me.scene.dinner.board.magazine.domain.Magazine;
 import me.scene.dinner.common.exception.NotDeletableException;
 import me.scene.dinner.common.exception.NotOwnerException;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,16 +24,18 @@ public class Topic {
     @Id @GeneratedValue
     private Long id;
 
-    @ManyToOne(fetch = LAZY)
-    private Magazine magazine;
-
     private String manager;
+
 
     private String title;
 
     private String shortExplanation;
 
     private String longExplanation;
+
+
+    @ManyToOne(fetch = LAZY)
+    private Magazine magazine;
 
     @OneToMany(mappedBy = "topic")
     private final List<Article> articles = new ArrayList<>();
@@ -40,14 +46,13 @@ public class Topic {
 
     public static Topic create(Magazine magazine, String manager, String title, String shortExplanation, String longExplanation) {
         magazine.checkAuthorization(manager);
-
         Topic topic = new Topic();
-        magazine.add(topic);
-        topic.magazine = magazine;
         topic.manager = manager;
         topic.title = title;
         topic.shortExplanation = shortExplanation;
         topic.longExplanation = longExplanation;
+        topic.magazine = magazine;
+        magazine.add(topic);
         return topic;
     }
 
@@ -58,18 +63,23 @@ public class Topic {
         this.longExplanation = longExplanation;
     }
 
+    public void beforeDelete(String current) {
+        confirmManager(current);
+        confirmDeletable();
+        magazine.remove(this);
+    }
+
+
     public void confirmManager(String current) {
-        if (!current.equals(manager)) throw new NotOwnerException(current);
+        if (current.equals(manager)) return;
+        throw new NotOwnerException(current);
     }
 
-    public void register(String writer) {
-        magazine.register(writer);
-    }
-
-    public void confirmDeletable() {
+    private void confirmDeletable() {
         if (articles.isEmpty()) return;
         throw new NotDeletableException(title);
     }
+
 
     public void add(Article article) {
         articles.add(article);
@@ -77,10 +87,6 @@ public class Topic {
 
     public void remove(Article article) {
         articles.remove(article);
-    }
-
-    public void exit() {
-        magazine.remove(this);
     }
 
 }

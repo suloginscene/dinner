@@ -20,18 +20,17 @@ public class TopicService {
         this.magazineService = magazineService;
     }
 
-    @Transactional
-    public Long save(Long magazineId, String manager, String title, String shortExplanation, String longExplanation) {
-        Topic topic = Topic.create(magazineService.find(magazineId), manager, title, shortExplanation, longExplanation);
-        topic = topicRepository.save(topic);
-        return topic.getId();
-    }
-
     public Topic find(Long id) {
         Topic topic = topicRepository.findById(id).orElseThrow(() -> new TopicNotFoundException(id));
         // Todo
         topic.getArticles().forEach(Article::getContent);
         return topic;
+    }
+
+    @Transactional
+    public Long save(Long magazineId, String manager, String title, String shortExplanation, String longExplanation) {
+        Topic topic = Topic.create(magazineService.find(magazineId), manager, title, shortExplanation, longExplanation);
+        return topicRepository.save(topic).getId();
     }
 
     @Transactional
@@ -43,9 +42,7 @@ public class TopicService {
     @Transactional
     public Long delete(Long id, String current) {
         Topic topic = find(id);
-        topic.confirmManager(current);
-        topic.confirmDeletable();
-        topic.exit();
+        topic.beforeDelete(current);
         topicRepository.delete(topic);
         return topic.getMagazine().getId();
     }

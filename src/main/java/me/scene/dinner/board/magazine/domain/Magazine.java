@@ -30,11 +30,6 @@ public class Magazine extends AbstractAggregateRoot<Magazine> {
     @JsonIgnore
     private String manager;
 
-    @ElementCollection(fetch = LAZY) @JsonIgnore
-    private final List<String> writers = new ArrayList<>();
-
-    @ElementCollection(fetch = LAZY) @JsonIgnore
-    private final List<String> authorizedWriters = new ArrayList<>();
 
     private String title;
 
@@ -47,8 +42,16 @@ public class Magazine extends AbstractAggregateRoot<Magazine> {
     @JsonIgnore @Enumerated(EnumType.STRING)
     private Policy policy;
 
+
     @OneToMany(mappedBy = "magazine") @JsonIgnore
     private final List<Topic> topics = new ArrayList<>();
+
+
+    @ElementCollection(fetch = LAZY) @JsonIgnore
+    private final List<String> writers = new ArrayList<>();
+
+    @ElementCollection(fetch = LAZY) @JsonIgnore
+    private final List<String> authorizedWriters = new ArrayList<>();
 
 
     protected Magazine() {
@@ -73,22 +76,32 @@ public class Magazine extends AbstractAggregateRoot<Magazine> {
         registerEvent(new MagazineChangedEvent(this));
     }
 
+    public void beforeDelete(String current) {
+        confirmManager(current);
+        confirmDeletable();
+        registerEvent(new MagazineChangedEvent(this, true));
+    }
+
+
     public void confirmManager(String current) {
-        if (!current.equals(manager)) throw new NotOwnerException(current);
+        if (current.equals(manager)) return;
+        throw new NotOwnerException(current);
     }
 
-    public void register(String writer) {
-        if (writers.contains(writer)) return;
-
-        writers.add(writer);
+    private void confirmDeletable() {
+        if (topics.isEmpty()) return;
+        throw new NotDeletableException(title);
     }
 
-    public void registerAsAuthorizedWriter(String writer) {
-        if (policy != Policy.MANAGED) throw new IllegalStateException("Not Managed Magazine");
-        if (authorizedWriters.contains(writer)) return;
 
-        authorizedWriters.add(writer);
+    public void add(Topic topic) {
+        topics.add(topic);
     }
+
+    public void remove(Topic topic) {
+        topics.remove(topic);
+    }
+
 
     public void checkAuthorization(String username) {
 
@@ -109,21 +122,28 @@ public class Magazine extends AbstractAggregateRoot<Magazine> {
 
     }
 
-    public void confirmDeletable() {
-        if (topics.isEmpty()) return;
-        throw new NotDeletableException(title);
+    public void addWriter(String writer) {
+        if (writers.contains(writer)) return;
+        writers.add(writer);
     }
 
-    public void add(Topic topic) {
-        topics.add(topic);
+    public void removeWriter(String writer) {
+        long count = topics.stream().map(Topic::getArticles).flatMap(List::stream)
+                .filter(a -> a.getWriter().equals(writer)).count();
+        if (count != 1) return;
+        writers.remove(writer);
     }
 
-    public void remove(Topic topic) {
-        topics.remove(topic);
+    private void onlyWhenManaged() {
+        if (policy == Policy.MANAGED) return;
+        throw new IllegalStateException("Not Managed Magazine");
     }
 
-    public void registerDeletedEvent() {
-        registerEvent(new MagazineChangedEvent(this, true));
+    public void addAuthorizedWriter(String writer) {
+        onlyWhenManaged();
+
+        if (authorizedWriters.contains(writer)) return;
+        authorizedWriters.add(writer);
     }
 
 }

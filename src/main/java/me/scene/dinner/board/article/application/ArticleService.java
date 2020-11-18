@@ -19,15 +19,14 @@ public class ArticleService {
         this.topicService = topicService;
     }
 
+    public Article find(Long id) {
+        return articleRepository.findById(id).orElseThrow(() -> new ArticleNotFoundException(id));
+    }
+
     @Transactional
     public Long save(Long topicId, String writer, String title, String content) {
         Article article = Article.create(topicService.find(topicId), writer, title, content);
-        article = articleRepository.save(article);
-        return article.getId();
-    }
-
-    public Article find(Long id) {
-        return articleRepository.findById(id).orElseThrow(() -> new ArticleNotFoundException(id));
+        return articleRepository.save(article).getId();
     }
 
     @Transactional
@@ -45,9 +44,7 @@ public class ArticleService {
     @Transactional
     public Long delete(Long id, String current) {
         Article article = find(id);
-        article.confirmWriter(current);
-        article.exit();
-        article.registerEvent();
+        article.beforeDelete(current);
         publishEvent(article);
         articleRepository.delete(article);
         return article.getTopic().getId();

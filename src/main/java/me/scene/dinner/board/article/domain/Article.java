@@ -26,10 +26,8 @@ public class Article extends AbstractAggregateRoot<Article> {
     @Id @GeneratedValue
     private Long id;
 
-    @ManyToOne(fetch = LAZY)
-    private Topic topic;
-
     private String writer;
+
 
     private String title;
 
@@ -40,24 +38,35 @@ public class Article extends AbstractAggregateRoot<Article> {
 
     private LocalDateTime createdAt;
 
+
+    @ManyToOne(fetch = LAZY)
+    private Topic topic;
+
     @OneToMany(mappedBy = "article")
     private final List<Reply> replies = new ArrayList<>();
+
 
     protected Article() {
     }
 
     public static Article create(Topic topic, String writer, String title, String content) {
         topic.getMagazine().checkAuthorization(writer);
-
         Article article = new Article();
-        topic.add(article);
-        article.topic = topic;
         article.writer = writer;
         article.title = title;
         article.content = content;
         article.published = false;
         article.createdAt = LocalDateTime.now();
+        article.topic = topic;
+        topic.add(article);
         return article;
+    }
+
+    public void publish(String current) {
+        confirmWriter(current);
+        published = true;
+        createdAt = LocalDateTime.now();
+        topic.getMagazine().addWriter(writer);
     }
 
     public void update(String current, String title, String content) {
@@ -66,15 +75,19 @@ public class Article extends AbstractAggregateRoot<Article> {
         this.content = content;
     }
 
-    public void confirmWriter(String current) {
-        if (!current.equals(writer)) throw new NotOwnerException(current);
+    public void beforeDelete(String current) {
+        confirmWriter(current);
+        topic.getMagazine().removeWriter(writer);
+        topic.remove(this);
+        registerEvent(new ArticleDeletedEvent(this, replies));
     }
 
-    public void publish(String current) {
-        confirmWriter(current);
-        published = true;
-        topic.register(writer);
+
+    public void confirmWriter(String current) {
+        if (current.equals(writer)) return;
+        throw new NotOwnerException(current);
     }
+
 
     public void add(Reply reply) {
         replies.add(reply);
@@ -82,14 +95,6 @@ public class Article extends AbstractAggregateRoot<Article> {
 
     public void remove(Reply reply) {
         replies.remove(reply);
-    }
-
-    public void exit() {
-        topic.remove(this);
-    }
-
-    public void registerEvent() {
-        registerEvent(new ArticleDeletedEvent(this, replies));
     }
 
 }
