@@ -1,7 +1,8 @@
-package me.scene.dinner.account.domain;
+package me.scene.dinner.account.domain.account;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import me.scene.dinner.account.domain.tempaccount.TempAccount;
 import org.springframework.data.domain.AbstractAggregateRoot;
 
 import javax.persistence.Column;

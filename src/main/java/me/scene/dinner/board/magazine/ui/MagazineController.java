@@ -1,6 +1,6 @@
 package me.scene.dinner.board.magazine.ui;
 
-import me.scene.dinner.account.domain.Account;
+import me.scene.dinner.account.domain.account.Account;
 import me.scene.dinner.board.magazine.application.MagazineBestListCache;
 import me.scene.dinner.board.magazine.application.MagazineService;
 import me.scene.dinner.board.magazine.domain.Magazine;

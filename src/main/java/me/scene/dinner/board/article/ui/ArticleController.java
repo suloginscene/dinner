@@ -1,6 +1,6 @@
 package me.scene.dinner.board.article.ui;
 
-import me.scene.dinner.account.domain.Account;
+import me.scene.dinner.account.domain.account.Account;
 import me.scene.dinner.board.article.application.ArticleService;
 import me.scene.dinner.board.article.domain.Article;
 import me.scene.dinner.common.security.CurrentUser;

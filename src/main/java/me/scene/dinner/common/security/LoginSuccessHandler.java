@@ -30,6 +30,8 @@ public class LoginSuccessHandler extends SavedRequestAwareAuthenticationSuccessH
             return;
         }
 
+        // TODO onMeaninglessReferer
+
         session.removeAttribute("referer");
         getRedirectStrategy().sendRedirect(request, response, referer);
 

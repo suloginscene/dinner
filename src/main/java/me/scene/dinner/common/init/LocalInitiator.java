@@ -1,9 +1,9 @@
-package me.scene.dinner;
+package me.scene.dinner.common.init;
 
 import me.scene.dinner.account.application.AccountService;
-import me.scene.dinner.account.domain.Account;
-import me.scene.dinner.account.domain.TempAccount;
-import me.scene.dinner.account.domain.TempAccountRepository;
+import me.scene.dinner.account.domain.account.Account;
+import me.scene.dinner.account.domain.tempaccount.TempAccount;
+import me.scene.dinner.account.domain.tempaccount.TempAccountRepository;
 import me.scene.dinner.board.article.application.ArticleService;
 import me.scene.dinner.board.magazine.application.MagazineService;
 import me.scene.dinner.board.magazine.domain.Magazine;

@@ -1,8 +1,8 @@
 package me.scene.dinner.account.ui;
 
 import me.scene.dinner.account.application.AccountService;
-import me.scene.dinner.account.domain.Account;
-import me.scene.dinner.account.domain.Profile;
+import me.scene.dinner.account.domain.account.Account;
+import me.scene.dinner.account.domain.account.Profile;
 import me.scene.dinner.utils.authentication.WithAccount;
 import me.scene.dinner.utils.factory.AccountFactory;
 import org.junit.jupiter.api.Test;

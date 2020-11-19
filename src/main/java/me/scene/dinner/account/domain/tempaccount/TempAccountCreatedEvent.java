@@ -1,4 +1,4 @@
-package me.scene.dinner.account.domain;
+package me.scene.dinner.account.domain.tempaccount;
 
 import lombok.Getter;
 import org.springframework.context.ApplicationEvent;

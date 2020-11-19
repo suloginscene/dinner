@@ -1,4 +1,4 @@
-package me.scene.dinner.account.ui;
+package me.scene.dinner.mail;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

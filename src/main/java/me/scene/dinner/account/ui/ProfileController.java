@@ -1,7 +1,7 @@
 package me.scene.dinner.account.ui;
 
 import me.scene.dinner.account.application.AccountService;
-import me.scene.dinner.account.domain.Account;
+import me.scene.dinner.account.domain.account.Account;
 import me.scene.dinner.common.security.CurrentUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

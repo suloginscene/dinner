@@ -1,7 +1,7 @@
 package me.scene.dinner.board.topic.ui;
 
-import me.scene.dinner.account.domain.Account;
-import me.scene.dinner.account.domain.AccountRepository;
+import me.scene.dinner.account.domain.account.Account;
+import me.scene.dinner.account.domain.account.AccountRepository;
 import me.scene.dinner.board.article.domain.ArticleRepository;
 import me.scene.dinner.board.magazine.domain.Magazine;
 import me.scene.dinner.board.magazine.domain.MagazineRepository;

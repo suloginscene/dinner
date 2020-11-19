@@ -1,4 +1,4 @@
-package me.scene.dinner.account.domain;
+package me.scene.dinner.account.domain.account;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

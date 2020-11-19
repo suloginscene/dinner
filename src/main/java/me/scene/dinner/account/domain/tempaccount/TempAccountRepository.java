@@ -1,4 +1,4 @@
-package me.scene.dinner.account.domain;
+package me.scene.dinner.account.domain.tempaccount;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

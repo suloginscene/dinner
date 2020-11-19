@@ -11,16 +11,18 @@ import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 @Controller
-public class SignupController {
+public class AccountController {
 
     private final AccountService accountService;
     private final AccountFormValidator accountFormValidator;
 
     @Autowired
-    public SignupController(AccountService accountService, AccountFormValidator accountFormValidator) {
+    public AccountController(AccountService accountService, AccountFormValidator accountFormValidator) {
         this.accountService = accountService;
         this.accountFormValidator = accountFormValidator;
     }
@@ -29,7 +31,6 @@ public class SignupController {
     public void initBinder(WebDataBinder webDataBinder) {
         webDataBinder.addValidators(accountFormValidator);
     }
-
 
     @GetMapping("/signup")
     public String signupPage(Model model) {
@@ -52,6 +53,24 @@ public class SignupController {
         accountService.transferToRegular(email, token);
         model.addAttribute("email", email);
         return "page/account/welcome";
+    }
+
+    @GetMapping("/login")
+    public String loginPage(HttpServletRequest req) {
+        HttpSession session = req.getSession();
+        session.setAttribute("referer", req.getHeader("Referer"));
+        return "page/account/login";
+    }
+
+    @GetMapping("/forgot")
+    public String forgotPage() {
+        return "page/account/forgot";
+    }
+
+    @PostMapping("/forgot")
+    public String forgotPassword(String email) {
+        accountService.issueTempPassword(email);
+        return "redirect:" + ("/sent?email=" + email);
     }
 
 }

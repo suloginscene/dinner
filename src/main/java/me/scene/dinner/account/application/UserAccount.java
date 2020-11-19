@@ -1,7 +1,7 @@
 package me.scene.dinner.account.application;
 
 import lombok.Getter;
-import me.scene.dinner.account.domain.Account;
+import me.scene.dinner.account.domain.account.Account;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 

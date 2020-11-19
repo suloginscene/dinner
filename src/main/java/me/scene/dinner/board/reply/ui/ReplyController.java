@@ -1,6 +1,6 @@
 package me.scene.dinner.board.reply.ui;
 
-import me.scene.dinner.account.domain.Account;
+import me.scene.dinner.account.domain.account.Account;
 import me.scene.dinner.board.reply.application.ReplyService;
 import me.scene.dinner.common.security.CurrentUser;
 import org.springframework.beans.factory.annotation.Autowired;

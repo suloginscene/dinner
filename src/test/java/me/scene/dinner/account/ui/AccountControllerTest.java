@@ -1,11 +1,13 @@
 package me.scene.dinner.account.ui;
 
-import me.scene.dinner.account.application.MailSender;
-import me.scene.dinner.account.domain.Account;
-import me.scene.dinner.account.domain.AccountRepository;
-import me.scene.dinner.account.domain.TempAccount;
-import me.scene.dinner.account.domain.TempAccountCreatedEvent;
-import me.scene.dinner.account.domain.TempAccountRepository;
+import me.scene.dinner.account.domain.account.TempPasswordIssuedEvent;
+import me.scene.dinner.mail.MailSender;
+import me.scene.dinner.account.domain.account.Account;
+import me.scene.dinner.account.domain.account.AccountRepository;
+import me.scene.dinner.account.domain.tempaccount.TempAccount;
+import me.scene.dinner.account.domain.tempaccount.TempAccountCreatedEvent;
+import me.scene.dinner.account.domain.tempaccount.TempAccountRepository;
+import me.scene.dinner.utils.authentication.WithAccount;
 import me.scene.dinner.utils.factory.AccountFactory;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.then;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
+import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.unauthenticated;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
@@ -29,7 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Transactional
 @SpringBootTest
 @AutoConfigureMockMvc
-class SignupControllerTest {
+class AccountControllerTest {
 
     @Autowired MockMvc mockMvc;
     @Autowired TempAccountRepository tempAccountRepository;
@@ -198,4 +202,130 @@ class SignupControllerTest {
                 .andExpect(view().name("error/already_verified"))
         ;
     }
+
+    @Test
+    void loginPage_isCustomized() throws Exception {
+        mockMvc.perform(
+                get("/login")
+        )
+                .andExpect(status().isOk())
+                .andExpect(view().name("page/account/login"))
+        ;
+    }
+
+    @Test
+    void login_withUsername_authenticated() throws Exception {
+        accountFactory.create("scene", "scene@email.com", "password");
+
+        mockMvc.perform(
+                post("/login")
+                        .with(csrf())
+                        .param("username", "scene")
+                        .param("password", "password")
+        )
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/"))
+                .andExpect(authenticated())
+        ;
+    }
+
+    @Test
+    void login_withEmail_authenticated() throws Exception {
+        accountFactory.create("scene", "scene@email.com", "password");
+
+        mockMvc.perform(
+                post("/login")
+                        .with(csrf())
+                        .param("username", "scene@email.com")
+                        .param("password", "password")
+        )
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/"))
+                .andExpect(authenticated())
+        ;
+    }
+
+    @Test
+    @WithAccount(username = "scene")
+    void logout_unauthenticated() throws Exception {
+        mockMvc.perform(get("/")).andExpect(authenticated());
+
+        mockMvc.perform(
+                post("/logout")
+                        .with(csrf())
+        )
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/"))
+                .andExpect(unauthenticated())
+        ;
+    }
+
+    @Test
+    void login_invalidParams_unauthenticated() throws Exception {
+        accountFactory.create("scene", "scene@email.com", "password");
+
+        mockMvc.perform(
+                post("/login")
+                        .with(csrf())
+                        .param("username", "invalid")
+                        .param("password", "password")
+        )
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/login?error"))
+                .andExpect(unauthenticated())
+        ;
+
+        mockMvc.perform(
+                post("/login")
+                        .with(csrf())
+                        .param("username", "scene")
+                        .param("password", "invalid")
+        )
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/login?error"))
+                .andExpect(unauthenticated())
+        ;
+    }
+
+    @Test
+    void forgotPage_exists() throws Exception {
+        mockMvc.perform(
+                get("/forgot")
+        )
+                .andExpect(status().isOk())
+                .andExpect(view().name("page/account/forgot"))
+        ;
+    }
+
+    @Test
+    void forgot_changeEncodeSend() throws Exception {
+        Account scene = accountFactory.create("scene", "scene@email.com", "password");
+
+        String encodedOldPassword = scene.getPassword();
+        mockMvc.perform(
+                post("/forgot")
+                        .with(csrf())
+                        .param("email", "scene@email.com")
+        )
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/sent?email=scene@email.com"))
+        ;
+        String encodedNewPassword = scene.getPassword();
+        assertThat(encodedNewPassword).isNotEqualTo(encodedOldPassword);
+        assertThat(encodedNewPassword).startsWith("{bcrypt}");
+        then(mailSender).should().onApplicationEvent(any(TempPasswordIssuedEvent.class));
+    }
+
+    @Test
+    void forgot_invalidEmail_handleException() throws Exception {
+        mockMvc.perform(
+                post("/forgot")
+                        .with(csrf())
+                        .param("email", "non-existent@email.com")
+        )
+                .andExpect(status().isOk())
+                .andExpect(view().name("error/user_not_found"))
+        ;
+    }
+
 }

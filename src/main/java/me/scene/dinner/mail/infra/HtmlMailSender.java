@@ -1,6 +1,6 @@
-package me.scene.dinner.account.infra;
+package me.scene.dinner.mail.infra;
 
-import me.scene.dinner.account.application.MailSender;
+import me.scene.dinner.mail.MailSender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.mail.javamail.JavaMailSender;

@@ -2,7 +2,7 @@ package me.scene.dinner.common.exception;
 
 import lombok.extern.slf4j.Slf4j;
 import me.scene.dinner.account.application.AlreadyVerifiedException;
-import me.scene.dinner.account.domain.VerificationException;
+import me.scene.dinner.account.domain.tempaccount.VerificationException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ControllerAdvice;

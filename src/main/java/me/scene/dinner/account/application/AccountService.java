@@ -1,10 +1,10 @@
 package me.scene.dinner.account.application;
 
-import me.scene.dinner.account.domain.Account;
-import me.scene.dinner.account.domain.AccountRepository;
-import me.scene.dinner.account.domain.Profile;
-import me.scene.dinner.account.domain.TempAccount;
-import me.scene.dinner.account.domain.TempAccountRepository;
+import me.scene.dinner.account.domain.account.Account;
+import me.scene.dinner.account.domain.account.AccountRepository;
+import me.scene.dinner.account.domain.account.Profile;
+import me.scene.dinner.account.domain.tempaccount.TempAccount;
+import me.scene.dinner.account.domain.tempaccount.TempAccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -63,8 +63,7 @@ public class AccountService implements UserDetailsService {
 
     @Transactional
     public void issueTempPassword(String email) {
-        Account account = accountRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException(email));
-
+        Account account = findByEmail(email);
         String tempRawPassword = UUID.randomUUID().toString();
         String encodedPassword = passwordEncoder.encode(tempRawPassword);
         account.changePassword(encodedPassword);

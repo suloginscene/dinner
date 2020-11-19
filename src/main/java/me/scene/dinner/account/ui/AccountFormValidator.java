@@ -1,7 +1,7 @@
 package me.scene.dinner.account.ui;
 
-import me.scene.dinner.account.domain.AccountRepository;
-import me.scene.dinner.account.domain.TempAccountRepository;
+import me.scene.dinner.account.domain.account.AccountRepository;
+import me.scene.dinner.account.domain.tempaccount.TempAccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;

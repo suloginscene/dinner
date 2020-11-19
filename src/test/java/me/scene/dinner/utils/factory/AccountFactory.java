@@ -1,10 +1,10 @@
 package me.scene.dinner.utils.factory;
 
 import me.scene.dinner.account.application.AccountService;
-import me.scene.dinner.account.domain.Account;
-import me.scene.dinner.account.domain.AccountRepository;
-import me.scene.dinner.account.domain.TempAccount;
-import me.scene.dinner.account.domain.TempAccountRepository;
+import me.scene.dinner.account.domain.account.Account;
+import me.scene.dinner.account.domain.account.AccountRepository;
+import me.scene.dinner.account.domain.tempaccount.TempAccount;
+import me.scene.dinner.account.domain.tempaccount.TempAccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
