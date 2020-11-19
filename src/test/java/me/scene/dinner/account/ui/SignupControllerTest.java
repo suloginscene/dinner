@@ -4,6 +4,7 @@ import me.scene.dinner.account.application.MailSender;
 import me.scene.dinner.account.domain.Account;
 import me.scene.dinner.account.domain.AccountRepository;
 import me.scene.dinner.account.domain.TempAccount;
+import me.scene.dinner.account.domain.TempAccountCreatedEvent;
 import me.scene.dinner.account.domain.TempAccountRepository;
 import me.scene.dinner.utils.factory.AccountFactory;
 import org.junit.jupiter.api.Test;
@@ -15,12 +16,15 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.then;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 @Transactional
 @SpringBootTest
@@ -60,7 +64,7 @@ class SignupControllerTest {
         TempAccount tempAccount = tempAccountRepository.findByUsername("scene").orElseThrow();
         assertThat(tempAccount.getPassword()).isNotEqualTo("password");
         assertThat(tempAccount.getVerificationToken()).isNotNull();
-        then(mailSender).should().send(anyString(), anyString(), anyString());
+        then(mailSender).should().onApplicationEvent(any(TempAccountCreatedEvent.class));
     }
 
     @Test

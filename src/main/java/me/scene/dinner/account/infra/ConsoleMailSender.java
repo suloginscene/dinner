@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 @Profile({"local", "test"})
 @Slf4j
 @Component
-public class ConsoleMailSender implements MailSender {
+public class ConsoleMailSender extends MailSender {
 
     @Override
     public void send(String subject, String to, String text) {

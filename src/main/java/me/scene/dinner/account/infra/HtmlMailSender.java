@@ -13,7 +13,7 @@ import java.nio.charset.StandardCharsets;
 
 @Profile({"dev", "prod"})
 @Component
-public class HtmlMailSender implements MailSender {
+public class HtmlMailSender extends MailSender {
 
     private final JavaMailSender javaMailSender;
 

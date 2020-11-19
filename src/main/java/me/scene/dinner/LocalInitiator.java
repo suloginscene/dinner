@@ -2,6 +2,8 @@ package me.scene.dinner;
 
 import me.scene.dinner.account.application.AccountService;
 import me.scene.dinner.account.domain.Account;
+import me.scene.dinner.account.domain.TempAccount;
+import me.scene.dinner.account.domain.TempAccountRepository;
 import me.scene.dinner.board.article.application.ArticleService;
 import me.scene.dinner.board.magazine.application.MagazineService;
 import me.scene.dinner.board.magazine.domain.Magazine;
@@ -17,14 +19,18 @@ import org.springframework.stereotype.Component;
 public class LocalInitiator implements ApplicationRunner {
 
     private final Environment environment;
+    private final TempAccountRepository tempAccountRepository;
     private final AccountService accountService;
     private final MagazineService magazineService;
     private final TopicService topicService;
     private final ArticleService articleService;
 
     @Autowired
-    public LocalInitiator(Environment environment, AccountService accountService, MagazineService magazineService, TopicService topicService, ArticleService articleService) {
+    public LocalInitiator(Environment environment,
+                          TempAccountRepository tempAccountRepository, AccountService accountService,
+                          MagazineService magazineService, TopicService topicService, ArticleService articleService) {
         this.environment = environment;
+        this.tempAccountRepository = tempAccountRepository;
         this.accountService = accountService;
         this.magazineService = magazineService;
         this.topicService = topicService;
@@ -51,8 +57,9 @@ public class LocalInitiator implements ApplicationRunner {
     }
 
     private Account registerInitialUser(String username, String email, String password) {
-        accountService.saveTemp(username, email, password);
-        accountService.transferFromTempToRegular(email);
+        Long tempId = accountService.saveTemp(username, email, password);
+        TempAccount temp = tempAccountRepository.findById(tempId).orElseThrow();
+        accountService.transferToRegular(email, temp.getVerificationToken());
         return accountService.find(username);
     }
 

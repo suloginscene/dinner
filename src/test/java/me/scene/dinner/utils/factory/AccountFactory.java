@@ -28,8 +28,8 @@ public class AccountFactory {
     }
 
     public Account create(String username, String email, String password) {
-        accountService.saveTemp(username, email, password);
-        Long id = accountService.transferFromTempToRegular(email);
+        TempAccount temp = createTemp(username, email, password);
+        Long id = accountService.transferToRegular(email, temp.getVerificationToken());
         return accountRepository.findById(id).orElseThrow();
     }
 

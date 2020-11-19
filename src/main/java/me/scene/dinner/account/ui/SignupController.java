@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.mail.MessagingException;
 import javax.validation.Valid;
 
 @Controller
@@ -40,19 +39,17 @@ public class SignupController {
     }
 
     @PostMapping("/signup")
-    public String signupSubmit(@Valid AccountForm form, Errors errors) throws MessagingException {
+    public String signupSubmit(@Valid AccountForm form, Errors errors) {
         if (errors.hasErrors()) return "page/account/signup";
 
         String email = form.getEmail();
         accountService.saveTemp(form.getUsername(), email, form.getPassword());
-        accountService.sendVerificationMail(email);
         return "redirect:" + ("/sent?email=" + email);
     }
 
     @GetMapping("/verify")
     public String verifyEmail(@RequestParam String email, @RequestParam String token, Model model) {
-        accountService.verify(email, token);
-        accountService.transferFromTempToRegular(email);
+        accountService.transferToRegular(email, token);
         model.addAttribute("email", email);
         return "page/account/welcome";
     }

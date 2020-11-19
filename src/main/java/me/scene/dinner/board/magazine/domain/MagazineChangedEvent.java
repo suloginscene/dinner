@@ -8,19 +8,14 @@ public class MagazineChangedEvent extends ApplicationEvent {
 
     private final boolean deletion;
 
-    public MagazineChangedEvent(Magazine magazine) {
-        super(magazine);
+    public MagazineChangedEvent(Object source) {
+        super(source);
         deletion = false;
     }
 
-    public MagazineChangedEvent(Magazine magazine, boolean deletion) {
-        super(magazine);
+    public MagazineChangedEvent(Object source, boolean deletion) {
+        super(source);
         this.deletion = deletion;
-    }
-
-    @Override
-    public Magazine getSource() {
-        return (Magazine) super.getSource();
     }
 
 }

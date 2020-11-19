@@ -2,6 +2,7 @@ package me.scene.dinner.account.ui;
 
 import me.scene.dinner.account.application.MailSender;
 import me.scene.dinner.account.domain.Account;
+import me.scene.dinner.account.domain.TempPasswordIssuedEvent;
 import me.scene.dinner.utils.factory.AccountFactory;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,14 +13,16 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.then;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.unauthenticated;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 @Transactional
 @SpringBootTest
@@ -129,7 +132,7 @@ class LoginControllerTest {
         String encodedNewPassword = scene.getPassword();
         assertThat(encodedNewPassword).isNotEqualTo(encodedOldPassword);
         assertThat(encodedNewPassword).startsWith("{bcrypt}");
-        then(mailSender).should().send(anyString(), anyString(), anyString());
+        then(mailSender).should().onApplicationEvent(any(TempPasswordIssuedEvent.class));
     }
 
     @Test

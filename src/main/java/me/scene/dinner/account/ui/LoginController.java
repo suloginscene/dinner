@@ -6,7 +6,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -33,8 +32,8 @@ public class LoginController {
     }
 
     @PostMapping("/forgot")
-    public String forgotPassword(String email) throws MessagingException {
-        accountService.sendTempPassword(email);
+    public String forgotPassword(String email) {
+        accountService.issueTempPassword(email);
         return "redirect:" + ("/sent?email=" + email);
     }
 
