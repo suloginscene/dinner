@@ -1,6 +1,7 @@
 package me.scene.dinner.mail.infra;
 
 import me.scene.dinner.mail.MailSender;
+import me.scene.dinner.mail.exception.RuntimeMessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -23,15 +24,21 @@ public class HtmlMailSender extends MailSender {
     }
 
     @Override
-    public void send(String subject, String to, String text) throws MessagingException {
-        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+    public void send(String subject, String to, String text) throws RuntimeMessagingException {
+        try {
 
-        MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, false, StandardCharsets.UTF_8.name());
-        mimeMessageHelper.setSubject(subject);
-        mimeMessageHelper.setTo(to);
-        mimeMessageHelper.setText(text);
+            MimeMessage mimeMessage = javaMailSender.createMimeMessage();
 
-        javaMailSender.send(mimeMessage);
+            MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, false, StandardCharsets.UTF_8.name());
+            mimeMessageHelper.setSubject(subject);
+            mimeMessageHelper.setTo(to);
+            mimeMessageHelper.setText(text);
+
+            javaMailSender.send(mimeMessage);
+
+        } catch (MessagingException e) {
+            throw new RuntimeMessagingException();
+        }
     }
 
 }

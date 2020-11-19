@@ -28,6 +28,10 @@
         </rollingPolicy>
     </appender>
 
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+    </root>
+
     <springProfile name="local, test">
         <root level="INFO">
             <appender-ref ref="CONSOLE"/>
