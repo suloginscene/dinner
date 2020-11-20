@@ -1,12 +1,12 @@
 package me.scene.dinner.account.ui;
 
-import me.scene.dinner.account.domain.account.TempPasswordIssuedEvent;
-import me.scene.dinner.mail.MailSender;
 import me.scene.dinner.account.domain.account.Account;
 import me.scene.dinner.account.domain.account.AccountRepository;
+import me.scene.dinner.account.domain.account.TempPasswordIssuedEvent;
 import me.scene.dinner.account.domain.tempaccount.TempAccount;
 import me.scene.dinner.account.domain.tempaccount.TempAccountCreatedEvent;
 import me.scene.dinner.account.domain.tempaccount.TempAccountRepository;
+import me.scene.dinner.mail.MailSender;
 import me.scene.dinner.utils.authentication.WithAccount;
 import me.scene.dinner.utils.factory.AccountFactory;
 import org.junit.jupiter.api.Test;
@@ -18,6 +18,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.then;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -25,6 +26,7 @@ import static org.springframework.security.test.web.servlet.response.SecurityMoc
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.unauthenticated;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -325,6 +327,32 @@ class AccountControllerTest {
         )
                 .andExpect(status().isOk())
                 .andExpect(view().name("error/user_not_found"))
+        ;
+    }
+
+    @Test
+    @WithAccount(username = "scene")
+    void findApi_returnJson() throws Exception {
+        Account writer1 = accountFactory.create("writer1", "email1@email.com", "password");
+
+        mockMvc.perform(
+                get("/api/accounts/" + writer1.getUsername())
+        )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.*", hasSize(2)))
+                .andExpect(jsonPath("$.username").exists())
+                .andExpect(jsonPath("$.email").exists())
+                .andExpect(jsonPath("$.password").doesNotExist())
+        ;
+    }
+
+    @Test
+    @WithAccount(username = "scene")
+    void findApi_nonExistent_notFound() throws Exception {
+        mockMvc.perform(
+                get("/api/accounts/" + "someone")
+        )
+                .andExpect(status().isNotFound())
         ;
     }
 

@@ -1,15 +1,19 @@
 package me.scene.dinner.account.ui;
 
 import me.scene.dinner.account.application.AccountService;
+import me.scene.dinner.account.domain.account.Account;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -71,6 +75,13 @@ public class AccountController {
     public String forgotPassword(String email) {
         accountService.issueTempPassword(email);
         return "redirect:" + ("/sent?email=" + email);
+    }
+
+    @GetMapping("/api/accounts/{username}")
+    public @ResponseBody ResponseEntity<Account> find(@PathVariable String username) {
+        return accountService.existsByUsername(username) ?
+                ResponseEntity.ok(accountService.find(username)) :
+                ResponseEntity.notFound().build();
     }
 
 }

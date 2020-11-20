@@ -37,6 +37,10 @@ public class AccountService implements UserDetailsService {
         return accountRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException(email));
     }
 
+    public boolean existsByUsername(String username) {
+        return accountRepository.existsByUsername(username);
+    }
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Account account = (username.contains("@")) ? findByEmail(username) : find(username);

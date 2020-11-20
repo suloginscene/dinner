@@ -1,5 +1,6 @@
 package me.scene.dinner.account.domain.account;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import me.scene.dinner.account.domain.tempaccount.TempAccount;
@@ -22,7 +23,7 @@ import static javax.persistence.FetchType.LAZY;
 @Getter @EqualsAndHashCode(of = "id", callSuper = false)
 public class Account extends AbstractAggregateRoot<Account> {
 
-    @Id @GeneratedValue
+    @Id @GeneratedValue @JsonIgnore
     private Long id;
 
     @Column(unique = true)
@@ -31,13 +32,13 @@ public class Account extends AbstractAggregateRoot<Account> {
     @Column(unique = true)
     private String email;
 
-    @Column
+    @Column @JsonIgnore
     private String password;
 
-    @ElementCollection(fetch = LAZY) @Enumerated(EnumType.STRING)
+    @ElementCollection(fetch = LAZY) @Enumerated(EnumType.STRING) @JsonIgnore
     private final Set<AccountRole> roles = new HashSet<>();
 
-    @Embedded
+    @Embedded @JsonIgnore
     private Profile profile;
 
     protected Account() {
