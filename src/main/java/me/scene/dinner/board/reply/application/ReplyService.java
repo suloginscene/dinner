@@ -1,11 +1,9 @@
 package me.scene.dinner.board.reply.application;
 
 import me.scene.dinner.board.article.application.ArticleService;
-import me.scene.dinner.board.article.domain.ArticleDeletedEvent;
 import me.scene.dinner.board.reply.domain.Reply;
 import me.scene.dinner.board.reply.domain.ReplyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,11 +36,6 @@ public class ReplyService {
         reply.exit();
         replyRepository.delete(reply);
         return reply.getArticle().getId();
-    }
-
-    @EventListener @Transactional
-    public void onApplicationEvent(ArticleDeletedEvent event) {
-        replyRepository.deleteAll(event.getReplies());
     }
 
 }

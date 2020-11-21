@@ -33,6 +33,7 @@ public class ArticleService {
     public void publish(Long id, String current) {
         Article article = find(id);
         article.publish(current);
+        publishEvent(article);
     }
 
     @Transactional
@@ -45,7 +46,6 @@ public class ArticleService {
     public Long delete(Long id, String current) {
         Article article = find(id);
         article.beforeDelete(current);
-        publishEvent(article);
         articleRepository.delete(article);
         return article.getTopic().getId();
     }

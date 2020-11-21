@@ -42,7 +42,7 @@ public class Article extends AbstractAggregateRoot<Article> {
     @ManyToOne(fetch = LAZY)
     private Topic topic;
 
-    @OneToMany(mappedBy = "article")
+    @OneToMany(mappedBy = "article", orphanRemoval = true)
     private final List<Reply> replies = new ArrayList<>();
 
 
@@ -67,6 +67,7 @@ public class Article extends AbstractAggregateRoot<Article> {
         published = true;
         createdAt = LocalDateTime.now();
         topic.getMagazine().addWriter(writer);
+        // TODO event
     }
 
     public void update(String current, String title, String content) {
@@ -79,7 +80,6 @@ public class Article extends AbstractAggregateRoot<Article> {
         confirmWriter(current);
         topic.getMagazine().removeWriter(writer);
         topic.remove(this);
-        registerEvent(new ArticleDeletedEvent(this, replies));
     }
 
 
