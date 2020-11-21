@@ -55,7 +55,14 @@ public class MagazineService {
     // TODO applyToManagedMagazine(send Mail)
     // TODO exitFromManagedMagazine(send Mail)
 
-    // TODO registerAsAuthorizedWriter(in page, by Search, send Mail)
+    // TODO addAuthorizedWriter(send Mail)
+    @Transactional
+    public void addAuthorizedWriter(Long id, String current, String writer) {
+        Magazine magazine = find(id);
+        magazine.addAuthorizedWriter(current, writer);
+        publishEvent(magazine);
+    }
+
     // TODO eliminatedAuthorization(in page, send Mail)
 
     private void publishEvent(Magazine magazine) {

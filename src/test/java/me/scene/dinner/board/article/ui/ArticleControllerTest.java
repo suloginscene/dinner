@@ -200,7 +200,7 @@ class ArticleControllerTest {
         Account account = accountFactory.create("magazineManager", "magazine_manager@email.com", "password");
         Magazine managed = magazineFactory.create(account.getUsername(), "title", "short", "long", "MANAGED");
         Topic topic = topicFactory.create(managed.getId(), account.getUsername(), "title", "short", "long");
-        managed.addAuthorizedWriter("scene");
+        managed.addAuthorizedWriter("magazineManager", "scene");
 
         mockMvc.perform(
                 post("/articles")

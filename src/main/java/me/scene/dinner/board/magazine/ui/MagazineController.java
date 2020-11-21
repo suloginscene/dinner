@@ -95,4 +95,20 @@ public class MagazineController {
         return "redirect:" + ("/");
     }
 
+    @GetMapping("/magazines/{magazineId}/writers")
+    public String manageWriters(@PathVariable Long magazineId, @CurrentUser Account current, Model model) {
+        Magazine magazine = magazineService.find(magazineId);
+        magazine.confirmManager(current.getUsername());
+
+        model.addAttribute("id", magazineId);
+        model.addAttribute("writers", magazine.getAuthorizedWriters());
+        return "page/board/magazine/writers";
+    }
+
+    @PostMapping("/magazines/{magazineId}/{writer}")
+    public String addAuthorizedWriter(@PathVariable Long magazineId, @PathVariable String writer, @CurrentUser Account current) {
+        magazineService.addAuthorizedWriter(magazineId, current.getUsername(), writer);
+        return "redirect:" + ("/magazines/" + magazineId + "/writers");
+    }
+
 }

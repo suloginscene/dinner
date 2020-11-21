@@ -5,7 +5,10 @@ const ajaxFindAccount_magazine = function () {
 
     const render = function (account) {
         return account ?
-            template.replace("{username}", account.username).replace("{email}", account.email)
+            template
+                .replace("{name}", account.username)
+                .replace("{email}", account.email)
+                .replace("{username}", account.username)
             : "<div>사용자가 존재하지 않습니다.</div>";
     };
 
@@ -16,7 +19,20 @@ const ajaxFindAccount_magazine = function () {
 
     const findAccount = function (e) {
         e.preventDefault();
-        const username = $("#username-form").serialize().substring("username=".length);
+
+        const queryString = $("#username-form").serialize();
+        const current = queryString.split('&')[0].substring("current=".length);
+        const username = queryString.split('&')[1].substring("username=".length);
+
+        if (username.length < 2 || username.length > 16) {
+            replace("<div>사용자 이름은 2자에서 16자 사이입니다.</div>");
+            return;
+        }
+
+        if (username === current) {
+            replace("<div>매거진 관리자는 허가 없이 글을 쓸 수 있습니다.</div>");
+            return;
+        }
 
         $.ajax({
             type: 'get',

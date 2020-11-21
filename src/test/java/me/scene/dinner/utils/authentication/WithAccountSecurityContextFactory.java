@@ -26,7 +26,7 @@ public class WithAccountSecurityContextFactory implements WithSecurityContextFac
     @Override
     public SecurityContext createSecurityContext(WithAccount withAccount) {
         String username = withAccount.username();
-        accountFactory.create(username, username + "email.com", "password");
+        accountFactory.create(username, username + "@email.com", "password");
 
         UserDetails principal = accountService.loadUserByUsername(username);
         Authentication authentication = new UsernamePasswordAuthenticationToken(principal, principal.getPassword(), principal.getAuthorities());

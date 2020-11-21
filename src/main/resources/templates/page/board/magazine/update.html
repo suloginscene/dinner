@@ -4,7 +4,6 @@
     <div th:replace="layout/layout::head(_,~{::link}, ~{::script})">
         <link rel="stylesheet" href="/css/page/board/magazine/form.css"/>
         <script src="/js/page/valid_board.js"></script>
-        <script src="/js/page/ajaxFindAccount_magazine.js"></script>
     </div>
 
     <body th:replace="layout/layout::body(~{::section})">
@@ -44,22 +43,6 @@
                         update
                     </button>
                 </form>
-                <div th:if="${updateForm.policy}=='MANAGED'">
-                    <h2>작가 등록</h2>
-                    <div>
-                        <h3>작가 조회</h3>
-                        <form id="username-form">
-                            <label>
-                                <input name="username" type="text" placeholder="승인할 작가">
-                            </label>
-                            <button id="findByUsername">find</button>
-                        </form>
-                        <script id="account-template" type="text/template">
-                            <div><span>이름 {username}</span><span>이메일 {email}</span></div>
-                        </script>
-                        <div id="found-position"></div>
-                    </div>
-                </div>
             </div>
         </section>
     </body>

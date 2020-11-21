@@ -53,6 +53,10 @@ public class Magazine extends AbstractAggregateRoot<Magazine> {
     @ElementCollection(fetch = LAZY) @JsonIgnore
     private final List<String> authorizedWriters = new ArrayList<>();
 
+    @JsonIgnore
+    public boolean isManaged() {
+        return policy == Policy.MANAGED;
+    }
 
     protected Magazine() {
     }
@@ -134,16 +138,19 @@ public class Magazine extends AbstractAggregateRoot<Magazine> {
         writers.remove(writer);
     }
 
-    private void onlyWhenManaged() {
-        if (policy == Policy.MANAGED) return;
+    private void confirmPolicy() {
+        if (isManaged()) return;
         throw new IllegalStateException("Not Managed Magazine");
     }
 
-    public void addAuthorizedWriter(String writer) {
-        onlyWhenManaged();
+    public void addAuthorizedWriter(String current, String writer) {
+        confirmManager(current);
+        confirmPolicy();
 
         if (authorizedWriters.contains(writer)) return;
         authorizedWriters.add(writer);
+
+        // TODO event
     }
 
 }
