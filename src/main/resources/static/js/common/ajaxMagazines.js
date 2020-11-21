@@ -14,7 +14,7 @@ const ajaxMagazines = function () {
     $.ajax({
         type: 'get',
         url: '/api/magazines',
-        success: loadMagazinesOnNav,
+        success: loadMagazinesOnNav
     });
 
 };
