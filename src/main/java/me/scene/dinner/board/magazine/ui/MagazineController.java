@@ -111,4 +111,10 @@ public class MagazineController {
         return "redirect:" + ("/magazines/" + magazineId + "/writers");
     }
 
+    @DeleteMapping("/magazines/{magazineId}/{writer}")
+    public String removeAuthorizedWriter(@PathVariable Long magazineId, @PathVariable String writer, @CurrentUser Account current) {
+        magazineService.removeAuthorizedWriter(magazineId, current.getUsername(), writer);
+        return "redirect:" + ("/magazines/" + magazineId + "/writers");
+    }
+
 }

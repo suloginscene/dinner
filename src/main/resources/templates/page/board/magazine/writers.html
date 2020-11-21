@@ -14,10 +14,13 @@
                 </div>
                 <div>
                     <h2>현재 등록된 작가</h2>
-                    <div th:if="${writers.size()==0}">허가된 작가가 없습니다.</div>
-                    <ul th:unless="${writers.size()==0}">
+                    <div th:if="${writers.isEmpty()}">허가된 작가가 없습니다.</div>
+                    <ul th:unless="${writers.isEmpty()}">
                         <li th:each="writer:${writers}">
                             <a th:href="@{'/@'+${writer}}" th:text="${writer}"></a>
+                            <form th:action="'/magazines/'+${id}+'/'+${writer}" th:method="delete">
+                                <button type="submit">remove</button>
+                            </form>
                         </li>
                     </ul>
                 </div>

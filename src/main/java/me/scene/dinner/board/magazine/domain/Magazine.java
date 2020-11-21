@@ -153,4 +153,13 @@ public class Magazine extends AbstractAggregateRoot<Magazine> {
         // TODO event
     }
 
+    public void removeAuthorizedWriter(String current, String writer) {
+        confirmManager(current);
+        confirmPolicy();
+
+        if (!authorizedWriters.contains(writer)) return;
+        authorizedWriters.remove(writer);
+
+        // TODO event
+    }
 }

@@ -21,12 +21,14 @@
             </div>
 
             <div id="button-container" sec:authorize="isAuthenticated()">
-                <form th:if="${#authentication.name}==*{manager}" th:action="'/topics/'+*{id}+'/form'" method="get">
-                    <button type="submit">update</button>
-                </form>
-                <form th:if="${#authentication.name}==*{manager}and*{articles.size()}==0" th:action="'/topics/'+*{id}" th:method="delete">
-                    <button type="submit">delete</button>
-                </form>
+                <div th:if="${#authentication.name}==*{manager}">
+                    <form th:action="'/topics/'+*{id}+'/form'" method="get">
+                        <button type="submit">update</button>
+                    </form>
+                    <form th:if="${topic.articles.isEmpty()}" th:action="'/topics/'+*{id}" th:method="delete">
+                        <button type="submit">delete</button>
+                    </form>
+                </div>
                 <!-- TODO select button whether principal is writable -->
                 <form action="/article-form" method="get">
                     <label>

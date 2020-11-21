@@ -52,10 +52,10 @@ public class MagazineService {
         magazineRepository.delete(magazine);
     }
 
-    // TODO applyToManagedMagazine(send Mail)
-    // TODO exitFromManagedMagazine(send Mail)
+    // TODO applyToManagedMagazine(send Mail to manager)
+    // TODO exitFromManagedMagazine(send Mail to manager)
 
-    // TODO addAuthorizedWriter(send Mail)
+    // TODO send Mail to writer
     @Transactional
     public void addAuthorizedWriter(Long id, String current, String writer) {
         Magazine magazine = find(id);
@@ -63,7 +63,13 @@ public class MagazineService {
         publishEvent(magazine);
     }
 
-    // TODO eliminatedAuthorization(in page, send Mail)
+    // TODO send Mail to writer
+    @Transactional
+    public void removeAuthorizedWriter(Long id, String current, String writer) {
+        Magazine magazine = find(id);
+        magazine.removeAuthorizedWriter(current, writer);
+        publishEvent(magazine);
+    }
 
     private void publishEvent(Magazine magazine) {
         magazineRepository.save(magazine);

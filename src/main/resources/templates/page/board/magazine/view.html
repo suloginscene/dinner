@@ -33,7 +33,7 @@
                     <form th:action="'/magazines/'+*{id}+'/form'" method="get">
                         <button type="submit">update</button>
                     </form>
-                    <form th:if="${magazine.topics.size()==0}" th:action="'/magazines/'+*{id}" th:method="delete">
+                    <form th:if="${magazine.topics.isEmpty()}" th:action="'/magazines/'+*{id}" th:method="delete">
                         <button type="submit">delete</button>
                     </form>
                     <form th:if="${magazine.isManaged()}" th:action="'/magazines/'+*{id}+'/writers'" method="get">
