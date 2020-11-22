@@ -24,16 +24,14 @@ public class LoginSuccessHandler extends SavedRequestAwareAuthenticationSuccessH
             return;
         }
 
-        String referer = (String) session.getAttribute("referer");
-        if (referer == null) {
+        String prev = (String) session.getAttribute("prev");
+        if (prev == null) {
             super.onAuthenticationSuccess(request, response, authentication);
             return;
         }
 
-        // TODO onMeaninglessReferer
-
-        session.removeAttribute("referer");
-        getRedirectStrategy().sendRedirect(request, response, referer);
+        session.removeAttribute("prev");
+        getRedirectStrategy().sendRedirect(request, response, prev);
 
     }
 

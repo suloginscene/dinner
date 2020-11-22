@@ -3,6 +3,7 @@ package me.scene.dinner.account.ui;
 import me.scene.dinner.account.application.AccountService;
 import me.scene.dinner.account.domain.account.Account;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,11 +17,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 @Controller
 public class AccountController {
+
+    @Value("${dinner.url}")
+    private String url;
 
     private final AccountService accountService;
     private final AccountFormValidator accountFormValidator;
@@ -61,8 +64,10 @@ public class AccountController {
 
     @GetMapping("/login")
     public String loginPage(HttpServletRequest req) {
-        HttpSession session = req.getSession();
-        session.setAttribute("referer", req.getHeader("Referer"));
+        String referer = req.getHeader("Referer");
+        if (isMeaningful(referer)) {
+            req.getSession().setAttribute("prev", referer);
+        }
         return "page/account/login";
     }
 
@@ -82,6 +87,16 @@ public class AccountController {
         return accountService.existsByUsername(username) ?
                 ResponseEntity.ok(accountService.find(username)) :
                 ResponseEntity.notFound().build();
+    }
+
+    private boolean isMeaningful(String referer) {
+        if (referer == null) return false;
+        String ref = referer.substring(url.length());
+        return !(
+                ref.equals("/") || ref.equals("/login") || ref.equals("/login?error")
+                        || ref.startsWith("/verify?") || ref.startsWith("/sent?")
+                        || ref.equals("/signup") || ref.equals("/forgot")
+        );
     }
 
 }
