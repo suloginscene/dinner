@@ -54,6 +54,11 @@ public class Magazine extends AbstractAggregateRoot<Magazine> {
     private final List<String> members = new ArrayList<>();
 
     @JsonIgnore
+    public boolean isOpen() {
+        return policy == Policy.OPEN;
+    }
+
+    @JsonIgnore
     public boolean isManaged() {
         return policy == Policy.MANAGED;
     }

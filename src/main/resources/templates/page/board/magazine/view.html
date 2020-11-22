@@ -15,10 +15,16 @@
                 <div id="authorities">
                     <span id="policy" th:text="*{policy}"></span> by
                     <a th:href="'/@'+*{manager}" th:text="*{manager}"></a>
-                    <div>
+                    <div th:if="${magazine.isOpen()}">
                         <span>written by</span>
                         <th:block th:each="writer:*{writers}">
                             <a class="writer" th:href="@{'/@'+${writer}}" th:text="${writer}"></a>
+                        </th:block>
+                    </div>
+                    <div th:if="${magazine.isManaged()}and${!magazine.members.isEmpty()}">
+                        <span>members are</span>
+                        <th:block th:each="member:*{members}">
+                            <a class="writer" th:href="@{'/@'+${member}}" th:text="${member}"></a>
                         </th:block>
                     </div>
                 </div>
