@@ -58,6 +58,13 @@ public class Magazine extends AbstractAggregateRoot<Magazine> {
         return policy == Policy.MANAGED;
     }
 
+    public boolean doesAccept(String current) {
+        if (policy == Policy.OPEN) return true;
+        if (policy == Policy.EXCLUSIVE) return current.equals(manager);
+        if (policy == Policy.MANAGED) return (current.equals(manager) || members.contains(current));
+        throw new IllegalStateException("Magazine should have policy in enum");
+    }
+
     protected Magazine() {
     }
 

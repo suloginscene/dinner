@@ -40,14 +40,17 @@
                         <button type="submit">member</button>
                     </form>
                 </div>
-                <!-- TODO select button whether principal is creatable -->
-                <form action="/topic-form" method="get">
-                    <label>
-                        <input type="text" name="magazineId" th:value="*{id}" hidden>
-                    </label>
-                    <button type="submit">create</button>
-                </form>
-                <button>apply</button>
+                <div th:if="${magazine.doesAccept(#authentication.name)}">
+                    <form action="/topic-form" method="get">
+                        <label>
+                            <input type="text" name="magazineId" th:value="*{id}" hidden>
+                        </label>
+                        <button type="submit">create</button>
+                    </form>
+                </div>
+                <div th:if="${magazine.isManaged()}and${!magazine.doesAccept(#authentication.name)}">
+                    <button>apply</button>
+                </div>
             </div>
 
             <ul>

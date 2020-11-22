@@ -29,13 +29,14 @@
                         <button type="submit">delete</button>
                     </form>
                 </div>
-                <!-- TODO select button whether principal is writable -->
-                <form action="/article-form" method="get">
-                    <label>
-                        <input type="text" name="topicId" th:value="*{id}" hidden>
-                    </label>
-                    <button type="submit">write</button>
-                </form>
+                <div th:if="${topic.magazine.doesAccept(#authentication.name)}">
+                    <form action="/article-form" method="get">
+                        <label>
+                            <input type="text" name="topicId" th:value="*{id}" hidden>
+                        </label>
+                        <button type="submit">write</button>
+                    </form>
+                </div>
             </div>
 
             <ul>
