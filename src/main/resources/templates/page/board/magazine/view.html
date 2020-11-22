@@ -13,7 +13,7 @@
             <div class="info">
                 <h1 id="title" th:text="*{title}"></h1>
                 <div id="authorities">
-                    <span id="authority" th:text="*{policy}"></span> by
+                    <span id="policy" th:text="*{policy}"></span> by
                     <a th:href="'/@'+*{manager}" th:text="*{manager}"></a>
                     <div>
                         <span>written by</span>
@@ -36,8 +36,8 @@
                     <form th:if="${magazine.topics.isEmpty()}" th:action="'/magazines/'+*{id}" th:method="delete">
                         <button type="submit">delete</button>
                     </form>
-                    <form th:if="${magazine.isManaged()}" th:action="'/magazines/'+*{id}+'/writers'" method="get">
-                        <button type="submit">writers</button>
+                    <form th:if="${magazine.isManaged()}" th:action="'/magazines/'+*{id}+'/members'" method="get">
+                        <button type="submit">member</button>
                     </form>
                 </div>
                 <!-- TODO select button whether principal is creatable -->

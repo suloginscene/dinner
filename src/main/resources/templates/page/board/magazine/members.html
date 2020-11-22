@@ -2,7 +2,7 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 
     <div th:replace="layout/layout::head(_,~{::link}, ~{::script})">
-        <link rel="stylesheet" href="/css/page/board/magazine/writers.css"/>
+        <link rel="stylesheet" href="/css/page/board/magazine/members.css"/>
         <script src="/js/page/ajaxFindAccount_magazine.js"></script>
     </div>
 
@@ -14,11 +14,11 @@
                 </div>
                 <div>
                     <h2>현재 등록된 작가</h2>
-                    <div th:if="${writers.isEmpty()}">허가된 작가가 없습니다.</div>
-                    <ul th:unless="${writers.isEmpty()}">
-                        <li th:each="writer:${writers}">
-                            <a th:href="@{'/@'+${writer}}" th:text="${writer}"></a>
-                            <form th:action="'/magazines/'+${id}+'/'+${writer}" th:method="delete">
+                    <div th:if="${members.isEmpty()}">허가된 작가가 없습니다.</div>
+                    <ul th:unless="${members.isEmpty()}">
+                        <li th:each="member:${members}">
+                            <a th:href="@{'/@'+${member}}" th:text="${member}"></a>
+                            <form th:action="'/magazines/'+${id}+'/'+${member}" th:method="delete">
                                 <button type="submit">remove</button>
                             </form>
                         </li>

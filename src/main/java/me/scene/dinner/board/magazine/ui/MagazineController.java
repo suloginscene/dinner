@@ -95,26 +95,27 @@ public class MagazineController {
         return "redirect:" + ("/");
     }
 
-    @GetMapping("/magazines/{magazineId}/writers")
-    public String manageWriters(@PathVariable Long magazineId, @CurrentUser Account current, Model model) {
+    @GetMapping("/magazines/{magazineId}/members")
+    public String manageMembers(@PathVariable Long magazineId, @CurrentUser Account current, Model model) {
         Magazine magazine = magazineService.find(magazineId);
         magazine.confirmManager(current.getUsername());
+        magazine.confirmPolicyManaged();
 
         model.addAttribute("id", magazineId);
-        model.addAttribute("writers", magazine.getAuthorizedWriters());
-        return "page/board/magazine/writers";
+        model.addAttribute("members", magazine.getMembers());
+        return "page/board/magazine/members";
     }
 
-    @PostMapping("/magazines/{magazineId}/{writer}")
-    public String addAuthorizedWriter(@PathVariable Long magazineId, @PathVariable String writer, @CurrentUser Account current) {
-        magazineService.addAuthorizedWriter(magazineId, current.getUsername(), writer);
-        return "redirect:" + ("/magazines/" + magazineId + "/writers");
+    @PostMapping("/magazines/{magazineId}/{member}")
+    public String addMember(@PathVariable Long magazineId, @PathVariable String member, @CurrentUser Account current) {
+        magazineService.addMember(magazineId, current.getUsername(), member);
+        return "redirect:" + ("/magazines/" + magazineId + "/members");
     }
 
-    @DeleteMapping("/magazines/{magazineId}/{writer}")
-    public String removeAuthorizedWriter(@PathVariable Long magazineId, @PathVariable String writer, @CurrentUser Account current) {
-        magazineService.removeAuthorizedWriter(magazineId, current.getUsername(), writer);
-        return "redirect:" + ("/magazines/" + magazineId + "/writers");
+    @DeleteMapping("/magazines/{magazineId}/{member}")
+    public String removeMember(@PathVariable Long magazineId, @PathVariable String member, @CurrentUser Account current) {
+        magazineService.removeMember(magazineId, current.getUsername(), member);
+        return "redirect:" + ("/magazines/" + magazineId + "/members");
     }
 
 }

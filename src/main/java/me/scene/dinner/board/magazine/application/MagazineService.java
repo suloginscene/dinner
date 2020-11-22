@@ -57,17 +57,17 @@ public class MagazineService {
 
     // TODO send Mail to writer
     @Transactional
-    public void addAuthorizedWriter(Long id, String current, String writer) {
+    public void addMember(Long id, String current, String target) {
         Magazine magazine = find(id);
-        magazine.addAuthorizedWriter(current, writer);
+        magazine.addMember(current, target);
         publishEvent(magazine);
     }
 
     // TODO send Mail to writer
     @Transactional
-    public void removeAuthorizedWriter(Long id, String current, String writer) {
+    public void removeMember(Long id, String current, String target) {
         Magazine magazine = find(id);
-        magazine.removeAuthorizedWriter(current, writer);
+        magazine.removeMember(current, target);
         publishEvent(magazine);
     }
 

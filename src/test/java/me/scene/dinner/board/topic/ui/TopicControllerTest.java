@@ -190,7 +190,7 @@ class TopicControllerTest {
     void create_managedByAuthorized_success() throws Exception {
         Account account = accountFactory.create("magazineManager", "magazine_manager@email.com", "password");
         Magazine managed = magazineFactory.create(account.getUsername(), "title", "short", "long", "MANAGED");
-        managed.addAuthorizedWriter("magazineManager", "scene");
+        managed.addMember("magazineManager", "scene");
 
         mockMvc.perform(
                 post("/topics")

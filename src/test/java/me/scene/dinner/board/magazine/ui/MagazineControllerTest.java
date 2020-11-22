@@ -308,57 +308,57 @@ class MagazineControllerTest {
     @Test
     @Transactional
     @WithAccount(username = "scene")
-    void manageWritersPage_hasWriters() throws Exception {
+    void manageMembersPage_hasMembers() throws Exception {
         Magazine managed = magazineFactory.create("scene", "m1", "short", "long", "MANAGED");
         Account account = accountFactory.create("another", "another@email.com", "password");
-        managed.addAuthorizedWriter("scene", account.getUsername());
+        managed.addMember("scene", account.getUsername());
 
         mockMvc.perform(
-                get("/magazines/" + managed.getId() + "/writers")
+                get("/magazines/" + managed.getId() + "/members")
         )
                 .andExpect(status().isOk())
-                .andExpect(view().name("page/board/magazine/writers"))
-                .andExpect(model().attributeExists("writers"))
+                .andExpect(view().name("page/board/magazine/members"))
+                .andExpect(model().attributeExists("members"))
         ;
     }
 
     @Test
     @Transactional
     @WithAccount(username = "scene")
-    void addWriter_add() throws Exception {
+    void addMember_add() throws Exception {
         Magazine managed = magazineFactory.create("scene", "m1", "short", "long", "MANAGED");
         Account account = accountFactory.create("another", "another@email.com", "password");
-        if (managed.getAuthorizedWriters().size() != 0) fail("Illegal Test State");
+        if (managed.getMembers().size() != 0) fail("Illegal Test State");
 
         mockMvc.perform(
                 post("/magazines/" + managed.getId() + "/" + account.getUsername())
                         .with(csrf())
         )
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/magazines/" + managed.getId() + "/writers"))
+                .andExpect(redirectedUrl("/magazines/" + managed.getId() + "/members"))
         ;
-        List<String> authorizedWriters = managed.getAuthorizedWriters();
-        assertThat(authorizedWriters).contains(account.getUsername());
+        List<String> members = managed.getMembers();
+        assertThat(members).contains(account.getUsername());
     }
 
     @Test
     @Transactional
     @WithAccount(username = "scene")
-    void removeWriter_remove() throws Exception {
+    void removeMember_remove() throws Exception {
         Magazine managed = magazineFactory.create("scene", "m1", "short", "long", "MANAGED");
         Account account = accountFactory.create("another", "another@email.com", "password");
-        managed.addAuthorizedWriter("scene", account.getUsername());
-        if (!managed.getAuthorizedWriters().contains(account.getUsername())) fail("Illegal Test State");
+        managed.addMember("scene", account.getUsername());
+        if (!managed.getMembers().contains(account.getUsername())) fail("Illegal Test State");
 
         mockMvc.perform(
                 delete("/magazines/" + managed.getId() + "/" + account.getUsername())
                         .with(csrf())
         )
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/magazines/" + managed.getId() + "/writers"))
+                .andExpect(redirectedUrl("/magazines/" + managed.getId() + "/members"))
         ;
-        List<String> authorizedWriters = managed.getAuthorizedWriters();
-        assertThat(authorizedWriters).doesNotContain(account.getUsername());
+        List<String> members = managed.getMembers();
+        assertThat(members).doesNotContain(account.getUsername());
     }
 
     @Test

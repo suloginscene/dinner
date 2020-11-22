@@ -51,7 +51,7 @@ public class Magazine extends AbstractAggregateRoot<Magazine> {
     private final List<String> writers = new ArrayList<>();
 
     @ElementCollection(fetch = LAZY) @JsonIgnore
-    private final List<String> authorizedWriters = new ArrayList<>();
+    private final List<String> members = new ArrayList<>();
 
     @JsonIgnore
     public boolean isManaged() {
@@ -119,7 +119,7 @@ public class Magazine extends AbstractAggregateRoot<Magazine> {
 
         if (policy == Policy.MANAGED) {
             if (manager.equals(username)) return;
-            if (authorizedWriters.contains(username)) return;
+            if (members.contains(username)) return;
         }
 
         throw new PolicyAuthException(username);
@@ -138,27 +138,27 @@ public class Magazine extends AbstractAggregateRoot<Magazine> {
         writers.remove(writer);
     }
 
-    private void confirmPolicy() {
+    public void confirmPolicyManaged() {
         if (isManaged()) return;
         throw new IllegalStateException("Not Managed Magazine");
     }
 
-    public void addAuthorizedWriter(String current, String writer) {
+    public void addMember(String current, String target) {
         confirmManager(current);
-        confirmPolicy();
+        confirmPolicyManaged();
 
-        if (authorizedWriters.contains(writer)) return;
-        authorizedWriters.add(writer);
+        if (members.contains(target)) return;
+        members.add(target);
 
         // TODO event
     }
 
-    public void removeAuthorizedWriter(String current, String writer) {
+    public void removeMember(String current, String target) {
         confirmManager(current);
-        confirmPolicy();
+        confirmPolicyManaged();
 
-        if (!authorizedWriters.contains(writer)) return;
-        authorizedWriters.remove(writer);
+        if (!members.contains(target)) return;
+        members.remove(target);
 
         // TODO event
     }
