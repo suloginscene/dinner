@@ -64,7 +64,7 @@ class MailSenderThreadTest {
     void onMemberAppliedEvent_sync() {
         Thread testThread = Thread.currentThread();
 
-        Magazine magazine = magazineFactory.create("manager", "t", "s", "l", "MANAGED");
+        Magazine magazine = magazineFactory.create("manager", "manager@email.com", "t", "s", "l", "MANAGED");
         magazine.applyMember("new", "manager@email.com");
         magazineRepository.save(magazine);
 

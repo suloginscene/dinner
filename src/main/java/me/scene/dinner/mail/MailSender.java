@@ -22,7 +22,8 @@ public abstract class MailSender {
     private static final String ON_FORGOT_TEMPLATE = "New password: %s";
 
     private static final String ON_APPLIED_TITLE = "[Dinner] New member applied to your magazine.";
-    private static final String ON_APPLIED_TEMPLATE = "Applicant: %s";
+    private static final String ON_APPLIED_APPLICANT_TEMPLATE = "Applicant: %s (%s/@%s)";
+    private static final String ON_APPLIED_LINK_TEMPLATE = "Add Link: " + ("%s/magazines/%s/%s");
 
     abstract protected void send(String subject, String to, String text) throws RuntimeMessagingException;
 
@@ -55,7 +56,10 @@ public abstract class MailSender {
     @EventListener
     public void onApplicationEvent(MemberAppliedEvent event) throws SyncMessagingException {
         String email = event.getManagerEmail();
-        String text = String.format(ON_APPLIED_TEMPLATE, event.getApplicant());
+        String applicant = event.getApplicant();
+        Long magazineId = event.getMagazineId();
+        String text = String.format(ON_APPLIED_APPLICANT_TEMPLATE, applicant, url, applicant) + ", "
+                + String.format(ON_APPLIED_LINK_TEMPLATE, url, magazineId, applicant);
 
         try {
             send(ON_APPLIED_TITLE, email, text);

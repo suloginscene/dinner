@@ -10,9 +10,16 @@ import org.springframework.stereotype.Component;
 @Component
 public class ConsoleMailSender extends MailSender {
 
+    private static final StringBuilder sb = new StringBuilder();
+
     @Override
     public void send(String subject, String to, String text) {
-        log.info("[" + subject + "] " + to + ", " + text);
+        sb.setLength(0);
+        sb.append("\n")
+                .append("\t").append("subject: ").append(subject).append("\n")
+                .append("\t").append("to     : ").append(to).append("\n")
+                .append("\t").append("text   : ").append(text).append("\n").append("\n");
+        log.info(sb.toString());
     }
 
 }

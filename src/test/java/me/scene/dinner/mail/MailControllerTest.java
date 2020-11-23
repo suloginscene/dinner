@@ -35,6 +35,7 @@ class MailControllerTest {
     void sentToManager_returnPage() throws Exception {
         mockMvc.perform(
                 get("/sent-to-manager")
+                        .param("magazineId", "1")
         )
                 .andExpect(status().isOk())
                 .andExpect(view().name("page/mail/manager"))

@@ -15,8 +15,8 @@ public class MagazineFactory {
         this.magazineService = magazineService;
     }
 
-    public Magazine create(String manager, String title, String shortExplanation, String longExplanation, String magazinePolicy) {
-        Long id = magazineService.save(manager, title, shortExplanation, longExplanation, magazinePolicy);
+    public Magazine create(String manager, String managerEmail, String title, String shortExplanation, String longExplanation, String magazinePolicy) {
+        Long id = magazineService.save(manager, managerEmail, title, shortExplanation, longExplanation, magazinePolicy);
         return magazineService.find(id);
     }
 

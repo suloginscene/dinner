@@ -15,7 +15,8 @@ public class MailController {
     }
 
     @GetMapping("/sent-to-manager")
-    public String sentToManager() {
+    public String sentToManager(@RequestParam Long magazineId, Model model) {
+        model.addAttribute("magazineId", magazineId);
         return "page/mail/manager";
     }
 

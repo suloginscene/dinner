@@ -45,9 +45,9 @@ public class LocalInitiator implements ApplicationRunner {
         Account account1 = registerInitialUser("ta1", "ta1@email.com", "password1");
         Account account2 = registerInitialUser("ta2", "ta2@email.com", "password2");
         Account account3 = registerInitialUser("ta3", "ta3@email.com", "password3");
-        Magazine magazine1 = registerInitialMagazine(account1.getUsername(), "tm1", "short1", "long1", "OPEN");
-        Magazine magazine2 = registerInitialMagazine(account2.getUsername(), "tm2", "short2", "long2", "MANAGED");
-        Magazine magazine3 = registerInitialMagazine(account3.getUsername(), "tm3", "short3", "long3", "EXCLUSIVE");
+        Magazine magazine1 = registerInitialMagazine(account1.getUsername(), account1.getEmail(), "tm1", "short1", "long1", "OPEN");
+        Magazine magazine2 = registerInitialMagazine(account2.getUsername(), account2.getEmail(), "tm2", "short2", "long2", "MANAGED");
+        Magazine magazine3 = registerInitialMagazine(account3.getUsername(), account3.getEmail(), "tm3", "short3", "long3", "EXCLUSIVE");
         Topic topic1 = registerInitialTopic(magazine1.getId(), account1.getUsername(), "tt1", "short1", "long1");
         Topic topic2 = registerInitialTopic(magazine2.getId(), account2.getUsername(), "tt2", "short2", "long2");
         Topic topic3 = registerInitialTopic(magazine3.getId(), account3.getUsername(), "tt3", "short3", "long3");
@@ -63,8 +63,8 @@ public class LocalInitiator implements ApplicationRunner {
         return accountService.find(username);
     }
 
-    private Magazine registerInitialMagazine(String manager, String title, String shortExplanation, String longExplanation, String magazinePolicy) {
-        Long id = magazineService.save(manager, title, shortExplanation, longExplanation, magazinePolicy);
+    private Magazine registerInitialMagazine(String manager, String managerEmail, String title, String shortExplanation, String longExplanation, String magazinePolicy) {
+        Long id = magazineService.save(manager, managerEmail, title, shortExplanation, longExplanation, magazinePolicy);
         return magazineService.find(id);
     }
 

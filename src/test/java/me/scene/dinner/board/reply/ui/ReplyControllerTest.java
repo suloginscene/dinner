@@ -74,7 +74,7 @@ class ReplyControllerTest {
     @WithAccount(username = "scene")
     void create_saveAndShowArticle() throws Exception {
         Account account = accountFactory.create("magazineManager", "magazine_manager@email.com", "password");
-        Magazine magazine = magazineFactory.create(account.getUsername(), "title", "short", "long", "OPEN");
+        Magazine magazine = magazineFactory.create(account.getUsername(), account.getEmail(), "title", "short", "long", "OPEN");
         Topic topic = topicFactory.create(magazine.getId(), account.getUsername(), "title", "short", "long");
         Article article = articleFactory.create(topic.getId(), account.getUsername(), "title", "content");
 
@@ -104,7 +104,7 @@ class ReplyControllerTest {
     @Transactional
     void show_hasReply() throws Exception {
         Account account = accountFactory.create("scene", "scene@email.com", "password");
-        Magazine magazine = magazineFactory.create(account.getUsername(), "title", "short", "long", "OPEN");
+        Magazine magazine = magazineFactory.create(account.getUsername(), account.getEmail(), "title", "short", "long", "OPEN");
         Topic topic = topicFactory.create(magazine.getId(), account.getUsername(), "title", "short", "long");
         Article article = articleFactory.create(topic.getId(), account.getUsername(), "title", "content");
         replyService.save(article.getId(), account.getUsername(), "This is test reply.");
@@ -122,7 +122,7 @@ class ReplyControllerTest {
     @Transactional
     @WithAccount(username = "scene")
     void delete_deleted() throws Exception {
-        Magazine magazine = magazineFactory.create("scene", "title", "short", "long", "OPEN");
+        Magazine magazine = magazineFactory.create("scene", "email@email.com", "title", "short", "long", "OPEN");
         Topic topic = topicFactory.create(magazine.getId(), "scene", "title", "short", "long");
         Article article = articleFactory.create(topic.getId(), "scene", "title", "content");
         replyService.save(article.getId(), "scene", "content");
@@ -145,7 +145,7 @@ class ReplyControllerTest {
     @WithAccount(username = "scene")
     void delete_byStranger_handleException() throws Exception {
         Account account = accountFactory.create("magazineManager", "manager@email.com", "password");
-        Magazine magazine = magazineFactory.create(account.getUsername(), "title", "short", "long", "OPEN");
+        Magazine magazine = magazineFactory.create(account.getUsername(), account.getEmail(), "title", "short", "long", "OPEN");
         Topic topic = topicFactory.create(magazine.getId(), account.getUsername(), "title", "short", "long");
         Article article = articleFactory.create(topic.getId(), account.getUsername(), "title", "content");
         replyService.save(article.getId(), account.getUsername(), "content");

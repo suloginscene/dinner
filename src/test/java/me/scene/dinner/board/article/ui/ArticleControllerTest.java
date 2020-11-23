@@ -98,7 +98,7 @@ class ArticleControllerTest {
     @WithAccount(username = "scene")
     void create_saveAndShow() throws Exception {
         Account account = accountFactory.create("magazineManager", "magazine_manager@email.com", "password");
-        Magazine magazine = magazineFactory.create(account.getUsername(), "title", "short", "long", "OPEN");
+        Magazine magazine = magazineFactory.create(account.getUsername(), account.getEmail(), "title", "short", "long", "OPEN");
         Topic topic = topicFactory.create(magazine.getId(), account.getUsername(), "title", "short", "long");
 
         mockMvc.perform(
@@ -147,7 +147,7 @@ class ArticleControllerTest {
     void create_unauthorized_handleException() throws Exception {
         Account account = accountFactory.create("magazineManager", "magazine_manager@email.com", "password");
 
-        Magazine exclusive = magazineFactory.create(account.getUsername(), "title", "short", "long", "EXCLUSIVE");
+        Magazine exclusive = magazineFactory.create(account.getUsername(), account.getEmail(), "title", "short", "long", "EXCLUSIVE");
         Topic exclusiveTopic = topicFactory.create(exclusive.getId(), account.getUsername(), "title", "short", "long");
         mockMvc.perform(
                 post("/articles")
@@ -160,7 +160,7 @@ class ArticleControllerTest {
                 .andExpect(view().name("error/access"))
         ;
 
-        Magazine managed = magazineFactory.create(account.getUsername(), "title", "short", "long", "MANAGED");
+        Magazine managed = magazineFactory.create(account.getUsername(), account.getEmail(), "title", "short", "long", "MANAGED");
         Topic managedTopic = topicFactory.create(managed.getId(), account.getUsername(), "title", "short", "long");
         mockMvc.perform(
                 post("/articles")
@@ -178,7 +178,7 @@ class ArticleControllerTest {
     @WithAccount(username = "scene")
     void create_exclusiveByManager_success() throws Exception {
         Account scene = accountRepository.findByUsername("scene").orElseThrow();
-        Magazine exclusive = magazineFactory.create(scene.getUsername(), "title", "short", "long", "EXCLUSIVE");
+        Magazine exclusive = magazineFactory.create(scene.getUsername(), scene.getEmail(), "title", "short", "long", "EXCLUSIVE");
         Topic topic = topicFactory.create(exclusive.getId(), scene.getUsername(), "title", "short", "long");
 
         mockMvc.perform(
@@ -198,7 +198,7 @@ class ArticleControllerTest {
     @WithAccount(username = "scene")
     void create_managedByAuthorized_success() throws Exception {
         Account account = accountFactory.create("magazineManager", "magazine_manager@email.com", "password");
-        Magazine managed = magazineFactory.create(account.getUsername(), "title", "short", "long", "MANAGED");
+        Magazine managed = magazineFactory.create(account.getUsername(), account.getEmail(), "title", "short", "long", "MANAGED");
         Topic topic = topicFactory.create(managed.getId(), account.getUsername(), "title", "short", "long");
         managed.addMember("magazineManager", "scene");
 
@@ -218,7 +218,7 @@ class ArticleControllerTest {
     @Transactional
     void show_hasArticle() throws Exception {
         Account account = accountFactory.create("scene", "scene@email.com", "password");
-        Magazine magazine = magazineFactory.create(account.getUsername(), "title", "short", "long", "OPEN");
+        Magazine magazine = magazineFactory.create(account.getUsername(), account.getEmail(), "title", "short", "long", "OPEN");
         Topic topic = topicFactory.create(magazine.getId(), account.getUsername(), "title", "short", "long");
         Long id = articleService.save(topic.getId(), account.getUsername(), "title", "content");
         articleService.publish(id, account.getUsername());
@@ -235,7 +235,7 @@ class ArticleControllerTest {
     @Test
     void show_nonExistent_handleException() throws Exception {
         Account account = accountFactory.create("scene", "scene@email.com", "password");
-        Magazine magazine = magazineFactory.create(account.getUsername(), "title", "short", "long", "OPEN");
+        Magazine magazine = magazineFactory.create(account.getUsername(), account.getEmail(), "title", "short", "long", "OPEN");
         Topic topic = topicFactory.create(magazine.getId(), account.getUsername(), "title", "short", "long");
         Long id = articleService.save(topic.getId(), account.getUsername(), "title", "content");
 
@@ -251,7 +251,7 @@ class ArticleControllerTest {
     @Transactional
     @WithAccount(username = "scene")
     void unpublished_byWriter_hasArticle() throws Exception {
-        Magazine magazine = magazineFactory.create("scene", "title", "short", "long", "OPEN");
+        Magazine magazine = magazineFactory.create("scene", "email@email.com", "title", "short", "long", "OPEN");
         Topic topic = topicFactory.create(magazine.getId(), "scene", "title", "short", "long");
         Long id = articleService.save(topic.getId(), "scene", "title", "content");
 
@@ -267,7 +267,7 @@ class ArticleControllerTest {
     @Test
     void unpublished_byStranger_handleException() throws Exception {
         Account account = accountFactory.create("scene", "scene@email.com", "password");
-        Magazine magazine = magazineFactory.create(account.getUsername(), "title", "short", "long", "OPEN");
+        Magazine magazine = magazineFactory.create(account.getUsername(), account.getEmail(), "title", "short", "long", "OPEN");
         Topic topic = topicFactory.create(magazine.getId(), account.getUsername(), "title", "short", "long");
         Long id = articleService.save(topic.getId(), account.getUsername(), "title", "content");
 
@@ -283,7 +283,7 @@ class ArticleControllerTest {
     @Transactional
     @WithAccount(username = "scene")
     void publish_published() throws Exception {
-        Magazine magazine = magazineFactory.create("scene", "title", "short", "long", "OPEN");
+        Magazine magazine = magazineFactory.create("scene", "email@email.com", "title", "short", "long", "OPEN");
         Topic topic = topicFactory.create(magazine.getId(), "scene", "title", "short", "long");
         Long id = articleService.save(topic.getId(), "scene", "title", "content");
 
@@ -307,7 +307,7 @@ class ArticleControllerTest {
     @WithAccount(username = "stranger")
     void publish_byStranger_handleException() throws Exception {
         Account account = accountFactory.create("scene", "scene@email.com", "password");
-        Magazine magazine = magazineFactory.create(account.getUsername(), "title", "short", "long", "OPEN");
+        Magazine magazine = magazineFactory.create(account.getUsername(), account.getEmail(), "title", "short", "long", "OPEN");
         Topic topic = topicFactory.create(magazine.getId(), account.getUsername(), "title", "short", "long");
         Long id = articleService.save(topic.getId(), account.getUsername(), "title", "content");
 
@@ -325,7 +325,7 @@ class ArticleControllerTest {
     @Test
     @WithAccount(username = "scene")
     void updatePage_hasForm() throws Exception {
-        Magazine magazine = magazineFactory.create("scene", "title", "short", "long", "OPEN");
+        Magazine magazine = magazineFactory.create("scene", "email@email.com", "title", "short", "long", "OPEN");
         Topic topic = topicFactory.create(magazine.getId(), "scene", "title", "short", "long");
         Long id = articleService.save(topic.getId(), "scene", "title", "content");
 
@@ -342,7 +342,7 @@ class ArticleControllerTest {
     @WithAccount(username = "scene")
     void updatePage_byStranger_handleException() throws Exception {
         Account account = accountFactory.create("magazineManager", "manager@email.com", "password");
-        Magazine magazine = magazineFactory.create(account.getUsername(), "title", "short", "long", "OPEN");
+        Magazine magazine = magazineFactory.create(account.getUsername(), account.getEmail(), "title", "short", "long", "OPEN");
         Topic topic = topicFactory.create(magazine.getId(), account.getUsername(), "title", "short", "long");
         Long id = articleService.save(topic.getId(), account.getUsername(), "title", "content");
 
@@ -357,7 +357,7 @@ class ArticleControllerTest {
     @Test
     @WithAccount(username = "scene")
     void update_updated() throws Exception {
-        Magazine magazine = magazineFactory.create("scene", "title", "short", "long", "OPEN");
+        Magazine magazine = magazineFactory.create("scene", "email@email.com", "title", "short", "long", "OPEN");
         Topic topic = topicFactory.create(magazine.getId(), "scene", "title", "short", "long");
         Long id = articleService.save(topic.getId(), "scene", "title", "content");
 
@@ -382,7 +382,7 @@ class ArticleControllerTest {
     @WithAccount(username = "scene")
     void update_byStranger_handleException() throws Exception {
         Account account = accountFactory.create("magazineManager", "manager@email.com", "password");
-        Magazine magazine = magazineFactory.create(account.getUsername(), "title", "short", "long", "OPEN");
+        Magazine magazine = magazineFactory.create(account.getUsername(), account.getEmail(), "title", "short", "long", "OPEN");
         Topic topic = topicFactory.create(magazine.getId(), account.getUsername(), "title", "short", "long");
         Long id = articleService.save(topic.getId(), account.getUsername(), "title", "content");
 
@@ -402,7 +402,7 @@ class ArticleControllerTest {
     @Test
     @WithAccount(username = "scene")
     void update_invalidParam_redirected() throws Exception {
-        Magazine magazine = magazineFactory.create("scene", "title", "short", "long", "OPEN");
+        Magazine magazine = magazineFactory.create("scene", "email@email.com", "title", "short", "long", "OPEN");
         Topic topic = topicFactory.create(magazine.getId(), "scene", "title", "short", "long");
         Long id = articleService.save(topic.getId(), "scene", "title", "content");
 
@@ -423,7 +423,7 @@ class ArticleControllerTest {
     @Transactional
     @WithAccount(username = "scene")
     void delete_deleted() throws Exception {
-        Magazine magazine = magazineFactory.create("scene", "title", "short", "long", "OPEN");
+        Magazine magazine = magazineFactory.create("scene", "email@email.com", "title", "short", "long", "OPEN");
         Topic topic = topicFactory.create(magazine.getId(), "scene", "title", "short", "long");
         Long id = articleService.save(topic.getId(), "scene", "title", "content");
         articleService.publish(id, "scene");
@@ -445,7 +445,7 @@ class ArticleControllerTest {
     @WithAccount(username = "scene")
     void delete_byStranger_handleException() throws Exception {
         Account account = accountFactory.create("magazineManager", "manager@email.com", "password");
-        Magazine magazine = magazineFactory.create(account.getUsername(), "title", "short", "long", "OPEN");
+        Magazine magazine = magazineFactory.create(account.getUsername(), account.getEmail(), "title", "short", "long", "OPEN");
         Topic topic = topicFactory.create(magazine.getId(), account.getUsername(), "title", "short", "long");
         Long id = articleService.save(topic.getId(), account.getUsername(), "title", "content");
 
@@ -462,7 +462,7 @@ class ArticleControllerTest {
     @Test
     @WithAccount(username = "scene")
     void delete_hasReply_removeRecursivelyByDomainEvent() throws Exception {
-        Magazine magazine = magazineFactory.create("scene", "title", "short", "long", "OPEN");
+        Magazine magazine = magazineFactory.create("scene", "email@email.com", "title", "short", "long", "OPEN");
         Topic topic = topicFactory.create(magazine.getId(), "scene", "title", "short", "long");
         Long targetArticleId = articleService.save(topic.getId(), "scene", "title", "content");
         replyService.save(targetArticleId, "replyWriter", "it will be deleted");

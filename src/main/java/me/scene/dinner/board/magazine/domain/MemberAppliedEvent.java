@@ -7,11 +7,13 @@ import org.springframework.context.ApplicationEvent;
 @Getter @EqualsAndHashCode(callSuper = false)
 public class MemberAppliedEvent extends ApplicationEvent {
 
+    private final Long magazineId;
     private final String managerEmail;
     private final String applicant;
 
-    public MemberAppliedEvent(Object source, String managerEmail, String applicant) {
+    public MemberAppliedEvent(Object source, Long magazineId, String managerEmail, String applicant) {
         super(source);
+        this.magazineId = magazineId;
         this.managerEmail = managerEmail;
         this.applicant = applicant;
     }

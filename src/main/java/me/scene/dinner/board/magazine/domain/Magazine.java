@@ -30,6 +30,8 @@ public class Magazine extends AbstractAggregateRoot<Magazine> {
     @JsonIgnore
     private String manager;
 
+    @JsonIgnore
+    private String managerEmail;
 
     private String title;
 
@@ -73,9 +75,10 @@ public class Magazine extends AbstractAggregateRoot<Magazine> {
     protected Magazine() {
     }
 
-    public static Magazine create(String manager, String title, String shortExplanation, String longExplanation, String magazinePolicy) {
+    public static Magazine create(String manager, String managerEmail, String title, String shortExplanation, String longExplanation, String magazinePolicy) {
         Magazine magazine = new Magazine();
         magazine.manager = manager;
+        magazine.managerEmail = managerEmail;
         magazine.title = title;
         magazine.shortExplanation = shortExplanation;
         magazine.longExplanation = longExplanation;
@@ -179,7 +182,7 @@ public class Magazine extends AbstractAggregateRoot<Magazine> {
         confirmPolicyManaged();
         if (members.contains(current)) return;
 
-        registerEvent(new MemberAppliedEvent(this, managerEmail, current));
+        registerEvent(new MemberAppliedEvent(this, id, managerEmail, current));
     }
 
     public void quitMember(String current) {

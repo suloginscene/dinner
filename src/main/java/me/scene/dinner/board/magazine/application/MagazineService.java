@@ -32,8 +32,8 @@ public class MagazineService {
     }
 
     @Transactional
-    public Long save(String manager, String title, String shortExplanation, String longExplanation, String policy) {
-        Magazine magazine = Magazine.create(manager, title, shortExplanation, longExplanation, policy);
+    public Long save(String manager, String managerEmail, String title, String shortExplanation, String longExplanation, String policy) {
+        Magazine magazine = Magazine.create(manager, managerEmail, title, shortExplanation, longExplanation, policy);
         return magazineRepository.save(magazine).getId();
     }
 
@@ -52,6 +52,19 @@ public class MagazineService {
         magazineRepository.delete(magazine);
     }
 
+    public void applyMember(Long id, String current) {
+        Magazine magazine = find(id);
+        magazine.applyMember(current, magazine.getManagerEmail());
+        publishEvent(magazine);
+    }
+
+    @Transactional
+    public void quitMember(Long id, String current) {
+        Magazine magazine = find(id);
+        magazine.quitMember(current);
+        publishEvent(magazine);
+    }
+
     @Transactional
     public void addMember(Long id, String current, String target) {
         Magazine magazine = find(id);
@@ -63,19 +76,6 @@ public class MagazineService {
     public void removeMember(Long id, String current, String target) {
         Magazine magazine = find(id);
         magazine.removeMember(current, target);
-        publishEvent(magazine);
-    }
-
-    public void applyMember(Long id, String current, String managerEmail) {
-        Magazine magazine = find(id);
-        magazine.applyMember(current, managerEmail);
-        publishEvent(magazine);
-    }
-
-    @Transactional
-    public void quitMember(Long id, String current) {
-        Magazine magazine = find(id);
-        magazine.quitMember(current);
         publishEvent(magazine);
     }
 

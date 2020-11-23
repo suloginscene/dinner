@@ -9,9 +9,11 @@
         <section>
             <div class="centered-content">
                 <div class="message">
-                    매니저에게 가입 신청 메일을 보냈습니다.
+                    <a th:href="'/@'+${member}" th:text="${member}"></a>를
+                    <a th:href="'/magazines/'+${magazine.id}" th:text="${magazine.title}"></a>의 멤버로 등록했습니다.
+                    <a th:href="'/magazines/'+${magazine.id}+'/members'">멤버 관리 페이지</a>
                 </div>
-                <a th:href="'/magazines/'+${magazineId}">매거진으로 돌아가기</a>
+                <hr/>
             </div>
         </section>
     </body>

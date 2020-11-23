@@ -142,7 +142,7 @@ class MagazineControllerTest {
     @Transactional
     void show_hasMagazine() throws Exception {
         Account account = accountFactory.create("scene", "scene@email.com", "password");
-        Long id = magazineService.save(account.getUsername(), "title", "short", "long", "OPEN");
+        Long id = magazineService.save(account.getUsername(), account.getEmail(), "title", "short", "long", "OPEN");
 
         mockMvc.perform(
                 get("/magazines/" + id)
@@ -156,7 +156,7 @@ class MagazineControllerTest {
     @Test
     void show_nonExistent_handleException() throws Exception {
         Account account = accountFactory.create("scene", "scene@email.com", "password");
-        Long id = magazineService.save(account.getUsername(), "title", "short", "long", "OPEN");
+        Long id = magazineService.save(account.getUsername(), account.getEmail(), "title", "short", "long", "OPEN");
 
         mockMvc.perform(
                 get("/magazines/" + (id + 1))
@@ -169,7 +169,7 @@ class MagazineControllerTest {
     @Test
     @WithAccount(username = "scene")
     void updatePage_hasForm() throws Exception {
-        Long id = magazineService.save("scene", "title", "short", "long", "OPEN");
+        Long id = magazineService.save("scene", "email@email.com", "title", "short", "long", "OPEN");
 
         mockMvc.perform(
                 get("/magazines/" + id + "/form")
@@ -184,7 +184,7 @@ class MagazineControllerTest {
     @WithAccount(username = "scene")
     void updatePage_byStranger_handleException() throws Exception {
         Account account = accountFactory.create("magazineManager", "manager@email.com", "password");
-        Long id = magazineService.save(account.getUsername(), "title", "short", "long", "OPEN");
+        Long id = magazineService.save(account.getUsername(), account.getEmail(), "title", "short", "long", "OPEN");
 
         mockMvc.perform(
                 get("/magazines/" + id + "/form")
@@ -197,7 +197,7 @@ class MagazineControllerTest {
     @Test
     @WithAccount(username = "scene")
     void update_updated() throws Exception {
-        Long id = magazineService.save("scene", "title", "short", "long", "OPEN");
+        Long id = magazineService.save("scene", "email@email.com", "title", "short", "long", "OPEN");
         if (!bestListCache.get().get(0).getTitle().equals("title")) fail("Illegal Test State");
 
         mockMvc.perform(
@@ -225,7 +225,7 @@ class MagazineControllerTest {
     @WithAccount(username = "scene")
     void update_byStranger_handleException() throws Exception {
         Account account = accountFactory.create("magazineManager", "manager@email.com", "password");
-        Long id = magazineService.save(account.getUsername(), "title", "short", "long", "OPEN");
+        Long id = magazineService.save(account.getUsername(), account.getEmail(), "title", "short", "long", "OPEN");
 
         mockMvc.perform(
                 put("/magazines/" + id)
@@ -244,7 +244,7 @@ class MagazineControllerTest {
     @Test
     @WithAccount(username = "scene")
     void update_invalidParam_redirected() throws Exception {
-        Long id = magazineService.save("scene", "title", "short", "long", "OPEN");
+        Long id = magazineService.save("scene", "email@email.com", "title", "short", "long", "OPEN");
 
         mockMvc.perform(
                 put("/magazines/" + id)
@@ -263,7 +263,7 @@ class MagazineControllerTest {
     @Test
     @WithAccount(username = "scene")
     void delete_deleted() throws Exception {
-        Long id = magazineService.save("scene", "title", "short", "long", "OPEN");
+        Long id = magazineService.save("scene", "email@email.com", "title", "short", "long", "OPEN");
         if (bestListCache.get().size() == 0) fail("Illegal Test State");
 
         mockMvc.perform(
@@ -282,7 +282,7 @@ class MagazineControllerTest {
     @WithAccount(username = "scene")
     void delete_byStranger_handleException() throws Exception {
         Account account = accountFactory.create("magazineManager", "manager@email.com", "password");
-        Long id = magazineService.save(account.getUsername(), "title", "short", "long", "OPEN");
+        Long id = magazineService.save(account.getUsername(), account.getEmail(), "title", "short", "long", "OPEN");
 
         mockMvc.perform(
                 delete("/magazines/" + id)
@@ -297,7 +297,7 @@ class MagazineControllerTest {
     @Test
     @WithAccount(username = "scene")
     void delete_hasChild_handleException() throws Exception {
-        Long id = magazineService.save("scene", "title", "short", "long", "OPEN");
+        Long id = magazineService.save("scene", "email@email.com", "title", "short", "long", "OPEN");
         topicFactory.create(id, "scene", "title", "short", "long");
 
         mockMvc.perform(
@@ -314,16 +314,16 @@ class MagazineControllerTest {
     @WithAccount(username = "scene")
     void applyMember_sendToManager() throws Exception {
         Account manager = accountFactory.create("magazineManager", "manager@email.com", "password");
-        Magazine managed = magazineFactory.create(manager.getUsername(), "m1", "short", "long", "MANAGED");
+        Magazine managed = magazineFactory.create(manager.getUsername(), manager.getEmail(), "m1", "short", "long", "MANAGED");
 
         mockMvc.perform(
                 post("/magazines/" + managed.getId() + "/members")
                         .with(csrf())
         )
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/sent-to-manager"))
+                .andExpect(redirectedUrl("/sent-to-manager?magazineId=" + managed.getId()))
         ;
-        MemberAppliedEvent event = new MemberAppliedEvent(managed, manager.getEmail(), "scene");
+        MemberAppliedEvent event = new MemberAppliedEvent(managed, managed.getId(), manager.getEmail(), "scene");
         then(mailSender).should().onApplicationEvent(event);
     }
 
@@ -332,7 +332,7 @@ class MagazineControllerTest {
     @WithAccount(username = "scene")
     void quitMember_quitAndSend() throws Exception {
         Account manager = accountFactory.create("magazineManager", "manager@email.com", "password");
-        Magazine managed = magazineFactory.create(manager.getUsername(), "m1", "short", "long", "MANAGED");
+        Magazine managed = magazineFactory.create(manager.getUsername(), manager.getEmail(), "m1", "short", "long", "MANAGED");
         managed.addMember(manager.getUsername(), "scene");
         if (!managed.getMembers().contains("scene")) fail("Illegal Test State");
 
@@ -351,7 +351,7 @@ class MagazineControllerTest {
     @Transactional
     @WithAccount(username = "scene")
     void manageMembersPage_hasMembers() throws Exception {
-        Magazine managed = magazineFactory.create("scene", "m1", "short", "long", "MANAGED");
+        Magazine managed = magazineFactory.create("scene", "email@email.com", "m1", "short", "long", "MANAGED");
         Account account = accountFactory.create("another", "another@email.com", "password");
         managed.addMember("scene", account.getUsername());
 
@@ -368,7 +368,7 @@ class MagazineControllerTest {
     @Transactional
     @WithAccount(username = "scene")
     void addMember_add() throws Exception {
-        Magazine managed = magazineFactory.create("scene", "m1", "short", "long", "MANAGED");
+        Magazine managed = magazineFactory.create("scene", "email@email.com", "m1", "short", "long", "MANAGED");
         Account account = accountFactory.create("another", "another@email.com", "password");
         if (managed.getMembers().size() != 0) fail("Illegal Test State");
 
@@ -386,8 +386,29 @@ class MagazineControllerTest {
     @Test
     @Transactional
     @WithAccount(username = "scene")
+    void addMemberByEmail_add() throws Exception {
+        Magazine managed = magazineFactory.create("scene", "email@email.com", "m1", "short", "long", "MANAGED");
+        Account account = accountFactory.create("another", "another@email.com", "password");
+        if (managed.getMembers().size() != 0) fail("Illegal Test State");
+
+        mockMvc.perform(
+                get("/magazines/" + managed.getId() + "/" + account.getUsername())
+                        .with(csrf())
+        )
+                .andExpect(status().isOk())
+                .andExpect(view().name("page/mail/member"))
+                .andExpect(model().attribute("member", account.getUsername()))
+                .andExpect(model().attribute("magazine", managed))
+        ;
+        List<String> members = managed.getMembers();
+        assertThat(members).contains(account.getUsername());
+    }
+
+    @Test
+    @Transactional
+    @WithAccount(username = "scene")
     void removeMember_remove() throws Exception {
-        Magazine managed = magazineFactory.create("scene", "m1", "short", "long", "MANAGED");
+        Magazine managed = magazineFactory.create("scene", "email@email.com", "m1", "short", "long", "MANAGED");
         Account account = accountFactory.create("another", "another@email.com", "password");
         managed.addMember("scene", account.getUsername());
         if (!managed.getMembers().contains(account.getUsername())) fail("Illegal Test State");
@@ -406,9 +427,9 @@ class MagazineControllerTest {
     @Test
     void showList_hasMagazines() throws Exception {
         Account account = accountFactory.create("scene", "scene@email.com", "password");
-        magazineFactory.create(account.getUsername(), "m1", "short", "long", "OPEN");
-        magazineFactory.create(account.getUsername(), "m2", "short", "long", "OPEN");
-        magazineFactory.create(account.getUsername(), "m3", "short", "long", "OPEN");
+        magazineFactory.create(account.getUsername(), account.getEmail(), "m1", "short", "long", "OPEN");
+        magazineFactory.create(account.getUsername(), account.getEmail(), "m2", "short", "long", "OPEN");
+        magazineFactory.create(account.getUsername(), account.getEmail(), "m3", "short", "long", "OPEN");
 
         mockMvc.perform(
                 get("/magazines")
@@ -422,9 +443,9 @@ class MagazineControllerTest {
     @Test // TODO count
     void bestListApi_hasMagazines() throws Exception {
         Account account = accountFactory.create("scene", "scene@email.com", "password");
-        magazineFactory.create(account.getUsername(), "m1", "short", "long", "OPEN");
-        magazineFactory.create(account.getUsername(), "m2", "short", "long", "OPEN");
-        magazineFactory.create(account.getUsername(), "m3", "short", "long", "OPEN");
+        magazineFactory.create(account.getUsername(), account.getEmail(), "m1", "short", "long", "OPEN");
+        magazineFactory.create(account.getUsername(), account.getEmail(), "m2", "short", "long", "OPEN");
+        magazineFactory.create(account.getUsername(), account.getEmail(), "m3", "short", "long", "OPEN");
 
         mockMvc.perform(
                 get("/api/magazines")

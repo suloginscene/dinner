@@ -52,7 +52,7 @@ public class MagazineController {
     public String createMagazine(@CurrentUser Account current, @Valid MagazineForm form, Errors errors) {
         if (errors.hasErrors()) return "page/board/magazine/form";
 
-        Long id = magazineService.save(current.getUsername(), form.getTitle(), form.getShortExplanation(), form.getLongExplanation(), form.getPolicy());
+        Long id = magazineService.save(current.getUsername(), current.getEmail(), form.getTitle(), form.getShortExplanation(), form.getLongExplanation(), form.getPolicy());
         return "redirect:" + ("/magazines/" + id);
     }
 
@@ -97,10 +97,8 @@ public class MagazineController {
 
     @PostMapping("/magazines/{magazineId}/members")
     public String applyMember(@PathVariable Long magazineId, @CurrentUser Account current) {
-        // TODO
-        String managerEmail = "manager@email.com";
-        magazineService.applyMember(magazineId, current.getUsername(), managerEmail);
-        return "redirect:" + ("/sent-to-manager");
+        magazineService.applyMember(magazineId, current.getUsername());
+        return "redirect:" + ("/sent-to-manager?magazineId=" + magazineId);
     }
 
     @DeleteMapping("/magazines/{magazineId}/members")
@@ -124,6 +122,15 @@ public class MagazineController {
     public String addMember(@PathVariable Long magazineId, @PathVariable String member, @CurrentUser Account current) {
         magazineService.addMember(magazineId, current.getUsername(), member);
         return "redirect:" + ("/magazines/" + magazineId + "/members");
+    }
+
+    @GetMapping("/magazines/{magazineId}/{member}")
+    public String addMemberByEmail(@PathVariable Long magazineId, @PathVariable String member, @CurrentUser Account current, Model model) {
+        magazineService.addMember(magazineId, current.getUsername(), member);
+        Magazine magazine = magazineService.find(magazineId);
+        model.addAttribute("member", member);
+        model.addAttribute("magazine", magazine);
+        return "page/mail/member";
     }
 
     @DeleteMapping("/magazines/{magazineId}/{member}")
