@@ -1,9 +1,11 @@
-package me.scene.dinner.common.exception;
+package me.scene.dinner.common.exception.advice;
 
 import lombok.extern.slf4j.Slf4j;
 import me.scene.dinner.account.application.AlreadyVerifiedException;
 import me.scene.dinner.account.domain.tempaccount.VerificationException;
-import me.scene.dinner.mail.exception.SyncMessagingException;
+import me.scene.dinner.board.common.exception.BoardNotFoundException;
+import me.scene.dinner.board.common.exception.NotDeletableException;
+import me.scene.dinner.mail.service.SyncMessagingException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ControllerAdvice;

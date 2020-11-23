@@ -1,6 +1,6 @@
 package me.scene.dinner.board.reply.application;
 
-import me.scene.dinner.common.exception.BoardNotFoundException;
+import me.scene.dinner.board.common.exception.BoardNotFoundException;
 
 public class ReplyNotFoundException extends BoardNotFoundException {
 

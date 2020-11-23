@@ -1,8 +1,8 @@
 package me.scene.dinner.board.magazine.application;
 
+import lombok.RequiredArgsConstructor;
 import me.scene.dinner.board.magazine.domain.Magazine;
 import me.scene.dinner.board.magazine.domain.MagazineChangedEvent;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
@@ -10,15 +10,11 @@ import javax.annotation.PostConstruct;
 import java.util.List;
 
 @Component
+@RequiredArgsConstructor
 public class MagazineBestListCache {
 
     private List<Magazine> bestMagazines;
     private final MagazineService magazineService;
-
-    @Autowired
-    public MagazineBestListCache(MagazineService magazineService) {
-        this.magazineService = magazineService;
-    }
 
     // TODO scheduled cron
     // TODO count

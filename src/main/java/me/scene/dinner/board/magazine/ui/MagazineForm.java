@@ -2,12 +2,11 @@ package me.scene.dinner.board.magazine.ui;
 
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotBlank;
 
-@Getter @Setter @ToString
+@Getter @Setter
 public class MagazineForm {
 
     @NotBlank(message = "제목을 적어주세요.")

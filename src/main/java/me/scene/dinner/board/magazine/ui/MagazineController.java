@@ -1,13 +1,13 @@
 package me.scene.dinner.board.magazine.ui;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.scene.dinner.account.domain.account.Account;
 import me.scene.dinner.board.magazine.application.MagazineBestListCache;
 import me.scene.dinner.board.magazine.application.MagazineService;
 import me.scene.dinner.board.magazine.domain.Magazine;
 import me.scene.dinner.common.security.CurrentUser;
-import me.scene.dinner.mail.exception.AsyncMessagingException;
-import org.springframework.beans.factory.annotation.Autowired;
+import me.scene.dinner.mail.service.AsyncMessagingException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
@@ -21,29 +21,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.validation.Valid;
 import java.util.List;
 
-@Slf4j
 @Controller
+@RequiredArgsConstructor @Slf4j
 public class MagazineController {
 
     private final MagazineService magazineService;
     private final MagazineBestListCache bestListCache;
-
-    @Autowired
-    public MagazineController(MagazineService magazineService, MagazineBestListCache bestListCache) {
-        this.magazineService = magazineService;
-        this.bestListCache = bestListCache;
-    }
-
-    @GetMapping("/api/magazines")
-    public @ResponseBody List<Magazine> bestList() {
-        return bestListCache.get();
-    }
-
-    @GetMapping("/magazines")
-    public String showList(Model model) {
-        model.addAttribute("magazines", magazineService.findAll());
-        return "page/board/magazine/list";
-    }
 
     @GetMapping("/magazine-form")
     public String shipMagazineForm(Model model) {
@@ -145,6 +128,17 @@ public class MagazineController {
     public String removeMember(@PathVariable Long magazineId, @PathVariable String member, @CurrentUser Account current) {
         magazineService.removeMember(magazineId, current.getUsername(), member);
         return "redirect:" + ("/magazines/" + magazineId + "/members");
+    }
+
+    @GetMapping("/magazines")
+    public String showList(Model model) {
+        model.addAttribute("magazines", magazineService.findAll());
+        return "page/board/magazine/list";
+    }
+
+    @GetMapping("/api/magazines")
+    public @ResponseBody List<Magazine> bestList() {
+        return bestListCache.get();
     }
 
 }

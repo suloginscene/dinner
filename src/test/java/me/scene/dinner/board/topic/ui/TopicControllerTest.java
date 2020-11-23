@@ -8,7 +8,7 @@ import me.scene.dinner.board.magazine.domain.MagazineRepository;
 import me.scene.dinner.board.topic.application.TopicService;
 import me.scene.dinner.board.topic.domain.Topic;
 import me.scene.dinner.board.topic.domain.TopicRepository;
-import me.scene.dinner.common.exception.BoardNotFoundException;
+import me.scene.dinner.board.common.exception.BoardNotFoundException;
 import me.scene.dinner.utils.authentication.WithAccount;
 import me.scene.dinner.utils.factory.AccountFactory;
 import me.scene.dinner.utils.factory.ArticleFactory;

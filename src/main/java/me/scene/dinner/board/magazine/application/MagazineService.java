@@ -1,22 +1,18 @@
 package me.scene.dinner.board.magazine.application;
 
+import lombok.RequiredArgsConstructor;
 import me.scene.dinner.board.magazine.domain.Magazine;
 import me.scene.dinner.board.magazine.domain.MagazineRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service @Transactional(readOnly = true)
+@RequiredArgsConstructor
 public class MagazineService {
 
     private final MagazineRepository magazineRepository;
-
-    @Autowired
-    public MagazineService(MagazineRepository magazineRepository) {
-        this.magazineRepository = magazineRepository;
-    }
 
     public Magazine find(Long id) {
         return magazineRepository.findById(id).orElseThrow(() -> new MagazineNotFoundException(id));

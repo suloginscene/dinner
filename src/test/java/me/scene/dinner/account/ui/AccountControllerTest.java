@@ -6,7 +6,7 @@ import me.scene.dinner.account.domain.account.TempPasswordIssuedEvent;
 import me.scene.dinner.account.domain.tempaccount.TempAccount;
 import me.scene.dinner.account.domain.tempaccount.TempAccountCreatedEvent;
 import me.scene.dinner.account.domain.tempaccount.TempAccountRepository;
-import me.scene.dinner.mail.MailSender;
+import me.scene.dinner.mail.service.MailSender;
 import me.scene.dinner.utils.authentication.WithAccount;
 import me.scene.dinner.utils.factory.AccountFactory;
 import org.junit.jupiter.api.AfterEach;

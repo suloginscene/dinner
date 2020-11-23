@@ -4,8 +4,8 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import me.scene.dinner.board.article.domain.Article;
 import me.scene.dinner.board.magazine.domain.Magazine;
-import me.scene.dinner.common.exception.NotDeletableException;
-import me.scene.dinner.common.exception.NotOwnerException;
+import me.scene.dinner.board.common.exception.NotDeletableException;
+import me.scene.dinner.board.common.exception.NotOwnerException;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

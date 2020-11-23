@@ -17,7 +17,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrlPattern;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 @Transactional
 @SpringBootTest
@@ -30,7 +34,7 @@ class ProfileControllerTest {
     @Autowired PasswordEncoder passwordEncoder;
 
     @Test
-    void profilePage_hasAccount() throws Exception {
+    void profilePage_hasAccountInfo() throws Exception {
         accountFactory.create("scene", "scene@email.com", "password");
 
         mockMvc.perform(
@@ -38,7 +42,8 @@ class ProfileControllerTest {
         )
                 .andExpect(status().isOk())
                 .andExpect(view().name("page/account/profile"))
-                .andExpect(model().attributeExists("account"))
+                .andExpect(model().attributeExists("username", "email"))
+        // TODO profile
         ;
     }
 
@@ -60,7 +65,7 @@ class ProfileControllerTest {
         )
                 .andExpect(status().isOk())
                 .andExpect(view().name("page/account/profile"))
-                .andExpect(model().attribute("isOwner", true))
+        // TODO htmlunit
         ;
 
         accountFactory.create("another", "another@email.com", "password");
@@ -69,7 +74,7 @@ class ProfileControllerTest {
         )
                 .andExpect(status().isOk())
                 .andExpect(view().name("page/account/profile"))
-                .andExpect(model().attribute("isOwner", false))
+        // TODO htmlunit
         ;
     }
 

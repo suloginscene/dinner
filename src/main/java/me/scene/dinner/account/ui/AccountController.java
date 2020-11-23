@@ -1,8 +1,8 @@
 package me.scene.dinner.account.ui;
 
+import lombok.RequiredArgsConstructor;
 import me.scene.dinner.account.application.AccountService;
 import me.scene.dinner.account.domain.account.Account;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 @Controller
+@RequiredArgsConstructor
 public class AccountController {
 
     @Value("${dinner.url}")
@@ -28,12 +29,6 @@ public class AccountController {
     private final AccountService accountService;
     private final AccountFormValidator accountFormValidator;
 
-    @Autowired
-    public AccountController(AccountService accountService, AccountFormValidator accountFormValidator) {
-        this.accountService = accountService;
-        this.accountFormValidator = accountFormValidator;
-    }
-
     @InitBinder("accountForm")
     public void initBinder(WebDataBinder webDataBinder) {
         webDataBinder.addValidators(accountFormValidator);
@@ -41,8 +36,7 @@ public class AccountController {
 
     @GetMapping("/signup")
     public String signupPage(Model model) {
-        AccountForm accountForm = new AccountForm();
-        model.addAttribute("accountForm", accountForm);
+        model.addAttribute("accountForm", new AccountForm());
         return "page/account/signup";
     }
 
@@ -71,6 +65,17 @@ public class AccountController {
         return "page/account/login";
     }
 
+    private boolean isMeaningful(String referer) {
+        if (referer == null) return false;
+        if (!referer.startsWith(url)) return false;
+        String ref = referer.substring(url.length());
+        return !(
+                ref.equals("/") || ref.equals("/login") || ref.equals("/login?error")
+                        || ref.startsWith("/verify?") || ref.startsWith("/sent-to-account?")
+                        || ref.equals("/signup") || ref.equals("/forgot")
+        );
+    }
+
     @GetMapping("/forgot")
     public String forgotPage() {
         return "page/account/forgot";
@@ -87,16 +92,6 @@ public class AccountController {
         return accountService.existsByUsername(username) ?
                 ResponseEntity.ok(accountService.find(username)) :
                 ResponseEntity.notFound().build();
-    }
-
-    private boolean isMeaningful(String referer) {
-        if (referer == null) return false;
-        String ref = referer.substring(url.length());
-        return !(
-                ref.equals("/") || ref.equals("/login") || ref.equals("/login?error")
-                        || ref.startsWith("/verify?") || ref.startsWith("/sent-to-account?")
-                        || ref.equals("/signup") || ref.equals("/forgot")
-        );
     }
 
 }

@@ -1,9 +1,9 @@
 package me.scene.dinner.account.ui;
 
+import lombok.RequiredArgsConstructor;
 import me.scene.dinner.account.application.AccountService;
 import me.scene.dinner.account.domain.account.Account;
 import me.scene.dinner.common.security.CurrentUser;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
@@ -14,19 +14,17 @@ import org.springframework.web.bind.annotation.PostMapping;
 import javax.validation.Valid;
 
 @Controller
+@RequiredArgsConstructor
 public class ProfileController {
 
     private final AccountService accountService;
 
-    @Autowired
-    public ProfileController(AccountService accountService) {
-        this.accountService = accountService;
-    }
-
     @GetMapping("/@{username}")
-    public String showProfile(@PathVariable String username, @CurrentUser Account current, Model model) {
-        model.addAttribute("isOwner", (current != null) && (current.getUsername().equals(username)));
-        model.addAttribute("account", accountService.find(username));
+    public String showProfile(@PathVariable String username, Model model) {
+        Account account = accountService.find(username);
+        model.addAttribute("username", account.getUsername());
+        model.addAttribute("email", account.getEmail());
+        model.addAttribute("profile", account.getProfile());
         return "page/account/profile";
     }
 

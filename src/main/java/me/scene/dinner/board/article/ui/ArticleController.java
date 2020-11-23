@@ -1,10 +1,10 @@
 package me.scene.dinner.board.article.ui;
 
+import lombok.RequiredArgsConstructor;
 import me.scene.dinner.account.domain.account.Account;
 import me.scene.dinner.board.article.application.ArticleService;
 import me.scene.dinner.board.article.domain.Article;
 import me.scene.dinner.common.security.CurrentUser;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
@@ -18,15 +18,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import javax.validation.Valid;
 
 @Controller
+@RequiredArgsConstructor
 public class ArticleController {
 
     private final ArticleService articleService;
-
-    @Autowired
-    public ArticleController(ArticleService articleService) {
-        this.articleService = articleService;
-    }
-
 
     @GetMapping("/article-form")
     public String shipArticleForm(@RequestParam Long topicId, Model model) {

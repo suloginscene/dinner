@@ -4,7 +4,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import me.scene.dinner.board.reply.domain.Reply;
 import me.scene.dinner.board.topic.domain.Topic;
-import me.scene.dinner.common.exception.NotOwnerException;
+import me.scene.dinner.board.common.exception.NotOwnerException;
 import org.springframework.data.domain.AbstractAggregateRoot;
 
 import javax.persistence.Entity;

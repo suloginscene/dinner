@@ -1,12 +1,10 @@
-package me.scene.dinner.mail;
+package me.scene.dinner.mail.service;
 
 import me.scene.dinner.account.domain.account.TempPasswordIssuedEvent;
 import me.scene.dinner.account.domain.tempaccount.TempAccountCreatedEvent;
 import me.scene.dinner.board.magazine.domain.MemberAppliedEvent;
 import me.scene.dinner.board.magazine.domain.MemberQuitEvent;
-import me.scene.dinner.mail.exception.AsyncMessagingException;
-import me.scene.dinner.mail.exception.RuntimeMessagingException;
-import me.scene.dinner.mail.exception.SyncMessagingException;
+import me.scene.dinner.mail.infra.RuntimeMessagingException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
@@ -43,7 +41,7 @@ public abstract class MailSender {
         try {
             send(ON_JOIN_TITLE, email, text);
         } catch (RuntimeMessagingException e) {
-            throw new SyncMessagingException();
+            throw new SyncMessagingException(e.getMessage());
         }
     }
 
@@ -56,7 +54,7 @@ public abstract class MailSender {
         try {
             send(ON_FORGOT_TITLE, email, text);
         } catch (RuntimeMessagingException e) {
-            throw new SyncMessagingException();
+            throw new SyncMessagingException(e.getMessage());
         }
     }
 
@@ -71,7 +69,7 @@ public abstract class MailSender {
         try {
             send(ON_APPLIED_TITLE, email, text);
         } catch (RuntimeMessagingException e) {
-            throw new SyncMessagingException();
+            throw new SyncMessagingException(e.getMessage());
         }
     }
 
@@ -86,7 +84,7 @@ public abstract class MailSender {
         try {
             send(ON_QUIT_TITLE, email, text);
         } catch (RuntimeMessagingException e) {
-            throw new AsyncMessagingException();
+            throw new AsyncMessagingException(e.getMessage());
         }
     }
 

@@ -3,7 +3,7 @@ package me.scene.dinner.board.reply.domain;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import me.scene.dinner.board.article.domain.Article;
-import me.scene.dinner.common.exception.NotOwnerException;
+import me.scene.dinner.board.common.exception.NotOwnerException;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -25,9 +25,11 @@ public class Reply {
 
     private String writer;
 
+
     private String content;
 
     private LocalDateTime createdAt;
+
 
     protected Reply() {
     }
@@ -42,12 +44,15 @@ public class Reply {
         return reply;
     }
 
-    public void confirmWriter(String current) {
-        if (!current.equals(writer)) throw new NotOwnerException(current);
+    public void beforeDelete(String current) {
+        confirmWriter(current);
+        article.remove(this);
     }
 
-    public void exit() {
-        article.remove(this);
+
+    private void confirmWriter(String current) {
+        if (current.equals(writer)) return;
+        throw new NotOwnerException(current);
     }
 
 }

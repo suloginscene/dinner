@@ -5,7 +5,8 @@ import lombok.Getter;
 
 import javax.persistence.Embeddable;
 
-@Embeddable @Getter @EqualsAndHashCode
+@Embeddable
+@Getter @EqualsAndHashCode
 public class Profile {
 
     private String shortIntroduction;

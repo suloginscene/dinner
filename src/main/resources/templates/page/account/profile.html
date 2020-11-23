@@ -1,22 +1,21 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 
-    <div th:replace="layout/layout::head(${account.username}, ~{::link}, ~{})">
+    <div th:replace="layout/layout::head(${username}, ~{::link}, ~{})">
         <link rel="stylesheet" href="/css/page/account/profile.css"/>
     </div>
 
     <body th:replace="layout/layout::body(~{::section})">
         <section>
             <div>
-                <h1 th:text="${account.username}"></h1>
-                <a th:if="${isOwner}" href="/config">수정</a>
+                <h1 th:text="${username}"></h1>
+                <div>이메일<span th:text="${email}"></span></div>
             </div>
-            <div>
-                <div>이름<span th:text="${account.username}"></span></div>
-                <div>이메일<span th:text="${account.email}"></span></div>
+            <div th:if="${username.equals(#authentication.name)}">
+                <a href="/config">수정</a>
             </div>
-            <div>
-                <div>간략한 소개<span th:text="${account.profile?.shortIntroduction}"></span></div>
+            <div th:if="${profile}">
+                <div>간략한 소개<span th:text="${profile.shortIntroduction}"></span></div>
             </div>
         </section>
     </body>

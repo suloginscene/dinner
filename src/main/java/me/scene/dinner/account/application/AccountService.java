@@ -1,11 +1,11 @@
 package me.scene.dinner.account.application;
 
+import lombok.RequiredArgsConstructor;
 import me.scene.dinner.account.domain.account.Account;
 import me.scene.dinner.account.domain.account.AccountRepository;
 import me.scene.dinner.account.domain.account.Profile;
 import me.scene.dinner.account.domain.tempaccount.TempAccount;
 import me.scene.dinner.account.domain.tempaccount.TempAccountRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -16,17 +16,17 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.UUID;
 
 @Service @Transactional(readOnly = true)
+@RequiredArgsConstructor
 public class AccountService implements UserDetailsService {
 
     private final TempAccountRepository tempRepository;
     private final AccountRepository accountRepository;
     private final PasswordEncoder passwordEncoder;
 
-    @Autowired
-    public AccountService(TempAccountRepository tempRepository, AccountRepository accountRepository, PasswordEncoder passwordEncoder) {
-        this.tempRepository = tempRepository;
-        this.accountRepository = accountRepository;
-        this.passwordEncoder = passwordEncoder;
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        Account account = (username.contains("@")) ? findByEmail(username) : find(username);
+        return new UserAccount(account);
     }
 
     public Account find(String username) {
@@ -39,12 +39,6 @@ public class AccountService implements UserDetailsService {
 
     public boolean existsByUsername(String username) {
         return accountRepository.existsByUsername(username);
-    }
-
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Account account = (username.contains("@")) ? findByEmail(username) : find(username);
-        return new UserAccount(account);
     }
 
     @Transactional

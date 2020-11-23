@@ -1,4 +1,4 @@
-package me.scene.dinner.mail;
+package me.scene.dinner.mail.service;
 
 import me.scene.dinner.account.domain.account.Account;
 import me.scene.dinner.account.domain.account.AccountRepository;
@@ -8,8 +8,6 @@ import me.scene.dinner.account.domain.tempaccount.TempAccountRepository;
 import me.scene.dinner.board.magazine.domain.Magazine;
 import me.scene.dinner.board.magazine.domain.MagazineRepository;
 import me.scene.dinner.board.magazine.domain.MemberQuitEvent;
-import me.scene.dinner.mail.exception.AsyncMessagingException;
-import me.scene.dinner.mail.exception.SyncMessagingException;
 import me.scene.dinner.utils.authentication.WithAccount;
 import me.scene.dinner.utils.factory.AccountFactory;
 import me.scene.dinner.utils.factory.MagazineFactory;

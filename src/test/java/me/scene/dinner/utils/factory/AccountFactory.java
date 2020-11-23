@@ -1,26 +1,20 @@
 package me.scene.dinner.utils.factory;
 
+import lombok.RequiredArgsConstructor;
 import me.scene.dinner.account.application.AccountService;
 import me.scene.dinner.account.domain.account.Account;
 import me.scene.dinner.account.domain.account.AccountRepository;
 import me.scene.dinner.account.domain.tempaccount.TempAccount;
 import me.scene.dinner.account.domain.tempaccount.TempAccountRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class AccountFactory {
 
     private final AccountService accountService;
     private final TempAccountRepository tempAccountRepository;
     private final AccountRepository accountRepository;
-
-    @Autowired
-    public AccountFactory(AccountService accountService, TempAccountRepository tempAccountRepository, AccountRepository accountRepository) {
-        this.accountService = accountService;
-        this.tempAccountRepository = tempAccountRepository;
-        this.accountRepository = accountRepository;
-    }
 
     public TempAccount createTemp(String username, String email, String password) {
         Long id = accountService.saveTemp(username, email, password);

@@ -1,24 +1,19 @@
 package me.scene.dinner.board.topic.application;
 
+import lombok.RequiredArgsConstructor;
 import me.scene.dinner.board.article.domain.Article;
 import me.scene.dinner.board.magazine.application.MagazineService;
 import me.scene.dinner.board.topic.domain.Topic;
 import me.scene.dinner.board.topic.domain.TopicRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service @Transactional(readOnly = true)
+@RequiredArgsConstructor
 public class TopicService {
 
     private final TopicRepository topicRepository;
     private final MagazineService magazineService;
-
-    @Autowired
-    public TopicService(TopicRepository topicRepository, MagazineService magazineService) {
-        this.topicRepository = topicRepository;
-        this.magazineService = magazineService;
-    }
 
     public Topic find(Long id) {
         Topic topic = topicRepository.findById(id).orElseThrow(() -> new TopicNotFoundException(id));

@@ -1,23 +1,18 @@
 package me.scene.dinner.account.ui;
 
+import lombok.RequiredArgsConstructor;
 import me.scene.dinner.account.domain.account.AccountRepository;
 import me.scene.dinner.account.domain.tempaccount.TempAccountRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
 @Component
+@RequiredArgsConstructor
 public class AccountFormValidator implements Validator {
 
     private final AccountRepository accountRepository;
     private final TempAccountRepository tempAccountRepository;
-
-    @Autowired
-    public AccountFormValidator(AccountRepository accountRepository, TempAccountRepository tempAccountRepository) {
-        this.accountRepository = accountRepository;
-        this.tempAccountRepository = tempAccountRepository;
-    }
 
     @Override
     public boolean supports(Class<?> aClass) {

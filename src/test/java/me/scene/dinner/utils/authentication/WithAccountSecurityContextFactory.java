@@ -1,8 +1,8 @@
 package me.scene.dinner.utils.authentication;
 
+import lombok.RequiredArgsConstructor;
 import me.scene.dinner.account.application.AccountService;
 import me.scene.dinner.utils.factory.AccountFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
@@ -12,16 +12,11 @@ import org.springframework.security.test.context.support.WithSecurityContextFact
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class WithAccountSecurityContextFactory implements WithSecurityContextFactory<WithAccount> {
 
     private final AccountFactory accountFactory;
     private final AccountService accountService;
-
-    @Autowired
-    public WithAccountSecurityContextFactory(AccountFactory accountFactory, AccountService accountService) {
-        this.accountFactory = accountFactory;
-        this.accountService = accountService;
-    }
 
     @Override
     public SecurityContext createSecurityContext(WithAccount withAccount) {

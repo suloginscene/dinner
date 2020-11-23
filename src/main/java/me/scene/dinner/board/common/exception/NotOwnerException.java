@@ -1,5 +1,4 @@
-package me.scene.dinner.common.exception;
-
+package me.scene.dinner.board.common.exception;
 
 import org.springframework.security.access.AccessDeniedException;
 

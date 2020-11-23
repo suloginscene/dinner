@@ -1,23 +1,18 @@
 package me.scene.dinner.board.article.application;
 
+import lombok.RequiredArgsConstructor;
 import me.scene.dinner.board.article.domain.Article;
 import me.scene.dinner.board.article.domain.ArticleRepository;
 import me.scene.dinner.board.topic.application.TopicService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service @Transactional(readOnly = true)
+@RequiredArgsConstructor
 public class ArticleService {
 
     private final ArticleRepository articleRepository;
     private final TopicService topicService;
-
-    @Autowired
-    public ArticleService(ArticleRepository articleRepository, TopicService topicService) {
-        this.articleRepository = articleRepository;
-        this.topicService = topicService;
-    }
 
     public Article find(Long id) {
         return articleRepository.findById(id).orElseThrow(() -> new ArticleNotFoundException(id));

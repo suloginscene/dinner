@@ -1,5 +1,6 @@
-package me.scene.dinner.common.init;
+package me.scene.dinner.common.initiator;
 
+import lombok.RequiredArgsConstructor;
 import me.scene.dinner.account.application.AccountService;
 import me.scene.dinner.account.domain.account.Account;
 import me.scene.dinner.account.domain.tempaccount.TempAccount;
@@ -9,13 +10,13 @@ import me.scene.dinner.board.magazine.application.MagazineService;
 import me.scene.dinner.board.magazine.domain.Magazine;
 import me.scene.dinner.board.topic.application.TopicService;
 import me.scene.dinner.board.topic.domain.Topic;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class LocalInitiator implements ApplicationRunner {
 
     private final Environment environment;
@@ -24,18 +25,6 @@ public class LocalInitiator implements ApplicationRunner {
     private final MagazineService magazineService;
     private final TopicService topicService;
     private final ArticleService articleService;
-
-    @Autowired
-    public LocalInitiator(Environment environment,
-                          TempAccountRepository tempAccountRepository, AccountService accountService,
-                          MagazineService magazineService, TopicService topicService, ArticleService articleService) {
-        this.environment = environment;
-        this.tempAccountRepository = tempAccountRepository;
-        this.accountService = accountService;
-        this.magazineService = magazineService;
-        this.topicService = topicService;
-        this.articleService = articleService;
-    }
 
     @Override
     public void run(ApplicationArguments args) {

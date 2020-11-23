@@ -1,8 +1,7 @@
 package me.scene.dinner.mail.infra;
 
-import me.scene.dinner.mail.MailSender;
-import me.scene.dinner.mail.exception.RuntimeMessagingException;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import me.scene.dinner.mail.service.MailSender;
 import org.springframework.context.annotation.Profile;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -14,14 +13,10 @@ import java.nio.charset.StandardCharsets;
 
 @Profile({"dev", "prod"})
 @Component
+@RequiredArgsConstructor
 public class HtmlMailSender extends MailSender {
 
     private final JavaMailSender javaMailSender;
-
-    @Autowired
-    public HtmlMailSender(JavaMailSender javaMailSender) {
-        this.javaMailSender = javaMailSender;
-    }
 
     @Override
     public void send(String subject, String to, String text) throws RuntimeMessagingException {
@@ -37,7 +32,7 @@ public class HtmlMailSender extends MailSender {
             javaMailSender.send(mimeMessage);
 
         } catch (MessagingException e) {
-            throw new RuntimeMessagingException();
+            throw new RuntimeMessagingException(subject, to);
         }
     }
 

@@ -1,4 +1,4 @@
-package me.scene.dinner.mail;
+package me.scene.dinner.mail.ui;
 
 import me.scene.dinner.utils.authentication.WithAccount;
 import org.junit.jupiter.api.Test;
@@ -11,7 +11,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
-
 
 @SpringBootTest
 @AutoConfigureMockMvc

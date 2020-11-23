@@ -4,8 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import me.scene.dinner.board.topic.domain.Topic;
-import me.scene.dinner.common.exception.NotDeletableException;
-import me.scene.dinner.common.exception.NotOwnerException;
+import me.scene.dinner.board.common.exception.NotDeletableException;
+import me.scene.dinner.board.common.exception.NotOwnerException;
 import org.springframework.data.domain.AbstractAggregateRoot;
 
 import javax.persistence.ElementCollection;
@@ -32,6 +32,7 @@ public class Magazine extends AbstractAggregateRoot<Magazine> {
 
     @JsonIgnore
     private String managerEmail;
+
 
     private String title;
 
@@ -71,6 +72,7 @@ public class Magazine extends AbstractAggregateRoot<Magazine> {
         if (policy == Policy.MANAGED) return (current.equals(manager) || members.contains(current));
         throw new IllegalStateException("Magazine should have policy in enum");
     }
+
 
     protected Magazine() {
     }

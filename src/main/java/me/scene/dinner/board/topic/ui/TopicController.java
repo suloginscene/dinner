@@ -1,27 +1,27 @@
 package me.scene.dinner.board.topic.ui;
 
+import lombok.RequiredArgsConstructor;
 import me.scene.dinner.account.domain.account.Account;
 import me.scene.dinner.board.topic.application.TopicService;
 import me.scene.dinner.board.topic.domain.Topic;
 import me.scene.dinner.common.security.CurrentUser;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
 
 @Controller
+@RequiredArgsConstructor
 public class TopicController {
 
     private final TopicService topicService;
-
-    @Autowired
-    public TopicController(TopicService topicService) {
-        this.topicService = topicService;
-    }
-
 
     @GetMapping("/topic-form")
     public String shipTopicForm(@RequestParam Long magazineId, Model model) {
