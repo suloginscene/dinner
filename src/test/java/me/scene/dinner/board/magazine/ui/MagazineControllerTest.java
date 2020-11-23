@@ -7,6 +7,7 @@ import me.scene.dinner.board.magazine.application.MagazineService;
 import me.scene.dinner.board.magazine.domain.Magazine;
 import me.scene.dinner.board.magazine.domain.MagazineRepository;
 import me.scene.dinner.board.magazine.domain.MemberAppliedEvent;
+import me.scene.dinner.board.magazine.domain.MemberQuitEvent;
 import me.scene.dinner.board.magazine.domain.Policy;
 import me.scene.dinner.board.topic.domain.TopicRepository;
 import me.scene.dinner.common.exception.BoardNotFoundException;
@@ -345,6 +346,8 @@ class MagazineControllerTest {
         ;
         List<String> members = managed.getMembers();
         assertThat(members).doesNotContain("scene");
+        MemberQuitEvent event = new MemberQuitEvent(managed, managed.getId(), manager.getEmail(), "scene");
+        then(mailSender).should().onApplicationEvent(event);
     }
 
     @Test

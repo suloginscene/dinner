@@ -158,27 +158,7 @@ public class Magazine extends AbstractAggregateRoot<Magazine> {
         throw new IllegalStateException("Not Managed Magazine");
     }
 
-    public void addMember(String current, String target) {
-        confirmManager(current);
-        confirmPolicyManaged();
-
-        if (members.contains(target)) return;
-        members.add(target);
-
-        // TODO event(send async to target)
-    }
-
-    public void removeMember(String current, String target) {
-        confirmManager(current);
-        confirmPolicyManaged();
-
-        if (!members.contains(target)) return;
-        members.remove(target);
-
-        // TODO event(send async to target)
-    }
-
-    public void applyMember(String current, String managerEmail) {
+    public void applyMember(String current) {
         confirmPolicyManaged();
         if (members.contains(current)) return;
 
@@ -187,11 +167,28 @@ public class Magazine extends AbstractAggregateRoot<Magazine> {
 
     public void quitMember(String current) {
         confirmPolicyManaged();
-
         if (!members.contains(current)) return;
-        members.remove(current);
 
-        // TODO event(send async to manager)
+        members.remove(current);
+        registerEvent(new MemberQuitEvent(this, id, managerEmail, current));
+    }
+
+    public void addMember(String current, String target) {
+        confirmManager(current);
+        confirmPolicyManaged();
+        if (members.contains(target)) return;
+
+        members.add(target);
+        // TODO event(send async to target)
+    }
+
+    public void removeMember(String current, String target) {
+        confirmManager(current);
+        confirmPolicyManaged();
+        if (!members.contains(target)) return;
+
+        members.remove(target);
+        // TODO event(send async to target)
     }
 
 }

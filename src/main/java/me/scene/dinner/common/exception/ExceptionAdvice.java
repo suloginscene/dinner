@@ -3,7 +3,6 @@ package me.scene.dinner.common.exception;
 import lombok.extern.slf4j.Slf4j;
 import me.scene.dinner.account.application.AlreadyVerifiedException;
 import me.scene.dinner.account.domain.tempaccount.VerificationException;
-import me.scene.dinner.mail.exception.AsyncMessagingException;
 import me.scene.dinner.mail.exception.SyncMessagingException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -80,10 +79,6 @@ public class ExceptionAdvice {
         return "error/messaging";
     }
 
-    @ExceptionHandler
-    public void asyncMessagingException(HttpServletRequest req, AsyncMessagingException e) {
-        warn(req, e);
-    }
 
     // unspecified exception -----------------------------------------------------------------------------------------------
 

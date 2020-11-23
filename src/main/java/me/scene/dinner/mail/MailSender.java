@@ -3,10 +3,13 @@ package me.scene.dinner.mail;
 import me.scene.dinner.account.domain.account.TempPasswordIssuedEvent;
 import me.scene.dinner.account.domain.tempaccount.TempAccountCreatedEvent;
 import me.scene.dinner.board.magazine.domain.MemberAppliedEvent;
+import me.scene.dinner.board.magazine.domain.MemberQuitEvent;
+import me.scene.dinner.mail.exception.AsyncMessagingException;
 import me.scene.dinner.mail.exception.RuntimeMessagingException;
 import me.scene.dinner.mail.exception.SyncMessagingException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.event.EventListener;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -23,7 +26,11 @@ public abstract class MailSender {
 
     private static final String ON_APPLIED_TITLE = "[Dinner] New member applied to your magazine.";
     private static final String ON_APPLIED_APPLICANT_TEMPLATE = "Applicant: %s (%s/@%s)";
-    private static final String ON_APPLIED_LINK_TEMPLATE = "Add Link: " + ("%s/magazines/%s/%s");
+    private static final String ON_APPLIED_LINK_TEMPLATE = "Add member Link: " + ("%s/magazines/%s/%s");
+
+    private static final String ON_QUIT_TITLE = "[Dinner] Member quit your magazine.";
+    private static final String ON_QUIT_TEMPLATE = "%s quit your magazine.";
+    private static final String ON_QUIT_LINK_TEMPLATE = "Manage member Link: " + ("%s/magazines/%s/members");
 
     abstract protected void send(String subject, String to, String text) throws RuntimeMessagingException;
 
@@ -65,6 +72,21 @@ public abstract class MailSender {
             send(ON_APPLIED_TITLE, email, text);
         } catch (RuntimeMessagingException e) {
             throw new SyncMessagingException();
+        }
+    }
+
+    @EventListener @Async
+    public void onApplicationEvent(MemberQuitEvent event) throws AsyncMessagingException {
+        String email = event.getManagerEmail();
+        String member = event.getMember();
+        Long magazineId = event.getMagazineId();
+        String text = String.format(ON_QUIT_TEMPLATE, member) + ", "
+                + String.format(ON_QUIT_LINK_TEMPLATE, url, magazineId);
+
+        try {
+            send(ON_QUIT_TITLE, email, text);
+        } catch (RuntimeMessagingException e) {
+            throw new AsyncMessagingException();
         }
     }
 

@@ -1,10 +1,12 @@
 package me.scene.dinner.board.magazine.ui;
 
+import lombok.extern.slf4j.Slf4j;
 import me.scene.dinner.account.domain.account.Account;
 import me.scene.dinner.board.magazine.application.MagazineBestListCache;
 import me.scene.dinner.board.magazine.application.MagazineService;
 import me.scene.dinner.board.magazine.domain.Magazine;
 import me.scene.dinner.common.security.CurrentUser;
+import me.scene.dinner.mail.exception.AsyncMessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.validation.Valid;
 import java.util.List;
 
+@Slf4j
 @Controller
 public class MagazineController {
 
@@ -103,7 +106,12 @@ public class MagazineController {
 
     @DeleteMapping("/magazines/{magazineId}/members")
     public String quitMember(@PathVariable Long magazineId, @CurrentUser Account current) {
-        magazineService.quitMember(magazineId, current.getUsername());
+        String currentUsername = current.getUsername();
+        try {
+            magazineService.quitMember(magazineId, currentUsername);
+        } catch (AsyncMessagingException e) {
+            log.warn("AsyncMessagingException - when {} quit form magazine {}", currentUsername, magazineId);
+        }
         return "redirect:" + ("/magazines/" + magazineId);
     }
 

@@ -89,13 +89,6 @@ public class AccountController {
                 ResponseEntity.notFound().build();
     }
 
-    @GetMapping("/api/email/{username}")
-    public @ResponseBody ResponseEntity<String> findEmail(@PathVariable String username) {
-        return accountService.existsByUsername(username) ?
-                ResponseEntity.ok(accountService.find(username).getEmail()) :
-                ResponseEntity.notFound().build();
-    }
-
     private boolean isMeaningful(String referer) {
         if (referer == null) return false;
         String ref = referer.substring(url.length());

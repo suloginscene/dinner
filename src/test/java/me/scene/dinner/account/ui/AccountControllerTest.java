@@ -366,27 +366,4 @@ class AccountControllerTest {
         ;
     }
 
-    @Test
-    @WithAccount(username = "scene")
-    void findEmailApi_returnJson() throws Exception {
-        Account account = accountFactory.create("writer", "email@email.com", "password");
-
-        mockMvc.perform(
-                get("/api/email/" + account.getUsername())
-        )
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$").value("email@email.com"))
-        ;
-    }
-
-    @Test
-    @WithAccount(username = "scene")
-    void findEmailApi_nonExistent_notFound() throws Exception {
-        mockMvc.perform(
-                get("/api/accounts/" + "someone")
-        )
-                .andExpect(status().isNotFound())
-        ;
-    }
-
 }

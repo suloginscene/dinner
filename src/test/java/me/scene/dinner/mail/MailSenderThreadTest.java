@@ -8,7 +8,6 @@ import me.scene.dinner.board.magazine.domain.MagazineRepository;
 import me.scene.dinner.utils.factory.AccountFactory;
 import me.scene.dinner.utils.factory.MagazineFactory;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -65,20 +64,27 @@ class MailSenderThreadTest {
         Thread testThread = Thread.currentThread();
 
         Magazine magazine = magazineFactory.create("manager", "manager@email.com", "t", "s", "l", "MANAGED");
-        magazine.applyMember("new", "manager@email.com");
+        magazine.applyMember("new");
         magazineRepository.save(magazine);
 
         Thread mailThread = mailSenderThreadProxy.lastThread();
         assertThat(mailThread).isEqualTo(testThread);
     }
 
-    // TODO when need async mailing
     @Test
-    @Disabled
-    void onSomeEvent_async() {
+    @Transactional
+    void onMemberQuitEvent_async() throws InterruptedException {
         Thread testThread = Thread.currentThread();
 
+        Magazine magazine = magazineFactory.create("manager", "manager@email.com", "t", "s", "l", "MANAGED");
+        magazine.addMember("manager", "target");
+        magazine.quitMember("target");
+        magazineRepository.save(magazine);
+
+        Thread.sleep(1000L);
+
         Thread mailThread = mailSenderThreadProxy.lastThread();
+        assertThat(mailThread).isNotNull();
         assertThat(mailThread).isNotEqualTo(testThread);
     }
 

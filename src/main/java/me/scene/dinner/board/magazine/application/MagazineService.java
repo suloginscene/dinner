@@ -54,7 +54,7 @@ public class MagazineService {
 
     public void applyMember(Long id, String current) {
         Magazine magazine = find(id);
-        magazine.applyMember(current, magazine.getManagerEmail());
+        magazine.applyMember(current);
         publishEvent(magazine);
     }
 
