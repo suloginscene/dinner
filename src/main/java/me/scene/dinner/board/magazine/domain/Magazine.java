@@ -162,7 +162,7 @@ public class Magazine extends AbstractAggregateRoot<Magazine> {
         if (members.contains(target)) return;
         members.add(target);
 
-        // TODO event
+        // TODO event(send async to target)
     }
 
     public void removeMember(String current, String target) {
@@ -172,6 +172,23 @@ public class Magazine extends AbstractAggregateRoot<Magazine> {
         if (!members.contains(target)) return;
         members.remove(target);
 
-        // TODO event
+        // TODO event(send async to target)
     }
+
+    public void applyMember(String current, String managerEmail) {
+        confirmPolicyManaged();
+        if (members.contains(current)) return;
+
+        registerEvent(new MemberAppliedEvent(this, managerEmail, current));
+    }
+
+    public void quitMember(String current) {
+        confirmPolicyManaged();
+
+        if (!members.contains(current)) return;
+        members.remove(current);
+
+        // TODO event(send async to manager)
+    }
+
 }

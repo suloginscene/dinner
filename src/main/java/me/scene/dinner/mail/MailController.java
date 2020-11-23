@@ -8,10 +8,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class MailController {
 
-    @GetMapping("/sent")
+    @GetMapping("/sent-to-account")
     public String sent(@RequestParam String email, Model model) {
         model.addAttribute("email", email);
-        return "page/main/sent";
+        return "page/mail/account";
+    }
+
+    @GetMapping("/sent-to-manager")
+    public String sentToManager() {
+        return "page/mail/manager";
     }
 
 }

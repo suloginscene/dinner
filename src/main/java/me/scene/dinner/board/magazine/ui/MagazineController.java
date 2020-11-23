@@ -95,6 +95,20 @@ public class MagazineController {
         return "redirect:" + ("/");
     }
 
+    @PostMapping("/magazines/{magazineId}/members")
+    public String applyMember(@PathVariable Long magazineId, @CurrentUser Account current) {
+        // TODO
+        String managerEmail = "manager@email.com";
+        magazineService.applyMember(magazineId, current.getUsername(), managerEmail);
+        return "redirect:" + ("/sent-to-manager");
+    }
+
+    @DeleteMapping("/magazines/{magazineId}/members")
+    public String quitMember(@PathVariable Long magazineId, @CurrentUser Account current) {
+        magazineService.quitMember(magazineId, current.getUsername());
+        return "redirect:" + ("/magazines/" + magazineId);
+    }
+
     @GetMapping("/magazines/{magazineId}/members")
     public String manageMembers(@PathVariable Long magazineId, @CurrentUser Account current, Model model) {
         Magazine magazine = magazineService.find(magazineId);

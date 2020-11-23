@@ -52,10 +52,6 @@ public class MagazineService {
         magazineRepository.delete(magazine);
     }
 
-    // TODO applyToManagedMagazine(send Mail to manager)
-    // TODO exitFromManagedMagazine(send Mail to manager)
-
-    // TODO send Mail to writer
     @Transactional
     public void addMember(Long id, String current, String target) {
         Magazine magazine = find(id);
@@ -63,11 +59,23 @@ public class MagazineService {
         publishEvent(magazine);
     }
 
-    // TODO send Mail to writer
     @Transactional
     public void removeMember(Long id, String current, String target) {
         Magazine magazine = find(id);
         magazine.removeMember(current, target);
+        publishEvent(magazine);
+    }
+
+    public void applyMember(Long id, String current, String managerEmail) {
+        Magazine magazine = find(id);
+        magazine.applyMember(current, managerEmail);
+        publishEvent(magazine);
+    }
+
+    @Transactional
+    public void quitMember(Long id, String current) {
+        Magazine magazine = find(id);
+        magazine.quitMember(current);
         publishEvent(magazine);
     }
 

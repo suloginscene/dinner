@@ -1,9 +1,10 @@
 package me.scene.dinner.account.domain.tempaccount;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.springframework.context.ApplicationEvent;
 
-@Getter
+@Getter @EqualsAndHashCode(callSuper = false)
 public class TempAccountCreatedEvent extends ApplicationEvent {
 
     private final String email;

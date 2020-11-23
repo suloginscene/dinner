@@ -54,8 +54,17 @@
                         <button type="submit">create</button>
                     </form>
                 </div>
-                <div th:if="${magazine.isManaged()}and${!magazine.doesAccept(#authentication.name)}">
-                    <button>apply</button>
+                <div th:if="${magazine.isManaged()}and${#authentication.name}!=*{manager}">
+                    <div th:unless="${magazine.members.contains(#authentication.name)}">
+                        <form th:action="'/magazines/'+*{id}+'/members'" th:method="post">
+                            <button type="submit">apply</button>
+                        </form>
+                    </div>
+                    <div th:if="${magazine.members.contains(#authentication.name)}">
+                        <form th:action="'/magazines/'+*{id}+'/members'" th:method="delete">
+                            <button type="submit">quit</button>
+                        </form>
+                    </div>
                 </div>
             </div>
 

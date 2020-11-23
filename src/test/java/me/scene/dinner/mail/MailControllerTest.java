@@ -1,5 +1,6 @@
 package me.scene.dinner.mail;
 
+import me.scene.dinner.utils.authentication.WithAccount;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -19,13 +20,24 @@ class MailControllerTest {
     @Autowired MockMvc mockMvc;
 
     @Test
-    void sent_hasEmail() throws Exception {
+    void sentToAccount_hasEmail() throws Exception {
         mockMvc.perform(
-                get("/sent?email=test@email.com")
+                get("/sent-to-account?email=test@email.com")
         )
                 .andExpect(status().isOk())
-                .andExpect(view().name("page/main/sent"))
+                .andExpect(view().name("page/mail/account"))
                 .andExpect(model().attributeExists("email"))
+        ;
+    }
+
+    @Test
+    @WithAccount(username = "scene")
+    void sentToManager_returnPage() throws Exception {
+        mockMvc.perform(
+                get("/sent-to-manager")
+        )
+                .andExpect(status().isOk())
+                .andExpect(view().name("page/mail/manager"))
         ;
     }
 

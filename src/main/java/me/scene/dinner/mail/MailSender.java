@@ -2,6 +2,7 @@ package me.scene.dinner.mail;
 
 import me.scene.dinner.account.domain.account.TempPasswordIssuedEvent;
 import me.scene.dinner.account.domain.tempaccount.TempAccountCreatedEvent;
+import me.scene.dinner.board.magazine.domain.MemberAppliedEvent;
 import me.scene.dinner.mail.exception.RuntimeMessagingException;
 import me.scene.dinner.mail.exception.SyncMessagingException;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,6 +20,9 @@ public abstract class MailSender {
 
     private static final String ON_FORGOT_TITLE = "[Dinner] New Random Password.";
     private static final String ON_FORGOT_TEMPLATE = "New password: %s";
+
+    private static final String ON_APPLIED_TITLE = "[Dinner] New member applied to your magazine.";
+    private static final String ON_APPLIED_TEMPLATE = "Applicant: %s";
 
     abstract protected void send(String subject, String to, String text) throws RuntimeMessagingException;
 
@@ -43,6 +47,18 @@ public abstract class MailSender {
 
         try {
             send(ON_FORGOT_TITLE, email, text);
+        } catch (RuntimeMessagingException e) {
+            throw new SyncMessagingException();
+        }
+    }
+
+    @EventListener
+    public void onApplicationEvent(MemberAppliedEvent event) throws SyncMessagingException {
+        String email = event.getManagerEmail();
+        String text = String.format(ON_APPLIED_TEMPLATE, event.getApplicant());
+
+        try {
+            send(ON_APPLIED_TITLE, email, text);
         } catch (RuntimeMessagingException e) {
             throw new SyncMessagingException();
         }

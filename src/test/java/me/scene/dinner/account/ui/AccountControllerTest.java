@@ -9,6 +9,7 @@ import me.scene.dinner.account.domain.tempaccount.TempAccountRepository;
 import me.scene.dinner.mail.MailSender;
 import me.scene.dinner.utils.authentication.WithAccount;
 import me.scene.dinner.utils.factory.AccountFactory;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -19,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasSize;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.then;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
@@ -32,16 +32,23 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
-@Transactional
 @SpringBootTest
 @AutoConfigureMockMvc
 class AccountControllerTest {
 
     @Autowired MockMvc mockMvc;
+
+    @MockBean MailSender mailSender;
+    @Autowired AccountFactory accountFactory;
+
     @Autowired TempAccountRepository tempAccountRepository;
     @Autowired AccountRepository accountRepository;
-    @Autowired AccountFactory accountFactory;
-    @MockBean MailSender mailSender;
+
+    @AfterEach
+    void clear() {
+        tempAccountRepository.deleteAll();
+        accountRepository.deleteAll();
+    }
 
     @Test
     void getForm_hasForm() throws Exception {
@@ -65,12 +72,13 @@ class AccountControllerTest {
                         .param("agreement", "true")
         )
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/sent?email=scene@email.com"))
+                .andExpect(redirectedUrl("/sent-to-account?email=scene@email.com"))
         ;
         TempAccount tempAccount = tempAccountRepository.findByUsername("scene").orElseThrow();
         assertThat(tempAccount.getPassword()).isNotEqualTo("password");
         assertThat(tempAccount.getVerificationToken()).isNotNull();
-        then(mailSender).should().onApplicationEvent(any(TempAccountCreatedEvent.class));
+        TempAccountCreatedEvent event = new TempAccountCreatedEvent(tempAccount, tempAccount.getEmail(), tempAccount.getVerificationToken());
+        then(mailSender).should().onApplicationEvent(event);
     }
 
     @Test
@@ -300,6 +308,7 @@ class AccountControllerTest {
     }
 
     @Test
+    @Transactional
     void forgot_changeEncodeSend() throws Exception {
         Account scene = accountFactory.create("scene", "scene@email.com", "password");
 
@@ -310,12 +319,13 @@ class AccountControllerTest {
                         .param("email", "scene@email.com")
         )
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/sent?email=scene@email.com"))
+                .andExpect(redirectedUrl("/sent-to-account?email=scene@email.com"))
         ;
         String encodedNewPassword = scene.getPassword();
         assertThat(encodedNewPassword).isNotEqualTo(encodedOldPassword);
         assertThat(encodedNewPassword).startsWith("{bcrypt}");
-        then(mailSender).should().onApplicationEvent(any(TempPasswordIssuedEvent.class));
+        TempPasswordIssuedEvent event = new TempPasswordIssuedEvent(scene, scene.getEmail(), "rawPassword");
+        then(mailSender).should().onApplicationEvent(event);
     }
 
     @Test
@@ -333,10 +343,10 @@ class AccountControllerTest {
     @Test
     @WithAccount(username = "scene")
     void findApi_returnJson() throws Exception {
-        Account writer1 = accountFactory.create("writer1", "email1@email.com", "password");
+        Account account = accountFactory.create("writer", "email@email.com", "password");
 
         mockMvc.perform(
-                get("/api/accounts/" + writer1.getUsername())
+                get("/api/accounts/" + account.getUsername())
         )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.*", hasSize(2)))
@@ -349,6 +359,29 @@ class AccountControllerTest {
     @Test
     @WithAccount(username = "scene")
     void findApi_nonExistent_notFound() throws Exception {
+        mockMvc.perform(
+                get("/api/accounts/" + "someone")
+        )
+                .andExpect(status().isNotFound())
+        ;
+    }
+
+    @Test
+    @WithAccount(username = "scene")
+    void findEmailApi_returnJson() throws Exception {
+        Account account = accountFactory.create("writer", "email@email.com", "password");
+
+        mockMvc.perform(
+                get("/api/email/" + account.getUsername())
+        )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").value("email@email.com"))
+        ;
+    }
+
+    @Test
+    @WithAccount(username = "scene")
+    void findEmailApi_nonExistent_notFound() throws Exception {
         mockMvc.perform(
                 get("/api/accounts/" + "someone")
         )

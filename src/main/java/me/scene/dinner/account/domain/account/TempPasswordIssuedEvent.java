@@ -1,9 +1,10 @@
 package me.scene.dinner.account.domain.account;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.springframework.context.ApplicationEvent;
 
-@Getter
+@Getter @EqualsAndHashCode(exclude = "tempRawPassword", callSuper = false)
 public class TempPasswordIssuedEvent extends ApplicationEvent {
 
     private final String email;

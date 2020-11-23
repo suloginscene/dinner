@@ -52,7 +52,7 @@ public class AccountController {
 
         String email = form.getEmail();
         accountService.saveTemp(form.getUsername(), email, form.getPassword());
-        return "redirect:" + ("/sent?email=" + email);
+        return "redirect:" + ("/sent-to-account?email=" + email);
     }
 
     @GetMapping("/verify")
@@ -79,7 +79,7 @@ public class AccountController {
     @PostMapping("/forgot")
     public String forgotPassword(String email) {
         accountService.issueTempPassword(email);
-        return "redirect:" + ("/sent?email=" + email);
+        return "redirect:" + ("/sent-to-account?email=" + email);
     }
 
     @GetMapping("/api/accounts/{username}")
@@ -89,12 +89,19 @@ public class AccountController {
                 ResponseEntity.notFound().build();
     }
 
+    @GetMapping("/api/email/{username}")
+    public @ResponseBody ResponseEntity<String> findEmail(@PathVariable String username) {
+        return accountService.existsByUsername(username) ?
+                ResponseEntity.ok(accountService.find(username).getEmail()) :
+                ResponseEntity.notFound().build();
+    }
+
     private boolean isMeaningful(String referer) {
         if (referer == null) return false;
         String ref = referer.substring(url.length());
         return !(
                 ref.equals("/") || ref.equals("/login") || ref.equals("/login?error")
-                        || ref.startsWith("/verify?") || ref.startsWith("/sent?")
+                        || ref.startsWith("/verify?") || ref.startsWith("/sent-to-account?")
                         || ref.equals("/signup") || ref.equals("/forgot")
         );
     }

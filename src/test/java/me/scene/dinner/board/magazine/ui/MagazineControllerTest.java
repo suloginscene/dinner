@@ -6,9 +6,11 @@ import me.scene.dinner.board.magazine.application.MagazineBestListCache;
 import me.scene.dinner.board.magazine.application.MagazineService;
 import me.scene.dinner.board.magazine.domain.Magazine;
 import me.scene.dinner.board.magazine.domain.MagazineRepository;
+import me.scene.dinner.board.magazine.domain.MemberAppliedEvent;
 import me.scene.dinner.board.magazine.domain.Policy;
 import me.scene.dinner.board.topic.domain.TopicRepository;
 import me.scene.dinner.common.exception.BoardNotFoundException;
+import me.scene.dinner.mail.MailSender;
 import me.scene.dinner.utils.authentication.WithAccount;
 import me.scene.dinner.utils.factory.AccountFactory;
 import me.scene.dinner.utils.factory.MagazineFactory;
@@ -18,6 +20,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,6 +31,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.BDDMockito.then;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -48,6 +52,7 @@ class MagazineControllerTest {
 
     @Autowired MagazineService magazineService;
     @Autowired MagazineBestListCache bestListCache;
+    @MockBean MailSender mailSender;
 
     @Autowired AccountFactory accountFactory;
     @Autowired MagazineFactory magazineFactory;
@@ -303,6 +308,43 @@ class MagazineControllerTest {
                 .andExpect(view().name("error/not_deletable"))
         ;
         assertDoesNotThrow(() -> magazineService.find(id));
+    }
+
+    @Test
+    @WithAccount(username = "scene")
+    void applyMember_sendToManager() throws Exception {
+        Account manager = accountFactory.create("magazineManager", "manager@email.com", "password");
+        Magazine managed = magazineFactory.create(manager.getUsername(), "m1", "short", "long", "MANAGED");
+
+        mockMvc.perform(
+                post("/magazines/" + managed.getId() + "/members")
+                        .with(csrf())
+        )
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/sent-to-manager"))
+        ;
+        MemberAppliedEvent event = new MemberAppliedEvent(managed, manager.getEmail(), "scene");
+        then(mailSender).should().onApplicationEvent(event);
+    }
+
+    @Test
+    @Transactional
+    @WithAccount(username = "scene")
+    void quitMember_quitAndSend() throws Exception {
+        Account manager = accountFactory.create("magazineManager", "manager@email.com", "password");
+        Magazine managed = magazineFactory.create(manager.getUsername(), "m1", "short", "long", "MANAGED");
+        managed.addMember(manager.getUsername(), "scene");
+        if (!managed.getMembers().contains("scene")) fail("Illegal Test State");
+
+        mockMvc.perform(
+                delete("/magazines/" + managed.getId() + "/members")
+                        .with(csrf())
+        )
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/magazines/" + managed.getId()))
+        ;
+        List<String> members = managed.getMembers();
+        assertThat(members).doesNotContain("scene");
     }
 
     @Test
