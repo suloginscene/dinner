@@ -1,6 +1,8 @@
 package me.scene.dinner.mail.ui;
 
+import me.scene.dinner.account.domain.account.AccountRepository;
 import me.scene.dinner.utils.authentication.WithAccount;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -17,6 +19,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class MailControllerTest {
 
     @Autowired MockMvc mockMvc;
+
+    @Autowired AccountRepository accountRepository;
+
+    @AfterEach
+    void clear() {
+        accountRepository.deleteAll();
+    }
+
 
     @Test
     void sentToAccount_hasEmail() throws Exception {

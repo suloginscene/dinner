@@ -2,16 +2,17 @@ package me.scene.dinner.account.ui;
 
 import me.scene.dinner.account.application.AccountService;
 import me.scene.dinner.account.domain.account.Account;
+import me.scene.dinner.account.domain.account.AccountRepository;
 import me.scene.dinner.account.domain.account.Profile;
 import me.scene.dinner.utils.authentication.WithAccount;
 import me.scene.dinner.utils.factory.AccountFactory;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -23,15 +24,24 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
-@Transactional
 @SpringBootTest
 @AutoConfigureMockMvc
 class ProfileControllerTest {
 
     @Autowired MockMvc mockMvc;
-    @Autowired AccountFactory accountFactory;
+
     @Autowired AccountService accountService;
     @Autowired PasswordEncoder passwordEncoder;
+
+    @Autowired AccountFactory accountFactory;
+
+    @Autowired AccountRepository accountRepository;
+
+    @AfterEach
+    void clear() {
+        accountRepository.deleteAll();
+    }
+
 
     @Test
     void profilePage_hasAccountInfo() throws Exception {
