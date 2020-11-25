@@ -5,7 +5,7 @@ import me.scene.dinner.account.domain.account.Account;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 
-import java.util.stream.Collectors;
+import java.util.Set;
 
 @Getter
 public class UserAccount extends User {
@@ -13,10 +13,7 @@ public class UserAccount extends User {
     private final Account account;
 
     public UserAccount(Account account) {
-        super(account.getUsername(), account.getPassword(),
-                account.getRoles().stream()
-                        .map(r -> new SimpleGrantedAuthority(r.toString()))
-                        .collect(Collectors.toSet()));
+        super(account.getUsername(), account.getPassword(), Set.of(new SimpleGrantedAuthority(account.getRole().toString())));
         this.account = account;
     }
 

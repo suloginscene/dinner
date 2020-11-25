@@ -7,17 +7,12 @@ import me.scene.dinner.account.domain.tempaccount.TempAccount;
 import org.springframework.data.domain.AbstractAggregateRoot;
 
 import javax.persistence.Column;
-import javax.persistence.ElementCollection;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import java.util.HashSet;
-import java.util.Set;
-
-import static javax.persistence.FetchType.LAZY;
 
 @Entity
 @Getter @EqualsAndHashCode(of = "id", callSuper = false)
@@ -35,8 +30,8 @@ public class Account extends AbstractAggregateRoot<Account> {
     @Column @JsonIgnore
     private String password;
 
-    @ElementCollection(fetch = LAZY) @Enumerated(EnumType.STRING) @JsonIgnore
-    private final Set<AccountRole> roles = new HashSet<>();
+    @Enumerated(EnumType.STRING) @JsonIgnore
+    private final AccountRole role = AccountRole.USER;
 
     @Embedded @JsonIgnore
     private Profile profile;
@@ -49,7 +44,6 @@ public class Account extends AbstractAggregateRoot<Account> {
         account.username = tempAccount.getUsername();
         account.email = tempAccount.getEmail();
         account.password = tempAccount.getPassword();
-        account.roles.add(AccountRole.USER);
         return account;
     }
 

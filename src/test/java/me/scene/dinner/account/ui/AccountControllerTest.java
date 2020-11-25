@@ -6,11 +6,12 @@ import me.scene.dinner.account.domain.account.TempPasswordIssuedEvent;
 import me.scene.dinner.account.domain.tempaccount.TempAccount;
 import me.scene.dinner.account.domain.tempaccount.TempAccountCreatedEvent;
 import me.scene.dinner.mail.service.MailSender;
-import me.scene.dinner.utils.authentication.Authenticator;
+import me.scene.dinner.utils.authentication.Authenticators;
 import me.scene.dinner.utils.facade.FactoryFacade;
 import me.scene.dinner.utils.facade.RepositoryFacade;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,13 +38,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@DisplayName("Account")
 class AccountControllerTest {
 
     @Autowired MockMvc mockMvc;
-    @Autowired Authenticator authenticator;
+    @MockBean MailSender mockMailSender;
 
     @Autowired AccountService accountService;
-    @MockBean MailSender mailSender;
 
     @Autowired FactoryFacade factoryFacade;
     @Autowired RepositoryFacade repositoryFacade;
@@ -89,7 +90,7 @@ class AccountControllerTest {
                 assertThat(tempAccount.getPassword()).isNotEqualTo("password");
                 assertThat(tempAccount.getVerificationToken()).isNotNull();
                 TempAccountCreatedEvent event = new TempAccountCreatedEvent(tempAccount, tempAccount.getEmail(), tempAccount.getVerificationToken());
-                then(mailSender).should().onApplicationEvent(event);
+                then(mockMailSender).should().onApplicationEvent(event);
             }
 
             @Nested
@@ -325,7 +326,7 @@ class AccountControllerTest {
         @BeforeEach
         void setup() {
             Account user = factoryFacade.createAccount("user");
-            authenticator.authenticate(user);
+            Authenticators.login(user);
         }
 
         @Test
@@ -383,7 +384,7 @@ class AccountControllerTest {
                 assertThat(newEncodedPassword).isNotEqualTo(oldEncodedPassword);
                 assertThat(newEncodedPassword).startsWith("{bcrypt}");
                 TempPasswordIssuedEvent event = new TempPasswordIssuedEvent(user, user.getEmail(), "rawPassword");
-                then(mailSender).should().onApplicationEvent(event);
+                then(mockMailSender).should().onApplicationEvent(event);
             }
 
             @Nested
@@ -412,7 +413,7 @@ class AccountControllerTest {
         @BeforeEach
         void setup() {
             Account user = factoryFacade.createAccount("user");
-            authenticator.authenticate(user);
+            Authenticators.login(user);
             target = factoryFacade.createAccount("target");
         }
 
@@ -441,6 +442,22 @@ class AccountControllerTest {
             }
         }
 
+        @Nested
+        class When_unauthenticated {
+            @BeforeEach
+            void setup() {
+                Authenticators.logout();
+            }
+
+            @Test
+            void redirectsTo_login() throws Exception {
+                mockMvc.perform(
+                        get("/api/accounts/" + target.getUsername())
+                )
+                        .andExpect(status().is3xxRedirection())
+                ;
+            }
+        }
     }
 
 }
