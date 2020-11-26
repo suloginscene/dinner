@@ -9,6 +9,7 @@ import me.scene.dinner.board.article.domain.ArticleRepository;
 import me.scene.dinner.board.magazine.domain.Magazine;
 import me.scene.dinner.board.magazine.domain.MagazineRepository;
 import me.scene.dinner.board.reply.domain.ReplyRepository;
+import me.scene.dinner.board.topic.domain.Topic;
 import me.scene.dinner.board.topic.domain.TopicRepository;
 import org.springframework.stereotype.Component;
 
@@ -42,6 +43,10 @@ public class RepositoryFacade {
 
     public Optional<Magazine> findMagazineByTitle(String title) {
         return magazineRepository.findByTitle(title);
+    }
+
+    public Optional<Topic> findTopicByTitle(String title) {
+        return topicRepository.findByTitle(title);
     }
 
     public void saveAccount(Account user) {

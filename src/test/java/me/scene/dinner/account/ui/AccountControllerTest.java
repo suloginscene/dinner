@@ -8,7 +8,6 @@ import me.scene.dinner.account.domain.tempaccount.TempAccountCreatedEvent;
 import me.scene.dinner.mail.infra.TestMailSender;
 import me.scene.dinner.test.facade.FactoryFacade;
 import me.scene.dinner.test.facade.RepositoryFacade;
-import me.scene.dinner.test.utils.authentication.Authenticators;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -21,6 +20,8 @@ import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static me.scene.dinner.test.utils.authentication.Authenticators.login;
+import static me.scene.dinner.test.utils.authentication.Authenticators.logout;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -328,7 +329,7 @@ class AccountControllerTest {
         @BeforeEach
         void setup() {
             Account user = factoryFacade.createAccount("user");
-            Authenticators.login(user);
+            login(user);
         }
 
         @Test
@@ -415,7 +416,7 @@ class AccountControllerTest {
         @BeforeEach
         void setup() {
             Account user = factoryFacade.createAccount("user");
-            Authenticators.login(user);
+            login(user);
             target = factoryFacade.createAccount("target");
         }
 
@@ -448,7 +449,7 @@ class AccountControllerTest {
         class When_unauthenticated {
             @BeforeEach
             void setup() {
-                Authenticators.logout();
+                logout();
             }
 
             @Test

@@ -1,6 +1,5 @@
 package me.scene.dinner.test.proxy;
 
-import lombok.extern.slf4j.Slf4j;
 import me.scene.dinner.account.domain.account.Account;
 import me.scene.dinner.board.magazine.application.MagazineService;
 import me.scene.dinner.board.magazine.domain.Magazine;

@@ -13,7 +13,6 @@ import me.scene.dinner.mail.infra.TestMailSender;
 import me.scene.dinner.test.facade.FactoryFacade;
 import me.scene.dinner.test.facade.RepositoryFacade;
 import me.scene.dinner.test.proxy.MagazineServiceProxy;
-import me.scene.dinner.test.utils.authentication.Authenticators;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -29,6 +28,8 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 
 import java.util.List;
 
+import static me.scene.dinner.test.utils.authentication.Authenticators.login;
+import static me.scene.dinner.test.utils.authentication.Authenticators.logout;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -67,7 +68,7 @@ class MagazineControllerTest {
     @BeforeEach
     void setUp() {
         manager = factoryFacade.createAccount("manager");
-        Authenticators.login(manager);
+        login(manager);
     }
 
     void expectRedirectionToLogin(MockHttpServletRequestBuilder requestBuilder) throws Exception {
@@ -97,12 +98,13 @@ class MagazineControllerTest {
                         .andExpect(model().attributeExists("magazineForm"))
                 ;
             }
+            // TODO html unit
 
             @Nested
             class When_Unauthenticated {
                 @Test
                 void redirectsTo_login() throws Exception {
-                    Authenticators.logout();
+                    logout();
                     expectRedirectionToLogin(get("/magazine-form"));
                 }
             }
@@ -155,7 +157,7 @@ class MagazineControllerTest {
             class When_Unauthenticated {
                 @Test
                 void redirectsTo_login() throws Exception {
-                    Authenticators.logout();
+                    logout();
                     expectRedirectionToLogin(post("/magazines").with(csrf()));
                 }
             }
@@ -171,7 +173,7 @@ class MagazineControllerTest {
         @BeforeEach
         void setup() {
             magazine = factoryFacade.createMagazine(manager, "Test Magazine", Policy.OPEN);
-            Authenticators.logout();
+            logout();
         }
 
         // TODO DTO
@@ -228,9 +230,9 @@ class MagazineControllerTest {
             class With_stranger {
                 @Test
                 void handles_exception() throws Exception {
-                    Authenticators.logout();
+                    logout();
                     Account stranger = factoryFacade.createAccount("stranger");
-                    Authenticators.login(stranger);
+                    login(stranger);
 
                     mockMvc.perform(
                             get("/magazines/" + magazine.getId() + "/form")
@@ -272,9 +274,9 @@ class MagazineControllerTest {
             class With_stranger {
                 @Test
                 void handles_exception() throws Exception {
-                    Authenticators.logout();
+                    logout();
                     Account stranger = factoryFacade.createAccount("stranger");
-                    Authenticators.login(stranger);
+                    login(stranger);
 
                     Long id = magazine.getId();
                     mockMvc.perform(
@@ -360,9 +362,9 @@ class MagazineControllerTest {
         class With_stranger {
             @Test
             void handles_exception() throws Exception {
-                Authenticators.logout();
+                logout();
                 Account stranger = factoryFacade.createAccount("stranger");
-                Authenticators.login(stranger);
+                login(stranger);
 
                 mockMvc.perform(
                         delete("/magazines/" + magazine.getId())
@@ -394,8 +396,8 @@ class MagazineControllerTest {
 
             @BeforeEach
             void setup() {
-                Authenticators.logout();
-                Authenticators.login(member);
+                logout();
+                login(member);
             }
 
             @Nested
