@@ -5,11 +5,11 @@ import me.scene.dinner.account.domain.account.Account;
 import me.scene.dinner.board.magazine.application.MagazineBestListCache;
 import me.scene.dinner.board.magazine.application.MagazineNotFoundException;
 import me.scene.dinner.board.magazine.domain.Magazine;
-import me.scene.dinner.board.magazine.domain.MemberManagedEvent;
 import me.scene.dinner.board.magazine.domain.MemberAppliedEvent;
+import me.scene.dinner.board.magazine.domain.MemberManagedEvent;
 import me.scene.dinner.board.magazine.domain.MemberQuitEvent;
 import me.scene.dinner.board.magazine.domain.Policy;
-import me.scene.dinner.mail.service.MailSender;
+import me.scene.dinner.mail.infra.TestMailSender;
 import me.scene.dinner.test.facade.FactoryFacade;
 import me.scene.dinner.test.facade.RepositoryFacade;
 import me.scene.dinner.test.proxy.MagazineServiceProxy;
@@ -34,8 +34,6 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.then;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -54,7 +52,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class MagazineControllerTest {
 
     @Autowired MockMvc mockMvc;
-    @SpyBean MailSender mailSender;
+    @SpyBean TestMailSender mailSender;
 
     @SpyBean MagazineServiceProxy magazineService;
     @Autowired MagazineBestListCache bestListCache;
@@ -411,7 +409,7 @@ class MagazineControllerTest {
                             .andExpect(status().is3xxRedirection())
                             .andExpect(redirectedUrl("/sent-to-manager?magazineId=" + managed.getId()))
                     ;
-                    MemberAppliedEvent event = new MemberAppliedEvent(managed, managed.getId(), manager.getEmail(), member.getUsername());
+                    MemberAppliedEvent event = new MemberAppliedEvent(managed, managed.getId(), manager.getEmail(), member.getUsername(), member.getEmail());
                     then(mailSender).should().onApplicationEvent(event);
                 }
             }

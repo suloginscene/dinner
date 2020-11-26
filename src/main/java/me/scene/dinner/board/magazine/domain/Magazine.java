@@ -169,11 +169,11 @@ public class Magazine extends AbstractAggregateRoot<Magazine> {
         throw new IllegalStateException("Not Managed Magazine");
     }
 
-    public void applyMember(String current) {
+    public void applyMember(String current, String currentEmail) {
         confirmPolicyManaged();
         if (findMemberByName(current) != null) return;
 
-        registerEvent(new MemberAppliedEvent(this, id, managerEmail, current));
+        registerEvent(new MemberAppliedEvent(this, id, managerEmail, current, currentEmail));
     }
 
     public void quitMember(String current) {

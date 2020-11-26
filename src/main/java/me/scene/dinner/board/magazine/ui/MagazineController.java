@@ -45,7 +45,9 @@ public class MagazineController {
 
     @GetMapping("/magazines/{magazineId}")
     public String showMagazine(@PathVariable Long magazineId, Model model) {
-        model.addAttribute("magazine", magazineService.find(magazineId));
+        Magazine magazine = magazineService.find(magazineId);
+        model.addAttribute("magazine", magazine);
+        model.addAttribute("members", magazine.getMemberNames());
         return "page/board/magazine/view";
     }
 
@@ -84,7 +86,7 @@ public class MagazineController {
 
     @PostMapping("/magazines/{magazineId}/members")
     public String applyMember(@PathVariable Long magazineId, @CurrentUser Account current) {
-        magazineService.applyMember(magazineId, current.getUsername());
+        magazineService.applyMember(magazineId, current.getUsername(), current.getEmail());
         return "redirect:" + ("/sent-to-manager?magazineId=" + magazineId);
     }
 

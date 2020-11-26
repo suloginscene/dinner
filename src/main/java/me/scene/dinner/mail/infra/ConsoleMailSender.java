@@ -5,7 +5,7 @@ import me.scene.dinner.mail.service.MailSender;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
-@Profile({"local", "test"})
+@Profile("local")
 @Slf4j
 @Component
 public class ConsoleMailSender extends MailSender {
@@ -13,7 +13,7 @@ public class ConsoleMailSender extends MailSender {
     private static final StringBuilder sb = new StringBuilder();
 
     @Override
-    public void send(String subject, String to, String text) {
+    protected void send(String subject, String to, String text) {
         sb.setLength(0);
         sb.append("\n")
                 .append("\t").append("subject: ").append(subject).append("\n")

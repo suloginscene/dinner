@@ -1,6 +1,7 @@
 package me.scene.dinner.test.facade;
 
 import lombok.RequiredArgsConstructor;
+import me.scene.dinner.account.domain.account.Account;
 import me.scene.dinner.account.domain.account.AccountRepository;
 import me.scene.dinner.account.domain.tempaccount.TempAccount;
 import me.scene.dinner.account.domain.tempaccount.TempAccountRepository;
@@ -41,6 +42,10 @@ public class RepositoryFacade {
 
     public Optional<Magazine> findMagazineByTitle(String title) {
         return magazineRepository.findByTitle(title);
+    }
+
+    public void saveAccount(Account user) {
+        accountRepository.save(user);
     }
 
 }

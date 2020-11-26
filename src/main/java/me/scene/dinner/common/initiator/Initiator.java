@@ -85,7 +85,7 @@ public class Initiator implements ApplicationRunner {
 
         article(bad.getId(), eon.getUsername(), "너무 나쁜 것 같아서 검열 중인 게시물", "많도다...");
 
-        magazineService.applyMember(ptc.getId(), scene.getUsername());
+        magazineService.applyMember(ptc.getId(), scene.getUsername(), scene.getUsername());
 
 
         Magazine exclusive = magazine(test.getUsername(), test.getEmail(), "폐쇄적인 외부인", "내 것이오.", "너네가 돈 내는 서버에 너네가 만든 사이트를 내 전용으로 쓰니까 묘하게 기분이 나쁘겠지?", "EXCLUSIVE");

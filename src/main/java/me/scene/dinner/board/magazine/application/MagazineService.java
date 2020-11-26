@@ -49,9 +49,9 @@ public class MagazineService {
         magazineRepository.delete(magazine);
     }
 
-    public void applyMember(Long id, String current) {
+    public void applyMember(Long id, String current, String currentEmail) {
         Magazine magazine = find(id);
-        magazine.applyMember(current);
+        magazine.applyMember(current, currentEmail);
         publishEvent(magazine);
     }
 

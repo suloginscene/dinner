@@ -12,7 +12,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 @Component
-public abstract class MailSender {
+public class MailSender {
 
     @Value("${dinner.url}")
     private String url;
@@ -25,7 +25,7 @@ public abstract class MailSender {
 
     private static final String ON_APPLIED_TITLE = "[Dinner] New member applied to your magazine.";
     private static final String ON_APPLIED_APPLICANT_TEMPLATE = "Applicant: %s (%s/@%s)";
-    private static final String ON_APPLIED_LINK_TEMPLATE = "Add member Link: " + ("%s/magazines/%s/%s");
+    private static final String ON_APPLIED_LINK_TEMPLATE = "Add member Link: " + ("%s/magazines/%s/%s?memberEmail=%s");
 
     private static final String ON_QUIT_TITLE = "[Dinner] Member quit your magazine.";
     private static final String ON_QUIT_TEMPLATE = "%s quit your magazine.";
@@ -35,7 +35,8 @@ public abstract class MailSender {
     private static final String ON_MANAGED_REMOVED_TITLE_TEMPLATE = "[Dinner] Now you are not member of %s.";
     private static final String ON_MANAGED_LINK_TEMPLATE = "Magazine Link: " + ("%s/magazines/%s");
 
-    abstract protected void send(String subject, String to, String text) throws RuntimeMessagingException;
+    protected void send(String subject, String to, String text) throws RuntimeMessagingException {
+    }
 
     @EventListener
     public void onApplicationEvent(TempAccountCreatedEvent event) throws SyncMessagingException {
@@ -69,7 +70,7 @@ public abstract class MailSender {
         String applicant = event.getApplicant();
         Long magazineId = event.getMagazineId();
         String text = String.format(ON_APPLIED_APPLICANT_TEMPLATE, applicant, url, applicant) + ", "
-                + String.format(ON_APPLIED_LINK_TEMPLATE, url, magazineId, applicant);
+                + String.format(ON_APPLIED_LINK_TEMPLATE, url, magazineId, applicant, event.getApplicantEmail());
 
         try {
             send(ON_APPLIED_TITLE, email, text);

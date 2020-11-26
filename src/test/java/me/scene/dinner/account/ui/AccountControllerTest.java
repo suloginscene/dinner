@@ -5,10 +5,10 @@ import me.scene.dinner.account.domain.account.Account;
 import me.scene.dinner.account.domain.account.TempPasswordIssuedEvent;
 import me.scene.dinner.account.domain.tempaccount.TempAccount;
 import me.scene.dinner.account.domain.tempaccount.TempAccountCreatedEvent;
-import me.scene.dinner.mail.service.MailSender;
-import me.scene.dinner.test.utils.authentication.Authenticators;
+import me.scene.dinner.mail.infra.TestMailSender;
 import me.scene.dinner.test.facade.FactoryFacade;
 import me.scene.dinner.test.facade.RepositoryFacade;
+import me.scene.dinner.test.utils.authentication.Authenticators;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -42,7 +42,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class AccountControllerTest {
 
     @Autowired MockMvc mockMvc;
-    @SpyBean MailSender mailSender;
+    @SpyBean TestMailSender mailSender;
 
     @Autowired AccountService accountService;
 

@@ -23,7 +23,7 @@
                     </div>
                     <div th:if="${magazine.isManaged()}and${!magazine.members.isEmpty()}">
                         <span>members are</span>
-                        <th:block th:each="member:*{members}">
+                        <th:block th:each="member:${members}">
                             <a class="writer" th:href="@{'/@'+${member}}" th:text="${member}"></a>
                         </th:block>
                     </div>
