@@ -1,4 +1,4 @@
-package me.scene.dinner.mail.service;
+package me.scene.dinner.mail.ui;
 
 import me.scene.dinner.account.domain.account.Account;
 import me.scene.dinner.account.domain.account.AccountRepository;
@@ -8,12 +8,16 @@ import me.scene.dinner.account.domain.tempaccount.TempAccountRepository;
 import me.scene.dinner.board.magazine.domain.Magazine;
 import me.scene.dinner.board.magazine.domain.MagazineRepository;
 import me.scene.dinner.board.magazine.domain.MemberQuitEvent;
-import me.scene.dinner.utils.authentication.WithAccount;
-import me.scene.dinner.utils.factory.AccountFactory;
-import me.scene.dinner.utils.factory.MagazineFactory;
+import me.scene.dinner.mail.service.AsyncMessagingException;
+import me.scene.dinner.mail.service.MailSender;
+import me.scene.dinner.mail.service.SyncMessagingException;
+import me.scene.dinner.test.utils.authentication.WithAccount;
+import me.scene.dinner.test.factory.AccountFactory;
+import me.scene.dinner.test.factory.MagazineFactory;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -60,7 +64,7 @@ class MailSenderExceptionTest {
 
     @Test
     void onSyncMessagingException_rollback() throws Exception {
-        doThrow(SyncMessagingException.class).when(mailSender).onApplicationEvent(any(TempAccountCreatedEvent.class));
+        Mockito.doThrow(SyncMessagingException.class).when(mailSender).onApplicationEvent(any(TempAccountCreatedEvent.class));
 
         mockMvc.perform(
                 post("/signup")
@@ -81,7 +85,7 @@ class MailSenderExceptionTest {
     @Transactional
     @WithAccount(username = "scene")
     void onAsyncMessagingException_notRollback() throws Exception {
-        doThrow(AsyncMessagingException.class).when(mailSender).onApplicationEvent(any(MemberQuitEvent.class));
+        Mockito.doThrow(AsyncMessagingException.class).when(mailSender).onApplicationEvent(any(MemberQuitEvent.class));
 
         Account manager = accountFactory.create("magazineManager", "manager@email.com", "password");
         Magazine managed = magazineFactory.create(manager.getUsername(), manager.getEmail(), "m1", "short", "long", "MANAGED");

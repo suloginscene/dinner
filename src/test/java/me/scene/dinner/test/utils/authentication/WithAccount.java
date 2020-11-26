@@ -1,4 +1,4 @@
-package me.scene.dinner.utils.authentication;
+package me.scene.dinner.test.utils.authentication;
 
 import org.springframework.security.test.context.support.WithSecurityContext;
 

@@ -1,8 +1,8 @@
-package me.scene.dinner.utils.authentication;
+package me.scene.dinner.test.utils.authentication;
 
 import lombok.RequiredArgsConstructor;
 import me.scene.dinner.account.application.AccountService;
-import me.scene.dinner.utils.factory.AccountFactory;
+import me.scene.dinner.test.factory.AccountFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;

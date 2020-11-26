@@ -1,23 +1,22 @@
-package me.scene.dinner.mail.infra;
+package me.scene.dinner.test.proxy;
 
 import lombok.extern.slf4j.Slf4j;
+import me.scene.dinner.mail.infra.ConsoleMailSender;
 import me.scene.dinner.mail.service.MailSender;
-import org.springframework.context.annotation.Profile;
-import org.springframework.stereotype.Component;
 
-@Profile({"test-mailSender"})
 @Slf4j
-@Component
-public class MailSenderThreadProxy extends MailSender {
+public class MailSenderProxy extends MailSender {
+
+    private final ConsoleMailSender consoleMailSender = new ConsoleMailSender();
+
+    private static final String BANNER = "\n" + "-".repeat(35) + " P R O X Y " + "-".repeat(34);
 
     private Thread lastThread;
-    private final ConsoleMailSender consoleMailSender = new ConsoleMailSender();
 
     @Override
     protected void send(String subject, String to, String text) {
-        log.info("-".repeat(35) + " P R O X Y " + "-".repeat(34));
+        log.info(BANNER);
         consoleMailSender.send(subject, to, text);
-
         lastThread = Thread.currentThread();
     }
 

@@ -1,4 +1,4 @@
-package me.scene.dinner.utils.factory;
+package me.scene.dinner.test.factory;
 
 import lombok.RequiredArgsConstructor;
 import me.scene.dinner.board.magazine.application.MagazineService;
