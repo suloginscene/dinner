@@ -2,6 +2,7 @@ package me.scene.dinner.mail.service;
 
 import me.scene.dinner.account.domain.account.TempPasswordIssuedEvent;
 import me.scene.dinner.account.domain.tempaccount.TempAccountCreatedEvent;
+import me.scene.dinner.board.magazine.domain.MemberManagedEvent;
 import me.scene.dinner.board.magazine.domain.MemberAppliedEvent;
 import me.scene.dinner.board.magazine.domain.MemberQuitEvent;
 import me.scene.dinner.mail.infra.RuntimeMessagingException;
@@ -29,6 +30,10 @@ public abstract class MailSender {
     private static final String ON_QUIT_TITLE = "[Dinner] Member quit your magazine.";
     private static final String ON_QUIT_TEMPLATE = "%s quit your magazine.";
     private static final String ON_QUIT_LINK_TEMPLATE = "Manage member Link: " + ("%s/magazines/%s/members");
+
+    private static final String ON_MANAGED_ADDED_TITLE_TEMPLATE = "[Dinner] Now you are member of %s.";
+    private static final String ON_MANAGED_REMOVED_TITLE_TEMPLATE = "[Dinner] Now you are not member of %s.";
+    private static final String ON_MANAGED_LINK_TEMPLATE = "Magazine Link: " + ("%s/magazines/%s");
 
     abstract protected void send(String subject, String to, String text) throws RuntimeMessagingException;
 
@@ -83,6 +88,23 @@ public abstract class MailSender {
 
         try {
             send(ON_QUIT_TITLE, email, text);
+        } catch (RuntimeMessagingException e) {
+            throw new AsyncMessagingException(e.getMessage());
+        }
+    }
+
+    @EventListener @Async
+    public void onApplicationEvent(MemberManagedEvent event) throws AsyncMessagingException {
+        String email = event.getMemberEmail();
+        String magazine = event.getMagazineTitle();
+        Long magazineId = event.getMagazineId();
+        String titleTemplate = event.isRemoval() ? ON_MANAGED_REMOVED_TITLE_TEMPLATE : ON_MANAGED_ADDED_TITLE_TEMPLATE;
+
+        String title = String.format(titleTemplate, magazine);
+        String text = String.format(ON_MANAGED_LINK_TEMPLATE, url, magazineId);
+
+        try {
+            send(title, email, text);
         } catch (RuntimeMessagingException e) {
             throw new AsyncMessagingException(e.getMessage());
         }

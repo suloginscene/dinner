@@ -5,6 +5,7 @@ import me.scene.dinner.account.domain.account.AccountRepository;
 import me.scene.dinner.board.article.domain.ArticleRepository;
 import me.scene.dinner.board.magazine.domain.Magazine;
 import me.scene.dinner.board.magazine.domain.MagazineRepository;
+import me.scene.dinner.board.magazine.domain.Member;
 import me.scene.dinner.board.topic.application.TopicService;
 import me.scene.dinner.board.topic.domain.Topic;
 import me.scene.dinner.board.topic.domain.TopicRepository;
@@ -190,7 +191,8 @@ class TopicControllerTest {
     void create_managedByAuthorized_success() throws Exception {
         Account account = accountFactory.create("magazineManager", "magazine_manager@email.com", "password");
         Magazine managed = magazineFactory.create(account.getUsername(), account.getEmail(), "title", "short", "long", "MANAGED");
-        managed.addMember("magazineManager", "scene");
+        Member member = new Member("scene", "scene@email.com");
+        managed.addMember("magazineManager", member);
 
         mockMvc.perform(
                 post("/topics")

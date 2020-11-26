@@ -7,6 +7,7 @@ import me.scene.dinner.board.article.domain.Article;
 import me.scene.dinner.board.article.domain.ArticleRepository;
 import me.scene.dinner.board.magazine.domain.Magazine;
 import me.scene.dinner.board.magazine.domain.MagazineRepository;
+import me.scene.dinner.board.magazine.domain.Member;
 import me.scene.dinner.board.reply.application.ReplyService;
 import me.scene.dinner.board.reply.domain.Reply;
 import me.scene.dinner.board.reply.domain.ReplyRepository;
@@ -200,7 +201,7 @@ class ArticleControllerTest {
         Account account = accountFactory.create("magazineManager", "magazine_manager@email.com", "password");
         Magazine managed = magazineFactory.create(account.getUsername(), account.getEmail(), "title", "short", "long", "MANAGED");
         Topic topic = topicFactory.create(managed.getId(), account.getUsername(), "title", "short", "long");
-        managed.addMember("magazineManager", "scene");
+        managed.addMember("magazineManager", new Member("scene", "scene@email.com"));
 
         mockMvc.perform(
                 post("/articles")

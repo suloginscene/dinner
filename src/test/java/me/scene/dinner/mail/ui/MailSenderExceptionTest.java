@@ -7,6 +7,7 @@ import me.scene.dinner.account.domain.tempaccount.TempAccountCreatedEvent;
 import me.scene.dinner.account.domain.tempaccount.TempAccountRepository;
 import me.scene.dinner.board.magazine.domain.Magazine;
 import me.scene.dinner.board.magazine.domain.MagazineRepository;
+import me.scene.dinner.board.magazine.domain.Member;
 import me.scene.dinner.board.magazine.domain.MemberQuitEvent;
 import me.scene.dinner.mail.service.AsyncMessagingException;
 import me.scene.dinner.mail.service.MailSender;
@@ -89,8 +90,9 @@ class MailSenderExceptionTest {
 
         Account manager = accountFactory.create("magazineManager", "manager@email.com", "password");
         Magazine managed = magazineFactory.create(manager.getUsername(), manager.getEmail(), "m1", "short", "long", "MANAGED");
-        managed.addMember(manager.getUsername(), "scene");
-        if (!managed.getMembers().contains("scene")) fail("Illegal Test State");
+        Member member = new Member("scene", "scene@email.com");
+        managed.addMember(manager.getUsername(), member);
+        if (!managed.getMemberNames().contains("scene")) fail("Illegal Test State");
 
         mockMvc.perform(
                 delete("/magazines/" + managed.getId() + "/members")
@@ -99,8 +101,8 @@ class MailSenderExceptionTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/magazines/" + managed.getId()))
         ;
-        List<String> members = managed.getMembers();
-        assertThat(members).doesNotContain("scene");
+        List<Member> members = managed.getMembers();
+        assertThat(members).doesNotContain(member);
     }
 
 }

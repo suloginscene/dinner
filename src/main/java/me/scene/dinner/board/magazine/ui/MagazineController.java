@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.validation.Valid;
@@ -105,19 +106,19 @@ public class MagazineController {
         magazine.confirmPolicyManaged();
 
         model.addAttribute("id", magazineId);
-        model.addAttribute("members", magazine.getMembers());
+        model.addAttribute("members", magazine.getMemberNames());
         return "page/board/magazine/members";
     }
 
     @PostMapping("/magazines/{magazineId}/{member}")
-    public String addMember(@PathVariable Long magazineId, @PathVariable String member, @CurrentUser Account current) {
-        magazineService.addMember(magazineId, current.getUsername(), member);
+    public String addMember(@PathVariable Long magazineId, @PathVariable String member, @RequestParam String memberEmail, @CurrentUser Account current) {
+        magazineService.addMember(magazineId, current.getUsername(), member, memberEmail);
         return "redirect:" + ("/magazines/" + magazineId + "/members");
     }
 
     @GetMapping("/magazines/{magazineId}/{member}")
-    public String addMemberByEmail(@PathVariable Long magazineId, @PathVariable String member, @CurrentUser Account current, Model model) {
-        magazineService.addMember(magazineId, current.getUsername(), member);
+    public String addMemberByEmail(@PathVariable Long magazineId, @PathVariable String member, @RequestParam String memberEmail, @CurrentUser Account current, Model model) {
+        magazineService.addMember(magazineId, current.getUsername(), member, memberEmail);
         Magazine magazine = magazineService.find(magazineId);
         model.addAttribute("member", member);
         model.addAttribute("magazine", magazine);

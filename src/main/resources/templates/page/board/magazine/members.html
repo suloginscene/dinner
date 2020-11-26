@@ -37,8 +37,11 @@
                     </form>
                     <script id="account-template" type="text/template">
                         <div>
-                            <span>이름 {name}</span><span>이메일 {email}</span>
-                            <form th:action="'/magazines/'+${id}+'/{username}'" th:method="post">
+                            <span>이름 {1}</span><span>이메일 {2}</span>
+                            <form th:action="'/magazines/'+${id}+'/{3}'" th:method="post">
+                                <label hidden>
+                                    <input type="text" value="{4}" hidden>
+                                </label>
                                 <button type="submit">add</button>
                             </form>
                         </div>

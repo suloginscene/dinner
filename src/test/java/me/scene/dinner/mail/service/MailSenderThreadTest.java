@@ -5,6 +5,7 @@ import me.scene.dinner.account.domain.account.AccountRepository;
 import me.scene.dinner.account.domain.tempaccount.TempAccountRepository;
 import me.scene.dinner.board.magazine.domain.Magazine;
 import me.scene.dinner.board.magazine.domain.MagazineRepository;
+import me.scene.dinner.board.magazine.domain.Member;
 import me.scene.dinner.test.proxy.MailSenderProxy;
 import me.scene.dinner.test.factory.AccountFactory;
 import me.scene.dinner.test.factory.MagazineFactory;
@@ -82,7 +83,8 @@ class MailSenderThreadTest {
     @Transactional
     void onMemberQuitEvent_async() throws InterruptedException {
         Magazine magazine = magazineFactory.create("manager", "manager@email.com", "t", "s", "l", "MANAGED");
-        magazine.addMember("manager", "target");
+        Member member = new Member("target", "target@email.com");
+        magazine.addMember("manager", member);
 
         magazine.quitMember("target");
         publishEventManually(magazine);
@@ -93,6 +95,20 @@ class MailSenderThreadTest {
         assertThat(mailThread).isNotEqualTo(testThread);
     }
 
+    @Test
+    @Transactional
+    void onMemberManagedEvent_async() throws InterruptedException {
+        Magazine magazine = magazineFactory.create("manager", "manager@email.com", "t", "s", "l", "MANAGED");
+        Member member = new Member("target", "target@email.com");
+
+        magazine.addMember("manager", member);
+        publishEventManually(magazine);
+        Thread.sleep(1000L);
+
+        Thread mailThread = mailSender.lastThread();
+        assertThat(mailThread).isNotNull();
+        assertThat(mailThread).isNotEqualTo(testThread);
+    }
 
     private void publishEventManually(Account account) {
         accountRepository.save(account);

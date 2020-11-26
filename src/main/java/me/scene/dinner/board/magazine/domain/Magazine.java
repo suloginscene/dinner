@@ -3,9 +3,9 @@ package me.scene.dinner.board.magazine.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import me.scene.dinner.board.topic.domain.Topic;
 import me.scene.dinner.board.common.exception.NotDeletableException;
 import me.scene.dinner.board.common.exception.NotOwnerException;
+import me.scene.dinner.board.topic.domain.Topic;
 import org.springframework.data.domain.AbstractAggregateRoot;
 
 import javax.persistence.ElementCollection;
@@ -17,6 +17,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static javax.persistence.FetchType.LAZY;
 
@@ -54,7 +55,12 @@ public class Magazine extends AbstractAggregateRoot<Magazine> {
     private final List<String> writers = new ArrayList<>();
 
     @ElementCollection(fetch = LAZY) @JsonIgnore
-    private final List<String> members = new ArrayList<>();
+    private final List<Member> members = new ArrayList<>();
+
+    @JsonIgnore
+    public List<String> getMemberNames() {
+        return members.stream().map(Member::getUsername).collect(Collectors.toList());
+    }
 
     @JsonIgnore
     public boolean isOpen() {
@@ -69,7 +75,10 @@ public class Magazine extends AbstractAggregateRoot<Magazine> {
     public boolean doesAccept(String current) {
         if (policy == Policy.OPEN) return true;
         if (policy == Policy.EXCLUSIVE) return current.equals(manager);
-        if (policy == Policy.MANAGED) return (current.equals(manager) || members.contains(current));
+        if (policy == Policy.MANAGED) {
+            if (current.equals(manager)) return true;
+            return findMemberByName(current) != null;
+        }
         throw new IllegalStateException("Magazine should have policy in enum");
     }
 
@@ -136,7 +145,7 @@ public class Magazine extends AbstractAggregateRoot<Magazine> {
 
         if (policy == Policy.MANAGED) {
             if (manager.equals(username)) return;
-            if (members.contains(username)) return;
+            if (findMemberByName(username) != null) return;
         }
 
         throw new PolicyAuthException(username);
@@ -162,35 +171,43 @@ public class Magazine extends AbstractAggregateRoot<Magazine> {
 
     public void applyMember(String current) {
         confirmPolicyManaged();
-        if (members.contains(current)) return;
+        if (findMemberByName(current) != null) return;
 
         registerEvent(new MemberAppliedEvent(this, id, managerEmail, current));
     }
 
     public void quitMember(String current) {
         confirmPolicyManaged();
-        if (!members.contains(current)) return;
 
-        members.remove(current);
+        Member member = findMemberByName(current);
+        if (member == null) return;
+
+        members.remove(member);
         registerEvent(new MemberQuitEvent(this, id, managerEmail, current));
     }
 
-    public void addMember(String current, String target) {
+    public void addMember(String current, Member member) {
         confirmManager(current);
         confirmPolicyManaged();
-        if (members.contains(target)) return;
+        if (members.contains(member)) return;
 
-        members.add(target);
-        // TODO event(send async to target)
+        members.add(member);
+        registerEvent(new MemberManagedEvent(this, id, title, member.getEmail()));
     }
 
     public void removeMember(String current, String target) {
         confirmManager(current);
         confirmPolicyManaged();
-        if (!members.contains(target)) return;
 
-        members.remove(target);
-        // TODO event(send async to target)
+        Member member = findMemberByName(target);
+        if (member == null) return;
+
+        members.remove(member);
+        registerEvent(new MemberManagedEvent(this, id, title, member.getEmail(), true));
+    }
+
+    private Member findMemberByName(String username) {
+        return members.stream().filter(m -> m.getUsername().equals(username)).findAny().orElse(null);
     }
 
 }

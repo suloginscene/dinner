@@ -76,7 +76,7 @@ public class Initiator implements ApplicationRunner {
         publish(docker);
         reply(docker.getId(), eon.getUsername(), "나도 이 매거진에 글을 쓸 수 있음.");
 
-        magazineService.addMember(dinner.getId(), scene.getUsername(), eon.getUsername());
+        magazineService.addMember(dinner.getId(), scene.getUsername(), eon.getUsername(), eon.getEmail());
 
 
         Magazine ptc = magazine(eon.getUsername(), eon.getEmail(), "Palm Tree Canteen", "직장인 글쓰기 모임", "오직 나에게 선택받은 자만이 글을 쓸 수 있다. 매니지드 매거진에 테스트 할 거리가 많기 때문이지...", "MANAGED");

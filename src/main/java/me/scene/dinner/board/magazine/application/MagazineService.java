@@ -3,6 +3,7 @@ package me.scene.dinner.board.magazine.application;
 import lombok.RequiredArgsConstructor;
 import me.scene.dinner.board.magazine.domain.Magazine;
 import me.scene.dinner.board.magazine.domain.MagazineRepository;
+import me.scene.dinner.board.magazine.domain.Member;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -62,9 +63,9 @@ public class MagazineService {
     }
 
     @Transactional
-    public void addMember(Long id, String current, String target) {
+    public void addMember(Long id, String current, String target, String targetEmail) {
         Magazine magazine = find(id);
-        magazine.addMember(current, target);
+        magazine.addMember(current, new Member(target, targetEmail));
         publishEvent(magazine);
     }
 

@@ -6,9 +6,10 @@ const ajaxFindAccount_magazine = function () {
     const render = function (account) {
         return account ?
             template
-                .replace("{name}", account.username)
-                .replace("{email}", account.email)
-                .replace("{username}", account.username)
+                .replace("{1}", account.username)
+                .replace("{2}", account.email)
+                .replace("{3}", account.username)
+                .replace("{4}", account.email)
             : "<div>사용자가 존재하지 않습니다.</div>";
     };
 
