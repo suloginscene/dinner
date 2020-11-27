@@ -4,6 +4,7 @@ import me.scene.dinner.account.domain.account.Account;
 import me.scene.dinner.account.domain.account.AccountRepository;
 import me.scene.dinner.board.article.domain.Article;
 import me.scene.dinner.board.article.domain.ArticleRepository;
+import me.scene.dinner.board.article.domain.Status;
 import me.scene.dinner.board.magazine.domain.Magazine;
 import me.scene.dinner.board.magazine.domain.MagazineRepository;
 import me.scene.dinner.board.reply.application.ReplyService;
@@ -76,7 +77,7 @@ class ReplyControllerTest {
         Account account = accountFactory.create("magazineManager", "magazine_manager@email.com", "password");
         Magazine magazine = magazineFactory.create(account.getUsername(), account.getEmail(), "title", "short", "long", "OPEN");
         Topic topic = topicFactory.create(magazine.getId(), account.getUsername(), "title", "short", "long");
-        Article article = articleFactory.create(topic.getId(), account.getUsername(), "title", "content");
+        Article article = articleFactory.create(topic.getId(), account.getUsername(), "title", "content", Status.PUBLIC.name());
 
         mockMvc.perform(
                 post("/replies")
@@ -106,7 +107,7 @@ class ReplyControllerTest {
         Account account = accountFactory.create("scene", "scene@email.com", "password");
         Magazine magazine = magazineFactory.create(account.getUsername(), account.getEmail(), "title", "short", "long", "OPEN");
         Topic topic = topicFactory.create(magazine.getId(), account.getUsername(), "title", "short", "long");
-        Article article = articleFactory.create(topic.getId(), account.getUsername(), "title", "content");
+        Article article = articleFactory.create(topic.getId(), account.getUsername(), "title", "content", Status.PUBLIC.name());
         replyService.save(article.getId(), account.getUsername(), "This is test reply.");
 
         mockMvc.perform(
@@ -124,7 +125,7 @@ class ReplyControllerTest {
     void delete_deleted() throws Exception {
         Magazine magazine = magazineFactory.create("scene", "email@email.com", "title", "short", "long", "OPEN");
         Topic topic = topicFactory.create(magazine.getId(), "scene", "title", "short", "long");
-        Article article = articleFactory.create(topic.getId(), "scene", "title", "content");
+        Article article = articleFactory.create(topic.getId(), "scene", "title", "content", Status.PUBLIC.name());
         replyService.save(article.getId(), "scene", "content");
         List<Reply> replies = replyRepository.findAll();
         if (replies.size() != 1) fail("Illegal Test State");
@@ -147,7 +148,7 @@ class ReplyControllerTest {
         Account account = accountFactory.create("magazineManager", "manager@email.com", "password");
         Magazine magazine = magazineFactory.create(account.getUsername(), account.getEmail(), "title", "short", "long", "OPEN");
         Topic topic = topicFactory.create(magazine.getId(), account.getUsername(), "title", "short", "long");
-        Article article = articleFactory.create(topic.getId(), account.getUsername(), "title", "content");
+        Article article = articleFactory.create(topic.getId(), account.getUsername(), "title", "content", Status.PUBLIC.name());
         replyService.save(article.getId(), account.getUsername(), "content");
         List<Reply> replies = replyRepository.findAll();
         if (replies.size() != 1) fail("Illegal Test State");

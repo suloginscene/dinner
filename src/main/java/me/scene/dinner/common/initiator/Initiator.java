@@ -50,21 +50,17 @@ public class Initiator implements ApplicationRunner {
 
         Topic java = topic(open_java.getId(), scene.getUsername(), "자바", "자바 언어에 관한 글을 올려주세요.", "프레임워크에 관한 글은 별도의 토픽에 올려주세요.");
 
-        Article syntax = article(java.getId(), scene.getUsername(), "기초 문법", "자바 기초 문법...");
-        publish(syntax);
+        Article syntax = article(java.getId(), scene.getUsername(), "기초 문법", "자바 기초 문법...", "PUBLIC");
         reply(syntax.getId(), eon.getUsername(), "수고하세요.");
 
-        Article eight = article(java.getId(), test.getUsername(), "자바 8", "자바 8...");
-        publish(eight);
+        Article eight = article(java.getId(), test.getUsername(), "자바 8", "자바 8...", "PUBLIC");
         reply(eight.getId(), scene.getUsername(), "감사합니다.");
 
         Topic jpa = topic(open_java.getId(), test.getUsername(), "JPA", "JPA 이해와 사용을 돕기 위한 토픽입니다.", "개별 데이터베이스에 관해서는 다루지 않습니다.");
 
-        Article orm = article(jpa.getId(), test.getUsername(), "ORM 탄생배경", "패러다임 불일치 문제...");
-        publish(orm);
+        article(jpa.getId(), test.getUsername(), "ORM 탄생배경", "패러다임 불일치 문제...", "PUBLIC");
 
-        Article nPlusOne = article(jpa.getId(), eon.getUsername(), "N+1 문제", "나도 몰랐지만 나는 프로그래밍을 잘했구나.");
-        publish(nPlusOne);
+        Article nPlusOne = article(jpa.getId(), eon.getUsername(), "N+1 문제", "나도 몰랐지만 나는 프로그래밍을 잘했구나.", "PUBLIC");
         reply(nPlusOne.getId(), scene.getUsername(), "엥, 왜?");
 
 
@@ -72,8 +68,7 @@ public class Initiator implements ApplicationRunner {
 
         Topic dev = topic(dinner.getId(), scene.getUsername(), "기술 파트", "디너 개발 기술에 관한 글입니다.", "스프링을 기반으로 개발하였습니다.");
 
-        Article docker = article(dev.getId(), scene.getUsername(), "개발 서버 구축", "도커를 활용한 개발 서버 구축");
-        publish(docker);
+        Article docker = article(dev.getId(), scene.getUsername(), "개발 서버 구축", "도커를 활용한 개발 서버 구축", "PUBLIC");
         reply(docker.getId(), eon.getUsername(), "나도 이 매거진에 글을 쓸 수 있음.");
 
         magazineService.addMember(dinner.getId(), scene.getUsername(), eon.getUsername(), eon.getEmail());
@@ -83,7 +78,7 @@ public class Initiator implements ApplicationRunner {
 
         Topic bad = topic(ptc.getId(), eon.getUsername(), "넌 귀여운 노인일 뿐이야.", "내가 했던 가장 나쁜 말은 무엇인가요?", "테스트 데이터 만들면서 느꼈는데, 상세 설명이 필요하지 않은 매거진이나 토픽도 많긴 하겠다.");
 
-        article(bad.getId(), eon.getUsername(), "너무 나쁜 것 같아서 검열 중인 게시물", "많도다...");
+        article(bad.getId(), eon.getUsername(), "너무 나쁜 것 같아서 검열 중인 게시물", "많도다...", "PRIVATE");
 
         magazineService.applyMember(ptc.getId(), scene.getUsername(), scene.getUsername());
 
@@ -92,8 +87,7 @@ public class Initiator implements ApplicationRunner {
 
         Topic who = topic(exclusive.getId(), test.getUsername(), "저는 누구냐면요", "쉿", "이 계정의 비밀을 찾아서");
 
-        Article origin = article(who.getId(), test.getUsername(), "사실은 컨셉놀이를 하려고 했었다.", "그런데 더러운 것밖에 생각이 안나서 차마 못 올리겠더라.");
-        publish(origin);
+        Article origin = article(who.getId(), test.getUsername(), "사실은 컨셉놀이를 하려고 했었다.", "그런데 더러운 것밖에 생각이 안나서 차마 못 올리겠더라.", "PUBLIC");
         reply(origin.getId(), eon.getUsername(), "한 번 해보지...(exclusive 여도 댓글은 써지네.)");
 
     }
@@ -115,13 +109,9 @@ public class Initiator implements ApplicationRunner {
         return topicService.find(id);
     }
 
-    private Article article(Long topicId, String writer, String title, String content) {
-        Long id = articleService.save(topicId, writer, title, content);
+    private Article article(Long topicId, String writer, String title, String content, String status) {
+        Long id = articleService.save(topicId, writer, title, content, status);
         return articleService.find(id);
-    }
-
-    private void publish(Article article) {
-        articleService.publish(article.getId(), article.getWriter());
     }
 
     private void reply(Long articleId, String writer, String content) {

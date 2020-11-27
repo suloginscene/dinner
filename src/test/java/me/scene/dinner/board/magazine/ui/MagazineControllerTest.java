@@ -128,7 +128,7 @@ class MagazineControllerTest {
                         .andExpect(status().is3xxRedirection())
                         .andExpect(redirectedUrlPattern("/magazines/*"))
                 ;
-                Magazine magazine = repositoryFacade.findMagazineByTitle(title).orElseThrow();
+                Magazine magazine = magazineService.load(title);
                 assertThat(magazine.getShortExplanation()).isEqualTo(shortExplanation);
                 assertThat(magazine.getLongExplanation()).isEqualTo(longExplanation);
                 assertThat(magazine.getPolicy()).isEqualTo(Policy.OPEN);
@@ -246,7 +246,6 @@ class MagazineControllerTest {
 
         @Nested
         class Submit {
-
             @Test
             void updates_list_And_redirectsTo_magazine() throws Exception {
                 Long id = magazine.getId();
@@ -268,6 +267,26 @@ class MagazineControllerTest {
                 assertThat(magazine.getLongExplanation()).isEqualTo("Updated long.");
                 Magazine magazineInNav = bestListCache.get().get(0);
                 assertThat(magazineInNav.getTitle()).isEqualTo("Updated");
+            }
+
+            @Nested
+            class With_invalid_params {
+                @Test
+                void redirectsTo_form() throws Exception {
+                    Long id = magazine.getId();
+                    mockMvc.perform(
+                            put("/magazines/" + id)
+                                    .with(csrf())
+                                    .param("id", "")
+                                    .param("title", "")
+                                    .param("shortExplanation", "")
+                                    .param("longExplanation", "")
+                                    .param("policy", "")
+                    )
+                            .andExpect(status().is3xxRedirection())
+                            .andExpect(redirectedUrl("/magazines/" + id + "/form"))
+                    ;
+                }
             }
 
             @Nested
@@ -293,27 +312,6 @@ class MagazineControllerTest {
                     ;
                 }
             }
-
-            @Nested
-            class With_invalid_params {
-                @Test
-                void redirectsTo_form() throws Exception {
-                    Long id = magazine.getId();
-                    mockMvc.perform(
-                            put("/magazines/" + id)
-                                    .with(csrf())
-                                    .param("id", "")
-                                    .param("title", "")
-                                    .param("shortExplanation", "")
-                                    .param("longExplanation", "")
-                                    .param("policy", "")
-                    )
-                            .andExpect(status().is3xxRedirection())
-                            .andExpect(redirectedUrl("/magazines/" + id + "/form"))
-                    ;
-                }
-            }
-
         }
 
     }

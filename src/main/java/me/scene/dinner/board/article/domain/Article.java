@@ -8,6 +8,8 @@ import me.scene.dinner.board.common.exception.NotOwnerException;
 import org.springframework.data.domain.AbstractAggregateRoot;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Lob;
@@ -34,7 +36,8 @@ public class Article extends AbstractAggregateRoot<Article> {
     @Lob
     private String content;
 
-    private boolean published;
+    @Enumerated(EnumType.STRING)
+    private Status status;
 
     private LocalDateTime createdAt;
 
@@ -45,41 +48,48 @@ public class Article extends AbstractAggregateRoot<Article> {
     @OneToMany(mappedBy = "article", orphanRemoval = true)
     private final List<Reply> replies = new ArrayList<>();
 
+    public boolean isPublic() {
+        return status == Status.PUBLIC;
+    }
+
 
     protected Article() {
     }
 
-    public static Article create(Topic topic, String writer, String title, String content) {
+    public static Article create(Topic topic, String writer, String title, String content, String status) {
         topic.getMagazine().checkAuthorization(writer);
         Article article = new Article();
         article.writer = writer;
         article.title = title;
         article.content = content;
-        article.published = false;
         article.createdAt = LocalDateTime.now();
         article.topic = topic;
+        article.status = Status.valueOf(status);
         topic.add(article);
+        article.toggleWriterRegistration();
         return article;
     }
 
-    public void publish(String current) {
-        confirmWriter(current);
-        published = true;
-        createdAt = LocalDateTime.now();
-        topic.getMagazine().addWriter(writer);
-        // TODO event
-    }
-
-    public void update(String current, String title, String content) {
+    public void update(String current, String title, String content, String status) {
         confirmWriter(current);
         this.title = title;
         this.content = content;
+        this.status = Status.valueOf(status);
+        toggleWriterRegistration();
     }
 
     public void beforeDelete(String current) {
         confirmWriter(current);
         topic.getMagazine().removeWriter(writer);
         topic.remove(this);
+    }
+
+    private void toggleWriterRegistration() {
+        if (status == Status.PUBLIC) {
+            topic.getMagazine().addWriter(writer);
+        } else {
+            topic.getMagazine().removeWriter(writer);
+        }
     }
 
 

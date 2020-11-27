@@ -12,7 +12,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 @Component
-public class MailSender {
+public abstract class MailSender {
 
     @Value("${dinner.url}")
     private String url;
@@ -35,8 +35,8 @@ public class MailSender {
     private static final String ON_MANAGED_REMOVED_TITLE_TEMPLATE = "[Dinner] Now you are not member of %s.";
     private static final String ON_MANAGED_LINK_TEMPLATE = "Magazine Link: " + ("%s/magazines/%s");
 
-    protected void send(String subject, String to, String text) throws RuntimeMessagingException {
-    }
+    protected abstract void send(String subject, String to, String text) throws RuntimeMessagingException;
+
 
     @EventListener
     public void onApplicationEvent(TempAccountCreatedEvent event) throws SyncMessagingException {

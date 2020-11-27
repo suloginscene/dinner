@@ -137,7 +137,7 @@ class MailControllerTest {
                 @Test
                 void rollBack_And_handles_Exception() throws Exception {
                     Account user = Account.create(TempAccount.create("user", "user@email.com", "encoded"));
-                    repositoryFacade.saveAccount(user);
+                    repositoryFacade.save(user);
                     String oldEncodedPassword = user.getPassword();
                     mockMvc.perform(
                             post("/forgot")
@@ -158,9 +158,9 @@ class MailControllerTest {
                 @Test
                 void rollBack_And_handles_Exception() throws Exception {
                     Account manager = Account.create(TempAccount.create("manager", "manager@email.com", "encoded"));
-                    repositoryFacade.saveAccount(manager);
+                    repositoryFacade.save(manager);
                     Account member = Account.create(TempAccount.create("member", "member@email.com", "encoded"));
-                    repositoryFacade.saveAccount(member);
+                    repositoryFacade.save(member);
                     Magazine managed = factoryFacade.createMagazine(manager, "Test Magazine", Policy.MANAGED);
                     Authenticators.login(member);
                     mockMvc.perform(

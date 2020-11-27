@@ -1,37 +1,40 @@
 package me.scene.dinner.board.article.ui;
 
+import me.scene.dinner.account.application.AccountService;
 import me.scene.dinner.account.domain.account.Account;
-import me.scene.dinner.account.domain.account.AccountRepository;
-import me.scene.dinner.board.article.application.ArticleService;
+import me.scene.dinner.board.article.application.ArticleNotFoundException;
 import me.scene.dinner.board.article.domain.Article;
-import me.scene.dinner.board.article.domain.ArticleRepository;
+import me.scene.dinner.board.article.domain.Status;
 import me.scene.dinner.board.magazine.domain.Magazine;
-import me.scene.dinner.board.magazine.domain.MagazineRepository;
-import me.scene.dinner.board.magazine.domain.Member;
-import me.scene.dinner.board.reply.application.ReplyService;
+import me.scene.dinner.board.magazine.domain.Policy;
 import me.scene.dinner.board.reply.domain.Reply;
-import me.scene.dinner.board.reply.domain.ReplyRepository;
 import me.scene.dinner.board.topic.domain.Topic;
-import me.scene.dinner.board.topic.domain.TopicRepository;
-import me.scene.dinner.board.common.exception.BoardNotFoundException;
-import me.scene.dinner.test.utils.authentication.WithAccount;
-import me.scene.dinner.test.factory.AccountFactory;
-import me.scene.dinner.test.factory.MagazineFactory;
-import me.scene.dinner.test.factory.TopicFactory;
+import me.scene.dinner.mail.infra.TestMailSender;
+import me.scene.dinner.test.facade.FactoryFacade;
+import me.scene.dinner.test.facade.RepositoryFacade;
+import me.scene.dinner.test.proxy.ArticleServiceProxy;
+import me.scene.dinner.test.proxy.MagazineServiceProxy;
+import me.scene.dinner.test.proxy.TopicServiceProxy;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+import static me.scene.dinner.test.utils.authentication.Authenticators.login;
+import static me.scene.dinner.test.utils.authentication.Authenticators.logout;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.fail;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -45,445 +48,457 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@DisplayName("Article")
 class ArticleControllerTest {
 
     @Autowired MockMvc mockMvc;
 
-    @Autowired ArticleService articleService;
+    @SpyBean ArticleServiceProxy articleService;
+    @SpyBean TopicServiceProxy topicService;
+    @SpyBean MagazineServiceProxy magazineService;
+    @Autowired AccountService accountService;
+    @MockBean TestMailSender mailSender;
 
-    @Autowired AccountFactory accountFactory;
-    @Autowired MagazineFactory magazineFactory;
-    @Autowired TopicFactory topicFactory;
-    @Autowired ReplyService replyService;
+    @Autowired FactoryFacade factoryFacade;
+    @Autowired RepositoryFacade repositoryFacade;
 
-    @Autowired AccountRepository accountRepository;
-    @Autowired MagazineRepository magazineRepository;
-    @Autowired TopicRepository topicRepository;
-    @Autowired ArticleRepository articleRepository;
-    @Autowired ReplyRepository replyRepository;
+
+    Account manager;
+    Account user;
+
+    Magazine magazine;
+    Topic topic;
+
+    @BeforeEach
+    void setup() {
+        manager = factoryFacade.createAccount("manager");
+        magazine = factoryFacade.createMagazine(manager, "Test magazine", Policy.OPEN);
+        topic = factoryFacade.createTopic(magazine, manager, "Test Topic");
+        user = factoryFacade.createAccount("user");
+        login(user);
+    }
 
     @AfterEach
     void clear() {
-        accountRepository.deleteAll();
-        replyRepository.deleteAll();
-        articleRepository.deleteAll();
-        topicRepository.deleteAll();
-        magazineRepository.deleteAll();
+        repositoryFacade.deleteAll();
     }
 
-    @Test
-    @WithAccount(username = "scene")
-    void createPage_hasForm() throws Exception {
-        mockMvc.perform(
-                get("/article-form")
-                        .param("topicId", "1")
-        )
-                .andExpect(status().isOk())
-                .andExpect(view().name("page/board/article/form"))
-                .andExpect(model().attributeExists("articleForm"))
-        ;
+
+    @Nested
+    class Create {
+
+        @Nested
+        class Page {
+            @Test
+            void returns_form() throws Exception {
+                mockMvc.perform(
+                        get("/article-form")
+                                .param("topicId", topic.getId().toString())
+                )
+                        .andExpect(status().isOk())
+                        .andExpect(view().name("page/board/article/form"))
+                        .andExpect(model().attributeExists("articleForm"))
+                ;
+            }
+
+            @Nested
+            class When_unauthenticated {
+                @Test
+                void redirectsTo_login() throws Exception {
+                    logout();
+                    mockMvc.perform(
+                            get("/article-form")
+                    )
+                            .andExpect(status().is3xxRedirection())
+                            .andExpect(redirectedUrlPattern("**/login"))
+                    ;
+                }
+            }
+        }
+
+        @Nested
+        class Submit {
+            @Nested
+            class When_open {
+                @Test
+                void saves_And_redirectsTo_article() throws Exception {
+                    mockMvc.perform(
+                            post("/articles")
+                                    .param("topicId", topic.getId().toString())
+                                    .param("title", "Test Article")
+                                    .param("content", "This is test article.")
+                                    .param("status", "PUBLIC")
+                                    .with(csrf())
+                    )
+                            .andExpect(status().is3xxRedirection())
+                            .andExpect(redirectedUrlPattern("/articles/*"))
+                    ;
+                    Article article = articleService.load("Test Article");
+                    assertThat(article.getContent()).isEqualTo("This is test article.");
+                    assertThat(article.getTopic()).isEqualTo(topic);
+                    assertThat(article.getWriter()).isEqualTo(user.getUsername());
+                    magazine = magazineService.load(magazine.getTitle());
+                    assertThat(magazine.getWriters()).contains(user.getUsername());
+                }
+
+                @Nested
+                class With_invalid_params {
+                    @Test
+                    void returns_errors() throws Exception {
+                        mockMvc.perform(
+                                post("/articles")
+                                        .with(csrf())
+                                        .param("topicId", topic.getId().toString())
+                        )
+                                .andExpect(status().isOk())
+                                .andExpect(view().name("page/board/article/form"))
+                                .andExpect(model().hasErrors())
+                                .andExpect(model().errorCount(3))
+                        ;
+                    }
+                }
+            }
+
+            @Nested
+            class When_managed {
+                Magazine managed;
+
+                @BeforeEach
+                void setup() {
+                    managed = factoryFacade.createMagazine(manager, "MANAGED Magazine", Policy.MANAGED);
+                    topic = factoryFacade.createTopic(managed, manager, "MANAGED Topic");
+                }
+
+                @Test
+                void handles_exception() throws Exception {
+                    mockMvc.perform(
+                            post("/articles")
+                                    .param("topicId", topic.getId().toString())
+                                    .param("title", "Test Article")
+                                    .param("content", "This is test article.")
+                                    .param("status", "PUBLIC")
+                                    .with(csrf())
+                    )
+                            .andExpect(status().isOk())
+                            .andExpect(view().name("error/access"))
+                    ;
+                }
+
+                @Nested
+                class When_member {
+                    @Test
+                    void saves_And_redirectsTo_article() throws Exception {
+                        magazineService.addMember(managed, user);
+                        mockMvc.perform(
+                                post("/articles")
+                                        .param("topicId", topic.getId().toString())
+                                        .param("title", "Test Article")
+                                        .param("content", "This is test article.")
+                                        .param("status", "PUBLIC")
+                                        .with(csrf())
+                        )
+                                .andExpect(status().is3xxRedirection())
+                                .andExpect(redirectedUrlPattern("/articles/*"))
+                        ;
+                    }
+                }
+            }
+
+            @Nested
+            class When_exclusive {
+                Magazine exclusive;
+
+                @BeforeEach
+                void setup() {
+                    exclusive = factoryFacade.createMagazine(manager, "EXCLUSIVE Magazine", Policy.EXCLUSIVE);
+                    topic = factoryFacade.createTopic(exclusive, manager, "EXCLUSIVE Topic");
+                }
+
+                @Test
+                void handles_exception() throws Exception {
+                    mockMvc.perform(
+                            post("/articles")
+                                    .param("topicId", topic.getId().toString())
+                                    .param("title", "Test Article")
+                                    .param("content", "This is test article.")
+                                    .param("status", "PUBLIC")
+                                    .with(csrf())
+                    )
+                            .andExpect(status().isOk())
+                            .andExpect(view().name("error/access"));
+                }
+
+                @Nested
+                class When_Manager {
+                    @Test
+                    void saves_And_redirectsTo_article() throws Exception {
+                        logout();
+                        login(manager);
+                        mockMvc.perform(
+                                post("/articles")
+                                        .param("topicId", topic.getId().toString())
+                                        .param("title", "Test Article")
+                                        .param("content", "This is test article.")
+                                        .param("status", "PUBLIC")
+                                        .with(csrf())
+                        )
+                                .andExpect(status().is3xxRedirection())
+                                .andExpect(redirectedUrlPattern("/articles/*"))
+                        ;
+                    }
+                }
+            }
+        }
+
     }
 
-    @Test
-    void createPage_unauthenticated_beGuidedBySpringSecurity() throws Exception {
-        mockMvc.perform(
-                get("/article-form")
-        )
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrlPattern("**/login"))
-        ;
+    @Nested
+    class Read {
+
+        Article article;
+
+        @BeforeEach
+        void setup() {
+            article = factoryFacade.createArticle(topic, manager, "Test Article", Status.PUBLIC);
+        }
+
+        // TODO DTO
+        @Test @Disabled
+        void shows_article() throws Exception {
+            mockMvc.perform(
+                    get("/articles/" + article.getId())
+            )
+                    .andExpect(status().isOk())
+                    .andExpect(view().name("page/board/article/view"))
+                    .andExpect(model().attributeExists("article"))
+            ;
+        }
+
+        @Nested
+        class When_nonExistent {
+            @Test
+            void handles_exception() throws Exception {
+                mockMvc.perform(
+                        get("/articles/" + (article.getId() + 1))
+                )
+                        .andExpect(status().isOk())
+                        .andExpect(view().name("error/board_not_found"))
+                ;
+            }
+        }
+
+        @Nested
+        class When_private {
+            Article privateArticle;
+
+            @BeforeEach
+            void setup() {
+                privateArticle = factoryFacade.createArticle(topic, manager, "PRIVATE Article", Status.PRIVATE);
+            }
+
+            @Test
+            void handles_exception() throws Exception {
+                mockMvc.perform(
+                        get("/articles/" + privateArticle.getId())
+                )
+                        .andExpect(status().isOk())
+                        .andExpect(view().name("error/access"))
+                ;
+            }
+
+            @Nested
+            class When_owner {
+                // TODO DTO
+                @Test @Disabled
+                void shows_article() throws Exception {
+                    logout();
+                    login(manager);
+                    mockMvc.perform(
+                            get("/articles/" + privateArticle.getId())
+                    )
+                            .andExpect(status().isOk())
+                            .andExpect(view().name("page/board/article/view"))
+                    ;
+                }
+            }
+        }
+
     }
 
-    @Test
-    @Transactional
-    @WithAccount(username = "scene")
-    void create_saveAndShow() throws Exception {
-        Account account = accountFactory.create("magazineManager", "magazine_manager@email.com", "password");
-        Magazine magazine = magazineFactory.create(account.getUsername(), account.getEmail(), "title", "short", "long", "OPEN");
-        Topic topic = topicFactory.create(magazine.getId(), account.getUsername(), "title", "short", "long");
+    @Nested
+    class Update {
 
-        mockMvc.perform(
-                post("/articles")
-                        .param("topicId", topic.getId().toString())
-                        .param("title", "Test Article")
-                        .param("content", "This is test article.")
-                        .with(csrf())
-        )
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrlPattern("/articles/*"))
-        ;
-        Article article = articleRepository.findByTitle("Test Article").orElseThrow();
-        assertThat(article.getContent()).isEqualTo("This is test article.");
-        assertThat(article.getTopic()).isEqualTo(topic);
-        assertThat(article.getWriter()).isEqualTo(accountRepository.findByUsername("scene").orElseThrow().getUsername());
+        Article article;
+
+        @BeforeEach
+        void setup() {
+            article = factoryFacade.createArticle(topic, user, "Test Article", Status.PUBLIC);
+        }
+
+        @Nested
+        class Page {
+            @Test
+            void returns_form() throws Exception {
+                mockMvc.perform(
+                        get("/articles/" + article.getId() + "/form")
+                )
+                        .andExpect(status().isOk())
+                        .andExpect(view().name("page/board/article/update"))
+                        .andExpect(model().attributeExists("updateForm"))
+                ;
+            }
+
+            @Nested
+            class With_notOwner {
+                @Test
+                void handles_exception() throws Exception {
+                    logout();
+                    login(manager);
+                    mockMvc.perform(
+                            get("/articles/" + article.getId() + "/form")
+                    )
+                            .andExpect(status().isOk())
+                            .andExpect(view().name("error/access"))
+                    ;
+                }
+            }
+        }
+
+        @Nested
+        class Submit {
+            @Test
+            void saves_And_redirectsTo_article() throws Exception {
+                Long id = article.getId();
+                mockMvc.perform(
+                        put("/articles/" + id)
+                                .with(csrf())
+                                .param("id", id.toString())
+                                .param("topicId", topic.getId().toString())
+                                .param("title", "Updated")
+                                .param("content", "Updated content.")
+                                .param("status", "PRIVATE")
+                )
+                        .andExpect(status().is3xxRedirection())
+                        .andExpect(redirectedUrl("/articles/" + id))
+                ;
+
+                Article article = articleService.find(id);
+                assertThat(article.getTitle()).isEqualTo("Updated");
+                assertThat(article.getContent()).isEqualTo("Updated content.");
+                assertThat(article.getStatus().name()).isEqualTo("PRIVATE");
+                magazine = magazineService.load(magazine.getTitle());
+                assertThat(magazine.getWriters()).doesNotContain(user.getUsername());
+            }
+
+            @Nested
+            class With_invalid_params {
+                @Test
+                void redirectsTo_form() throws Exception {
+                    Long id = article.getId();
+                    mockMvc.perform(
+                            put("/articles/" + id)
+                                    .with(csrf())
+                                    .param("id", "")
+                                    .param("topicId", "")
+                                    .param("title", "")
+                                    .param("content", "")
+                                    .param("status", "")
+                    )
+                            .andExpect(status().is3xxRedirection())
+                            .andExpect(redirectedUrl("/articles/" + id + "/form"))
+                    ;
+                }
+            }
+
+            @Nested
+            class With_notOwner {
+                @Test
+                void handles_exception() throws Exception {
+                    logout();
+                    login(manager);
+                    Long id = article.getId();
+                    mockMvc.perform(
+                            put("/articles/" + id)
+                                    .with(csrf())
+                                    .param("id", id.toString())
+                                    .param("topicId", topic.getId().toString())
+                                    .param("title", "Updated")
+                                    .param("content", "Updated content.")
+                                    .param("status", "PRIVATE")
+                    )
+                            .andExpect(status().isOk())
+                            .andExpect(view().name("error/access"))
+                    ;
+                }
+            }
+        }
+
     }
 
-    @Test
-    @WithAccount(username = "scene")
-    void create_invalidParam_returnErrors() throws Exception {
-        mockMvc.perform(
-                post("/articles")
-                        .with(csrf())
-                        .param("topicId", "1")
-        )
-                .andExpect(status().isOk())
-                .andExpect(view().name("page/board/article/form"))
-                .andExpect(model().hasErrors())
-                .andExpect(model().errorCount(2))
-        ;
-    }
+    @Nested
+    class Delete {
 
-    @Test
-    void create_unauthenticated_beGuidedBySpringSecurity() throws Exception {
-        mockMvc.perform(
-                post("/articles").with(csrf())
-        )
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrlPattern("**/login"))
-        ;
-    }
+        Article article;
 
-    @Test
-    @WithAccount(username = "scene")
-    void create_unauthorized_handleException() throws Exception {
-        Account account = accountFactory.create("magazineManager", "magazine_manager@email.com", "password");
+        @BeforeEach
+        void setup() {
+            article = factoryFacade.createArticle(topic, user, "Test Article", Status.PUBLIC);
+        }
 
-        Magazine exclusive = magazineFactory.create(account.getUsername(), account.getEmail(), "title", "short", "long", "EXCLUSIVE");
-        Topic exclusiveTopic = topicFactory.create(exclusive.getId(), account.getUsername(), "title", "short", "long");
-        mockMvc.perform(
-                post("/articles")
-                        .param("topicId", exclusiveTopic.getId().toString())
-                        .param("title", "Test Article")
-                        .param("content", "This is test article.")
-                        .with(csrf())
-        )
-                .andExpect(status().isOk())
-                .andExpect(view().name("error/access"))
-        ;
+        @Test
+        void deletes_And_redirectsTo_topic() throws Exception {
+            Long id = article.getId();
+            mockMvc.perform(
+                    delete("/articles/" + id)
+                            .with(csrf())
+            )
+                    .andExpect(status().is3xxRedirection())
+                    .andExpect(redirectedUrl("/topics/" + topic.getId()))
+            ;
+            assertThrows(ArticleNotFoundException.class, () -> articleService.find(id));
+            topic = topicService.load(topic.getTitle());
+            assertThat(topic.getArticles()).isEmpty();
+            magazine = magazineService.load(magazine.getTitle());
+            assertThat(magazine.getWriters()).doesNotContain(user.getUsername());
+        }
 
-        Magazine managed = magazineFactory.create(account.getUsername(), account.getEmail(), "title", "short", "long", "MANAGED");
-        Topic managedTopic = topicFactory.create(managed.getId(), account.getUsername(), "title", "short", "long");
-        mockMvc.perform(
-                post("/articles")
-                        .param("topicId", managedTopic.getId().toString())
-                        .param("title", "Test Article")
-                        .param("content", "This is test article.")
-                        .with(csrf())
-        )
-                .andExpect(status().isOk())
-                .andExpect(view().name("error/access"))
-        ;
-    }
+        @Nested
+        class With_child {
+            @Test
+            void removes_Recursively() throws Exception {
+                Long id = article.getId();
+                factoryFacade.createReply(article, manager, "Reply...");
+                mockMvc.perform(
+                        delete("/articles/" + id)
+                                .with(csrf())
+                )
+                        .andExpect(status().is3xxRedirection())
+                        .andExpect(redirectedUrl("/topics/" + topic.getId()))
+                ;
+                assertThrows(ArticleNotFoundException.class, () -> articleService.find(id));
+                List<Reply> replies = repositoryFacade.findAllReplies();
+                assertThat(replies).isEmpty();
+            }
+        }
 
-    @Test
-    @WithAccount(username = "scene")
-    void create_exclusiveByManager_success() throws Exception {
-        Account scene = accountRepository.findByUsername("scene").orElseThrow();
-        Magazine exclusive = magazineFactory.create(scene.getUsername(), scene.getEmail(), "title", "short", "long", "EXCLUSIVE");
-        Topic topic = topicFactory.create(exclusive.getId(), scene.getUsername(), "title", "short", "long");
+        @Nested
+        class With_notOwner {
+            @Test
+            void handles_exception() throws Exception {
+                logout();
+                login(manager);
+                Long id = article.getId();
+                mockMvc.perform(
+                        delete("/articles/" + id)
+                                .with(csrf())
+                )
+                        .andExpect(status().isOk())
+                        .andExpect(view().name("error/access"))
+                ;
+                assertDoesNotThrow(() -> articleService.find(id));
+            }
+        }
 
-        mockMvc.perform(
-                post("/articles")
-                        .param("topicId", topic.getId().toString())
-                        .param("title", "Test Article")
-                        .param("content", "This is test article.")
-                        .with(csrf())
-        )
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrlPattern("/articles/*"))
-        ;
-    }
-
-    @Test
-    @Transactional
-    @WithAccount(username = "scene")
-    void create_managedByAuthorized_success() throws Exception {
-        Account account = accountFactory.create("magazineManager", "magazine_manager@email.com", "password");
-        Magazine managed = magazineFactory.create(account.getUsername(), account.getEmail(), "title", "short", "long", "MANAGED");
-        Topic topic = topicFactory.create(managed.getId(), account.getUsername(), "title", "short", "long");
-        managed.addMember("magazineManager", new Member("scene", "scene@email.com"));
-
-        mockMvc.perform(
-                post("/articles")
-                        .param("topicId", topic.getId().toString())
-                        .param("title", "Test Article")
-                        .param("content", "This is test article.")
-                        .with(csrf())
-        )
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrlPattern("/articles/*"))
-        ;
-    }
-
-    @Test
-    @Transactional
-    void show_hasArticle() throws Exception {
-        Account account = accountFactory.create("scene", "scene@email.com", "password");
-        Magazine magazine = magazineFactory.create(account.getUsername(), account.getEmail(), "title", "short", "long", "OPEN");
-        Topic topic = topicFactory.create(magazine.getId(), account.getUsername(), "title", "short", "long");
-        Long id = articleService.save(topic.getId(), account.getUsername(), "title", "content");
-        articleService.publish(id, account.getUsername());
-
-        mockMvc.perform(
-                get("/articles/" + id)
-        )
-                .andExpect(status().isOk())
-                .andExpect(view().name("page/board/article/view"))
-                .andExpect(model().attributeExists("article"))
-        ;
-    }
-
-    @Test
-    void show_nonExistent_handleException() throws Exception {
-        Account account = accountFactory.create("scene", "scene@email.com", "password");
-        Magazine magazine = magazineFactory.create(account.getUsername(), account.getEmail(), "title", "short", "long", "OPEN");
-        Topic topic = topicFactory.create(magazine.getId(), account.getUsername(), "title", "short", "long");
-        Long id = articleService.save(topic.getId(), account.getUsername(), "title", "content");
-
-        mockMvc.perform(
-                get("/articles/" + (id + 1))
-        )
-                .andExpect(status().isOk())
-                .andExpect(view().name("error/board_not_found"))
-        ;
-    }
-
-    @Test
-    @Transactional
-    @WithAccount(username = "scene")
-    void unpublished_byWriter_hasArticle() throws Exception {
-        Magazine magazine = magazineFactory.create("scene", "email@email.com", "title", "short", "long", "OPEN");
-        Topic topic = topicFactory.create(magazine.getId(), "scene", "title", "short", "long");
-        Long id = articleService.save(topic.getId(), "scene", "title", "content");
-
-        mockMvc.perform(
-                get("/articles/" + id)
-        )
-                .andExpect(status().isOk())
-                .andExpect(view().name("page/board/article/view"))
-                .andExpect(model().attributeExists("article"))
-        ;
-    }
-
-    @Test
-    void unpublished_byStranger_handleException() throws Exception {
-        Account account = accountFactory.create("scene", "scene@email.com", "password");
-        Magazine magazine = magazineFactory.create(account.getUsername(), account.getEmail(), "title", "short", "long", "OPEN");
-        Topic topic = topicFactory.create(magazine.getId(), account.getUsername(), "title", "short", "long");
-        Long id = articleService.save(topic.getId(), account.getUsername(), "title", "content");
-
-        mockMvc.perform(
-                get("/articles/" + id)
-        )
-                .andExpect(status().isOk())
-                .andExpect(view().name("error/access"))
-        ;
-    }
-
-    @Test
-    @Transactional
-    @WithAccount(username = "scene")
-    void publish_published() throws Exception {
-        Magazine magazine = magazineFactory.create("scene", "email@email.com", "title", "short", "long", "OPEN");
-        Topic topic = topicFactory.create(magazine.getId(), "scene", "title", "short", "long");
-        Long id = articleService.save(topic.getId(), "scene", "title", "content");
-
-        Article unpublished = articleService.find(id);
-        assertThat(unpublished.isPublished()).isFalse();
-        assertThat(magazine.getWriters()).doesNotContain("scene");
-
-        mockMvc.perform(
-                post("/articles/" + id)
-                        .with(csrf())
-        )
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/articles/" + id))
-        ;
-        Article published = articleService.find(id);
-        assertThat(published.isPublished()).isTrue();
-        assertThat(magazine.getWriters()).contains("scene");
-    }
-
-    @Test
-    @WithAccount(username = "stranger")
-    void publish_byStranger_handleException() throws Exception {
-        Account account = accountFactory.create("scene", "scene@email.com", "password");
-        Magazine magazine = magazineFactory.create(account.getUsername(), account.getEmail(), "title", "short", "long", "OPEN");
-        Topic topic = topicFactory.create(magazine.getId(), account.getUsername(), "title", "short", "long");
-        Long id = articleService.save(topic.getId(), account.getUsername(), "title", "content");
-
-        mockMvc.perform(
-                post("/articles/" + id)
-                        .with(csrf())
-        )
-                .andExpect(status().isOk())
-                .andExpect(view().name("error/access"))
-        ;
-        Article article = articleService.find(id);
-        assertThat(article.isPublished()).isFalse();
-    }
-
-    @Test
-    @WithAccount(username = "scene")
-    void updatePage_hasForm() throws Exception {
-        Magazine magazine = magazineFactory.create("scene", "email@email.com", "title", "short", "long", "OPEN");
-        Topic topic = topicFactory.create(magazine.getId(), "scene", "title", "short", "long");
-        Long id = articleService.save(topic.getId(), "scene", "title", "content");
-
-        mockMvc.perform(
-                get("/articles/" + id + "/form")
-        )
-                .andExpect(status().isOk())
-                .andExpect(view().name("page/board/article/update"))
-                .andExpect(model().attributeExists("updateForm"))
-        ;
-    }
-
-    @Test
-    @WithAccount(username = "scene")
-    void updatePage_byStranger_handleException() throws Exception {
-        Account account = accountFactory.create("magazineManager", "manager@email.com", "password");
-        Magazine magazine = magazineFactory.create(account.getUsername(), account.getEmail(), "title", "short", "long", "OPEN");
-        Topic topic = topicFactory.create(magazine.getId(), account.getUsername(), "title", "short", "long");
-        Long id = articleService.save(topic.getId(), account.getUsername(), "title", "content");
-
-        mockMvc.perform(
-                get("/articles/" + id + "/form")
-        )
-                .andExpect(status().isOk())
-                .andExpect(view().name("error/access"))
-        ;
-    }
-
-    @Test
-    @WithAccount(username = "scene")
-    void update_updated() throws Exception {
-        Magazine magazine = magazineFactory.create("scene", "email@email.com", "title", "short", "long", "OPEN");
-        Topic topic = topicFactory.create(magazine.getId(), "scene", "title", "short", "long");
-        Long id = articleService.save(topic.getId(), "scene", "title", "content");
-
-        mockMvc.perform(
-                put("/articles/" + id)
-                        .with(csrf())
-                        .param("id", id.toString())
-                        .param("topicId", topic.getId().toString())
-                        .param("title", "Updated")
-                        .param("content", "Updated content.")
-        )
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/articles/" + id))
-        ;
-
-        Article article = articleService.find(id);
-        assertThat(article.getTitle()).isEqualTo("Updated");
-        assertThat(article.getContent()).isEqualTo("Updated content.");
-    }
-
-    @Test
-    @WithAccount(username = "scene")
-    void update_byStranger_handleException() throws Exception {
-        Account account = accountFactory.create("magazineManager", "manager@email.com", "password");
-        Magazine magazine = magazineFactory.create(account.getUsername(), account.getEmail(), "title", "short", "long", "OPEN");
-        Topic topic = topicFactory.create(magazine.getId(), account.getUsername(), "title", "short", "long");
-        Long id = articleService.save(topic.getId(), account.getUsername(), "title", "content");
-
-        mockMvc.perform(
-                put("/articles/" + id)
-                        .with(csrf())
-                        .param("id", id.toString())
-                        .param("topicId", topic.getId().toString())
-                        .param("title", "Updated")
-                        .param("content", "Updated content.")
-        )
-                .andExpect(status().isOk())
-                .andExpect(view().name("error/access"))
-        ;
-    }
-
-    @Test
-    @WithAccount(username = "scene")
-    void update_invalidParam_redirected() throws Exception {
-        Magazine magazine = magazineFactory.create("scene", "email@email.com", "title", "short", "long", "OPEN");
-        Topic topic = topicFactory.create(magazine.getId(), "scene", "title", "short", "long");
-        Long id = articleService.save(topic.getId(), "scene", "title", "content");
-
-        mockMvc.perform(
-                put("/articles/" + id)
-                        .with(csrf())
-                        .param("id", "")
-                        .param("topicId", "")
-                        .param("title", "")
-                        .param("content", "")
-        )
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/articles/" + id + "/form"))
-        ;
-    }
-
-    @Test
-    @Transactional
-    @WithAccount(username = "scene")
-    void delete_deleted() throws Exception {
-        Magazine magazine = magazineFactory.create("scene", "email@email.com", "title", "short", "long", "OPEN");
-        Topic topic = topicFactory.create(magazine.getId(), "scene", "title", "short", "long");
-        Long id = articleService.save(topic.getId(), "scene", "title", "content");
-        articleService.publish(id, "scene");
-        if (!magazine.getWriters().contains("scene")) fail("Illegal Test State");
-
-        mockMvc.perform(
-                delete("/articles/" + id)
-                        .with(csrf())
-        )
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/topics/" + topic.getId()))
-        ;
-        assertThrows(BoardNotFoundException.class, () -> articleService.find(id));
-        assertThat(topic.getArticles().size()).isEqualTo(0);
-        assertThat(magazine.getWriters()).doesNotContain("scene");
-    }
-
-    @Test
-    @WithAccount(username = "scene")
-    void delete_byStranger_handleException() throws Exception {
-        Account account = accountFactory.create("magazineManager", "manager@email.com", "password");
-        Magazine magazine = magazineFactory.create(account.getUsername(), account.getEmail(), "title", "short", "long", "OPEN");
-        Topic topic = topicFactory.create(magazine.getId(), account.getUsername(), "title", "short", "long");
-        Long id = articleService.save(topic.getId(), account.getUsername(), "title", "content");
-
-        mockMvc.perform(
-                delete("/articles/" + id)
-                        .with(csrf())
-        )
-                .andExpect(status().isOk())
-                .andExpect(view().name("error/access"))
-        ;
-        assertDoesNotThrow(() -> articleService.find(id));
-    }
-
-    @Test
-    @WithAccount(username = "scene")
-    void delete_hasReply_removeRecursivelyByDomainEvent() throws Exception {
-        Magazine magazine = magazineFactory.create("scene", "email@email.com", "title", "short", "long", "OPEN");
-        Topic topic = topicFactory.create(magazine.getId(), "scene", "title", "short", "long");
-        Long targetArticleId = articleService.save(topic.getId(), "scene", "title", "content");
-        replyService.save(targetArticleId, "replyWriter", "it will be deleted");
-
-        Long anotherArticleId = articleService.save(topic.getId(), "scene", "title", "content");
-        replyService.save(anotherArticleId, "replyWriter", "it will survive");
-        if (replyRepository.findAll().size() != 2) fail("Illegal Test State");
-
-        mockMvc.perform(
-                delete("/articles/" + targetArticleId)
-                        .with(csrf())
-        )
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/topics/" + topic.getId()))
-        ;
-        assertThrows(BoardNotFoundException.class, () -> articleService.find(targetArticleId));
-
-        List<Reply> replies = replyRepository.findAll();
-        assertThat(replies.size()).isEqualTo(1);
-        assertThat(replies.get(0).getContent()).isEqualTo("it will survive");
     }
 
 }

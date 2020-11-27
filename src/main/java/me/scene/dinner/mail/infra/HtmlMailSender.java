@@ -19,7 +19,7 @@ public class HtmlMailSender extends MailSender {
     private final JavaMailSender javaMailSender;
 
     @Override
-    public void send(String subject, String to, String text) throws RuntimeMessagingException {
+    protected void send(String subject, String to, String text) throws RuntimeMessagingException {
         try {
 
             MimeMessage mimeMessage = javaMailSender.createMimeMessage();

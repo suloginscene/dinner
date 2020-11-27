@@ -158,9 +158,9 @@ public class Magazine extends AbstractAggregateRoot<Magazine> {
     }
 
     public void removeWriter(String writer) {
-        long count = topics.stream().map(Topic::getArticles).flatMap(List::stream)
-                .filter(a -> a.getWriter().equals(writer)).count();
-        if (count != 1) return;
+        if (!writers.contains(writer)) return;
+        if (topics.stream().map(Topic::getPublicArticles).flatMap(List::stream)
+                .filter(a -> a.getWriter().equals(writer)).count() > 1) return;
         writers.remove(writer);
     }
 

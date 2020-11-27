@@ -25,6 +25,10 @@ section ul li {
     border-radius: 15px;
 }
 
+section ul .private {
+    background-color: lightgray;
+}
+
 section ul li .article-info {
     overflow: auto;
     font-size: 20px;

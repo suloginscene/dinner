@@ -18,9 +18,10 @@ public class TopicServiceProxy extends TopicService {
         this.topicRepository = topicRepository;
     }
 
-    public Topic find(String title) {
+    public Topic load(String title) {
         Topic topic = topicRepository.findByTitle(title).orElseThrow();
         log.debug("load: " + topic.getMagazine());
+        log.debug("load: " + topic.getArticles());
         return topic;
     }
 

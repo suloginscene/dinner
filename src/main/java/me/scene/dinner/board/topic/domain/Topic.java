@@ -14,6 +14,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import static javax.persistence.FetchType.LAZY;
 
@@ -39,6 +41,14 @@ public class Topic {
 
     @OneToMany(mappedBy = "topic")
     private final List<Article> articles = new ArrayList<>();
+
+    public List<Article> getPublicArticles() {
+        return articles.stream().filter(Article::isPublic).collect(Collectors.toList());
+    }
+
+    public List<Article> getPrivateArticles() {
+        return articles.stream().filter(Predicate.not(Article::isPublic)).collect(Collectors.toList());
+    }
 
 
     protected Topic() {

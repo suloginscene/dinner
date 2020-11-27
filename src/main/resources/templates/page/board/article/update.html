@@ -21,6 +21,12 @@
                     <button type="submit" id="form-submit">save</button>
                 </div>
 
+                <div class="form-checks">
+                    <label for="radio-1"><input th:field="*{status}" type="radio" id="radio-1" value="PUBLIC"/>public</label>
+                    <label for="radio-2"><input th:field="*{status}" type="radio" id="radio-2" value="PRIVATE"/>private</label>
+                    <small th:if="${#fields.hasErrors('status')}" th:errors="*{status}" class="form-text text-danger"></small>
+                </div>
+
                 <!-- TODO editor -->
                 <label id="editor" style="width: 100%">
                     <textarea th:field="*{content}" id="content" placeholder="본문" style="height: 100%; width: 100%; padding: 10px" required></textarea>

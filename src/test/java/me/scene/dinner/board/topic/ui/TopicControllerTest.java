@@ -2,6 +2,7 @@ package me.scene.dinner.board.topic.ui;
 
 import me.scene.dinner.account.application.AccountService;
 import me.scene.dinner.account.domain.account.Account;
+import me.scene.dinner.board.article.domain.Status;
 import me.scene.dinner.board.common.exception.BoardNotFoundException;
 import me.scene.dinner.board.magazine.domain.Magazine;
 import me.scene.dinner.board.magazine.domain.Policy;
@@ -92,6 +93,8 @@ class TopicControllerTest {
                 ;
             }
 
+            // TODO htmlunit
+
             @Nested
             class When_Unauthenticated {
                 @Test
@@ -125,7 +128,7 @@ class TopicControllerTest {
                             .andExpect(status().is3xxRedirection())
                             .andExpect(redirectedUrlPattern("/topics/*"))
                     ;
-                    Topic topic = topicService.find("Test Topic");
+                    Topic topic = topicService.load("Test Topic");
                     assertThat(topic.getShortExplanation()).isEqualTo("This is short explanation.");
                     assertThat(topic.getLongExplanation()).isEqualTo("This is long explanation of test magazine.");
                     assertThat(topic.getMagazine()).isEqualTo(magazine);
@@ -413,7 +416,7 @@ class TopicControllerTest {
         class When_has_child {
             @Test
             void handles_Exception() throws Exception {
-                factoryFacade.createArticle(topic, user, "Test Article");
+                factoryFacade.createArticle(topic, user, "Test Article", Status.PUBLIC);
                 mockMvc.perform(
                         delete("/topics/" + topic.getId())
                                 .with(csrf())

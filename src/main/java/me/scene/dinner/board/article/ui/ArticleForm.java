@@ -20,4 +20,7 @@ public class ArticleForm {
     @NotBlank(message = "본문을 적어주세요.")
     private String content;
 
+    @NotBlank(message = "공개 여부를 선택해주세요.")
+    private String status;
+
 }

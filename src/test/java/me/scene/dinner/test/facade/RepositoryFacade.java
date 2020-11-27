@@ -6,13 +6,13 @@ import me.scene.dinner.account.domain.account.AccountRepository;
 import me.scene.dinner.account.domain.tempaccount.TempAccount;
 import me.scene.dinner.account.domain.tempaccount.TempAccountRepository;
 import me.scene.dinner.board.article.domain.ArticleRepository;
-import me.scene.dinner.board.magazine.domain.Magazine;
 import me.scene.dinner.board.magazine.domain.MagazineRepository;
+import me.scene.dinner.board.reply.domain.Reply;
 import me.scene.dinner.board.reply.domain.ReplyRepository;
-import me.scene.dinner.board.topic.domain.Topic;
 import me.scene.dinner.board.topic.domain.TopicRepository;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Optional;
 
 @Component
@@ -37,20 +37,16 @@ public class RepositoryFacade {
         magazineRepository.deleteAll();
     }
 
+    public void save(Account user) {
+        accountRepository.save(user);
+    }
+
     public Optional<TempAccount> findTempByUsername(String username) {
         return tempAccountRepository.findByUsername(username);
     }
 
-    public Optional<Magazine> findMagazineByTitle(String title) {
-        return magazineRepository.findByTitle(title);
-    }
-
-    public Optional<Topic> findTopicByTitle(String title) {
-        return topicRepository.findByTitle(title);
-    }
-
-    public void saveAccount(Account user) {
-        accountRepository.save(user);
+    public List<Reply> findAllReplies() {
+        return replyRepository.findAll();
     }
 
 }

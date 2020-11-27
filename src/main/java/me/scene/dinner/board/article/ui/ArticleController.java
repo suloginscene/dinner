@@ -35,24 +35,19 @@ public class ArticleController {
     public String createArticle(@CurrentUser Account current, @Valid ArticleForm form, Errors errors) {
         if (errors.hasErrors()) return "page/board/article/form";
 
-        Long id = articleService.save(form.getTopicId(), current.getUsername(), form.getTitle(), form.getContent());
+        Long id = articleService.save(form.getTopicId(), current.getUsername(), form.getTitle(), form.getContent(), form.getStatus());
         return "redirect:" + ("/articles/" + id);
     }
 
     @GetMapping("/articles/{articleId}")
     public String showArticle(@PathVariable Long articleId, @CurrentUser Account current, Model model) {
         Article article = articleService.find(articleId);
-        if (!article.isPublished()) {
-            article.confirmWriter((current != null) ? current.getUsername() : "anonymousUser");
+        if (!article.isPublic()) {
+            String username = (current != null) ? current.getUsername() : "anonymousUser";
+            article.confirmWriter(username);
         }
         model.addAttribute("article", article);
         return "page/board/article/view";
-    }
-
-    @PostMapping("/articles/{articleId}")
-    public String publish(@PathVariable Long articleId, @CurrentUser Account current) {
-        articleService.publish(articleId, (current != null) ? current.getUsername() : "anonymousUser");
-        return "redirect:" + ("/articles/" + articleId);
     }
 
     @GetMapping("/articles/{articleId}/form")
@@ -70,6 +65,7 @@ public class ArticleController {
         f.setTopicId(a.getTopic().getId());
         f.setTitle(a.getTitle());
         f.setContent(a.getContent());
+        f.setStatus(a.getStatus().name());
         return f;
     }
 
@@ -77,7 +73,7 @@ public class ArticleController {
     public String update(@PathVariable Long articleId, @CurrentUser Account current, @Valid ArticleForm form, Errors errors) {
         if (errors.hasErrors()) return "redirect:" + ("/articles/" + articleId + "/form");
 
-        articleService.update(articleId, current.getUsername(), form.getTitle(), form.getContent());
+        articleService.update(articleId, current.getUsername(), form.getTitle(), form.getContent(), form.getStatus());
         return "redirect:" + ("/articles/" + articleId);
     }
 

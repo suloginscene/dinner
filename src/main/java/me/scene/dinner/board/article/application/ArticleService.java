@@ -19,22 +19,15 @@ public class ArticleService {
     }
 
     @Transactional
-    public Long save(Long topicId, String writer, String title, String content) {
-        Article article = Article.create(topicService.find(topicId), writer, title, content);
+    public Long save(Long topicId, String writer, String title, String content, String status) {
+        Article article = Article.create(topicService.find(topicId), writer, title, content, status);
         return articleRepository.save(article).getId();
     }
 
     @Transactional
-    public void publish(Long id, String current) {
+    public void update(Long id, String current, String title, String content, String status) {
         Article article = find(id);
-        article.publish(current);
-        publishEvent(article);
-    }
-
-    @Transactional
-    public void update(Long id, String current, String title, String content) {
-        Article article = find(id);
-        article.update(current, title, content);
+        article.update(current, title, content, status);
     }
 
     @Transactional
@@ -43,10 +36,6 @@ public class ArticleService {
         article.beforeDelete(current);
         articleRepository.delete(article);
         return article.getTopic().getId();
-    }
-
-    private void publishEvent(Article article) {
-        articleRepository.save(article);
     }
 
 }
