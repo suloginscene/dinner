@@ -1,22 +1,25 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 
-    <div th:replace="layout/layout::head(${username}, ~{::link}, ~{})">
+    <div th:replace="layout/layout::head(${profileForm.username}, ~{::link}, ~{})">
         <link rel="stylesheet" href="/css/page/account/profile.css"/>
     </div>
 
     <body th:replace="layout/layout::body(~{::section})">
-        <section>
-            <div>
-                <h1 th:text="${username}"></h1>
-                <div>이메일<span th:text="${email}"></span></div>
-            </div>
-            <div th:if="${username.equals(#authentication.name)}">
-                <a href="/config">수정</a>
-            </div>
-            <div th:if="${profile}">
-                <div>간략한 소개<span th:text="${profile.shortIntroduction}"></span></div>
-            </div>
+        <section th:object="${profileForm}">
+            <h1 th:text="*{username}"></h1>
+            <div>자신을 소개할 문장을 써 주세요.</div>
+            <form th:action="@{/profile}" th:method="post">
+                <label hidden> <input type="text" th:field="*{username}" hidden> </label>
+                <label hidden> <input type="text" th:field="*{email}" hidden> </label>
+                <label>
+                    <textarea th:field="*{introduction}"></textarea>
+                </label>
+                <small th:if="${#fields.hasErrors('introduction')}" th:errors="*{introduction}" class="form-text text-danger"></small>
+                <button type="submit">수정</button>
+            </form>
+            <div th:text="*{email}"></div>
+            <a href="/password">비밀번호 수정</a>
         </section>
     </body>
 

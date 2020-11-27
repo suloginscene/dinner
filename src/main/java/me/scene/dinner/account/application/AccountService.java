@@ -70,9 +70,9 @@ public class AccountService implements UserDetailsService {
     }
 
     @Transactional
-    public void changeShortIntroduction(String username, String shortIntroduction) {
+    public void updateProfile(String username, String introduction) {
         Account account = find(username);
-        Profile profile = new Profile(shortIntroduction);
+        Profile profile = new Profile(introduction);
         account.update(profile);
     }
 

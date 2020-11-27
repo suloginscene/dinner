@@ -1,4 +1,5 @@
 @import "/css/page/account/_base.css";
+@import "/css/lib/_centered.css";
 
 section .centered-content {
     width: 280px;
