@@ -15,9 +15,9 @@ public class ReplyService {
     private final ArticleService articleService;
 
     @Transactional
-    public void save(Long articleId, String writer, String content) {
+    public Long save(Long articleId, String writer, String content) {
         Reply reply = Reply.create(articleService.find(articleId), writer, content);
-        replyRepository.save(reply);
+        return replyRepository.save(reply).getId();
     }
 
     private Reply find(Long id) {

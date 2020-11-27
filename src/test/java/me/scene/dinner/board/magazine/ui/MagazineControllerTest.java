@@ -1,6 +1,5 @@
 package me.scene.dinner.board.magazine.ui;
 
-import me.scene.dinner.account.application.AccountService;
 import me.scene.dinner.account.domain.account.Account;
 import me.scene.dinner.board.magazine.application.MagazineBestListCache;
 import me.scene.dinner.board.magazine.application.MagazineNotFoundException;
@@ -57,7 +56,6 @@ class MagazineControllerTest {
 
     @SpyBean MagazineServiceProxy magazineService;
     @Autowired MagazineBestListCache bestListCache;
-    @Autowired AccountService accountService;
 
     @Autowired FactoryFacade factoryFacade;
     @Autowired RepositoryFacade repositoryFacade;

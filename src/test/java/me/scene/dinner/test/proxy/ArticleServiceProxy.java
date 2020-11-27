@@ -22,6 +22,7 @@ public class ArticleServiceProxy extends ArticleService {
         Article article = articleRepository.findByTitle(title).orElseThrow();
         log.debug("load: " + article.getContent());
         log.debug("load: " + article.getTopic());
+        log.debug("load: " + article.getReplies());
         return article;
     }
 

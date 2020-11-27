@@ -1,6 +1,5 @@
 package me.scene.dinner.board.article.ui;
 
-import me.scene.dinner.account.application.AccountService;
 import me.scene.dinner.account.domain.account.Account;
 import me.scene.dinner.board.article.application.ArticleNotFoundException;
 import me.scene.dinner.board.article.domain.Article;
@@ -9,7 +8,6 @@ import me.scene.dinner.board.magazine.domain.Magazine;
 import me.scene.dinner.board.magazine.domain.Policy;
 import me.scene.dinner.board.reply.domain.Reply;
 import me.scene.dinner.board.topic.domain.Topic;
-import me.scene.dinner.mail.infra.TestMailSender;
 import me.scene.dinner.test.facade.FactoryFacade;
 import me.scene.dinner.test.facade.RepositoryFacade;
 import me.scene.dinner.test.proxy.ArticleServiceProxy;
@@ -24,7 +22,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -56,8 +53,6 @@ class ArticleControllerTest {
     @SpyBean ArticleServiceProxy articleService;
     @SpyBean TopicServiceProxy topicService;
     @SpyBean MagazineServiceProxy magazineService;
-    @Autowired AccountService accountService;
-    @MockBean TestMailSender mailSender;
 
     @Autowired FactoryFacade factoryFacade;
     @Autowired RepositoryFacade repositoryFacade;

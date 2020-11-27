@@ -10,8 +10,8 @@ public class ReplyFactory {
 
     private final ReplyService replyService;
 
-    public void create(Long articleId, String writer, String content) {
-        replyService.save(articleId, writer, content);
+    public Long create(Long articleId, String writer, String content) {
+        return replyService.save(articleId, writer, content);
     }
 
 }
