@@ -208,6 +208,7 @@ class MailControllerTest {
                             .andExpect(status().is3xxRedirection())
                             .andExpect(redirectedUrl("/magazines/" + managed.getId()))
                     ;
+                    Thread.sleep(1000L);
                     List<String> members = magazineService.getMembers(managed.getId());
                     assertThat(members).doesNotContain(member.getUsername());
                 }
@@ -229,6 +230,7 @@ class MailControllerTest {
                             .andExpect(status().is3xxRedirection())
                             .andExpect(redirectedUrl("/magazines/" + managed.getId() + "/members"))
                     ;
+                    Thread.sleep(1000L);
                     List<String> members = magazineService.getMembers(managed.getId());
                     assertThat(members).contains(member.getUsername());
                 }

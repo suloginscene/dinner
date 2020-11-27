@@ -424,6 +424,7 @@ class MagazineControllerTest {
                             .andExpect(status().is3xxRedirection())
                             .andExpect(redirectedUrl("/magazines/" + managed.getId()))
                     ;
+                    Thread.sleep(1000L);
                     List<String> members = magazineService.getMembers(managed.getId());
                     assertThat(members).doesNotContain(member.getUsername());
                     MemberQuitEvent event = new MemberQuitEvent(managed, managed.getId(), manager.getEmail(), member.getUsername());
@@ -467,6 +468,7 @@ class MagazineControllerTest {
                             .andExpect(status().is3xxRedirection())
                             .andExpect(redirectedUrl("/magazines/" + managed.getId() + "/members"))
                     ;
+                    Thread.sleep(1000L);
                     List<String> members = magazineService.getMembers(managed.getId());
                     assertThat(members).contains(member.getUsername());
                     MemberManagedEvent event = new MemberManagedEvent(managed, managed.getId(), managed.getTitle(), member.getEmail());
@@ -487,6 +489,7 @@ class MagazineControllerTest {
                                 .andExpect(model().attribute("member", member.getUsername()))
                                 .andExpect(model().attribute("magazine", managed))
                         ;
+                        Thread.sleep(1000L);
                         List<String> members = magazineService.getMembers(managed.getId());
                         assertThat(members).contains(member.getUsername());
                         MemberManagedEvent event = new MemberManagedEvent(managed, managed.getId(), managed.getTitle(), member.getEmail());
@@ -507,6 +510,7 @@ class MagazineControllerTest {
                             .andExpect(status().is3xxRedirection())
                             .andExpect(redirectedUrl("/magazines/" + managed.getId() + "/members"))
                     ;
+                    Thread.sleep(1000L);
                     List<String> members = magazineService.getMembers(managed.getId());
                     assertThat(members).doesNotContain(member.getUsername());
                     MemberManagedEvent event = new MemberManagedEvent(managed, managed.getId(), managed.getTitle(), member.getEmail(), true);
