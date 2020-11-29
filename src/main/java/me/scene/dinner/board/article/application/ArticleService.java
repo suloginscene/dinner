@@ -3,9 +3,12 @@ package me.scene.dinner.board.article.application;
 import lombok.RequiredArgsConstructor;
 import me.scene.dinner.board.article.domain.Article;
 import me.scene.dinner.board.article.domain.ArticleRepository;
+import me.scene.dinner.board.article.domain.Status;
 import me.scene.dinner.board.topic.application.TopicService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -36,6 +39,14 @@ public class ArticleService {
         article.beforeDelete(current);
         articleRepository.delete(article);
         return article.getTopic().getId();
+    }
+
+    public List<Article> findPublicByWriter(String username) {
+        return articleRepository.findByWriterAndStatus(username, Status.PUBLIC);
+    }
+
+    public List<Article> findPrivateByWriter(String username) {
+        return articleRepository.findByWriterAndStatus(username, Status.PRIVATE);
     }
 
 }

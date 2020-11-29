@@ -1,5 +1,6 @@
 package me.scene.dinner.board.article.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import me.scene.dinner.board.reply.domain.Reply;
@@ -28,26 +29,28 @@ public class Article extends AbstractAggregateRoot<Article> {
     @Id @GeneratedValue
     private Long id;
 
+    @JsonIgnore
     private String writer;
 
 
     private String title;
 
-    @Lob
+    @Lob @JsonIgnore
     private String content;
 
-    @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.STRING) @JsonIgnore
     private Status status;
 
     private LocalDateTime createdAt;
 
 
-    @ManyToOne(fetch = LAZY)
+    @ManyToOne(fetch = LAZY) @JsonIgnore
     private Topic topic;
 
-    @OneToMany(mappedBy = "article", orphanRemoval = true)
+    @OneToMany(mappedBy = "article", orphanRemoval = true) @JsonIgnore
     private final List<Reply> replies = new ArrayList<>();
 
+    @JsonIgnore
     public boolean isPublic() {
         return status == Status.PUBLIC;
     }

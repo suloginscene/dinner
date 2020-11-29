@@ -14,8 +14,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -81,6 +83,17 @@ public class ArticleController {
     public String delete(@PathVariable Long articleId, @CurrentUser Account current) {
         Long topicId = articleService.delete(articleId, current.getUsername());
         return "redirect:" + ("/topics/" + topicId);
+    }
+
+    @GetMapping("/api/articles/{username}")
+    public @ResponseBody List<Article> byUserPublic(@PathVariable String username) {
+        return articleService.findPublicByWriter(username);
+    }
+
+    @GetMapping("/private-articles")
+    public String byUserPrivate(@CurrentUser Account current, Model model) {
+        model.addAttribute("articles", articleService.findPrivateByWriter(current.getUsername()));
+        return "page/board/article/private";
     }
 
 }

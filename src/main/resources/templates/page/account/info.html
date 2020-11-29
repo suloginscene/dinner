@@ -1,22 +1,39 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 
-    <div th:replace="layout/layout::head(${username}, ~{::link}, ~{})">
+    <div th:replace="layout/layout::head(${username}, ~{::link}, ~{::script})">
         <link rel="stylesheet" href="/css/page/account/info.css"/>
+        <script src="/js/page/ajaxShowAccount.js"></script>
     </div>
 
     <body th:replace="layout/layout::body(~{::section})">
         <section>
             <div>
-                <h1 th:text="${username}"></h1>
+                <h1 th:text="${username}" id="username"></h1>
             </div>
-            <div th:if="${username.equals(#authentication.name)}">
-                <div th:unless="${profile}">내 소개를 추가해 주세요.</div>
-                <a href="/profile">수정</a>
+            <div>
+                <div th:if="${username.equals(#authentication.name)}">
+                    <div th:unless="${profile}">내 소개를 추가해 주세요.</div>
+                    <a href="/profile">수정</a>
+                </div>
+                <div th:if="${profile}">
+                    <div th:text="${profile.shortIntroduction}"></div>
+                </div>
             </div>
-            <div th:if="${profile}">
-                <div th:text="${profile.shortIntroduction}"></div>
+            <div>
+                <div>
+                    <h2>매거진</h2>
+                    <ul id="magazines-of-user"></ul>
+                </div>
+                <div>
+                    <h2>아티클</h2>
+                    <ul id="articles-of-user"></ul>
+                </div>
+                <a th:if="${#authentication.name}==${username}" href="/private-articles">비공개 아티클 목록</a>
             </div>
+            <script type="text/template" id="article-template">
+                <li><a href="/articles/{id}">{title}</a><span>{date}</span></li>
+            </script>
         </section>
     </body>
 

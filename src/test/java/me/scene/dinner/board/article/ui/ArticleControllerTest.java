@@ -30,6 +30,7 @@ import java.util.List;
 import static me.scene.dinner.test.utils.authentication.Authenticators.login;
 import static me.scene.dinner.test.utils.authentication.Authenticators.logout;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -37,6 +38,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrlPattern;
@@ -491,6 +493,68 @@ class ArticleControllerTest {
                         .andExpect(view().name("error/access"))
                 ;
                 assertDoesNotThrow(() -> articleService.find(id));
+            }
+        }
+
+    }
+
+    @Nested
+    class OfUser {
+
+        @BeforeEach
+        void setup() {
+            factoryFacade.createArticle(topic, manager, "Manager's", Status.PUBLIC);
+            factoryFacade.createArticle(topic, user, "User's 1", Status.PUBLIC);
+            factoryFacade.createArticle(topic, user, "User's 2", Status.PUBLIC);
+            factoryFacade.createArticle(topic, user, "User's 3", Status.PRIVATE);
+        }
+
+        @Nested
+        class Public_API {
+            @Test
+            void returns_list() throws Exception {
+                mockMvc.perform(
+                        get("/api/articles/" + user.getUsername())
+                )
+                        .andExpect(status().isOk())
+                        .andExpect(jsonPath("$", hasSize(2)))
+                        .andExpect(jsonPath("[0]").exists())
+                        .andExpect(jsonPath("[1]").exists())
+                        .andExpect(jsonPath("[2]").doesNotExist())
+                        .andExpect(jsonPath("[0].*", hasSize(3)))
+                        .andExpect(jsonPath("[0].id").exists())
+                        .andExpect(jsonPath("[0].title").exists())
+                        .andExpect(jsonPath("[0].createdAt").exists())
+                        .andExpect(jsonPath("[0].content").doesNotExist())
+                ;
+            }
+        }
+
+        @Nested
+        class Private {
+            @Test
+            void returns_list() throws Exception {
+                mockMvc.perform(
+                        get("/private-articles")
+                )
+                        .andExpect(status().isOk())
+                        .andExpect(view().name("page/board/article/private"))
+                        .andExpect(model().attribute("articles", hasSize(1)))
+                ;
+            }
+
+            @Nested
+            class When_unauthenticated {
+                @Test
+                void redirectsTo_login() throws Exception {
+                    logout();
+                    mockMvc.perform(
+                            get("/private-articles")
+                    )
+                            .andExpect(status().is3xxRedirection())
+                            .andExpect(redirectedUrlPattern("**/login"))
+                    ;
+                }
             }
         }
 

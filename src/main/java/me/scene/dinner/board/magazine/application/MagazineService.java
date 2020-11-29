@@ -80,4 +80,8 @@ public class MagazineService {
         magazineRepository.save(magazine);
     }
 
+    public List<Magazine> findByManager(String username) {
+        return magazineRepository.findByManager(username);
+    }
+
 }

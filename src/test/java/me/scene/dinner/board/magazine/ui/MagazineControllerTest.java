@@ -523,34 +523,34 @@ class MagazineControllerTest {
     }
 
     @Nested
-    class MagazineList {
+    class AllMagazines {
 
-        @BeforeEach
-        void setup() {
+        @Test
+        void shows_magazines() throws Exception {
             factoryFacade.createMagazine(manager, "Magazine 1", Policy.OPEN);
             factoryFacade.createMagazine(manager, "Magazine 2", Policy.OPEN);
             factoryFacade.createMagazine(manager, "Magazine 3", Policy.OPEN);
+            mockMvc.perform(
+                    get("/magazines")
+            )
+                    .andExpect(status().isOk())
+                    .andExpect(view().name("page/board/magazine/list"))
+                    .andExpect(model().attributeExists("magazines"))
+            ;
         }
 
-        @Nested
-        class Page {
-            @Test
-            void shows_magazines() throws Exception {
-                mockMvc.perform(
-                        get("/magazines")
-                )
-                        .andExpect(status().isOk())
-                        .andExpect(view().name("page/board/magazine/list"))
-                        .andExpect(model().attributeExists("magazines"))
-                ;
-            }
-        }
+    }
+
+    @Nested
+    class Api {
 
         @Nested
-        class Api {
-
+        class Best {
             @Test // TODO count
             void returns_magazines() throws Exception {
+                factoryFacade.createMagazine(manager, "Magazine 1", Policy.OPEN);
+                factoryFacade.createMagazine(manager, "Magazine 2", Policy.OPEN);
+                factoryFacade.createMagazine(manager, "Magazine 3", Policy.OPEN);
                 mockMvc.perform(
                         get("/api/magazines")
                 )
@@ -566,7 +566,26 @@ class MagazineControllerTest {
                         .andExpect(jsonPath("[0].manager").doesNotExist())
                 ;
             }
+        }
 
+        @Nested
+        class OfUser {
+            @Test
+            void returns_list() throws Exception {
+                factoryFacade.createMagazine(manager, "Manager's", Policy.OPEN);
+                Account user = factoryFacade.createAccount("user");
+                factoryFacade.createMagazine(user, "User's 1", Policy.OPEN);
+                factoryFacade.createMagazine(user, "User'2 2", Policy.OPEN);
+                mockMvc.perform(
+                        get("/api/magazines/" + user.getUsername())
+                )
+                        .andExpect(status().isOk())
+                        .andExpect(jsonPath("$", hasSize(2)))
+                        .andExpect(jsonPath("[0]").exists())
+                        .andExpect(jsonPath("[1]").exists())
+                        .andExpect(jsonPath("[2]").doesNotExist())
+                ;
+            }
         }
 
     }

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+    <div th:replace="layout/layout::head(${#authentication.name},~{::link}, ~{})">
+        <link rel="stylesheet" href="/css/page/board/article/private.css"/>
+    </div>
+
+    <body th:replace="layout/layout::body(~{::section})">
+        <section>
+
+            <h1><span th:text="${#authentication.name}"></span>의 비공개 아티클</h1>
+            <ul>
+                <li th:each="article:${articles}" th:if="${#authentication.name}==${article.writer}" class="private">
+                    <div class="article-info">
+                        <span>temp</span> <a th:href="@{'/articles/'+${article.id}}" th:text="${article.title}"></a>
+                        <div class="article-sub-info">
+                            <a class="article-writer" th:href="@{'/@'+${article.writer}}" th:text="${article.writer}"></a>
+                            <span class="article-date" th:text="${#temporals.format(article.createdAt, 'yyyy-MM-dd HH:mm')}"></span>
+                        </div>
+                    </div>
+                    <p th:utext="${article.content}"></p>
+                </li>
+            </ul>
+
+        </section>
+    </body>
+
+</html>

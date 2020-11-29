@@ -144,4 +144,9 @@ public class MagazineController {
         return bestListCache.get();
     }
 
+    @GetMapping("/api/magazines/{username}")
+    public @ResponseBody List<Magazine> byUser(@PathVariable String username) {
+        return magazineService.findByManager(username);
+    }
+
 }
