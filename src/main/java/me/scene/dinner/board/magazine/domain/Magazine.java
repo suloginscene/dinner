@@ -5,6 +5,10 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import me.scene.dinner.board.common.exception.NotDeletableException;
 import me.scene.dinner.board.common.exception.NotOwnerException;
+import me.scene.dinner.board.magazine.domain.event.MagazineChangedEvent;
+import me.scene.dinner.board.magazine.domain.event.MemberAppliedEvent;
+import me.scene.dinner.board.magazine.domain.event.MemberManagedEvent;
+import me.scene.dinner.board.magazine.domain.event.MemberQuitEvent;
 import me.scene.dinner.board.topic.domain.Topic;
 import org.springframework.data.domain.AbstractAggregateRoot;
 

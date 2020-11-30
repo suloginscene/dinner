@@ -1,4 +1,4 @@
-package me.scene.dinner.board.magazine.domain;
+package me.scene.dinner.board.magazine.domain.event;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

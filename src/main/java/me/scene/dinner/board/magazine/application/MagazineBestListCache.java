@@ -2,7 +2,7 @@ package me.scene.dinner.board.magazine.application;
 
 import lombok.RequiredArgsConstructor;
 import me.scene.dinner.board.magazine.domain.Magazine;
-import me.scene.dinner.board.magazine.domain.MagazineChangedEvent;
+import me.scene.dinner.board.magazine.domain.event.MagazineChangedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 

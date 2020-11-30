@@ -2,9 +2,9 @@ package me.scene.dinner.mail.service;
 
 import me.scene.dinner.account.domain.account.TempPasswordIssuedEvent;
 import me.scene.dinner.account.domain.tempaccount.TempAccountCreatedEvent;
-import me.scene.dinner.board.magazine.domain.MemberManagedEvent;
-import me.scene.dinner.board.magazine.domain.MemberAppliedEvent;
-import me.scene.dinner.board.magazine.domain.MemberQuitEvent;
+import me.scene.dinner.board.magazine.domain.event.MemberManagedEvent;
+import me.scene.dinner.board.magazine.domain.event.MemberAppliedEvent;
+import me.scene.dinner.board.magazine.domain.event.MemberQuitEvent;
 import me.scene.dinner.mail.infra.RuntimeMessagingException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.event.EventListener;
