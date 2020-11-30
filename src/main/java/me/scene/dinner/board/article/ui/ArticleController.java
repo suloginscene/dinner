@@ -43,7 +43,7 @@ public class ArticleController {
 
     @GetMapping("/articles/{articleId}")
     public String showArticle(@PathVariable Long articleId, @CurrentUser Account current, Model model) {
-        Article article = articleService.find(articleId);
+        Article article = articleService.read(articleId);
         if (!article.isPublic()) {
             String username = (current != null) ? current.getUsername() : "anonymousUser";
             article.confirmWriter(username);

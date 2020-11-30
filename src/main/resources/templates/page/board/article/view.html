@@ -16,6 +16,9 @@
                     <span id="writer"><a th:href="'/@'+*{writer}" th:text="*{writer}"></a></span>
                     <span id="date" th:text="*{#temporals.format(createdAt, 'yyyy-MM-dd HH:mm')}"></span>
                 </div>
+                <div>
+                    <span>Read: <span th:text="*{read}"></span></span>
+                </div>
             </div>
 
             <div id="button-container" sec:authorize="isAuthenticated()">

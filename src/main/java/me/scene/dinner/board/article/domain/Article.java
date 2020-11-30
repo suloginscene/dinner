@@ -44,6 +44,9 @@ public class Article extends AbstractAggregateRoot<Article> {
     private LocalDateTime createdAt;
 
 
+    private int read;
+
+
     @ManyToOne(fetch = LAZY) @JsonIgnore
     private Topic topic;
 
@@ -79,6 +82,10 @@ public class Article extends AbstractAggregateRoot<Article> {
         this.content = content;
         this.status = Status.valueOf(status);
         toggleWriterRegistration();
+    }
+
+    public void read() {
+        read++;
     }
 
     public void beforeDelete(String current) {

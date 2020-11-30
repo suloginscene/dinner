@@ -521,10 +521,11 @@ class ArticleControllerTest {
                         .andExpect(jsonPath("[0]").exists())
                         .andExpect(jsonPath("[1]").exists())
                         .andExpect(jsonPath("[2]").doesNotExist())
-                        .andExpect(jsonPath("[0].*", hasSize(3)))
+                        .andExpect(jsonPath("[0].*", hasSize(4)))
                         .andExpect(jsonPath("[0].id").exists())
                         .andExpect(jsonPath("[0].title").exists())
                         .andExpect(jsonPath("[0].createdAt").exists())
+                        .andExpect(jsonPath("[0].read").exists())
                         .andExpect(jsonPath("[0].content").doesNotExist())
                 ;
             }

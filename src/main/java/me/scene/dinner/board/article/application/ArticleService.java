@@ -28,6 +28,13 @@ public class ArticleService {
     }
 
     @Transactional
+    public Article read(Long id) {
+        Article article = find(id);
+        article.read();
+        return article;
+    }
+
+    @Transactional
     public void update(Long id, String current, String title, String content, String status) {
         Article article = find(id);
         article.update(current, title, content, status);
