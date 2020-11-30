@@ -20,8 +20,8 @@ import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static me.scene.dinner.test.utils.authentication.Authenticators.login;
-import static me.scene.dinner.test.utils.authentication.Authenticators.logout;
+import static me.scene.dinner.test.utils.Authenticators.login;
+import static me.scene.dinner.test.utils.Authenticators.logout;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertThrows;

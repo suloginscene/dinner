@@ -16,8 +16,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static me.scene.dinner.test.utils.authentication.Authenticators.login;
-import static me.scene.dinner.test.utils.authentication.Authenticators.logout;
+import static me.scene.dinner.test.utils.Authenticators.login;
+import static me.scene.dinner.test.utils.Authenticators.logout;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;

@@ -1,19 +1,19 @@
-package me.scene.dinner.test.proxy;
+package me.scene.dinner.test.proxy.service;
 
 import lombok.extern.slf4j.Slf4j;
 import me.scene.dinner.board.article.application.ArticleService;
 import me.scene.dinner.board.article.domain.Article;
-import me.scene.dinner.board.article.domain.ArticleRepository;
 import me.scene.dinner.board.topic.application.TopicService;
+import me.scene.dinner.test.proxy.repository.ArticleRepositoryProxy;
 import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Transactional
 public class ArticleServiceProxy extends ArticleService {
 
-    private final ArticleRepository articleRepository;
+    private final ArticleRepositoryProxy articleRepository;
 
-    public ArticleServiceProxy(ArticleRepository articleRepository, TopicService topicService) {
+    public ArticleServiceProxy(ArticleRepositoryProxy articleRepository, TopicService topicService) {
         super(articleRepository, topicService);
         this.articleRepository = articleRepository;
     }

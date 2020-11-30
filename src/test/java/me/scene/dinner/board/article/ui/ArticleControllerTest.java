@@ -10,9 +10,9 @@ import me.scene.dinner.board.reply.domain.Reply;
 import me.scene.dinner.board.topic.domain.Topic;
 import me.scene.dinner.test.facade.FactoryFacade;
 import me.scene.dinner.test.facade.RepositoryFacade;
-import me.scene.dinner.test.proxy.ArticleServiceProxy;
-import me.scene.dinner.test.proxy.MagazineServiceProxy;
-import me.scene.dinner.test.proxy.TopicServiceProxy;
+import me.scene.dinner.test.proxy.service.ArticleServiceProxy;
+import me.scene.dinner.test.proxy.service.MagazineServiceProxy;
+import me.scene.dinner.test.proxy.service.TopicServiceProxy;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -27,8 +27,8 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 
-import static me.scene.dinner.test.utils.authentication.Authenticators.login;
-import static me.scene.dinner.test.utils.authentication.Authenticators.logout;
+import static me.scene.dinner.test.utils.Authenticators.login;
+import static me.scene.dinner.test.utils.Authenticators.logout;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;

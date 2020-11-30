@@ -1,11 +1,11 @@
-package me.scene.dinner.test.proxy;
+package me.scene.dinner.test.proxy.service;
 
 import lombok.extern.slf4j.Slf4j;
 import me.scene.dinner.account.domain.account.Account;
 import me.scene.dinner.board.magazine.application.MagazineService;
 import me.scene.dinner.board.magazine.domain.Magazine;
-import me.scene.dinner.board.magazine.domain.MagazineRepository;
 import me.scene.dinner.board.magazine.domain.Member;
+import me.scene.dinner.test.proxy.repository.MagazineRepositoryProxy;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -15,9 +15,9 @@ import java.util.stream.Collectors;
 @Transactional
 public class MagazineServiceProxy extends MagazineService {
 
-    private final MagazineRepository magazineRepository;
+    private final MagazineRepositoryProxy magazineRepository;
 
-    public MagazineServiceProxy(MagazineRepository magazineRepository) {
+    public MagazineServiceProxy(MagazineRepositoryProxy magazineRepository) {
         super(magazineRepository);
         this.magazineRepository = magazineRepository;
     }

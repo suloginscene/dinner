@@ -10,8 +10,7 @@ import me.scene.dinner.mail.service.AsyncMessagingException;
 import me.scene.dinner.mail.service.SyncMessagingException;
 import me.scene.dinner.test.facade.FactoryFacade;
 import me.scene.dinner.test.facade.RepositoryFacade;
-import me.scene.dinner.test.proxy.MagazineServiceProxy;
-import me.scene.dinner.test.utils.authentication.Authenticators;
+import me.scene.dinner.test.proxy.service.MagazineServiceProxy;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -25,6 +24,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 
+import static me.scene.dinner.test.utils.Authenticators.login;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.atLeastOnce;
@@ -81,7 +81,7 @@ class MailControllerTest {
         @Test
         void shows_magazine() throws Exception {
             Account user = factoryFacade.createAccount("user");
-            Authenticators.login(user);
+            login(user);
             mockMvc.perform(
                     get("/sent-to-manager")
                             .param("magazineId", "1")
@@ -162,7 +162,7 @@ class MailControllerTest {
                     Account member = Account.create(TempAccount.create("member", "member@email.com", "encoded"));
                     repositoryFacade.save(member);
                     Magazine managed = factoryFacade.createMagazine(manager, "Test Magazine", Policy.MANAGED);
-                    Authenticators.login(member);
+                    login(member);
                     mockMvc.perform(
                             post("/magazines/" + managed.getId() + "/members")
                                     .with(csrf())
@@ -200,7 +200,7 @@ class MailControllerTest {
                     Magazine managed = factoryFacade.createMagazine(manager, "Test Magazine", Policy.MANAGED);
                     Account member = factoryFacade.createAccount("member");
                     magazineService.addMember(managed, member);
-                    Authenticators.login(member);
+                    login(member);
                     mockMvc.perform(
                             delete("/magazines/" + managed.getId() + "/members")
                                     .with(csrf())
@@ -221,7 +221,7 @@ class MailControllerTest {
                     Account manager = factoryFacade.createAccount("manager");
                     Magazine managed = factoryFacade.createMagazine(manager, "Test Magazine", Policy.MANAGED);
                     Account member = factoryFacade.createAccount("member");
-                    Authenticators.login(manager);
+                    login(manager);
                     mockMvc.perform(
                             post("/magazines/" + managed.getId() + "/" + member.getUsername())
                                     .param("memberEmail", member.getEmail())

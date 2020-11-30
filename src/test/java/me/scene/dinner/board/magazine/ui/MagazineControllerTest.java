@@ -11,7 +11,7 @@ import me.scene.dinner.board.magazine.domain.Policy;
 import me.scene.dinner.mail.infra.TestMailSender;
 import me.scene.dinner.test.facade.FactoryFacade;
 import me.scene.dinner.test.facade.RepositoryFacade;
-import me.scene.dinner.test.proxy.MagazineServiceProxy;
+import me.scene.dinner.test.proxy.service.MagazineServiceProxy;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -27,8 +27,8 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 
 import java.util.List;
 
-import static me.scene.dinner.test.utils.authentication.Authenticators.login;
-import static me.scene.dinner.test.utils.authentication.Authenticators.logout;
+import static me.scene.dinner.test.utils.Authenticators.login;
+import static me.scene.dinner.test.utils.Authenticators.logout;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;

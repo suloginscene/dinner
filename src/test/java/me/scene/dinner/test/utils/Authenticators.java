@@ -1,4 +1,4 @@
-package me.scene.dinner.test.utils.authentication;
+package me.scene.dinner.test.utils;
 
 import me.scene.dinner.account.application.UserAccount;
 import me.scene.dinner.account.domain.account.Account;
