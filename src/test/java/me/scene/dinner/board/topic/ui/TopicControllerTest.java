@@ -88,8 +88,6 @@ class TopicControllerTest {
                 ;
             }
 
-            // TODO htmlunit
-
             @Nested
             class When_Unauthenticated {
                 @Test

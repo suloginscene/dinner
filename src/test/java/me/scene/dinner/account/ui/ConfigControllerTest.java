@@ -68,7 +68,6 @@ class ConfigControllerTest {
                     .andExpect(status().isOk())
                     .andExpect(view().name("page/account/info"))
                     .andExpect(model().attributeExists("username", "profile"))
-            // TODO htmlunit
             ;
         }
 
@@ -81,21 +80,6 @@ class ConfigControllerTest {
                 )
                         .andExpect(status().isOk())
                         .andExpect(view().name("error/user_not_found"))
-                ;
-            }
-        }
-
-        @Nested
-        class With_notOwner {
-            @Test
-            void doesNot_returns_linkToUpdate() throws Exception {
-                logout();
-                mockMvc.perform(
-                        get("/@user")
-                )
-                        .andExpect(status().isOk())
-                        .andExpect(view().name("page/account/info"))
-                // TODO htmlunit
                 ;
             }
         }

@@ -96,7 +96,6 @@ class MagazineControllerTest {
                         .andExpect(model().attributeExists("magazineForm"))
                 ;
             }
-            // TODO html unit
 
             @Nested
             class When_Unauthenticated {
@@ -439,7 +438,6 @@ class MagazineControllerTest {
 
             @Nested
             class Page {
-
                 // TODO DTO
                 @Test @Disabled
                 void returns_members() throws Exception {
@@ -451,9 +449,6 @@ class MagazineControllerTest {
                             .andExpect(model().attributeExists("members"))
                     ;
                 }
-
-                // TODO with_stranger
-
             }
 
             @Nested
