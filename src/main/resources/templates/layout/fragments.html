@@ -21,6 +21,9 @@
         <script src="/js/common/scrollSensibleNavbar.js"></script>
         <script src="/js/common/overLayingNav.js"></script>
         <script src="/js/common/ajaxMagazines.js"></script>
+        <script type="text/template" id="magazine-template">
+            <li><a href="/magazines/{id}">{title}</a></li>
+        </script>
 
     </th:block>
 
@@ -37,9 +40,6 @@
             <nav>
                 <a href="#" id="nav-accordion">&nbsp;&nbsp;&nbsp;Magazines<i class="fa fa-chevron-down"></i></a>
                 <ul class="panel">
-                    <script type="text/template" id="magazine-template">
-                        <li><a href="/magazines/{id}">{title}</a></li>
-                    </script>
                     <li><a href="/magazines" id="magazine-list">etc</a></li>
                     <li><a href="/magazine-form"><i class="fa fa-plus"></i></a></li>
                 </ul>

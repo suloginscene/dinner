@@ -4,6 +4,9 @@
     <div th:replace="layout/layout::head(${username}, ~{::link}, ~{::script})">
         <link rel="stylesheet" href="/css/page/account/info.css"/>
         <script src="/js/page/ajaxShowAccount.js"></script>
+        <script type="text/template" id="article-template">
+            <li><a href="/articles/{id}">{title}</a><span>{date}</span> <span>Read: <span>{read}</span></span></li>
+        </script>
     </div>
 
     <body th:replace="layout/layout::body(~{::section})">
@@ -31,12 +34,6 @@
                 </div>
                 <a th:if="${#authentication.name}==${username}" href="/private-articles">비공개 아티클 목록</a>
             </div>
-            <script type="text/template" id="article-template">
-                <li>
-                    <a href="/articles/{id}">{title}</a><span>{date}</span>
-                    <span>Read: <span>{read}</span></span>
-                </li>
-            </script>
         </section>
     </body>
 

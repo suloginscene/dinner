@@ -4,6 +4,15 @@
     <div th:replace="layout/layout::head(_,~{::link}, ~{::script})">
         <link rel="stylesheet" href="/css/page/board/magazine/members.css"/>
         <script src="/js/page/ajaxFindAccount_magazine.js"></script>
+        <script id="account-template" type="text/template">
+            <div>
+                <span>이름 {1}</span><span>이메일 {2}</span>
+                <form th:action="'/magazines/'+${id}+'/{3}'" th:method="post">
+                    <label hidden><input type="text" name="memberEmail" value="{4}" hidden></label>
+                    <button type="submit">add</button>
+                </form>
+            </div>
+        </script>
     </div>
 
     <body th:replace="layout/layout::body(~{::section})">
@@ -35,17 +44,6 @@
                         </label>
                         <button type="submit" id="findByUsername">find</button>
                     </form>
-                    <script id="account-template" type="text/template">
-                        <div>
-                            <span>이름 {1}</span><span>이메일 {2}</span>
-                            <form th:action="'/magazines/'+${id}+'/{3}'" th:method="post">
-                                <label hidden>
-                                    <input type="text" value="{4}" hidden>
-                                </label>
-                                <button type="submit">add</button>
-                            </form>
-                        </div>
-                    </script>
                     <div id="found-position"></div>
                 </div>
                 <a th:href="'/magazines/'+${id}">수정 완료</a>
