@@ -54,3 +54,18 @@ section article p img {
     width: 100%;
 }
 
+#like-form {
+    display: inline;
+}
+
+#like {
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    background-color: unset;
+    color: red;
+}
+
+#like-icon:hover {
+    font-size: 30px;
+}

@@ -46,6 +46,8 @@ public class Article extends AbstractAggregateRoot<Article> {
 
     private int read;
 
+    private int likes;
+
 
     @ManyToOne(fetch = LAZY) @JsonIgnore
     private Topic topic;
@@ -86,6 +88,15 @@ public class Article extends AbstractAggregateRoot<Article> {
 
     public void read() {
         read++;
+    }
+
+    public void like() {
+        likes++;
+    }
+
+    public void dislike() {
+        if (likes < 1) return;
+        likes--;
     }
 
     public void beforeDelete(String current) {

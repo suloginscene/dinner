@@ -35,6 +35,18 @@ public class ArticleService {
     }
 
     @Transactional
+    public void like(Long id) {
+        Article article = find(id);
+        article.like();
+    }
+
+    @Transactional
+    public void dislike(Long id) {
+        Article article = find(id);
+        article.dislike();
+    }
+
+    @Transactional
     public void update(Long id, String current, String title, String content, String status) {
         Article article = find(id);
         article.update(current, title, content, status);

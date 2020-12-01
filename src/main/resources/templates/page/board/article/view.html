@@ -2,8 +2,9 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
-    <div th:replace="layout/layout::head(${article.title},~{::link}, ~{})">
+    <div th:replace="layout/layout::head(${article.title},~{::link}, ~{::script})">
         <link rel="stylesheet" href="/css/page/board/article/view.css"/>
+        <script src="/js/page/ajaxLikeArticle.js"></script>
     </div>
 
     <body th:replace="layout/layout::body(~{::section})">
@@ -13,11 +14,25 @@
                 <h2 id="topic"><a th:href="'/topics/'+*{topic.id}" th:text="*{topic.title}"></a></h2>
                 <h1 id="title" th:text="*{title}"></h1>
                 <div id="sub-info">
-                    <span id="writer"><a th:href="'/@'+*{writer}" th:text="*{writer}"></a></span>
-                    <span id="date" th:text="*{#temporals.format(createdAt, 'yyyy-MM-dd HH:mm')}"></span>
-                </div>
-                <div>
-                    <span>Read: <span th:text="*{read}"></span></span>
+                    <div>
+                        <span id="writer"><a th:href="'/@'+*{writer}" th:text="*{writer}"></a></span>
+                        <span id="date" th:text="*{#temporals.format(createdAt, 'yyyy-MM-dd HH:mm')}"></span>
+                    </div>
+                    <div>
+                        <span>Read: <span th:text="*{read}"></span></span>
+                        <span>Like: <span th:text="*{likes}" id="like-count"></span></span>
+                        <th:block sec:authorize="isAuthenticated()">
+                            <form id="like-form" th:method="post" th:action="@{/api/likes}">
+                                <label hidden>
+                                    <input type="text" name="articleId" th:value="*{id}" hidden>
+                                </label>
+                                <label hidden>
+                                    <input type="text" name="username" th:value="${#authentication.name}" id="username" hidden>
+                                </label>
+                                <button id="like" type="submit"><i class="fa fa-heart-o" id="like-icon"></i></button>
+                            </form>
+                        </th:block>
+                    </div>
                 </div>
             </div>
 

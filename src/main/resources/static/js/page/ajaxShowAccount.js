@@ -19,7 +19,7 @@ const ajaxShowAccount = function () {
             const date = a.createdAt.substring(0, "yyyy-MM-dd".length);
             const el = articleTemplate
                 .replace("{id}", a.id).replace("{title}", a.title)
-                .replace("{date}", date).replace("{read}", a.read);
+                .replace("{date}", date).replace("{read}", a.read).replace("{like}", a.likes);
             articles.append(el);
         });
     };
