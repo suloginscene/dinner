@@ -49,6 +49,12 @@ section form #error-message span {
     margin-right: 15px;
 }
 
-section form #editor {
+.note-toolbar button {
+    width: unset;
+    height: unset;
+}
+
+#editor-wrapper {
+    width: 100%;
     height: calc(100% - 60px);
 }

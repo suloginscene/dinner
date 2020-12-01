@@ -4,6 +4,9 @@
     <div th:replace="layout/layout::head(_,~{::link}, ~{::script})">
         <link rel="stylesheet" href="/css/page/board/article/form.css"/>
         <script src="/js/page/valid_board.js"></script>
+        <link rel="stylesheet" href="/node_modules/summernote/dist/summernote-bs4.min.css"/>
+        <script src="/node_modules/summernote/dist/summernote-bs4.min.js"></script>
+        <script src="/js/page/summernote_article.js"></script>
     </div>
 
     <body th:replace="layout/layout::body(~{::section})">
@@ -25,30 +28,17 @@
                     </label>
                     <button type="submit" id="form-submit">save</button>
                 </div>
-
                 <div class="form-checks">
                     <label for="radio-1"><input th:field="*{status}" type="radio" id="radio-1" value="PUBLIC"/>public</label>
                     <label for="radio-2"><input th:field="*{status}" type="radio" id="radio-2" value="PRIVATE"/>private</label>
                     <small th:if="${#fields.hasErrors('status')}" th:errors="*{status}" class="form-text text-danger"></small>
                 </div>
-
-                <!-- TODO editor -->
-                <label id="editor" style="width: 100%">
-                    <textarea th:field="*{content}" id="content" placeholder="본문" style="height: 100%; width: 100%; padding: 10px" required></textarea>
+                <label id="editor-wrapper">
+                    <textarea id="editor" th:field="*{content}" placeholder="본문" required></textarea>
                     <small class="invalid-feedback"><i class="fa fa-ban"></i></small>
                     <small class="valid-feedback"><i class="fa fa-check"></i></small>
                 </label>
-
-                <!--                <label>-->
-                <!--                    <input type="text" th:field="*{content}" id="content" hidden>-->
-                <!--                </label>-->
-                <!--                <div id="editor">-->
-                <!--                    <div id="tui-editor"></div>-->
-                <!--                    <th:block th:replace="lib/tui::imports"></th:block>-->
-                <!--                    <script th:replace="lib/tui::load"></script>-->
-                <!--                </div>-->
             </form>
-            <!--            <script th:replace="lib/tui::submit"></script>-->
         </section>
     </body>
 
