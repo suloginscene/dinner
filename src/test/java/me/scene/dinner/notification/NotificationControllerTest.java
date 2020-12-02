@@ -25,6 +25,7 @@ import static me.scene.dinner.test.utils.Authenticators.login;
 import static me.scene.dinner.test.utils.Authenticators.logout;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrlPattern;
@@ -118,6 +119,23 @@ class NotificationControllerTest {
                         .andExpect(redirectedUrlPattern("**/login"))
                 ;
             }
+        }
+
+    }
+
+    @Nested
+    class Interceptor {
+
+        @Test
+        void returns_count() throws Exception {
+            likesService.likes(reader.getUsername(), article.getId());
+            Thread.sleep(1000L);
+            mockMvc.perform(
+                    get("/")
+            )
+                    .andExpect(status().isOk())
+                    .andExpect(model().attribute("notificationCount", is(1L)))
+            ;
         }
 
     }

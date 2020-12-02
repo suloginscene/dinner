@@ -8,4 +8,6 @@ public interface NotificationRepository extends JpaRepository<Notification, Long
 
     List<Notification> findByReceiverAndChecked(String receiver, boolean checked);
 
+    long countByReceiverAndChecked(String receiver, boolean checked);
+
 }

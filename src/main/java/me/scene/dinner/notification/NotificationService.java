@@ -26,4 +26,8 @@ public class NotificationService {
         notificationRepository.saveAll(notifications);
     }
 
+    public long countUnchecked(String username) {
+        return notificationRepository.countByReceiverAndChecked(username, false);
+    }
+
 }
