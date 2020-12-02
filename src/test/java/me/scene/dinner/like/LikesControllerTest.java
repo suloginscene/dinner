@@ -6,6 +6,7 @@ import me.scene.dinner.board.article.domain.Status;
 import me.scene.dinner.board.magazine.domain.Magazine;
 import me.scene.dinner.board.magazine.domain.Policy;
 import me.scene.dinner.board.topic.domain.Topic;
+import me.scene.dinner.notification.NotificationListener;
 import me.scene.dinner.test.facade.FactoryFacade;
 import me.scene.dinner.test.facade.RepositoryFacade;
 import me.scene.dinner.test.proxy.service.ArticleServiceProxy;
@@ -23,10 +24,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import static me.scene.dinner.test.utils.Authenticators.login;
 import static me.scene.dinner.test.utils.Authenticators.logout;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.BDDMockito.then;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrlPattern;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -37,6 +39,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class LikesControllerTest {
 
     @Autowired MockMvc mockMvc;
+    @SpyBean NotificationListener notificationListener;
 
     @Autowired LikesService likesService;
     @SpyBean ArticleServiceProxy articleService;
@@ -82,6 +85,8 @@ class LikesControllerTest {
             ;
             article = articleService.find(article.getId());
             assertThat(article.getLikes()).isEqualTo(1);
+            LikedEvent event = new LikedEvent(reader.getUsername(), article.getId());
+            then(notificationListener).should().onLikedEvent(event);
         }
 
         @Test

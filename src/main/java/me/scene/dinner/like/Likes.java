@@ -12,11 +12,11 @@ import javax.persistence.Id;
 public class Likes {
 
     @Id @GeneratedValue
-    Long id;
+    private Long id;
 
-    String username;
+    private String username;
 
-    Long articleId;
+    private Long articleId;
 
     protected Likes() {
     }
