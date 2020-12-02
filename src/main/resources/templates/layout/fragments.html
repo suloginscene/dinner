@@ -56,7 +56,7 @@
             <button>desk</button>
             <div id="accounts">
                 <a th:href="@{'/@' + ${#authentication.name}}" th:text="${#authentication.name}"></a>
-                <a href="#">notif</a>
+                <a href="/notifications">notif</a>
                 <form th:action="@{/logout}" method="post">
                     <button type="submit">logout</button>
                 </form>

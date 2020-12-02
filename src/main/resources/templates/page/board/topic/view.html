@@ -40,7 +40,7 @@
             </div>
 
             <ul sec:authorize="isAuthenticated()">
-                <li th:each="article:*{getPrivateArticles()}" th:if="${#authentication.name}==${article.writer}" class="private">
+                <li th:each="article:*{privateArticles}" th:if="${#authentication.name}==${article.writer}" class="private">
                     <div class="article-info">
                         <span>temp</span> <a th:href="@{'/articles/'+${article.id}}" th:text="${article.title}"></a>
                         <div class="article-sub-info">
@@ -52,7 +52,7 @@
                 </li>
             </ul>
             <ul>
-                <li th:each="article:*{getPublicArticles()}">
+                <li th:each="article:*{publicArticles}">
                     <div class="article-info">
                         <span th:unless="${article.isPublic()}">temp</span>
                         <a th:href="@{'/articles/'+${article.id}}" th:text="${article.title}"></a>

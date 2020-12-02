@@ -16,7 +16,7 @@ public class LikesService {
     private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
-    void likes(String username, Long articleId) {
+    public void likes(String username, Long articleId) {
         Article article = articleService.like(articleId);
         Likes likes = Likes.create(username, articleId);
         likesRepository.save(likes);

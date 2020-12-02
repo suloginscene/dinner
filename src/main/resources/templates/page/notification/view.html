@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+    <div th:replace="layout/layout::head(${#authentication.name}, ~{::link}, ~{})">
+        <link rel="stylesheet" href="/css/page/notification/view.css"/>
+    </div>
+
+    <body th:replace="layout/layout::body(~{::section})">
+        <section>
+
+            <div>
+                <h2>읽지 않은 메시지 입니다.</h2>
+                <ul>
+                    <li th:each="unchecked:${uncheckedList}">
+                        <span th:text="${unchecked.message}"></span>
+                        <span th:text="*{#temporals.format(unchecked.createdAt, 'yyyy-MM-dd HH:mm')}"></span>
+                    </li>
+                </ul>
+            </div>
+            <div>
+                <h2>읽은 메시지 입니다.</h2>
+                <ul>
+                    <li th:each="checked:${checkedList}">
+                        <span th:text="${checked.message}"></span>
+                        <span th:text="*{#temporals.format(checked.createdAt, 'yyyy-MM-dd HH:mm')}"></span>
+                    </li>
+                </ul>
+            </div>
+
+        </section>
+    </body>
+
+</html>

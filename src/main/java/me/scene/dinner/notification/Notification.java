@@ -15,7 +15,7 @@ public class Notification {
     @Id @GeneratedValue
     private Long id;
 
-    private String target;
+    private String receiver;
 
     private String message;
 
@@ -26,13 +26,17 @@ public class Notification {
     protected Notification() {
     }
 
-    public static Notification create(String target, String message) {
+    public static Notification create(String receiver, String message) {
         Notification notification = new Notification();
-        notification.target = target;
+        notification.receiver = receiver;
         notification.message = message;
         notification.checked = false;
         notification.createdAt = LocalDateTime.now();
         return notification;
+    }
+
+    public void check() {
+        checked = true;
     }
 
 }
