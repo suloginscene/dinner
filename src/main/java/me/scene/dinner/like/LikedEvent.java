@@ -8,7 +8,8 @@ import lombok.RequiredArgsConstructor;
 @Getter @EqualsAndHashCode
 public class LikedEvent {
 
-    private final String username;
-    private final Long articleId;
+    private final String writer;
+    private final String user;
+    private final String title;
 
 }

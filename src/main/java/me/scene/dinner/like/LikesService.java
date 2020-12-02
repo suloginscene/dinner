@@ -2,6 +2,7 @@ package me.scene.dinner.like;
 
 import lombok.RequiredArgsConstructor;
 import me.scene.dinner.board.article.application.ArticleService;
+import me.scene.dinner.board.article.domain.Article;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,10 +17,10 @@ public class LikesService {
 
     @Transactional
     void likes(String username, Long articleId) {
-        articleService.like(articleId);
+        Article article = articleService.like(articleId);
         Likes likes = Likes.create(username, articleId);
         likesRepository.save(likes);
-        eventPublisher.publishEvent(new LikedEvent(username, articleId));
+        eventPublisher.publishEvent(new LikedEvent(article.getWriter(), username, article.getTitle()));
     }
 
     @Transactional

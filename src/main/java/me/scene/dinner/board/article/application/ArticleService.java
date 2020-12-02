@@ -35,9 +35,10 @@ public class ArticleService {
     }
 
     @Transactional
-    public void like(Long id) {
+    public Article like(Long id) {
         Article article = find(id);
         article.like();
+        return article;
     }
 
     @Transactional

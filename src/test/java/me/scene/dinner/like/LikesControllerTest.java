@@ -25,6 +25,7 @@ import static me.scene.dinner.test.utils.Authenticators.login;
 import static me.scene.dinner.test.utils.Authenticators.logout;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.reset;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -67,6 +68,7 @@ class LikesControllerTest {
     @AfterEach
     void clear() {
         repositoryFacade.deleteAll();
+        reset(notificationListener);
     }
 
 
@@ -85,7 +87,7 @@ class LikesControllerTest {
             ;
             article = articleService.find(article.getId());
             assertThat(article.getLikes()).isEqualTo(1);
-            LikedEvent event = new LikedEvent(reader.getUsername(), article.getId());
+            LikedEvent event = new LikedEvent(writer.getUsername(), reader.getUsername(), article.getTitle());
             then(notificationListener).should().onLikedEvent(event);
         }
 

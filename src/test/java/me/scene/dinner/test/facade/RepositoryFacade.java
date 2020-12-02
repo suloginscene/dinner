@@ -10,6 +10,8 @@ import me.scene.dinner.board.magazine.domain.MagazineRepository;
 import me.scene.dinner.board.reply.domain.Reply;
 import me.scene.dinner.board.reply.domain.ReplyRepository;
 import me.scene.dinner.board.topic.domain.TopicRepository;
+import me.scene.dinner.like.LikesRepository;
+import me.scene.dinner.notification.NotificationRepository;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -27,6 +29,9 @@ public class RepositoryFacade {
     private final ArticleRepository articleRepository;
     private final ReplyRepository replyRepository;
 
+    private final LikesRepository likesRepository;
+    private final NotificationRepository notificationRepository;
+
     public void deleteAll() {
         tempAccountRepository.deleteAll();
         accountRepository.deleteAll();
@@ -35,6 +40,9 @@ public class RepositoryFacade {
         articleRepository.deleteAll();
         topicRepository.deleteAll();
         magazineRepository.deleteAll();
+
+        likesRepository.deleteAll();
+        notificationRepository.deleteAll();
     }
 
     public void save(Account user) {
