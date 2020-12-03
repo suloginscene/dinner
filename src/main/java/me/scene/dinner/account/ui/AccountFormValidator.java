@@ -3,6 +3,7 @@ package me.scene.dinner.account.ui;
 import lombok.RequiredArgsConstructor;
 import me.scene.dinner.account.domain.account.AccountRepository;
 import me.scene.dinner.account.domain.tempaccount.TempAccountRepository;
+import me.scene.dinner.account.ui.form.AccountForm;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;

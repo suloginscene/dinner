@@ -1,7 +1,7 @@
 package me.scene.dinner.test.proxy.repository;
 
-import me.scene.dinner.board.article.domain.Article;
-import me.scene.dinner.board.article.domain.ArticleRepository;
+import me.scene.dinner.board.domain.article.Article;
+import me.scene.dinner.board.domain.article.ArticleRepository;
 
 import java.util.Optional;
 

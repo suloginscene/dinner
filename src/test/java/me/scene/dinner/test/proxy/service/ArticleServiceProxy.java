@@ -1,9 +1,9 @@
 package me.scene.dinner.test.proxy.service;
 
 import lombok.extern.slf4j.Slf4j;
-import me.scene.dinner.board.article.application.ArticleService;
-import me.scene.dinner.board.article.domain.Article;
-import me.scene.dinner.board.topic.application.TopicService;
+import me.scene.dinner.board.application.article.ArticleService;
+import me.scene.dinner.board.application.topic.TopicService;
+import me.scene.dinner.board.domain.article.Article;
 import me.scene.dinner.test.proxy.repository.ArticleRepositoryProxy;
 import org.springframework.transaction.annotation.Transactional;
 

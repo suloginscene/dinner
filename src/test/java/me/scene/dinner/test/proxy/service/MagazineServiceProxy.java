@@ -2,8 +2,8 @@ package me.scene.dinner.test.proxy.service;
 
 import lombok.extern.slf4j.Slf4j;
 import me.scene.dinner.account.domain.account.Account;
-import me.scene.dinner.board.magazine.application.MagazineService;
-import me.scene.dinner.board.magazine.domain.Magazine;
+import me.scene.dinner.board.application.magazine.MagazineService;
+import me.scene.dinner.board.domain.magazine.Magazine;
 import me.scene.dinner.test.proxy.repository.MagazineRepositoryProxy;
 import org.springframework.transaction.annotation.Transactional;
 

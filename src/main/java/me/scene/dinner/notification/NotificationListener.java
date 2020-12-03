@@ -1,9 +1,9 @@
 package me.scene.dinner.notification;
 
 import lombok.RequiredArgsConstructor;
-import me.scene.dinner.board.magazine.domain.event.MemberAppliedEvent;
-import me.scene.dinner.board.magazine.domain.event.MemberManagedEvent;
-import me.scene.dinner.board.magazine.domain.event.MemberQuitEvent;
+import me.scene.dinner.board.domain.magazine.event.MemberAppliedEvent;
+import me.scene.dinner.board.domain.magazine.event.MemberManagedEvent;
+import me.scene.dinner.board.domain.magazine.event.MemberQuitEvent;
 import me.scene.dinner.like.LikedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
@@ -16,6 +16,7 @@ public class NotificationListener {
 
     private final NotificationRepository notificationRepository;
 
+    // TODO Link
     private static final String ON_LIKE_MSG_TEMPLATE = "%s가 %s를 좋아합니다.";
 
     private static final String ON_APPLIED_MSG_TEMPLATE = "%s가 %s에 지원했습니다.";
