@@ -57,9 +57,9 @@
             <div id="accounts">
                 <a th:href="@{'/@' + ${#authentication.name}}" th:text="${#authentication.name}"></a>
                 <a href="/notifications">
-                    <!-- TODO icon                   -->
-                    <span th:text="${notificationCount}"></span>
-                    notif</a>
+                    <span th:replace="layout/notification_interceptor::count"></span>
+                    <span>notif</span>
+                </a>
                 <form th:action="@{/logout}" method="post">
                     <button type="submit">logout</button>
                 </form>

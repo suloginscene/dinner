@@ -3,7 +3,6 @@ package me.scene.dinner.board.magazine.application;
 import lombok.RequiredArgsConstructor;
 import me.scene.dinner.board.magazine.domain.Magazine;
 import me.scene.dinner.board.magazine.domain.MagazineRepository;
-import me.scene.dinner.board.magazine.domain.Member;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,8 +28,8 @@ public class MagazineService {
     }
 
     @Transactional
-    public Long save(String manager, String managerEmail, String title, String shortExplanation, String longExplanation, String policy) {
-        Magazine magazine = Magazine.create(manager, managerEmail, title, shortExplanation, longExplanation, policy);
+    public Long save(String manager, String title, String shortExplanation, String longExplanation, String policy) {
+        Magazine magazine = Magazine.create(manager, title, shortExplanation, longExplanation, policy);
         return magazineRepository.save(magazine).getId();
     }
 
@@ -49,9 +48,10 @@ public class MagazineService {
         magazineRepository.delete(magazine);
     }
 
-    public void applyMember(Long id, String current, String currentEmail) {
+    @Transactional
+    public void applyMember(Long id, String current) {
         Magazine magazine = find(id);
-        magazine.applyMember(current, currentEmail);
+        magazine.applyMember(current);
         publishEvent(magazine);
     }
 
@@ -63,9 +63,9 @@ public class MagazineService {
     }
 
     @Transactional
-    public void addMember(Long id, String current, String target, String targetEmail) {
+    public void addMember(Long id, String current, String target) {
         Magazine magazine = find(id);
-        magazine.addMember(current, new Member(target, targetEmail));
+        magazine.addMember(current, target);
         publishEvent(magazine);
     }
 

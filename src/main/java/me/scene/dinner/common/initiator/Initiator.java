@@ -46,7 +46,7 @@ public class Initiator implements ApplicationRunner {
         Account test = user("test", "scene_cho@naver.com", "password_t");
 
 
-        Magazine open_java = magazine(scene.getUsername(), scene.getEmail(), "자바 프로그래밍", "자바, 스프링, JPA", "범용적인 글을 올려주세요. 개인 개발 기록은 별도의 매거진으로 만들어주세요.", "OPEN");
+        Magazine open_java = magazine(scene.getUsername(), "자바 프로그래밍", "자바, 스프링, JPA", "범용적인 글을 올려주세요. 개인 개발 기록은 별도의 매거진으로 만들어주세요.", "OPEN");
 
         Topic java = topic(open_java.getId(), scene.getUsername(), "자바", "자바 언어에 관한 글을 올려주세요.", "프레임워크에 관한 글은 별도의 토픽에 올려주세요.");
 
@@ -64,26 +64,26 @@ public class Initiator implements ApplicationRunner {
         reply(nPlusOne.getId(), scene.getUsername(), "엥, 왜?");
 
 
-        Magazine dinner = magazine(scene.getUsername(), scene.getEmail(), "Dinner 개발기", "디너의 탄생설화입니다.", "이 디너는 영국으로부터 시작되어...", "MANAGED");
+        Magazine dinner = magazine(scene.getUsername(), "Dinner 개발기", "디너의 탄생설화입니다.", "이 디너는 영국으로부터 시작되어...", "MANAGED");
 
         Topic dev = topic(dinner.getId(), scene.getUsername(), "기술 파트", "디너 개발 기술에 관한 글입니다.", "스프링을 기반으로 개발하였습니다.");
 
         Article docker = article(dev.getId(), scene.getUsername(), "개발 서버 구축", "도커를 활용한 개발 서버 구축", "PUBLIC");
         reply(docker.getId(), eon.getUsername(), "나도 이 매거진에 글을 쓸 수 있음.");
 
-        magazineService.addMember(dinner.getId(), scene.getUsername(), eon.getUsername(), eon.getEmail());
+        magazineService.addMember(dinner.getId(), scene.getUsername(), eon.getUsername());
 
 
-        Magazine ptc = magazine(eon.getUsername(), eon.getEmail(), "Palm Tree Canteen", "직장인 글쓰기 모임", "오직 나에게 선택받은 자만이 글을 쓸 수 있다. 매니지드 매거진에 테스트 할 거리가 많기 때문이지...", "MANAGED");
+        Magazine ptc = magazine(eon.getUsername(), "Palm Tree Canteen", "직장인 글쓰기 모임", "오직 나에게 선택받은 자만이 글을 쓸 수 있다. 매니지드 매거진에 테스트 할 거리가 많기 때문이지...", "MANAGED");
 
         Topic bad = topic(ptc.getId(), eon.getUsername(), "넌 귀여운 노인일 뿐이야.", "내가 했던 가장 나쁜 말은 무엇인가요?", "테스트 데이터 만들면서 느꼈는데, 상세 설명이 필요하지 않은 매거진이나 토픽도 많긴 하겠다.");
 
         article(bad.getId(), eon.getUsername(), "너무 나쁜 것 같아서 검열 중인 게시물", "많도다...", "PRIVATE");
 
-        magazineService.applyMember(ptc.getId(), scene.getUsername(), scene.getUsername());
+        magazineService.applyMember(ptc.getId(), scene.getUsername());
 
 
-        Magazine exclusive = magazine(test.getUsername(), test.getEmail(), "폐쇄적인 외부인", "내 것이오.", "너네가 돈 내는 서버에 너네가 만든 사이트를 내 전용으로 쓰니까 묘하게 기분이 나쁘겠지?", "EXCLUSIVE");
+        Magazine exclusive = magazine(test.getUsername(), "폐쇄적인 외부인", "내 것이오.", "너네가 돈 내는 서버에 너네가 만든 사이트를 내 전용으로 쓰니까 묘하게 기분이 나쁘겠지?", "EXCLUSIVE");
 
         Topic who = topic(exclusive.getId(), test.getUsername(), "저는 누구냐면요", "쉿", "이 계정의 비밀을 찾아서");
 
@@ -99,8 +99,8 @@ public class Initiator implements ApplicationRunner {
         return accountService.find(username);
     }
 
-    private Magazine magazine(String manager, String managerEmail, String title, String shortExplanation, String longExplanation, String magazinePolicy) {
-        Long id = magazineService.save(manager, managerEmail, title, shortExplanation, longExplanation, magazinePolicy);
+    private Magazine magazine(String manager, String title, String shortExplanation, String longExplanation, String magazinePolicy) {
+        Long id = magazineService.save(manager, title, shortExplanation, longExplanation, magazinePolicy);
         return magazineService.find(id);
     }
 

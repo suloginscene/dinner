@@ -1,6 +1,9 @@
 package me.scene.dinner.notification;
 
 import lombok.RequiredArgsConstructor;
+import me.scene.dinner.board.magazine.domain.event.MemberAppliedEvent;
+import me.scene.dinner.board.magazine.domain.event.MemberManagedEvent;
+import me.scene.dinner.board.magazine.domain.event.MemberQuitEvent;
 import me.scene.dinner.like.LikedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
@@ -15,6 +18,14 @@ public class NotificationListener {
 
     private static final String ON_LIKE_MSG_TEMPLATE = "%s가 %s를 좋아합니다.";
 
+    private static final String ON_APPLIED_MSG_TEMPLATE = "%s가 %s에 지원했습니다.";
+
+    private static final String ON_QUIT_MSG_TEMPLATE = "%s가 %s에서 탈퇴했습니다.";
+
+    private static final String ON_ADDED_MSG_TEMPLATE = "%s의 멤버로 등록되었습니다.";
+    private static final String ON_REMOVED_MSG_TEMPLATE = "%s의 멤버에서 제외되었습니다.";
+
+
     @EventListener @Async
     public void onLikedEvent(LikedEvent event) {
         String writer = event.getWriter();
@@ -23,6 +34,42 @@ public class NotificationListener {
         String message = String.format(ON_LIKE_MSG_TEMPLATE, user, title);
 
         Notification notification = Notification.create(writer, message);
+        notificationRepository.save(notification);
+    }
+
+    @EventListener
+    public void onMemberAppliedEvent(MemberAppliedEvent event) {
+        Long magazineId = event.getMagazineId();
+        String magazineTitle = event.getMagazineTitle();
+        String manager = event.getManager();
+        String applicant = event.getApplicant();
+        String message = String.format(ON_APPLIED_MSG_TEMPLATE, applicant, magazineTitle);
+
+        Notification notification = Notification.create(manager, message);
+        notificationRepository.save(notification);
+    }
+
+    @EventListener @Async
+    public void onMemberQuitEvent(MemberQuitEvent event) {
+        Long magazineId = event.getMagazineId();
+        String magazineTitle = event.getMagazineTitle();
+        String manager = event.getManager();
+        String member = event.getMember();
+        String message = String.format(ON_QUIT_MSG_TEMPLATE, member, magazineTitle);
+
+        Notification notification = Notification.create(manager, message);
+        notificationRepository.save(notification);
+    }
+
+    @EventListener @Async
+    public void onMemberManagedEvent(MemberManagedEvent event) {
+        Long magazineId = event.getMagazineId();
+        String magazineTitle = event.getMagazineTitle();
+        String member = event.getMember();
+        String template = event.isRemoval() ? ON_REMOVED_MSG_TEMPLATE : ON_ADDED_MSG_TEMPLATE;
+        String message = String.format(template, magazineTitle);
+
+        Notification notification = Notification.create(member, message);
         notificationRepository.save(notification);
     }
 

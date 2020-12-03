@@ -8,16 +8,16 @@ import org.springframework.context.ApplicationEvent;
 public class MemberAppliedEvent extends ApplicationEvent {
 
     private final Long magazineId;
-    private final String managerEmail;
+    private final String magazineTitle;
+    private final String manager;
     private final String applicant;
-    private final String applicantEmail;
 
-    public MemberAppliedEvent(Object source, Long magazineId, String managerEmail, String applicant, String applicantEmail) {
+    public MemberAppliedEvent(Object source, Long magazineId, String magazineTitle, String manager, String applicant) {
         super(source);
         this.magazineId = magazineId;
-        this.managerEmail = managerEmail;
+        this.magazineTitle = magazineTitle;
+        this.manager = manager;
         this.applicant = applicant;
-        this.applicantEmail = applicantEmail;
     }
 
 }

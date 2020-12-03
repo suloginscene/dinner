@@ -6,6 +6,7 @@ import me.scene.dinner.common.security.CurrentUser;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -23,6 +24,12 @@ public class NotificationController {
         model.addAttribute("uncheckedList", unchecked);
         model.addAttribute("checkedList", checked);
         return "page/notification/view";
+    }
+
+    @GetMapping("/sent-to-manager")
+    public String sentToManager(@RequestParam Long magazineId, Model model) {
+        model.addAttribute("magazineId", magazineId);
+        return "page/notification/manager";
     }
 
 }

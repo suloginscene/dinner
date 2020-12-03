@@ -5,7 +5,7 @@ import me.scene.dinner.account.application.AlreadyVerifiedException;
 import me.scene.dinner.account.domain.tempaccount.VerificationException;
 import me.scene.dinner.board.common.exception.BoardNotFoundException;
 import me.scene.dinner.board.common.exception.NotDeletableException;
-import me.scene.dinner.mail.service.SyncMessagingException;
+import me.scene.dinner.mail.RuntimeMessagingException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -70,13 +70,13 @@ public class ExceptionAdvice {
     }
 
     @ExceptionHandler
-    public String NotDeletableException(HttpServletRequest req, NotDeletableException e) {
+    public String notDeletableException(HttpServletRequest req, NotDeletableException e) {
         warn(req, e);
         return "error/not_deletable";
     }
 
     @ExceptionHandler
-    public String syncMessagingException(HttpServletRequest req, SyncMessagingException e) {
+    public String runtimeMessagingException(HttpServletRequest req, RuntimeMessagingException e) {
         warn(req, e);
         return "error/messaging";
     }

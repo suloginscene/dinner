@@ -21,7 +21,6 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static javax.persistence.FetchType.LAZY;
 
@@ -34,9 +33,6 @@ public class Magazine extends AbstractAggregateRoot<Magazine> {
 
     @JsonIgnore
     private String manager;
-
-    @JsonIgnore
-    private String managerEmail;
 
 
     private String title;
@@ -59,12 +55,7 @@ public class Magazine extends AbstractAggregateRoot<Magazine> {
     private final List<String> writers = new ArrayList<>();
 
     @ElementCollection(fetch = LAZY) @JsonIgnore
-    private final List<Member> members = new ArrayList<>();
-
-    @JsonIgnore
-    public List<String> getMemberNames() {
-        return members.stream().map(Member::getUsername).collect(Collectors.toList());
-    }
+    private final List<String> members = new ArrayList<>();
 
     @JsonIgnore
     public boolean isOpen() {
@@ -81,7 +72,7 @@ public class Magazine extends AbstractAggregateRoot<Magazine> {
         if (policy == Policy.EXCLUSIVE) return current.equals(manager);
         if (policy == Policy.MANAGED) {
             if (current.equals(manager)) return true;
-            return findMemberByName(current) != null;
+            return members.contains(current);
         }
         throw new IllegalStateException("Magazine should have policy in enum");
     }
@@ -90,10 +81,9 @@ public class Magazine extends AbstractAggregateRoot<Magazine> {
     protected Magazine() {
     }
 
-    public static Magazine create(String manager, String managerEmail, String title, String shortExplanation, String longExplanation, String magazinePolicy) {
+    public static Magazine create(String manager, String title, String shortExplanation, String longExplanation, String magazinePolicy) {
         Magazine magazine = new Magazine();
         magazine.manager = manager;
-        magazine.managerEmail = managerEmail;
         magazine.title = title;
         magazine.shortExplanation = shortExplanation;
         magazine.longExplanation = longExplanation;
@@ -149,7 +139,7 @@ public class Magazine extends AbstractAggregateRoot<Magazine> {
 
         if (policy == Policy.MANAGED) {
             if (manager.equals(username)) return;
-            if (findMemberByName(username) != null) return;
+            if (members.contains(username)) return;
         }
 
         throw new PolicyAuthException(username);
@@ -173,45 +163,37 @@ public class Magazine extends AbstractAggregateRoot<Magazine> {
         throw new IllegalStateException("Not Managed Magazine");
     }
 
-    public void applyMember(String current, String currentEmail) {
+    public void applyMember(String current) {
         confirmPolicyManaged();
-        if (findMemberByName(current) != null) return;
+        if (members.contains(current)) return;
 
-        registerEvent(new MemberAppliedEvent(this, id, managerEmail, current, currentEmail));
+        registerEvent(new MemberAppliedEvent(this, id, title, manager, current));
     }
 
     public void quitMember(String current) {
         confirmPolicyManaged();
+        if (!members.contains(current)) return;
 
-        Member member = findMemberByName(current);
-        if (member == null) return;
-
-        members.remove(member);
-        registerEvent(new MemberQuitEvent(this, id, managerEmail, current));
+        members.remove(current);
+        registerEvent(new MemberQuitEvent(this, id, title, manager, current));
     }
 
-    public void addMember(String current, Member member) {
+    public void addMember(String current, String member) {
         confirmManager(current);
         confirmPolicyManaged();
         if (members.contains(member)) return;
 
         members.add(member);
-        registerEvent(new MemberManagedEvent(this, id, title, member.getEmail()));
+        registerEvent(new MemberManagedEvent(this, id, title, member));
     }
 
     public void removeMember(String current, String target) {
         confirmManager(current);
         confirmPolicyManaged();
+        if (!members.contains(target)) return;
 
-        Member member = findMemberByName(target);
-        if (member == null) return;
-
-        members.remove(member);
-        registerEvent(new MemberManagedEvent(this, id, title, member.getEmail(), true));
-    }
-
-    private Member findMemberByName(String username) {
-        return members.stream().filter(m -> m.getUsername().equals(username)).findAny().orElse(null);
+        members.remove(target);
+        registerEvent(new MemberManagedEvent(this, id, title, target, true));
     }
 
 }

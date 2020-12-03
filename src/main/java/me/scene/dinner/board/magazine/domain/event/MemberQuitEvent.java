@@ -8,13 +8,15 @@ import org.springframework.context.ApplicationEvent;
 public class MemberQuitEvent extends ApplicationEvent {
 
     private final Long magazineId;
-    private final String managerEmail;
+    private final String magazineTitle;
+    private final String manager;
     private final String member;
 
-    public MemberQuitEvent(Object source, Long magazineId, String managerEmail, String member) {
+    public MemberQuitEvent(Object source, Long magazineId, String magazineTitle, String manager, String member) {
         super(source);
         this.magazineId = magazineId;
-        this.managerEmail = managerEmail;
+        this.magazineTitle = magazineTitle;
+        this.manager = manager;
         this.member = member;
     }
 

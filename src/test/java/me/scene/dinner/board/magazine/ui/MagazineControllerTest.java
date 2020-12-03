@@ -4,11 +4,11 @@ import me.scene.dinner.account.domain.account.Account;
 import me.scene.dinner.board.magazine.application.MagazineBestListCache;
 import me.scene.dinner.board.magazine.application.MagazineNotFoundException;
 import me.scene.dinner.board.magazine.domain.Magazine;
+import me.scene.dinner.board.magazine.domain.Policy;
 import me.scene.dinner.board.magazine.domain.event.MemberAppliedEvent;
 import me.scene.dinner.board.magazine.domain.event.MemberManagedEvent;
 import me.scene.dinner.board.magazine.domain.event.MemberQuitEvent;
-import me.scene.dinner.board.magazine.domain.Policy;
-import me.scene.dinner.mail.infra.TestMailSender;
+import me.scene.dinner.notification.NotificationListener;
 import me.scene.dinner.test.facade.FactoryFacade;
 import me.scene.dinner.test.facade.RepositoryFacade;
 import me.scene.dinner.test.proxy.service.MagazineServiceProxy;
@@ -34,6 +34,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.reset;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -52,7 +53,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class MagazineControllerTest {
 
     @Autowired MockMvc mockMvc;
-    @SpyBean TestMailSender mailSender;
+    @SpyBean NotificationListener notificationListener;
 
     @SpyBean MagazineServiceProxy magazineService;
     @Autowired MagazineBestListCache bestListCache;
@@ -78,6 +79,7 @@ class MagazineControllerTest {
     @AfterEach
     void clear() {
         repositoryFacade.deleteAll();
+        reset(notificationListener);
     }
 
 
@@ -406,8 +408,9 @@ class MagazineControllerTest {
                             .andExpect(status().is3xxRedirection())
                             .andExpect(redirectedUrl("/sent-to-manager?magazineId=" + managed.getId()))
                     ;
-                    MemberAppliedEvent event = new MemberAppliedEvent(managed, managed.getId(), manager.getEmail(), member.getUsername(), member.getEmail());
-                    then(mailSender).should().onApplicationEvent(event);
+                    Thread.sleep(1000L);
+                    MemberAppliedEvent event = new MemberAppliedEvent(managed, managed.getId(), managed.getTitle(), manager.getUsername(), member.getUsername());
+                    then(notificationListener).should().onMemberAppliedEvent(event);
                 }
             }
 
@@ -415,7 +418,7 @@ class MagazineControllerTest {
             class Quit {
                 @Test
                 void quits_sends_And_redirectsTo_Magazine() throws Exception {
-                    magazineService.addMember(managed.getId(), manager.getUsername(), member.getUsername(), member.getEmail());
+                    magazineService.addMember(managed.getId(), manager.getUsername(), member.getUsername());
                     mockMvc.perform(
                             delete("/magazines/" + managed.getId() + "/members")
                                     .with(csrf())
@@ -424,10 +427,10 @@ class MagazineControllerTest {
                             .andExpect(redirectedUrl("/magazines/" + managed.getId()))
                     ;
                     Thread.sleep(1000L);
-                    List<String> members = magazineService.getMembers(managed.getId());
+                    List<String> members = magazineService.load(managed.getTitle()).getMembers();
                     assertThat(members).doesNotContain(member.getUsername());
-                    MemberQuitEvent event = new MemberQuitEvent(managed, managed.getId(), manager.getEmail(), member.getUsername());
-                    then(mailSender).should().onApplicationEvent(event);
+                    MemberQuitEvent event = new MemberQuitEvent(managed, managed.getId(), managed.getTitle(), manager.getUsername(), member.getUsername());
+                    then(notificationListener).should().onMemberQuitEvent(event);
                 }
             }
 
@@ -456,39 +459,35 @@ class MagazineControllerTest {
                 @Test
                 void redirectsTo_magazine() throws Exception {
                     mockMvc.perform(
-                            post("/magazines/" + managed.getId() + "/" + member.getUsername())
-                                    .param("memberEmail", member.getEmail())
+                            get("/magazines/" + managed.getId() + "/" + member.getUsername())
                                     .with(csrf())
                     )
                             .andExpect(status().is3xxRedirection())
                             .andExpect(redirectedUrl("/magazines/" + managed.getId() + "/members"))
                     ;
                     Thread.sleep(1000L);
-                    List<String> members = magazineService.getMembers(managed.getId());
+                    List<String> members = magazineService.load(managed.getTitle()).getMembers();
                     assertThat(members).contains(member.getUsername());
-                    MemberManagedEvent event = new MemberManagedEvent(managed, managed.getId(), managed.getTitle(), member.getEmail());
-                    then(mailSender).should().onApplicationEvent(event);
+                    MemberManagedEvent event = new MemberManagedEvent(managed, managed.getId(), managed.getTitle(), member.getUsername());
+                    then(notificationListener).should().onMemberManagedEvent(event);
                 }
 
                 @Nested
-                class ByEmail {
+                class ByLink {
                     @Test
                     void shows_added() throws Exception {
                         mockMvc.perform(
                                 get("/magazines/" + managed.getId() + "/" + member.getUsername())
-                                        .param("memberEmail", member.getEmail())
                                         .with(csrf())
                         )
-                                .andExpect(status().isOk())
-                                .andExpect(view().name("page/mail/member"))
-                                .andExpect(model().attribute("member", member.getUsername()))
-                                .andExpect(model().attribute("magazine", managed))
+                                .andExpect(status().is3xxRedirection())
+                                .andExpect(redirectedUrl("/magazines/" + managed.getId() + "/members"))
                         ;
                         Thread.sleep(1000L);
-                        List<String> members = magazineService.getMembers(managed.getId());
+                        List<String> members = magazineService.load(managed.getTitle()).getMembers();
                         assertThat(members).contains(member.getUsername());
-                        MemberManagedEvent event = new MemberManagedEvent(managed, managed.getId(), managed.getTitle(), member.getEmail());
-                        then(mailSender).should().onApplicationEvent(event);
+                        MemberManagedEvent event = new MemberManagedEvent(managed, managed.getId(), managed.getTitle(), member.getUsername());
+                        then(notificationListener).should().onMemberManagedEvent(event);
                     }
                 }
             }
@@ -497,7 +496,7 @@ class MagazineControllerTest {
             class Remove {
                 @Test
                 void redirectsTo_magazine() throws Exception {
-                    magazineService.addMember(managed.getId(), manager.getUsername(), member.getUsername(), member.getEmail());
+                    magazineService.addMember(managed.getId(), manager.getUsername(), member.getUsername());
                     mockMvc.perform(
                             delete("/magazines/" + managed.getId() + "/" + member.getUsername())
                                     .with(csrf())
@@ -506,10 +505,10 @@ class MagazineControllerTest {
                             .andExpect(redirectedUrl("/magazines/" + managed.getId() + "/members"))
                     ;
                     Thread.sleep(1000L);
-                    List<String> members = magazineService.getMembers(managed.getId());
+                    List<String> members = magazineService.load(managed.getTitle()).getMembers();
                     assertThat(members).doesNotContain(member.getUsername());
-                    MemberManagedEvent event = new MemberManagedEvent(managed, managed.getId(), managed.getTitle(), member.getEmail(), true);
-                    then(mailSender).should().onApplicationEvent(event);
+                    MemberManagedEvent event = new MemberManagedEvent(managed, managed.getId(), managed.getTitle(), member.getUsername(), true);
+                    then(notificationListener).should().onMemberManagedEvent(event);
                 }
             }
 

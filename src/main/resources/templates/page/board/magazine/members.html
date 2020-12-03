@@ -7,8 +7,7 @@
         <script id="account-template" type="text/template">
             <div>
                 <span>이름 {1}</span><span>이메일 {2}</span>
-                <form th:action="'/magazines/'+${id}+'/{3}'" th:method="post">
-                    <label hidden><input type="text" name="memberEmail" value="{4}" hidden></label>
+                <form th:action="'/magazines/'+${id}+'/{3}'" th:method="get">
                     <button type="submit">add</button>
                 </form>
             </div>

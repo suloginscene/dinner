@@ -1,11 +1,10 @@
-package me.scene.dinner.mail.infra;
+package me.scene.dinner.mail;
 
 import lombok.extern.slf4j.Slf4j;
-import me.scene.dinner.mail.service.MailSender;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
-@Profile("local")
+@Profile({"local", "test"})
 @Slf4j
 @Component
 public class ConsoleMailSender extends MailSender {

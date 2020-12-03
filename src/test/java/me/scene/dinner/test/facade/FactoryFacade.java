@@ -34,13 +34,11 @@ public class FactoryFacade {
     }
 
     public Magazine createMagazine(Account manager, String title, Policy policy) {
-        return magazineFactory.create(manager.getUsername(), manager.getEmail(),
-                title, title + "에 관한 짧은 소개", title + "에 관한 긴 소개", policy.name());
+        return magazineFactory.create(manager.getUsername(), title, title + "에 관한 짧은 소개", title + "에 관한 긴 소개", policy.name());
     }
 
     public Topic createTopic(Magazine magazine, Account manager, String title) {
-        return topicFactory.create(magazine.getId(), manager.getUsername(),
-                title, title + "에 관한 짧은 소개", title + "에 관한 긴 소개");
+        return topicFactory.create(magazine.getId(), manager.getUsername(), title, title + "에 관한 짧은 소개", title + "에 관한 긴 소개");
     }
 
     public Article createArticle(Topic topic, Account writer, String title, Status status) {

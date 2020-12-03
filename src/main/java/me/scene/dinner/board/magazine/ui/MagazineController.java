@@ -7,7 +7,6 @@ import me.scene.dinner.board.magazine.application.MagazineBestListCache;
 import me.scene.dinner.board.magazine.application.MagazineService;
 import me.scene.dinner.board.magazine.domain.Magazine;
 import me.scene.dinner.common.security.CurrentUser;
-import me.scene.dinner.mail.service.AsyncMessagingException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
@@ -16,7 +15,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.validation.Valid;
@@ -39,7 +37,7 @@ public class MagazineController {
     public String createMagazine(@CurrentUser Account current, @Valid MagazineForm form, Errors errors) {
         if (errors.hasErrors()) return "page/board/magazine/form";
 
-        Long id = magazineService.save(current.getUsername(), current.getEmail(), form.getTitle(), form.getShortExplanation(), form.getLongExplanation(), form.getPolicy());
+        Long id = magazineService.save(current.getUsername(), form.getTitle(), form.getShortExplanation(), form.getLongExplanation(), form.getPolicy());
         return "redirect:" + ("/magazines/" + id);
     }
 
@@ -47,7 +45,7 @@ public class MagazineController {
     public String showMagazine(@PathVariable Long magazineId, Model model) {
         Magazine magazine = magazineService.find(magazineId);
         model.addAttribute("magazine", magazine);
-        model.addAttribute("members", magazine.getMemberNames());
+        model.addAttribute("members", magazine.getMembers());
         return "page/board/magazine/view";
     }
 
@@ -86,18 +84,14 @@ public class MagazineController {
 
     @PostMapping("/magazines/{magazineId}/members")
     public String applyMember(@PathVariable Long magazineId, @CurrentUser Account current) {
-        magazineService.applyMember(magazineId, current.getUsername(), current.getEmail());
+        magazineService.applyMember(magazineId, current.getUsername());
         return "redirect:" + ("/sent-to-manager?magazineId=" + magazineId);
     }
 
     @DeleteMapping("/magazines/{magazineId}/members")
     public String quitMember(@PathVariable Long magazineId, @CurrentUser Account current) {
         String currentUsername = current.getUsername();
-        try {
-            magazineService.quitMember(magazineId, currentUsername);
-        } catch (AsyncMessagingException e) {
-            log.warn("AsyncMessagingException - when {} quit form magazine {}", currentUsername, magazineId);
-        }
+        magazineService.quitMember(magazineId, currentUsername);
         return "redirect:" + ("/magazines/" + magazineId);
     }
 
@@ -108,23 +102,14 @@ public class MagazineController {
         magazine.confirmPolicyManaged();
 
         model.addAttribute("id", magazineId);
-        model.addAttribute("members", magazine.getMemberNames());
+        model.addAttribute("members", magazine.getMembers());
         return "page/board/magazine/members";
     }
 
-    @PostMapping("/magazines/{magazineId}/{member}")
-    public String addMember(@PathVariable Long magazineId, @PathVariable String member, @RequestParam String memberEmail, @CurrentUser Account current) {
-        magazineService.addMember(magazineId, current.getUsername(), member, memberEmail);
-        return "redirect:" + ("/magazines/" + magazineId + "/members");
-    }
-
     @GetMapping("/magazines/{magazineId}/{member}")
-    public String addMemberByEmail(@PathVariable Long magazineId, @PathVariable String member, @RequestParam String memberEmail, @CurrentUser Account current, Model model) {
-        magazineService.addMember(magazineId, current.getUsername(), member, memberEmail);
-        Magazine magazine = magazineService.find(magazineId);
-        model.addAttribute("member", member);
-        model.addAttribute("magazine", magazine);
-        return "page/mail/member";
+    public String addMember(@PathVariable Long magazineId, @PathVariable String member, @CurrentUser Account current) {
+        magazineService.addMember(magazineId, current.getUsername(), member);
+        return "redirect:" + ("/magazines/" + magazineId + "/members");
     }
 
     @DeleteMapping("/magazines/{magazineId}/{member}")
