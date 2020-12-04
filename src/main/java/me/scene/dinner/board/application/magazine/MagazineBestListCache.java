@@ -3,6 +3,7 @@ package me.scene.dinner.board.application.magazine;
 import lombok.RequiredArgsConstructor;
 import me.scene.dinner.board.domain.magazine.Magazine;
 import me.scene.dinner.board.domain.magazine.event.MagazineChangedEvent;
+import me.scene.dinner.board.domain.magazine.event.MagazineDeletedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
@@ -13,34 +14,33 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MagazineBestListCache {
 
-    private List<Magazine> bestMagazines;
     private final MagazineService magazineService;
 
-    // TODO scheduled cron
-    // TODO count
-    private void updateBestList() {
-        bestMagazines = magazineService.findBest();
+    private static final int COUNT = 5;
+    private List<Magazine> bestMagazines;
+
+    private void updateBestList(int count) {
+        bestMagazines = magazineService.findBest(count);
     }
 
     @PostConstruct
-    private void init() {
-        updateBestList();
+    public void init() {
+        updateBestList(COUNT);
     }
 
     @EventListener
     public void onApplicationEvent(MagazineChangedEvent event) {
         Magazine source = (Magazine) event.getSource();
+        if ((bestMagazines.size() >= COUNT) && !(bestMagazines.contains(source))) return;
+        updateBestList(COUNT);
+    }
 
-        if (bestMagazines.contains(source) || bestMagazines.size() < 5) {
-            if (event.isDeletion()) {
-                // TODO count + 1
-                updateBestList();
-                bestMagazines.remove(source);
-            } else {
-                updateBestList();
-            }
-        }
-
+    @EventListener
+    public void onApplicationEvent(MagazineDeletedEvent event) {
+        Magazine source = (Magazine) event.getSource();
+        if (!bestMagazines.contains(source)) return;
+        updateBestList(COUNT + 1);
+        bestMagazines.remove(source);
     }
 
     public List<Magazine> get() {

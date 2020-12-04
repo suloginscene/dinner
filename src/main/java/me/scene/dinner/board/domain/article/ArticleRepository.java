@@ -6,6 +6,8 @@ import java.util.List;
 
 public interface ArticleRepository extends JpaRepository<Article, Long> {
 
-    List<Article> findByWriterAndStatus(String writer, Status status);
+    List<Article> findByWriterAndStatusOrderByRatingDesc(String writer, Status status);
+
+    List<Article> findByWriterAndStatusOrderByCreatedAtAsc(String writer, Status status);
 
 }

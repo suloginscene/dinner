@@ -6,6 +6,6 @@ import java.util.List;
 
 public interface MagazineRepository extends JpaRepository<Magazine, Long> {
 
-    List<Magazine> findByManager(String manager);
+    List<Magazine> findByManagerOrderByRatingDesc(String manager);
 
 }

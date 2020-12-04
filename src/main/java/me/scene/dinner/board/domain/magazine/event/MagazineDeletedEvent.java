@@ -2,9 +2,9 @@ package me.scene.dinner.board.domain.magazine.event;
 
 import org.springframework.context.ApplicationEvent;
 
-public class MagazineChangedEvent extends ApplicationEvent {
+public class MagazineDeletedEvent extends ApplicationEvent {
 
-    public MagazineChangedEvent(Object source) {
+    public MagazineDeletedEvent(Object source) {
         super(source);
     }
 

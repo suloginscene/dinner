@@ -36,6 +36,9 @@ public class Topic {
     private String longExplanation;
 
 
+    private int rating;
+
+
     @ManyToOne(fetch = LAZY)
     private Magazine magazine;
 
@@ -71,6 +74,11 @@ public class Topic {
         this.title = title;
         this.shortExplanation = shortExplanation;
         this.longExplanation = longExplanation;
+    }
+
+    public void rate(int point) {
+        rating += point;
+        magazine.rate(point);
     }
 
     public void beforeDelete(String current) {

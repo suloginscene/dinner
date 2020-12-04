@@ -2,8 +2,9 @@ package me.scene.dinner.notification;
 
 import lombok.RequiredArgsConstructor;
 import me.scene.dinner.board.domain.magazine.event.MemberAppliedEvent;
-import me.scene.dinner.board.domain.magazine.event.MemberManagedEvent;
+import me.scene.dinner.board.domain.magazine.event.MemberAddedEvent;
 import me.scene.dinner.board.domain.magazine.event.MemberQuitEvent;
+import me.scene.dinner.board.domain.magazine.event.MemberRemovedEvent;
 import me.scene.dinner.like.LikedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
@@ -24,6 +25,7 @@ public class NotificationListener {
     private static final String ON_QUIT_MSG_TEMPLATE = "%s가 %s에서 탈퇴했습니다.";
 
     private static final String ON_ADDED_MSG_TEMPLATE = "%s의 멤버로 등록되었습니다.";
+
     private static final String ON_REMOVED_MSG_TEMPLATE = "%s의 멤버에서 제외되었습니다.";
 
 
@@ -63,12 +65,22 @@ public class NotificationListener {
     }
 
     @EventListener @Async
-    public void onMemberManagedEvent(MemberManagedEvent event) {
+    public void onMemberAddedEvent(MemberAddedEvent event) {
         Long magazineId = event.getMagazineId();
         String magazineTitle = event.getMagazineTitle();
         String member = event.getMember();
-        String template = event.isRemoval() ? ON_REMOVED_MSG_TEMPLATE : ON_ADDED_MSG_TEMPLATE;
-        String message = String.format(template, magazineTitle);
+        String message = String.format(ON_ADDED_MSG_TEMPLATE, magazineTitle);
+
+        Notification notification = Notification.create(member, message);
+        notificationRepository.save(notification);
+    }
+
+    @EventListener @Async
+    public void onMemberRemovedEvent(MemberRemovedEvent event) {
+        Long magazineId = event.getMagazineId();
+        String magazineTitle = event.getMagazineTitle();
+        String member = event.getMember();
+        String message = String.format(ON_REMOVED_MSG_TEMPLATE, magazineTitle);
 
         Notification notification = Notification.create(member, message);
         notificationRepository.save(notification);

@@ -1,7 +1,6 @@
 package me.scene.dinner.board.ui.magazine;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import me.scene.dinner.account.application.CurrentUser;
 import me.scene.dinner.account.domain.account.Account;
 import me.scene.dinner.board.application.magazine.MagazineBestListCache;
@@ -21,7 +20,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @Controller
-@RequiredArgsConstructor @Slf4j
+@RequiredArgsConstructor
 public class MagazineController {
 
     private final MagazineService magazineService;
@@ -43,7 +42,7 @@ public class MagazineController {
 
     @GetMapping("/magazines/{magazineId}")
     public String showMagazine(@PathVariable Long magazineId, Model model) {
-        Magazine magazine = magazineService.find(magazineId);
+        Magazine magazine = magazineService.read(magazineId);
         model.addAttribute("magazine", magazine);
         model.addAttribute("members", magazine.getMembers());
         return "page/board/magazine/view";
@@ -51,9 +50,7 @@ public class MagazineController {
 
     @GetMapping("/magazines/{magazineId}/form")
     public String updateForm(@PathVariable Long magazineId, @CurrentUser Account current, Model model) {
-        Magazine magazine = magazineService.find(magazineId);
-        magazine.confirmManager(current.getUsername());
-
+        Magazine magazine = magazineService.findToUpdate(magazineId, current.getUsername());
         model.addAttribute("id", magazineId);
         model.addAttribute("updateForm", updateForm(magazine));
         return "page/board/magazine/update";
@@ -97,10 +94,7 @@ public class MagazineController {
 
     @GetMapping("/magazines/{magazineId}/members")
     public String manageMembers(@PathVariable Long magazineId, @CurrentUser Account current, Model model) {
-        Magazine magazine = magazineService.find(magazineId);
-        magazine.confirmManager(current.getUsername());
-        magazine.confirmPolicyManaged();
-
+        Magazine magazine = magazineService.findToManageMember(magazineId, current.getUsername());
         model.addAttribute("id", magazineId);
         model.addAttribute("members", magazine.getMembers());
         return "page/board/magazine/members";

@@ -6,6 +6,7 @@ import me.scene.dinner.board.domain.magazine.MagazineRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Comparator;
 import java.util.List;
 
 @Service @Transactional(readOnly = true)
@@ -19,18 +20,41 @@ public class MagazineService {
     }
 
     public List<Magazine> findAll() {
-        return magazineRepository.findAll();
+        List<Magazine> allMagazines = magazineRepository.findAll();
+        allMagazines.sort(Comparator.comparing(Magazine::getRating, Comparator.reverseOrder()));
+        return allMagazines;
     }
 
-    public List<Magazine> findBest() {
-        // TODO findBest
-        return magazineRepository.findAll();
+    public List<Magazine> findBest(int count) {
+        List<Magazine> allMagazines = findAll();
+        return (allMagazines.size() > count) ?
+                allMagazines.subList(0, count) : allMagazines;
     }
 
     @Transactional
     public Long save(String manager, String title, String shortExplanation, String longExplanation, String policy) {
         Magazine magazine = Magazine.create(manager, title, shortExplanation, longExplanation, policy);
         return magazineRepository.save(magazine).getId();
+    }
+
+    public Magazine read(Long id) {
+        Magazine magazine = find(id);
+        // TODO
+        magazine.getTopics().sort(Comparator.comparing(t -> t.getRating(), Comparator.reverseOrder()));
+        return magazine;
+    }
+
+    public Magazine findToUpdate(Long id, String current) {
+        Magazine magazine = find(id);
+        magazine.confirmManager(current);
+        return magazine;
+    }
+
+    public Magazine findToManageMember(Long id, String current) {
+        Magazine magazine = find(id);
+        magazine.confirmManager(current);
+        magazine.confirmPolicyManaged();
+        return magazine;
     }
 
     @Transactional
@@ -81,7 +105,7 @@ public class MagazineService {
     }
 
     public List<Magazine> findByManager(String username) {
-        return magazineRepository.findByManager(username);
+        return magazineRepository.findByManagerOrderByRatingDesc(username);
     }
 
 }

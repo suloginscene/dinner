@@ -28,9 +28,16 @@ public class ArticleService {
     }
 
     @Transactional
-    public Article read(Long id) {
+    public Article read(Long id, String current) {
         Article article = find(id);
-        article.read();
+        if (article.isPublic()) article.read();
+        else article.confirmWriter(current);
+        return article;
+    }
+
+    public Article findToUpdate(Long id, String current) {
+        Article article = find(id);
+        article.confirmWriter(current);
         return article;
     }
 
@@ -62,11 +69,11 @@ public class ArticleService {
     }
 
     public List<Article> findPublicByWriter(String username) {
-        return articleRepository.findByWriterAndStatus(username, Status.PUBLIC);
+        return articleRepository.findByWriterAndStatusOrderByRatingDesc(username, Status.PUBLIC);
     }
 
     public List<Article> findPrivateByWriter(String username) {
-        return articleRepository.findByWriterAndStatus(username, Status.PRIVATE);
+        return articleRepository.findByWriterAndStatusOrderByCreatedAtAsc(username, Status.PRIVATE);
     }
 
 }

@@ -21,6 +21,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static javax.persistence.FetchType.LAZY;
+import static me.scene.dinner.board.domain.article.RatingType.DISLIKE;
+import static me.scene.dinner.board.domain.article.RatingType.LIKE;
+import static me.scene.dinner.board.domain.article.RatingType.READ;
 
 @Entity
 @Getter @EqualsAndHashCode(of = "id", callSuper = false)
@@ -47,6 +50,9 @@ public class Article extends AbstractAggregateRoot<Article> {
     private int read;
 
     private int likes;
+
+    @JsonIgnore
+    private int rating;
 
 
     @ManyToOne(fetch = LAZY) @JsonIgnore
@@ -86,17 +92,26 @@ public class Article extends AbstractAggregateRoot<Article> {
         toggleWriterRegistration();
     }
 
+    private void rate(RatingType ratingType) {
+        int point = ratingType.point();
+        rating += point;
+        topic.rate(point);
+    }
+
     public void read() {
         read++;
+        rate(READ);
     }
 
     public void like() {
         likes++;
+        rate(LIKE);
     }
 
     public void dislike() {
         if (likes < 1) return;
         likes--;
+        rate(DISLIKE);
     }
 
     public void beforeDelete(String current) {

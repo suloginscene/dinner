@@ -69,7 +69,7 @@ class NotificationControllerTest {
 
 
     @Nested
-    class Page {
+    class Check {
 
         List<Notification> unchecked;
         List<Notification> checked;

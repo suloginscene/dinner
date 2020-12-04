@@ -6,9 +6,11 @@ import lombok.Getter;
 import me.scene.dinner.board.domain.common.NotDeletableException;
 import me.scene.dinner.board.domain.common.NotOwnerException;
 import me.scene.dinner.board.domain.magazine.event.MagazineChangedEvent;
+import me.scene.dinner.board.domain.magazine.event.MagazineDeletedEvent;
 import me.scene.dinner.board.domain.magazine.event.MemberAppliedEvent;
-import me.scene.dinner.board.domain.magazine.event.MemberManagedEvent;
+import me.scene.dinner.board.domain.magazine.event.MemberAddedEvent;
 import me.scene.dinner.board.domain.magazine.event.MemberQuitEvent;
+import me.scene.dinner.board.domain.magazine.event.MemberRemovedEvent;
 import me.scene.dinner.board.domain.topic.Topic;
 import org.springframework.data.domain.AbstractAggregateRoot;
 
@@ -45,6 +47,10 @@ public class Magazine extends AbstractAggregateRoot<Magazine> {
 
     @JsonIgnore @Enumerated(EnumType.STRING)
     private Policy policy;
+
+
+    @JsonIgnore
+    private int rating;
 
 
     @OneToMany(mappedBy = "magazine") @JsonIgnore
@@ -100,10 +106,15 @@ public class Magazine extends AbstractAggregateRoot<Magazine> {
         registerEvent(new MagazineChangedEvent(this));
     }
 
+    public void rate(int point) {
+        rating += point;
+        if (rating % 100 == 0) registerEvent(new MagazineChangedEvent(this));
+    }
+
     public void beforeDelete(String current) {
         confirmManager(current);
         confirmDeletable();
-        registerEvent(new MagazineChangedEvent(this, true));
+        registerEvent(new MagazineDeletedEvent(this));
     }
 
 
@@ -184,7 +195,7 @@ public class Magazine extends AbstractAggregateRoot<Magazine> {
         if (members.contains(member)) return;
 
         members.add(member);
-        registerEvent(new MemberManagedEvent(this, id, title, member));
+        registerEvent(new MemberAddedEvent(this, id, title, member));
     }
 
     public void removeMember(String current, String target) {
@@ -193,7 +204,7 @@ public class Magazine extends AbstractAggregateRoot<Magazine> {
         if (!members.contains(target)) return;
 
         members.remove(target);
-        registerEvent(new MemberManagedEvent(this, id, title, target, true));
+        registerEvent(new MemberRemovedEvent(this, id, title, target));
     }
 
 }

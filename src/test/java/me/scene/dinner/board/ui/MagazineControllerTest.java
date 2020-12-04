@@ -5,9 +5,10 @@ import me.scene.dinner.board.application.magazine.MagazineBestListCache;
 import me.scene.dinner.board.application.magazine.MagazineNotFoundException;
 import me.scene.dinner.board.domain.magazine.Magazine;
 import me.scene.dinner.board.domain.magazine.Policy;
+import me.scene.dinner.board.domain.magazine.event.MemberAddedEvent;
 import me.scene.dinner.board.domain.magazine.event.MemberAppliedEvent;
-import me.scene.dinner.board.domain.magazine.event.MemberManagedEvent;
 import me.scene.dinner.board.domain.magazine.event.MemberQuitEvent;
+import me.scene.dinner.board.domain.magazine.event.MemberRemovedEvent;
 import me.scene.dinner.notification.NotificationListener;
 import me.scene.dinner.test.facade.FactoryFacade;
 import me.scene.dinner.test.facade.RepositoryFacade;
@@ -68,6 +69,7 @@ class MagazineControllerTest {
     void setUp() {
         manager = factoryFacade.createAccount("manager");
         login(manager);
+        bestListCache.init();
     }
 
     void expectRedirectionToLogin(MockHttpServletRequestBuilder requestBuilder) throws Exception {
@@ -408,7 +410,6 @@ class MagazineControllerTest {
                             .andExpect(status().is3xxRedirection())
                             .andExpect(redirectedUrl("/sent-to-manager?magazineId=" + managed.getId()))
                     ;
-                    Thread.sleep(1000L);
                     MemberAppliedEvent event = new MemberAppliedEvent(managed, managed.getId(), managed.getTitle(), manager.getUsername(), member.getUsername());
                     then(notificationListener).should().onMemberAppliedEvent(event);
                 }
@@ -468,8 +469,8 @@ class MagazineControllerTest {
                     Thread.sleep(1000L);
                     List<String> members = magazineService.load(managed.getTitle()).getMembers();
                     assertThat(members).contains(member.getUsername());
-                    MemberManagedEvent event = new MemberManagedEvent(managed, managed.getId(), managed.getTitle(), member.getUsername());
-                    then(notificationListener).should().onMemberManagedEvent(event);
+                    MemberAddedEvent event = new MemberAddedEvent(managed, managed.getId(), managed.getTitle(), member.getUsername());
+                    then(notificationListener).should().onMemberAddedEvent(event);
                 }
 
                 @Nested
@@ -486,8 +487,8 @@ class MagazineControllerTest {
                         Thread.sleep(1000L);
                         List<String> members = magazineService.load(managed.getTitle()).getMembers();
                         assertThat(members).contains(member.getUsername());
-                        MemberManagedEvent event = new MemberManagedEvent(managed, managed.getId(), managed.getTitle(), member.getUsername());
-                        then(notificationListener).should().onMemberManagedEvent(event);
+                        MemberAddedEvent event = new MemberAddedEvent(managed, managed.getId(), managed.getTitle(), member.getUsername());
+                        then(notificationListener).should().onMemberAddedEvent(event);
                     }
                 }
             }
@@ -507,8 +508,8 @@ class MagazineControllerTest {
                     Thread.sleep(1000L);
                     List<String> members = magazineService.load(managed.getTitle()).getMembers();
                     assertThat(members).doesNotContain(member.getUsername());
-                    MemberManagedEvent event = new MemberManagedEvent(managed, managed.getId(), managed.getTitle(), member.getUsername(), true);
-                    then(notificationListener).should().onMemberManagedEvent(event);
+                    MemberRemovedEvent event = new MemberRemovedEvent(managed, managed.getId(), managed.getTitle(), member.getUsername());
+                    then(notificationListener).should().onMemberRemovedEvent(event);
                 }
             }
 
@@ -540,20 +541,25 @@ class MagazineControllerTest {
 
         @Nested
         class Best {
-            @Test // TODO count
+            @Test
             void returns_magazines() throws Exception {
                 factoryFacade.createMagazine(manager, "Magazine 1", Policy.OPEN);
                 factoryFacade.createMagazine(manager, "Magazine 2", Policy.OPEN);
                 factoryFacade.createMagazine(manager, "Magazine 3", Policy.OPEN);
+                factoryFacade.createMagazine(manager, "Magazine 4", Policy.OPEN);
+                factoryFacade.createMagazine(manager, "Magazine 5", Policy.OPEN);
+                factoryFacade.createMagazine(manager, "Magazine 6", Policy.OPEN);
                 mockMvc.perform(
                         get("/api/magazines")
                 )
                         .andExpect(status().isOk())
-                        .andExpect(jsonPath("$", hasSize(3)))
+                        .andExpect(jsonPath("$", hasSize(5)))
                         .andExpect(jsonPath("[0]").exists())
                         .andExpect(jsonPath("[1]").exists())
                         .andExpect(jsonPath("[2]").exists())
-                        .andExpect(jsonPath("[3]").doesNotExist())
+                        .andExpect(jsonPath("[3]").exists())
+                        .andExpect(jsonPath("[4]").exists())
+                        .andExpect(jsonPath("[5]").doesNotExist())
                         .andExpect(jsonPath("[0].*", hasSize(2)))
                         .andExpect(jsonPath("[0].id").exists())
                         .andExpect(jsonPath("[0].title").exists())

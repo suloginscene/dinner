@@ -41,15 +41,13 @@ public class TopicController {
 
     @GetMapping("/topics/{topicId}")
     public String showTopic(@PathVariable Long topicId, Model model) {
-        model.addAttribute("topic", topicService.find(topicId));
+        model.addAttribute("topic", topicService.read(topicId));
         return "page/board/topic/view";
     }
 
     @GetMapping("/topics/{topicId}/form")
     public String updateForm(@PathVariable Long topicId, @CurrentUser Account current, Model model) {
-        Topic topic = topicService.find(topicId);
-        topic.confirmManager(current.getUsername());
-
+        Topic topic = topicService.findToUpdate(topicId, current.getUsername());
         model.addAttribute("id", topicId);
         model.addAttribute("updateForm", updateForm(topic));
         return "page/board/topic/update";

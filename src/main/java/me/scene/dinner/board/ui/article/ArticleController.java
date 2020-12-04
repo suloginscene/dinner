@@ -43,20 +43,15 @@ public class ArticleController {
 
     @GetMapping("/articles/{articleId}")
     public String showArticle(@PathVariable Long articleId, @CurrentUser Account current, Model model) {
-        Article article = articleService.read(articleId);
-        if (!article.isPublic()) {
-            String username = (current != null) ? current.getUsername() : "anonymousUser";
-            article.confirmWriter(username);
-        }
+        String username = (current != null) ? current.getUsername() : "anonymousUser";
+        Article article = articleService.read(articleId, username);
         model.addAttribute("article", article);
         return "page/board/article/view";
     }
 
     @GetMapping("/articles/{articleId}/form")
     public String updateForm(@PathVariable Long articleId, @CurrentUser Account current, Model model) {
-        Article article = articleService.find(articleId);
-        article.confirmWriter(current.getUsername());
-
+        Article article = articleService.findToUpdate(articleId, current.getUsername());
         model.addAttribute("id", articleId);
         model.addAttribute("updateForm", updateForm(article));
         return "page/board/article/update";
