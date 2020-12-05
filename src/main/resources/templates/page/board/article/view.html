@@ -45,7 +45,7 @@
                 </form>
             </div>
 
-            <div th:unless="${article.isPublic()}">
+            <div th:if="${article.getStatus()=='PRIVATE'}">
                 비공개 게시글입니다. 수정화면을 통해 공개하실 수 있습니다.
             </div>
 

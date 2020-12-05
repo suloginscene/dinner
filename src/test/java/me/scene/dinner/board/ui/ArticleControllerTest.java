@@ -3,7 +3,6 @@ package me.scene.dinner.board.ui;
 import me.scene.dinner.account.domain.account.Account;
 import me.scene.dinner.board.application.article.ArticleNotFoundException;
 import me.scene.dinner.board.domain.article.Article;
-import me.scene.dinner.board.domain.article.Status;
 import me.scene.dinner.board.domain.magazine.Magazine;
 import me.scene.dinner.board.domain.magazine.Policy;
 import me.scene.dinner.board.domain.reply.Reply;
@@ -15,7 +14,6 @@ import me.scene.dinner.test.proxy.service.MagazineServiceProxy;
 import me.scene.dinner.test.proxy.service.TopicServiceProxy;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -256,11 +254,10 @@ class ArticleControllerTest {
 
         @BeforeEach
         void setup() {
-            article = factoryFacade.createArticle(topic, manager, "Test Article", Status.PUBLIC);
+            article = factoryFacade.createArticle(topic, manager, "Test Article", true);
         }
 
-        // TODO DTO
-        @Test @Disabled
+        @Test
         void shows_article() throws Exception {
             mockMvc.perform(
                     get("/articles/" + article.getId())
@@ -290,7 +287,7 @@ class ArticleControllerTest {
 
             @BeforeEach
             void setup() {
-                privateArticle = factoryFacade.createArticle(topic, manager, "PRIVATE Article", Status.PRIVATE);
+                privateArticle = factoryFacade.createArticle(topic, manager, "PRIVATE Article", false);
             }
 
             @Test
@@ -305,8 +302,7 @@ class ArticleControllerTest {
 
             @Nested
             class When_owner {
-                // TODO DTO
-                @Test @Disabled
+                @Test
                 void shows_article() throws Exception {
                     logout();
                     login(manager);
@@ -329,7 +325,7 @@ class ArticleControllerTest {
 
         @BeforeEach
         void setup() {
-            article = factoryFacade.createArticle(topic, user, "Test Article", Status.PUBLIC);
+            article = factoryFacade.createArticle(topic, user, "Test Article", true);
         }
 
         @Nested
@@ -382,7 +378,7 @@ class ArticleControllerTest {
                 Article article = articleService.find(id);
                 assertThat(article.getTitle()).isEqualTo("Updated");
                 assertThat(article.getContent()).isEqualTo("Updated content.");
-                assertThat(article.getStatus().name()).isEqualTo("PRIVATE");
+                assertThat(article.isPublicized()).isFalse();
                 magazine = magazineService.load(magazine.getTitle());
                 assertThat(magazine.getWriters()).doesNotContain(user.getUsername());
             }
@@ -439,7 +435,7 @@ class ArticleControllerTest {
 
         @BeforeEach
         void setup() {
-            article = factoryFacade.createArticle(topic, user, "Test Article", Status.PUBLIC);
+            article = factoryFacade.createArticle(topic, user, "Test Article", true);
         }
 
         @Test
@@ -503,10 +499,10 @@ class ArticleControllerTest {
 
         @BeforeEach
         void setup() {
-            factoryFacade.createArticle(topic, manager, "Manager's", Status.PUBLIC);
-            factoryFacade.createArticle(topic, user, "User's 1", Status.PUBLIC);
-            factoryFacade.createArticle(topic, user, "User's 2", Status.PUBLIC);
-            factoryFacade.createArticle(topic, user, "User's 3", Status.PRIVATE);
+            factoryFacade.createArticle(topic, manager, "Manager's", true);
+            factoryFacade.createArticle(topic, user, "User's 1", true);
+            factoryFacade.createArticle(topic, user, "User's 2", true);
+            factoryFacade.createArticle(topic, user, "User's 3", false);
         }
 
         @Nested

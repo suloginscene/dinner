@@ -3,8 +3,8 @@ package me.scene.dinner.board.ui.article;
 import lombok.RequiredArgsConstructor;
 import me.scene.dinner.account.application.CurrentUser;
 import me.scene.dinner.account.domain.account.Account;
+import me.scene.dinner.board.application.article.dto.ArticleDto;
 import me.scene.dinner.board.application.article.ArticleService;
-import me.scene.dinner.board.domain.article.Article;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
@@ -37,32 +37,32 @@ public class ArticleController {
     public String createArticle(@CurrentUser Account current, @Valid ArticleForm form, Errors errors) {
         if (errors.hasErrors()) return "page/board/article/form";
 
-        Long id = articleService.save(form.getTopicId(), current.getUsername(), form.getTitle(), form.getContent(), form.getStatus());
+        Long id = articleService.save(form.getTopicId(), current.getUsername(), form.getTitle(), form.getContent(), form.isPublicized());
         return "redirect:" + ("/articles/" + id);
     }
 
     @GetMapping("/articles/{articleId}")
     public String showArticle(@PathVariable Long articleId, @CurrentUser Account current, Model model) {
         String username = (current != null) ? current.getUsername() : "anonymousUser";
-        Article article = articleService.read(articleId, username);
+        ArticleDto article = articleService.read(articleId, username);
         model.addAttribute("article", article);
         return "page/board/article/view";
     }
 
     @GetMapping("/articles/{articleId}/form")
     public String updateForm(@PathVariable Long articleId, @CurrentUser Account current, Model model) {
-        Article article = articleService.findToUpdate(articleId, current.getUsername());
+        ArticleDto article = articleService.findToUpdate(articleId, current.getUsername());
         model.addAttribute("id", articleId);
         model.addAttribute("updateForm", updateForm(article));
         return "page/board/article/update";
     }
 
-    private ArticleForm updateForm(Article a) {
+    private ArticleForm updateForm(ArticleDto a) {
         ArticleForm f = new ArticleForm();
         f.setTopicId(a.getTopic().getId());
         f.setTitle(a.getTitle());
         f.setContent(a.getContent());
-        f.setStatus(a.getStatus().name());
+        f.setStatus(a.getStatus());
         return f;
     }
 
@@ -70,7 +70,7 @@ public class ArticleController {
     public String update(@PathVariable Long articleId, @CurrentUser Account current, @Valid ArticleForm form, Errors errors) {
         if (errors.hasErrors()) return "redirect:" + ("/articles/" + articleId + "/form");
 
-        articleService.update(articleId, current.getUsername(), form.getTitle(), form.getContent(), form.getStatus());
+        articleService.update(articleId, current.getUsername(), form.getTitle(), form.getContent(), form.isPublicized());
         return "redirect:" + ("/articles/" + articleId);
     }
 
@@ -81,7 +81,7 @@ public class ArticleController {
     }
 
     @GetMapping("/api/articles/{username}")
-    public @ResponseBody List<Article> byUserPublic(@PathVariable String username) {
+    public @ResponseBody List<ArticleDto> byUserPublic(@PathVariable String username) {
         return articleService.findPublicByWriter(username);
     }
 

@@ -11,8 +11,8 @@ public class ArticleFactory {
 
     private final ArticleService articleService;
 
-    public Article create(Long topicId, String writer, String title, String content, String status) {
-        Long id = articleService.save(topicId, writer, title, content, status);
+    public Article create(Long topicId, String writer, String title, String content, boolean publicized) {
+        Long id = articleService.save(topicId, writer, title, content, publicized);
         return articleService.find(id);
     }
 

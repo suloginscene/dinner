@@ -2,7 +2,6 @@ package me.scene.dinner.board.ui;
 
 import me.scene.dinner.account.domain.account.Account;
 import me.scene.dinner.board.domain.article.Article;
-import me.scene.dinner.board.domain.article.Status;
 import me.scene.dinner.board.domain.magazine.Magazine;
 import me.scene.dinner.board.domain.magazine.Policy;
 import me.scene.dinner.board.domain.reply.Reply;
@@ -58,7 +57,7 @@ class ReplyControllerTest {
         user = factoryFacade.createAccount("user");
         magazine = factoryFacade.createMagazine(user, "Test Magazine", Policy.OPEN);
         topic = factoryFacade.createTopic(magazine, user, "Test Topic");
-        article = factoryFacade.createArticle(topic, user, "Test Article", Status.PUBLIC);
+        article = factoryFacade.createArticle(topic, user, "Test Article", true);
         login(user);
     }
 

@@ -46,11 +46,11 @@ public class Topic {
     private final List<Article> articles = new ArrayList<>();
 
     public List<Article> getPublicArticles() {
-        return articles.stream().filter(Article::isPublic).collect(Collectors.toList());
+        return articles.stream().filter(Article::isPublicized).collect(Collectors.toList());
     }
 
     public List<Article> getPrivateArticles() {
-        return articles.stream().filter(Predicate.not(Article::isPublic)).collect(Collectors.toList());
+        return articles.stream().filter(Predicate.not(Article::isPublicized)).collect(Collectors.toList());
     }
 
 

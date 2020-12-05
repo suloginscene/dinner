@@ -2,7 +2,6 @@ package me.scene.dinner.board.ui;
 
 import me.scene.dinner.account.domain.account.Account;
 import me.scene.dinner.board.application.common.BoardNotFoundException;
-import me.scene.dinner.board.domain.article.Status;
 import me.scene.dinner.board.domain.magazine.Magazine;
 import me.scene.dinner.board.domain.magazine.Policy;
 import me.scene.dinner.board.domain.topic.Topic;
@@ -409,7 +408,7 @@ class TopicControllerTest {
         class When_has_child {
             @Test
             void handles_Exception() throws Exception {
-                factoryFacade.createArticle(topic, user, "Test Article", Status.PUBLIC);
+                factoryFacade.createArticle(topic, user, "Test Article", true);
                 mockMvc.perform(
                         delete("/topics/" + topic.getId())
                                 .with(csrf())

@@ -2,7 +2,6 @@ package me.scene.dinner.like;
 
 import me.scene.dinner.account.domain.account.Account;
 import me.scene.dinner.board.domain.article.Article;
-import me.scene.dinner.board.domain.article.Status;
 import me.scene.dinner.board.domain.magazine.Magazine;
 import me.scene.dinner.board.domain.magazine.Policy;
 import me.scene.dinner.board.domain.topic.Topic;
@@ -60,7 +59,7 @@ class LikesControllerTest {
         writer = factoryFacade.createAccount("writer");
         magazine = factoryFacade.createMagazine(writer, "Test Magazine", Policy.OPEN);
         topic = factoryFacade.createTopic(magazine, writer, "Test Topic");
-        article = factoryFacade.createArticle(topic, writer, "Test Article", Status.PUBLIC);
+        article = factoryFacade.createArticle(topic, writer, "Test Article", true);
         reader = factoryFacade.createAccount("reader");
         login(reader);
     }

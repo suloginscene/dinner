@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import me.scene.dinner.account.domain.account.Account;
 import me.scene.dinner.account.domain.tempaccount.TempAccount;
 import me.scene.dinner.board.domain.article.Article;
-import me.scene.dinner.board.domain.article.Status;
 import me.scene.dinner.board.domain.magazine.Magazine;
 import me.scene.dinner.board.domain.magazine.Policy;
 import me.scene.dinner.board.domain.topic.Topic;
@@ -41,8 +40,8 @@ public class FactoryFacade {
         return topicFactory.create(magazine.getId(), manager.getUsername(), title, title + "에 관한 짧은 소개", title + "에 관한 긴 소개");
     }
 
-    public Article createArticle(Topic topic, Account writer, String title, Status status) {
-        return articleFactory.create(topic.getId(), writer.getUsername(), title, title + "의 본문", status.name());
+    public Article createArticle(Topic topic, Account writer, String title, boolean publicized) {
+        return articleFactory.create(topic.getId(), writer.getUsername(), title, title + "의 본문", publicized);
     }
 
     public Long createReply(Article article, Account writer, String content) {

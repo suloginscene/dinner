@@ -1,6 +1,5 @@
 package me.scene.dinner.board.domain.article;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import me.scene.dinner.board.domain.common.NotOwnerException;
@@ -9,8 +8,6 @@ import me.scene.dinner.board.domain.topic.Topic;
 import org.springframework.data.domain.AbstractAggregateRoot;
 
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Lob;
@@ -32,17 +29,15 @@ public class Article extends AbstractAggregateRoot<Article> {
     @Id @GeneratedValue
     private Long id;
 
-    @JsonIgnore
     private String writer;
 
 
     private String title;
 
-    @Lob @JsonIgnore
+    @Lob
     private String content;
 
-    @Enumerated(EnumType.STRING) @JsonIgnore
-    private Status status;
+    private boolean publicized;
 
     private LocalDateTime createdAt;
 
@@ -51,26 +46,20 @@ public class Article extends AbstractAggregateRoot<Article> {
 
     private int likes;
 
-    @JsonIgnore
     private int rating;
 
 
-    @ManyToOne(fetch = LAZY) @JsonIgnore
+    @ManyToOne(fetch = LAZY)
     private Topic topic;
 
-    @OneToMany(mappedBy = "article", orphanRemoval = true) @JsonIgnore
+    @OneToMany(mappedBy = "article", orphanRemoval = true)
     private final List<Reply> replies = new ArrayList<>();
-
-    @JsonIgnore
-    public boolean isPublic() {
-        return status == Status.PUBLIC;
-    }
 
 
     protected Article() {
     }
 
-    public static Article create(Topic topic, String writer, String title, String content, String status) {
+    public static Article create(Topic topic, String writer, String title, String content, boolean publicized) {
         topic.getMagazine().checkAuthorization(writer);
         Article article = new Article();
         article.writer = writer;
@@ -78,17 +67,17 @@ public class Article extends AbstractAggregateRoot<Article> {
         article.content = content;
         article.createdAt = LocalDateTime.now();
         article.topic = topic;
-        article.status = Status.valueOf(status);
+        article.publicized = publicized;
         topic.add(article);
         article.toggleWriterRegistration();
         return article;
     }
 
-    public void update(String current, String title, String content, String status) {
+    public void update(String current, String title, String content, boolean publicized) {
         confirmWriter(current);
         this.title = title;
         this.content = content;
-        this.status = Status.valueOf(status);
+        this.publicized = publicized;
         toggleWriterRegistration();
     }
 
@@ -121,11 +110,8 @@ public class Article extends AbstractAggregateRoot<Article> {
     }
 
     private void toggleWriterRegistration() {
-        if (status == Status.PUBLIC) {
-            topic.getMagazine().addWriter(writer);
-        } else {
-            topic.getMagazine().removeWriter(writer);
-        }
+        if (publicized) topic.getMagazine().addWriter(writer);
+        else topic.getMagazine().removeWriter(writer);
     }
 
 

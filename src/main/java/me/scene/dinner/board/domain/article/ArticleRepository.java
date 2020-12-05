@@ -6,8 +6,8 @@ import java.util.List;
 
 public interface ArticleRepository extends JpaRepository<Article, Long> {
 
-    List<Article> findByWriterAndStatusOrderByRatingDesc(String writer, Status status);
+    List<Article> findByWriterAndPublicizedOrderByRatingDesc(String writer, boolean publicized);
 
-    List<Article> findByWriterAndStatusOrderByCreatedAtAsc(String writer, Status status);
+    List<Article> findByWriterAndPublicizedOrderByCreatedAtAsc(String writer, boolean publicized);
 
 }
