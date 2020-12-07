@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import me.scene.dinner.account.application.CurrentUser;
 import me.scene.dinner.account.domain.account.Account;
 import me.scene.dinner.board.application.magazine.MagazineBestListCache;
+import me.scene.dinner.board.application.magazine.MagazineDto;
 import me.scene.dinner.board.application.magazine.MagazineService;
-import me.scene.dinner.board.domain.magazine.Magazine;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
@@ -42,26 +42,25 @@ public class MagazineController {
 
     @GetMapping("/magazines/{magazineId}")
     public String showMagazine(@PathVariable Long magazineId, Model model) {
-        Magazine magazine = magazineService.read(magazineId);
+        MagazineDto magazine = magazineService.read(magazineId);
         model.addAttribute("magazine", magazine);
-        model.addAttribute("members", magazine.getMembers());
         return "page/board/magazine/view";
     }
 
     @GetMapping("/magazines/{magazineId}/form")
     public String updateForm(@PathVariable Long magazineId, @CurrentUser Account current, Model model) {
-        Magazine magazine = magazineService.findToUpdate(magazineId, current.getUsername());
+        MagazineDto magazine = magazineService.findToUpdate(magazineId, current.getUsername());
         model.addAttribute("id", magazineId);
         model.addAttribute("updateForm", updateForm(magazine));
         return "page/board/magazine/update";
     }
 
-    private MagazineForm updateForm(Magazine m) {
+    private MagazineForm updateForm(MagazineDto m) {
         MagazineForm f = new MagazineForm();
         f.setTitle(m.getTitle());
         f.setShortExplanation(m.getShortExplanation());
         f.setLongExplanation(m.getLongExplanation());
-        f.setPolicy(m.getPolicy().name());
+        f.setPolicy(m.getPolicy());
         return f;
     }
 
@@ -94,7 +93,7 @@ public class MagazineController {
 
     @GetMapping("/magazines/{magazineId}/members")
     public String manageMembers(@PathVariable Long magazineId, @CurrentUser Account current, Model model) {
-        Magazine magazine = magazineService.findToManageMember(magazineId, current.getUsername());
+        MagazineDto magazine = magazineService.findToManageMember(magazineId, current.getUsername());
         model.addAttribute("id", magazineId);
         model.addAttribute("members", magazine.getMembers());
         return "page/board/magazine/members";
@@ -114,17 +113,18 @@ public class MagazineController {
 
     @GetMapping("/magazines")
     public String showList(Model model) {
-        model.addAttribute("magazines", magazineService.findAll());
+        List<MagazineDto> all = magazineService.all();
+        model.addAttribute("magazines", all);
         return "page/board/magazine/list";
     }
 
     @GetMapping("/api/magazines")
-    public @ResponseBody List<Magazine> bestList() {
+    public @ResponseBody List<MagazineDto> bestList() {
         return bestListCache.get();
     }
 
     @GetMapping("/api/magazines/{username}")
-    public @ResponseBody List<Magazine> byUser(@PathVariable String username) {
+    public @ResponseBody List<MagazineDto> byUser(@PathVariable String username) {
         return magazineService.findByManager(username);
     }
 

@@ -1,8 +1,8 @@
 package me.scene.dinner.notification;
 
 import lombok.RequiredArgsConstructor;
-import me.scene.dinner.board.domain.magazine.event.MemberAppliedEvent;
 import me.scene.dinner.board.domain.magazine.event.MemberAddedEvent;
+import me.scene.dinner.board.domain.magazine.event.MemberAppliedEvent;
 import me.scene.dinner.board.domain.magazine.event.MemberQuitEvent;
 import me.scene.dinner.board.domain.magazine.event.MemberRemovedEvent;
 import me.scene.dinner.like.LikedEvent;

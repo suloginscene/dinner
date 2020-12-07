@@ -1,16 +1,17 @@
 package me.scene.dinner.board.application.magazine;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import me.scene.dinner.board.domain.magazine.Magazine;
 import me.scene.dinner.board.domain.magazine.MagazineRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service @Transactional(readOnly = true)
-@RequiredArgsConstructor
+@RequiredArgsConstructor @Slf4j
 public class MagazineService {
 
     private final MagazineRepository magazineRepository;
@@ -19,14 +20,15 @@ public class MagazineService {
         return magazineRepository.findById(id).orElseThrow(() -> new MagazineNotFoundException(id));
     }
 
-    public List<Magazine> findAll() {
-        List<Magazine> allMagazines = magazineRepository.findAll();
-        allMagazines.sort(Comparator.comparing(Magazine::getRating, Comparator.reverseOrder()));
-        return allMagazines;
+    public List<MagazineDto> all() {
+        return magazineRepository.findAll().stream()
+                .sorted((m, o) -> o.getRating() - m.getRating())
+                .map(this::extractDto)
+                .collect(Collectors.toList());
     }
 
-    public List<Magazine> findBest(int count) {
-        List<Magazine> allMagazines = findAll();
+    public List<MagazineDto> best(int count) {
+        List<MagazineDto> allMagazines = all();
         return (allMagazines.size() > count) ?
                 allMagazines.subList(0, count) : allMagazines;
     }
@@ -37,24 +39,22 @@ public class MagazineService {
         return magazineRepository.save(magazine).getId();
     }
 
-    public Magazine read(Long id) {
+    public MagazineDto read(Long id) {
         Magazine magazine = find(id);
-        // TODO
-        magazine.getTopics().sort(Comparator.comparing(t -> t.getRating(), Comparator.reverseOrder()));
-        return magazine;
+        return extractDto(magazine);
     }
 
-    public Magazine findToUpdate(Long id, String current) {
+    public MagazineDto findToUpdate(Long id, String current) {
         Magazine magazine = find(id);
         magazine.confirmManager(current);
-        return magazine;
+        return extractDto(magazine);
     }
 
-    public Magazine findToManageMember(Long id, String current) {
+    public MagazineDto findToManageMember(Long id, String current) {
         Magazine magazine = find(id);
         magazine.confirmManager(current);
         magazine.confirmPolicyManaged();
-        return magazine;
+        return extractDto(magazine);
     }
 
     @Transactional
@@ -104,8 +104,21 @@ public class MagazineService {
         magazineRepository.save(magazine);
     }
 
-    public List<Magazine> findByManager(String username) {
-        return magazineRepository.findByManagerOrderByRatingDesc(username);
+    public List<MagazineDto> findByManager(String username) {
+        return magazineRepository.findByManagerOrderByRatingDesc(username).stream()
+                .map(this::extractDto).collect(Collectors.toList());
+    }
+
+    protected MagazineDto extractDto(Magazine m) {
+
+        // TODO fetch join
+        List<String> members = m.getMembers();
+        log.debug("load: {}", members);
+        List<String> writers = m.getWriters();
+        log.debug("load: {}", writers);
+
+        return new MagazineDto(m.getId(), m.getManager(), m.getTitle(), m.getShortExplanation(), m.getLongExplanation(),
+                m.getPolicy().name(), members, writers, m.getTopicSummaries());
     }
 
 }

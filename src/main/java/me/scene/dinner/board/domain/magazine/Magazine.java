@@ -1,14 +1,13 @@
 package me.scene.dinner.board.domain.magazine;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import me.scene.dinner.board.domain.common.NotDeletableException;
 import me.scene.dinner.board.domain.common.NotOwnerException;
 import me.scene.dinner.board.domain.magazine.event.MagazineChangedEvent;
 import me.scene.dinner.board.domain.magazine.event.MagazineDeletedEvent;
-import me.scene.dinner.board.domain.magazine.event.MemberAppliedEvent;
 import me.scene.dinner.board.domain.magazine.event.MemberAddedEvent;
+import me.scene.dinner.board.domain.magazine.event.MemberAppliedEvent;
 import me.scene.dinner.board.domain.magazine.event.MemberQuitEvent;
 import me.scene.dinner.board.domain.magazine.event.MemberRemovedEvent;
 import me.scene.dinner.board.domain.topic.Topic;
@@ -16,15 +15,19 @@ import org.springframework.data.domain.AbstractAggregateRoot;
 
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import static javax.persistence.EnumType.STRING;
 import static javax.persistence.FetchType.LAZY;
+import static me.scene.dinner.board.domain.magazine.Policy.EXCLUSIVE;
+import static me.scene.dinner.board.domain.magazine.Policy.MANAGED;
+import static me.scene.dinner.board.domain.magazine.Policy.OPEN;
 
 @Entity
 @Getter @EqualsAndHashCode(of = "id", callSuper = false)
@@ -33,55 +36,31 @@ public class Magazine extends AbstractAggregateRoot<Magazine> {
     @Id @GeneratedValue
     private Long id;
 
-    @JsonIgnore
     private String manager;
 
 
     private String title;
 
-    @JsonIgnore
     private String shortExplanation;
 
-    @JsonIgnore
     private String longExplanation;
 
-    @JsonIgnore @Enumerated(EnumType.STRING)
+    @Enumerated(STRING)
     private Policy policy;
 
 
-    @JsonIgnore
     private int rating;
 
 
-    @OneToMany(mappedBy = "magazine") @JsonIgnore
+    @OneToMany(mappedBy = "magazine")
     private final List<Topic> topics = new ArrayList<>();
 
 
-    @ElementCollection(fetch = LAZY) @JsonIgnore
+    @ElementCollection(fetch = LAZY)
     private final List<String> writers = new ArrayList<>();
 
-    @ElementCollection(fetch = LAZY) @JsonIgnore
+    @ElementCollection(fetch = LAZY)
     private final List<String> members = new ArrayList<>();
-
-    @JsonIgnore
-    public boolean isOpen() {
-        return policy == Policy.OPEN;
-    }
-
-    @JsonIgnore
-    public boolean isManaged() {
-        return policy == Policy.MANAGED;
-    }
-
-    public boolean doesAccept(String current) {
-        if (policy == Policy.OPEN) return true;
-        if (policy == Policy.EXCLUSIVE) return current.equals(manager);
-        if (policy == Policy.MANAGED) {
-            if (current.equals(manager)) return true;
-            return members.contains(current);
-        }
-        throw new IllegalStateException("Magazine should have policy in enum");
-    }
 
 
     protected Magazine() {
@@ -94,7 +73,7 @@ public class Magazine extends AbstractAggregateRoot<Magazine> {
         magazine.shortExplanation = shortExplanation;
         magazine.longExplanation = longExplanation;
         magazine.policy = Policy.valueOf(magazinePolicy);
-        magazine.registerEvent(new MagazineChangedEvent(magazine));
+        magazine.registerEvent(new MagazineChangedEvent(magazine, null));
         return magazine;
     }
 
@@ -103,18 +82,18 @@ public class Magazine extends AbstractAggregateRoot<Magazine> {
         this.title = title;
         this.shortExplanation = shortExplanation;
         this.longExplanation = longExplanation;
-        registerEvent(new MagazineChangedEvent(this));
+        registerEvent(new MagazineChangedEvent(this, id));
     }
 
     public void rate(int point) {
         rating += point;
-        if (rating % 100 == 0) registerEvent(new MagazineChangedEvent(this));
+        if (rating % 100 == 0) registerEvent(new MagazineChangedEvent(this, id));
     }
 
     public void beforeDelete(String current) {
         confirmManager(current);
         confirmDeletable();
-        registerEvent(new MagazineDeletedEvent(this));
+        registerEvent(new MagazineDeletedEvent(this, id));
     }
 
 
@@ -140,15 +119,15 @@ public class Magazine extends AbstractAggregateRoot<Magazine> {
 
     public void checkAuthorization(String username) {
 
-        if (policy == Policy.OPEN) {
+        if (policy == OPEN) {
             return;
         }
 
-        if (policy == Policy.EXCLUSIVE) {
+        if (policy == EXCLUSIVE) {
             if (manager.equals(username)) return;
         }
 
-        if (policy == Policy.MANAGED) {
+        if (policy == MANAGED) {
             if (manager.equals(username)) return;
             if (members.contains(username)) return;
         }
@@ -170,7 +149,7 @@ public class Magazine extends AbstractAggregateRoot<Magazine> {
     }
 
     public void confirmPolicyManaged() {
-        if (isManaged()) return;
+        if (policy == MANAGED) return;
         throw new IllegalStateException("Not Managed Magazine");
     }
 
@@ -205,6 +184,13 @@ public class Magazine extends AbstractAggregateRoot<Magazine> {
 
         members.remove(target);
         registerEvent(new MemberRemovedEvent(this, id, title, target));
+    }
+
+    public List<TopicSummary> getTopicSummaries() {
+        return topics.stream()
+                .sorted((t, o) -> o.getRating() - t.getRating())
+                .map(t -> new TopicSummary(t.getId(), t.getTitle()))
+                .collect(Collectors.toList());
     }
 
 }

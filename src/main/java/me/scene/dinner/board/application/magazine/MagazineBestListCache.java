@@ -1,7 +1,6 @@
 package me.scene.dinner.board.application.magazine;
 
 import lombok.RequiredArgsConstructor;
-import me.scene.dinner.board.domain.magazine.Magazine;
 import me.scene.dinner.board.domain.magazine.event.MagazineChangedEvent;
 import me.scene.dinner.board.domain.magazine.event.MagazineDeletedEvent;
 import org.springframework.context.event.EventListener;
@@ -17,34 +16,45 @@ public class MagazineBestListCache {
     private final MagazineService magazineService;
 
     private static final int COUNT = 5;
-    private List<Magazine> bestMagazines;
+    private List<MagazineDto> bestMagazines;
 
-    private void updateBestList(int count) {
-        bestMagazines = magazineService.findBest(count);
-    }
 
     @PostConstruct
     public void init() {
-        updateBestList(COUNT);
+        bestMagazines = magazineService.best(COUNT);
     }
+
 
     @EventListener
     public void onApplicationEvent(MagazineChangedEvent event) {
-        Magazine source = (Magazine) event.getSource();
-        if ((bestMagazines.size() >= COUNT) && !(bestMagazines.contains(source))) return;
-        updateBestList(COUNT);
+        if ((bestMagazines.size() >= COUNT) && doesNotContain(event.getId())) return;
+        bestMagazines = magazineService.best(COUNT);
     }
 
     @EventListener
     public void onApplicationEvent(MagazineDeletedEvent event) {
-        Magazine source = (Magazine) event.getSource();
-        if (!bestMagazines.contains(source)) return;
-        updateBestList(COUNT + 1);
-        bestMagazines.remove(source);
+        Long id = event.getId();
+        if (doesNotContain(id)) return;
+        bestMagazines = magazineService.best(COUNT + 1);
+        bestMagazines.remove(findTarget(id));
     }
 
-    public List<Magazine> get() {
+
+    public List<MagazineDto> get() {
         return bestMagazines;
+    }
+
+
+    private boolean doesNotContain(Long id) {
+        return bestMagazines.stream().noneMatch(m -> m.getId().equals(id));
+    }
+
+    public MagazineDto findTarget(Long id) {
+        return bestMagazines.stream().filter(m -> m.getId().equals(id)).findFirst().orElseThrow(IllegalStateException::new);
+    }
+
+    public boolean contains(Long id) {
+        return !doesNotContain(id);
     }
 
 }

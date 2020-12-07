@@ -2,6 +2,7 @@ package me.scene.dinner.board.ui;
 
 import me.scene.dinner.account.domain.account.Account;
 import me.scene.dinner.board.application.magazine.MagazineBestListCache;
+import me.scene.dinner.board.application.magazine.MagazineDto;
 import me.scene.dinner.board.application.magazine.MagazineNotFoundException;
 import me.scene.dinner.board.domain.magazine.Magazine;
 import me.scene.dinner.board.domain.magazine.Policy;
@@ -15,7 +16,6 @@ import me.scene.dinner.test.facade.RepositoryFacade;
 import me.scene.dinner.test.proxy.service.MagazineServiceProxy;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -57,7 +57,7 @@ class MagazineControllerTest {
     @SpyBean NotificationListener notificationListener;
 
     @SpyBean MagazineServiceProxy magazineService;
-    @Autowired MagazineBestListCache bestListCache;
+    @SpyBean MagazineBestListCache bestListCache;
 
     @Autowired FactoryFacade factoryFacade;
     @Autowired RepositoryFacade repositoryFacade;
@@ -134,8 +134,7 @@ class MagazineControllerTest {
                 assertThat(magazine.getLongExplanation()).isEqualTo(longExplanation);
                 assertThat(magazine.getPolicy()).isEqualTo(Policy.OPEN);
                 assertThat(magazine.getManager()).isEqualTo(manager.getUsername());
-                List<Magazine> bestList = bestListCache.get();
-                assertThat(bestList).contains(magazine);
+                assertThat(bestListCache.contains(magazine.getId())).isTrue();
             }
 
             @Nested
@@ -177,8 +176,7 @@ class MagazineControllerTest {
             logout();
         }
 
-        // TODO DTO
-        @Test @Disabled
+        @Test
         void show_magazine() throws Exception {
             mockMvc.perform(
                     get("/magazines/" + magazine.getId())
@@ -266,8 +264,8 @@ class MagazineControllerTest {
                 assertThat(magazine.getTitle()).isEqualTo("Updated");
                 assertThat(magazine.getShortExplanation()).isEqualTo("Updated short.");
                 assertThat(magazine.getLongExplanation()).isEqualTo("Updated long.");
-                Magazine magazineInNav = bestListCache.get().get(0);
-                assertThat(magazineInNav.getTitle()).isEqualTo("Updated");
+                assertThat(bestListCache.contains(id)).isTrue();
+                assertThat(bestListCache.findTarget(id).getTitle()).isEqualTo("Updated");
             }
 
             @Nested
@@ -337,7 +335,7 @@ class MagazineControllerTest {
                     .andExpect(redirectedUrl("/"))
             ;
             assertThrows(MagazineNotFoundException.class, () -> magazineService.find(magazine.getId()));
-            List<Magazine> bestList = bestListCache.get();
+            List<MagazineDto> bestList = bestListCache.get();
             assertThat(bestList).isEmpty();
         }
 
@@ -442,8 +440,8 @@ class MagazineControllerTest {
 
             @Nested
             class Page {
-                // TODO DTO
-                @Test @Disabled
+
+                @Test
                 void returns_members() throws Exception {
                     mockMvc.perform(
                             get("/magazines/" + managed.getId() + "/members")

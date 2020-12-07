@@ -1,8 +1,6 @@
 package me.scene.dinner.board.application.article;
 
 import lombok.RequiredArgsConstructor;
-//import me.scene.dinner.board.domain.article.ReplySummary;
-//import me.scene.dinner.board.domain.article.TopicSummary;
 import me.scene.dinner.board.application.topic.TopicService;
 import me.scene.dinner.board.domain.article.Article;
 import me.scene.dinner.board.domain.article.ArticleRepository;
