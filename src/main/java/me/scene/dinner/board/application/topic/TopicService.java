@@ -7,8 +7,6 @@ import me.scene.dinner.board.domain.topic.TopicRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Comparator;
-
 @Service @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class TopicService {
@@ -26,18 +24,15 @@ public class TopicService {
         return topicRepository.save(topic).getId();
     }
 
-    public Topic read(Long id) {
+    public TopicDto read(Long id) {
         Topic topic = find(id);
-        // Todo
-        topic.getArticles().sort(Comparator.comparing(a -> a.getCreatedAt()));
-        topic.getArticles().forEach(a -> a.getContent());
-        return topic;
+        return extractDto(topic);
     }
 
-    public Topic findToUpdate(Long id, String current) {
+    public TopicDto findToUpdate(Long id, String current) {
         Topic topic = find(id);
         topic.confirmManager(current);
-        return topic;
+        return extractDto(topic);
     }
 
     @Transactional
@@ -52,6 +47,11 @@ public class TopicService {
         topic.beforeDelete(current);
         topicRepository.delete(topic);
         return topic.getMagazine().getId();
+    }
+
+    private TopicDto extractDto(Topic t) {
+        return new TopicDto(t.getId(), t.getManager(), t.getTitle(), t.getShortExplanation(), t.getLongExplanation(),
+                t.magazineSummary(), t.privateArticleSummaries(), t.publicArticleSummaries());
     }
 
 }

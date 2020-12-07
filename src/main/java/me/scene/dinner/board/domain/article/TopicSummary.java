@@ -1,9 +1,10 @@
-package me.scene.dinner.board.application.article.dto;
+package me.scene.dinner.board.domain.article;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-@Getter @RequiredArgsConstructor
+@Getter
+@RequiredArgsConstructor
 public class TopicSummary {
 
     private final Long id;

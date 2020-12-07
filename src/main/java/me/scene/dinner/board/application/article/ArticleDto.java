@@ -1,7 +1,9 @@
-package me.scene.dinner.board.application.article.dto;
+package me.scene.dinner.board.application.article;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
+import me.scene.dinner.board.domain.article.ReplySummary;
+import me.scene.dinner.board.domain.article.TopicSummary;
 
 import java.time.LocalDateTime;
 import java.util.List;

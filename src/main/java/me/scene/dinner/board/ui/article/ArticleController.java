@@ -3,7 +3,7 @@ package me.scene.dinner.board.ui.article;
 import lombok.RequiredArgsConstructor;
 import me.scene.dinner.account.application.CurrentUser;
 import me.scene.dinner.account.domain.account.Account;
-import me.scene.dinner.board.application.article.dto.ArticleDto;
+import me.scene.dinner.board.application.article.ArticleDto;
 import me.scene.dinner.board.application.article.ArticleService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

@@ -1,9 +1,8 @@
 package me.scene.dinner.board.application.article;
 
 import lombok.RequiredArgsConstructor;
-import me.scene.dinner.board.application.article.dto.ArticleDto;
-import me.scene.dinner.board.application.article.dto.ReplySummary;
-import me.scene.dinner.board.application.article.dto.TopicSummary;
+//import me.scene.dinner.board.domain.article.ReplySummary;
+//import me.scene.dinner.board.domain.article.TopicSummary;
 import me.scene.dinner.board.application.topic.TopicService;
 import me.scene.dinner.board.domain.article.Article;
 import me.scene.dinner.board.domain.article.ArticleRepository;
@@ -82,12 +81,8 @@ public class ArticleService {
     }
 
     private ArticleDto extractDto(Article a) {
-        TopicSummary topic = new TopicSummary(a.getTopic().getId(), a.getTopic().getTitle());
-        List<ReplySummary> replies = a.getReplies().stream()
-                .map(r -> new ReplySummary(r.getId(), r.getWriter(), r.getContent(), r.getCreatedAt()))
-                .collect(Collectors.toList());
         return new ArticleDto(a.getId(), a.getWriter(), a.getTitle(), a.getContent(), a.isPublicized(),
-                a.getCreatedAt(), a.getRead(), a.getLikes(), topic, replies);
+                a.getCreatedAt(), a.getRead(), a.getLikes(), a.topicSummary(), a.replySummaries());
     }
 
 }

@@ -13,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -48,11 +49,6 @@ public class Topic {
     public List<Article> getPublicArticles() {
         return articles.stream().filter(Article::isPublicized).collect(Collectors.toList());
     }
-
-    public List<Article> getPrivateArticles() {
-        return articles.stream().filter(Predicate.not(Article::isPublicized)).collect(Collectors.toList());
-    }
-
 
     protected Topic() {
     }
@@ -105,6 +101,25 @@ public class Topic {
 
     public void remove(Article article) {
         articles.remove(article);
+    }
+
+    public MagazineSummary magazineSummary() {
+        return new MagazineSummary(magazine.getId(), magazine.getManager(), magazine.getTitle(),
+                magazine.getPolicy().name(), magazine.getMembers());
+    }
+
+    public List<ArticleSummary> privateArticleSummaries() {
+        return articles.stream().filter(Predicate.not(Article::isPublicized))
+                .map(a -> new ArticleSummary(a.getId(), a.getWriter(), a.getTitle(), a.getContent(), a.getCreatedAt()))
+                .sorted(Comparator.comparing(ArticleSummary::getCreatedAt))
+                .collect(Collectors.toList());
+    }
+
+    public List<ArticleSummary> publicArticleSummaries() {
+        return articles.stream().filter(Article::isPublicized)
+                .map(a -> new ArticleSummary(a.getId(), a.getWriter(), a.getTitle(), a.getContent(), a.getCreatedAt()))
+                .sorted(Comparator.comparing(ArticleSummary::getCreatedAt))
+                .collect(Collectors.toList());
     }
 
 }

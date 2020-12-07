@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import me.scene.dinner.account.application.CurrentUser;
 import me.scene.dinner.account.domain.account.Account;
 import me.scene.dinner.board.application.topic.TopicService;
-import me.scene.dinner.board.domain.topic.Topic;
+import me.scene.dinner.board.application.topic.TopicDto;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
@@ -41,19 +41,20 @@ public class TopicController {
 
     @GetMapping("/topics/{topicId}")
     public String showTopic(@PathVariable Long topicId, Model model) {
-        model.addAttribute("topic", topicService.read(topicId));
+        TopicDto topic = topicService.read(topicId);
+        model.addAttribute("topic", topic);
         return "page/board/topic/view";
     }
 
     @GetMapping("/topics/{topicId}/form")
     public String updateForm(@PathVariable Long topicId, @CurrentUser Account current, Model model) {
-        Topic topic = topicService.findToUpdate(topicId, current.getUsername());
+        TopicDto topic = topicService.findToUpdate(topicId, current.getUsername());
         model.addAttribute("id", topicId);
         model.addAttribute("updateForm", updateForm(topic));
         return "page/board/topic/update";
     }
 
-    private TopicForm updateForm(Topic t) {
+    private TopicForm updateForm(TopicDto t) {
         TopicForm f = new TopicForm();
         f.setMagazineId(t.getMagazine().getId());
         f.setTitle(t.getTitle());

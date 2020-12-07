@@ -25,7 +25,7 @@
                     <form th:action="'/topics/'+*{id}+'/form'" method="get">
                         <button type="submit">update</button>
                     </form>
-                    <form th:if="${topic.articles.isEmpty()}" th:action="'/topics/'+*{id}" th:method="delete">
+                    <form th:if="${topic.isEmpty()}" th:action="'/topics/'+*{id}" th:method="delete">
                         <button type="submit">delete</button>
                     </form>
                 </div>

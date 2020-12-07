@@ -11,7 +11,6 @@ import me.scene.dinner.test.proxy.service.MagazineServiceProxy;
 import me.scene.dinner.test.proxy.service.TopicServiceProxy;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -247,8 +246,7 @@ class TopicControllerTest {
             topic = factoryFacade.createTopic(magazine, manager, "Test Topic");
         }
 
-        // TODO dto
-        @Test @Disabled
+        @Test
         void shows_topic() throws Exception {
             mockMvc.perform(
                     get("/topics/" + topic.getId())

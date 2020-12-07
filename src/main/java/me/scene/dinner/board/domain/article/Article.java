@@ -15,7 +15,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static javax.persistence.FetchType.LAZY;
 import static me.scene.dinner.board.domain.article.RatingType.DISLIKE;
@@ -127,6 +129,17 @@ public class Article extends AbstractAggregateRoot<Article> {
 
     public void remove(Reply reply) {
         replies.remove(reply);
+    }
+
+    public TopicSummary topicSummary() {
+        return new TopicSummary(topic.getId(), topic.getTitle());
+    }
+
+    public List<ReplySummary> replySummaries() {
+        return replies.stream()
+                .map(r -> new ReplySummary(r.getId(), r.getWriter(), r.getContent(), r.getCreatedAt()))
+                .sorted(Comparator.comparing(ReplySummary::getCreatedAt))
+                .collect(Collectors.toList());
     }
 
 }
