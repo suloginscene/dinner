@@ -1,8 +1,8 @@
 package me.scene.dinner.account.ui;
 
 import lombok.RequiredArgsConstructor;
+import me.scene.dinner.account.application.AccountDto;
 import me.scene.dinner.account.application.AccountService;
-import me.scene.dinner.account.domain.account.Account;
 import me.scene.dinner.account.ui.form.AccountForm;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -37,7 +37,8 @@ public class AccountController {
 
     @GetMapping("/signup")
     public String signupPage(Model model) {
-        model.addAttribute("accountForm", new AccountForm());
+        AccountForm form = new AccountForm();
+        model.addAttribute("accountForm", form);
         return "page/account/signup";
     }
 
@@ -89,9 +90,9 @@ public class AccountController {
     }
 
     @GetMapping("/api/accounts/{username}")
-    public @ResponseBody ResponseEntity<Account> find(@PathVariable String username) {
+    public @ResponseBody ResponseEntity<AccountDto> find(@PathVariable String username) {
         return accountService.existsByUsername(username) ?
-                ResponseEntity.ok(accountService.find(username)) :
+                ResponseEntity.ok(accountService.findDto(username)) :
                 ResponseEntity.notFound().build();
     }
 

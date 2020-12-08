@@ -1,6 +1,7 @@
 package me.scene.dinner.account.ui;
 
 import lombok.RequiredArgsConstructor;
+import me.scene.dinner.account.application.AccountDto;
 import me.scene.dinner.account.application.AccountService;
 import me.scene.dinner.account.application.CurrentUser;
 import me.scene.dinner.account.domain.account.Account;
@@ -23,25 +24,23 @@ public class ConfigController {
 
     @GetMapping("/@{username}")
     public String showInfo(@PathVariable String username, Model model) {
-        Account account = accountService.find(username);
-        model.addAttribute("username", account.getUsername());
-        model.addAttribute("profile", account.getProfile());
+        AccountDto account = accountService.findDto(username);
+        model.addAttribute("account", account);
         return "page/account/info";
     }
 
     @GetMapping("/profile")
     public String profileForm(@CurrentUser Account current, Model model) {
-        Account account = accountService.find(current.getUsername());
+        AccountDto account = accountService.findDto(current.getUsername());
         model.addAttribute("profileForm", profileForm(account));
         return "page/account/profile";
     }
 
-    private ProfileForm profileForm(Account a) {
+    private ProfileForm profileForm(AccountDto a) {
         ProfileForm f = new ProfileForm();
         f.setUsername(a.getUsername());
         f.setEmail(a.getEmail());
-        String introduction = (a.getProfile() != null) ? a.getProfile().getShortIntroduction() : null;
-        f.setIntroduction(introduction);
+        f.setIntroduction(a.getShortIntroduction());
         return f;
     }
 
@@ -49,13 +48,16 @@ public class ConfigController {
     public String updateProfile(@CurrentUser Account current, @Valid ProfileForm profileForm, Errors errors) {
         if (errors.hasErrors()) return "page/account/profile";
 
-        accountService.updateProfile(current.getUsername(), profileForm.getIntroduction());
-        return "redirect:" + ("/@" + current.getUsername());
+        String username = current.getUsername();
+        String introduction = profileForm.getIntroduction();
+        accountService.updateProfile(username, (introduction != null) ? introduction : "");
+        return "redirect:" + ("/@" + username);
     }
 
     @GetMapping("/password")
     public String passwordForm(Model model) {
-        model.addAttribute("passwordForm", new PasswordForm());
+        PasswordForm passwordForm = new PasswordForm();
+        model.addAttribute("passwordForm", passwordForm);
         return "page/account/password";
     }
 
@@ -63,8 +65,9 @@ public class ConfigController {
     public String configPrivate(@CurrentUser Account current, @Valid PasswordForm passwordForm, Errors errors) {
         if (errors.hasErrors()) return "page/account/password";
 
-        accountService.changePassword(current.getUsername(), passwordForm.getPassword());
-        return "redirect:" + ("/@" + current.getUsername());
+        String username = current.getUsername();
+        accountService.changePassword(username, passwordForm.getPassword());
+        return "redirect:" + ("/@" + username);
     }
 
 }

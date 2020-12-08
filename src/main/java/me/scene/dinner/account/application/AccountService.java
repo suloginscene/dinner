@@ -3,7 +3,6 @@ package me.scene.dinner.account.application;
 import lombok.RequiredArgsConstructor;
 import me.scene.dinner.account.domain.account.Account;
 import me.scene.dinner.account.domain.account.AccountRepository;
-import me.scene.dinner.account.domain.account.Profile;
 import me.scene.dinner.account.domain.tempaccount.TempAccount;
 import me.scene.dinner.account.domain.tempaccount.TempAccountRepository;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -35,6 +34,11 @@ public class AccountService implements UserDetailsService {
 
     private Account findByEmail(String email) {
         return accountRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException(email));
+    }
+
+    public AccountDto findDto(String username) {
+        Account account = find(username);
+        return extractDto(account);
     }
 
     public boolean existsByUsername(String username) {
@@ -72,8 +76,7 @@ public class AccountService implements UserDetailsService {
     @Transactional
     public void updateProfile(String username, String introduction) {
         Account account = find(username);
-        Profile profile = new Profile(introduction);
-        account.update(profile);
+        account.update(introduction);
     }
 
     @Transactional
@@ -85,6 +88,10 @@ public class AccountService implements UserDetailsService {
 
     private void publishEvent(Account account) {
         accountRepository.save(account);
+    }
+
+    private AccountDto extractDto(Account a) {
+        return new AccountDto(a.getUsername(), a.getEmail(), a.shortIntroduction());
     }
 
 }

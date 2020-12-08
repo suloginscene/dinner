@@ -67,7 +67,7 @@ class ConfigControllerTest {
             )
                     .andExpect(status().isOk())
                     .andExpect(view().name("page/account/info"))
-                    .andExpect(model().attributeExists("username", "profile"))
+                    .andExpect(model().attributeExists("account"))
             ;
         }
 

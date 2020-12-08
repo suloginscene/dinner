@@ -1,6 +1,5 @@
 package me.scene.dinner.account.domain.account;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import me.scene.dinner.account.domain.tempaccount.TempAccount;
@@ -9,16 +8,18 @@ import org.springframework.data.domain.AbstractAggregateRoot;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+
+import static javax.persistence.EnumType.STRING;
+import static me.scene.dinner.account.domain.account.AccountRole.USER;
 
 @Entity
 @Getter @EqualsAndHashCode(of = "id", callSuper = false)
 public class Account extends AbstractAggregateRoot<Account> {
 
-    @Id @GeneratedValue @JsonIgnore
+    @Id @GeneratedValue
     private Long id;
 
     @Column(unique = true)
@@ -27,13 +28,13 @@ public class Account extends AbstractAggregateRoot<Account> {
     @Column(unique = true)
     private String email;
 
-    @Column @JsonIgnore
+    @Column
     private String password;
 
-    @Enumerated(EnumType.STRING) @JsonIgnore
-    private final AccountRole role = AccountRole.USER;
+    @Enumerated(STRING)
+    private final AccountRole role = USER;
 
-    @Embedded @JsonIgnore
+    @Embedded
     private Profile profile;
 
     protected Account() {
@@ -55,8 +56,12 @@ public class Account extends AbstractAggregateRoot<Account> {
         password = encodedPassword;
     }
 
-    public void update(Profile profile) {
-        this.profile = profile;
+    public void update(String introduction) {
+        this.profile = new Profile(introduction);
+    }
+
+    public String shortIntroduction() {
+        return (profile != null) ? profile.getShortIntroduction() : "";
     }
 
 }
