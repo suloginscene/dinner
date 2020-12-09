@@ -54,7 +54,6 @@
             <ul>
                 <li th:each="article:*{publicArticles}">
                     <div class="article-info">
-                        <span th:unless="${article.isPublicized()}">temp</span>
                         <a th:href="@{'/articles/'+${article.id}}" th:text="${article.title}"></a>
                         <div class="article-sub-info">
                             <a class="article-writer" th:href="@{'/@'+${article.writer}}" th:text="${article.writer}"></a>

@@ -10,7 +10,7 @@ section form {
     height: calc(100vh - 245px);
 }
 
-section form #bar {
+#bar {
     height: 50px;
     margin-bottom: 10px;
     display: flex;
@@ -18,35 +18,26 @@ section form #bar {
     align-items: center;
 }
 
-section form #bar label {
+#bar label {
     margin: 0;
 }
 
-section form #bar #title {
+#bar #title {
     min-width: 200px;
     width: 50%;
 }
 
-section form #bar #title input {
+#bar #title input {
     padding: 10px;
     width: 100%;
 }
 
-section form #bar button {
+#bar button {
     height: 100%;
 }
 
-section form #error-message {
-    position: absolute;
-    top: 80px;
-    width: calc(100% - 240px);
-    margin-bottom: 10px;
-    text-align: center;
-}
-
-section form #error-message span {
-    display: inline;
-    margin-right: 15px;
+#editor-wrapper {
+    width: 100%;
 }
 
 .note-toolbar button {
@@ -54,7 +45,25 @@ section form #error-message span {
     height: unset;
 }
 
-#editor-wrapper {
-    width: 100%;
-    height: calc(100% - 60px);
+#under-bar {
+    height: 50px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#under-bar .tagify {
+    width: 50%;
+    display: inline-block;
+}
+
+#under-bar .form-checks {
+    width: 50%;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+#error-message {
+    text-align: center;
 }

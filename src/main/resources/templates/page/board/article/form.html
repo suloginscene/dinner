@@ -7,19 +7,15 @@
         <link rel="stylesheet" href="/node_modules/summernote/dist/summernote-bs4.min.css"/>
         <script src="/node_modules/summernote/dist/summernote-bs4.min.js"></script>
         <script src="/js/page/summernote_article.js"></script>
+        <link rel="stylesheet" href="/node_modules/@yaireo/tagify/dist/tagify.css">
+        <script src="/node_modules/@yaireo/tagify/dist/tagify.min.js"></script>
+        <script src="/js/page/ajaxTagifyArticle.js"></script>
     </div>
 
     <body th:replace="layout/layout::body(~{::section})">
         <section>
             <form th:action="@{/articles}" th:method="post" th:object="${articleForm}" id="board-form" novalidate>
-                <div id="error-message">
-                    <span th:if="${#fields.hasErrors('topicId')}" th:errors="*{topicId}" class="form-text text-danger"></span>
-                    <span th:if="${#fields.hasErrors('title')}" th:errors="*{title}" class="form-text text-danger"></span>
-                    <span th:if="${#fields.hasErrors('content')}" th:errors="*{content}" class="form-text text-danger"></span>
-                </div>
-                <label hidden>
-                    <input type="text" name="topicId" th:value="*{topicId}" hidden>
-                </label>
+                <label hidden><input type="text" name="topicId" th:value="*{topicId}" hidden></label>
                 <div id="bar">
                     <label id="title">
                         <input type="text" th:field="*{title}" placeholder="새 아티클" required maxlength="30">
@@ -28,16 +24,25 @@
                     </label>
                     <button type="submit" id="form-submit">save</button>
                 </div>
-                <div class="form-checks">
-                    <label for="radio-1"><input th:field="*{status}" type="radio" id="radio-1" value="PUBLIC"/>public</label>
-                    <label for="radio-2"><input th:field="*{status}" type="radio" id="radio-2" value="PRIVATE"/>private</label>
-                    <small th:if="${#fields.hasErrors('status')}" th:errors="*{status}" class="form-text text-danger"></small>
-                </div>
                 <label id="editor-wrapper">
                     <textarea id="editor" th:field="*{content}" placeholder="본문" required></textarea>
                     <small class="invalid-feedback"><i class="fa fa-ban"></i></small>
                     <small class="valid-feedback"><i class="fa fa-check"></i></small>
                 </label>
+                <div id="under-bar">
+                    <input th:type="text" id="tagInput" placeholder="태그를 입력하세요."><label for="tagInput"></label>
+                    <div th:text="${_csrf.token}" id="tagify-csrf" hidden></div>
+                    <div class="form-checks">
+                        <label for="radio-1"><input th:field="*{status}" type="radio" id="radio-1" value="PUBLIC"/>public</label>
+                        <label for="radio-2"><input th:field="*{status}" type="radio" id="radio-2" value="PRIVATE"/>private</label>
+                    </div>
+                </div>
+                <div id="error-message">
+                    <span th:if="${#fields.hasErrors('topicId')}" th:errors="*{topicId}" class="form-text text-danger"></span>
+                    <span th:if="${#fields.hasErrors('title')}" th:errors="*{title}" class="form-text text-danger"></span>
+                    <span th:if="${#fields.hasErrors('content')}" th:errors="*{content}" class="form-text text-danger"></span>
+                    <small th:if="${#fields.hasErrors('status')}" th:errors="*{status}" class="form-text text-danger"></small>
+                </div>
             </form>
         </section>
     </body>

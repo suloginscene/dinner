@@ -1,5 +1,5 @@
 $(document).ready(function () {
     $('#editor').summernote({
-        height: 600
+        height: 550
     });
 });
