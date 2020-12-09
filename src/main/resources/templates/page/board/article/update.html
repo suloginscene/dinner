@@ -30,6 +30,7 @@
                     <small class="valid-feedback"><i class="fa fa-check"></i></small>
                 </label>
                 <div id="under-bar">
+                    <!-- TODO use another method to update -->
                     <input th:type="text" id="tagInput" placeholder="태그를 입력하세요."><label for="tagInput"></label>
                     <div th:text="${_csrf.token}" id="tagify-csrf" hidden></div>
                     <div class="form-checks">
