@@ -3,7 +3,7 @@ const ajaxTagifyArticle = function () {
     const tagRequest = function (method, name) {
         $.ajax({
             method: method,
-            url: "/tags/" + name,
+            url: "/api/tags/" + name,
             beforeSend: function (xhr) {
                 xhr.setRequestHeader('X-CSRF-TOKEN', $('#tagify-csrf').text());
             }
