@@ -18,7 +18,11 @@ const ajaxTagifyArticle = function () {
         tagRequest("delete", e.detail.data.value);
     };
 
-    const tagify = new Tagify(document.querySelector('#tagInput'), {pattern: /^.{0,20}$/, dropdown: {enabled: 1}});
+    const tagify = new Tagify(document.querySelector('#tagInput'), {
+        pattern: /^[가-힣a-z0-9_]{1,16}$/,
+        maxTags: 3,
+        dropdown: {enabled: 1}
+    });
 
 
     tagify.on("add", onAdd);

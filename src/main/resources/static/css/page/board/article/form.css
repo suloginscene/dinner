@@ -3,11 +3,11 @@
 
 section {
     padding-top: 120px;
-    padding-bottom: 40px;
+    padding-bottom: 20px;
 }
 
 section form {
-    height: calc(100vh - 245px);
+    min-height: calc(100vh - 245px);
 }
 
 #bar {
@@ -55,6 +55,8 @@ section form {
 #under-bar .tagify {
     width: 50%;
     display: inline-block;
+    background-color: white;
+    overflow: auto;
 }
 
 #under-bar .form-checks {

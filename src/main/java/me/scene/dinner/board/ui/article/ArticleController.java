@@ -1,10 +1,14 @@
 package me.scene.dinner.board.ui.article;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import me.scene.dinner.account.application.CurrentUser;
 import me.scene.dinner.account.domain.account.Account;
 import me.scene.dinner.board.application.article.ArticleDto;
 import me.scene.dinner.board.application.article.ArticleService;
+import me.scene.dinner.board.ui.article.tag.ParsedTagObject;
+import me.scene.dinner.board.ui.article.tag.ParsedTagObjectSetTypeReference;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
@@ -18,12 +22,17 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Set;
+
+import static java.util.stream.Collectors.toSet;
 
 @Controller
 @RequiredArgsConstructor
 public class ArticleController {
 
     private final ArticleService articleService;
+    private final ObjectMapper objectMapper;
+    private final ParsedTagObjectSetTypeReference tagSetType;
 
     @GetMapping("/article-form")
     public String shipArticleForm(@RequestParam Long topicId, Model model) {
@@ -37,11 +46,23 @@ public class ArticleController {
     public String createArticle(@CurrentUser Account current, @Valid ArticleForm form, Errors errors) {
         if (errors.hasErrors()) return "page/board/article/form";
 
-        // TODO process tags.
-        // TODO now tags is object [{"value":"name1"},{"value":"name2}]
+        Set<String> tags = parse(form.getJsonTags());
+        if (tags != null) {
+            tags.forEach(System.out::println);
+        }
 
         Long id = articleService.save(form.getTopicId(), current.getUsername(), form.getTitle(), form.getContent(), form.isPublicized());
         return "redirect:" + ("/articles/" + id);
+    }
+
+    private Set<String> parse(String jsonTags) {
+        if (jsonTags == null) return null;
+        try {
+            Set<ParsedTagObject> tags = objectMapper.readValue(jsonTags, tagSetType);
+            return tags.stream().map(ParsedTagObject::getValue).collect(toSet());
+        } catch (JsonProcessingException e) {
+            throw new IllegalStateException("Cannot parse json for tag: " + e.getMessage());
+        }
     }
 
     @GetMapping("/articles/{articleId}")

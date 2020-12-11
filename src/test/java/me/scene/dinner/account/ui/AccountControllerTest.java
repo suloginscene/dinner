@@ -110,7 +110,6 @@ class AccountControllerTest {
                     )
                             .andExpect(status().isOk())
                             .andExpect(view().name("page/account/signup"))
-                            .andExpect(model().hasErrors())
                             .andExpect(model().errorCount(4))
                     ;
                     TempAccount temp1 = repositoryFacade.findTempByUsername("[unacceptable]").orElse(null);
@@ -126,8 +125,8 @@ class AccountControllerTest {
                     )
                             .andExpect(status().isOk())
                             .andExpect(view().name("page/account/signup"))
-                            .andExpect(model().hasErrors())
-                            .andExpect(model().errorCount(1))
+                            .andExpect(model().errorCount(2))
+                            .andExpect(model().attributeHasFieldErrors("accountForm", "username"))
                     ;
                     TempAccount temp2 = repositoryFacade.findTempByUsername("anonymousUser").orElse(null);
                     assertThat(temp2).isNull();

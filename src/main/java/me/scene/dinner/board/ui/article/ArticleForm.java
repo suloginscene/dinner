@@ -23,7 +23,7 @@ public class ArticleForm {
     @NotBlank(message = "공개 여부를 선택해주세요.")
     private String status;
 
-    private Object tags;
+    private String jsonTags;
 
     public boolean isPublicized() {
         return status.equals("PUBLIC");

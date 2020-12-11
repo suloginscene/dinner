@@ -558,4 +558,29 @@ class ArticleControllerTest {
 
     }
 
+    @Nested
+    class Tagged {
+
+        @Nested
+        class OnCreate {
+            @Test
+            void test() throws Exception {
+                mockMvc.perform(
+                        post("/articles")
+                                .param("topicId", topic.getId().toString())
+                                .param("title", "Test Article")
+                                .param("content", "This is test article.")
+                                .param("status", "PUBLIC")
+                                .param("jsonTags", "[{\"value\":\"name1\"},{\"value\":\"name2\"}]")
+                                .with(csrf())
+                )
+                        .andExpect(status().is3xxRedirection())
+                        .andExpect(redirectedUrlPattern("/articles/*"))
+                ;
+            }
+        }
+
+
+    }
+
 }
