@@ -11,6 +11,7 @@ import me.scene.dinner.board.ui.article.tag.ParsedTagObject;
 import me.scene.dinner.board.ui.article.tag.ParsedTagObjectSetTypeReference;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.validation.Valid;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -47,16 +49,15 @@ public class ArticleController {
         if (errors.hasErrors()) return "page/board/article/form";
 
         Set<String> tags = parse(form.getJsonTags());
-        if (tags != null) {
-            tags.forEach(System.out::println);
-        }
+        tags.forEach(System.out::println);
+        // TODO
 
         Long id = articleService.save(form.getTopicId(), current.getUsername(), form.getTitle(), form.getContent(), form.isPublicized());
         return "redirect:" + ("/articles/" + id);
     }
 
     private Set<String> parse(String jsonTags) {
-        if (jsonTags == null) return null;
+        if (StringUtils.isEmpty(jsonTags)) return new HashSet<>();
         try {
             Set<ParsedTagObject> tags = objectMapper.readValue(jsonTags, tagSetType);
             return tags.stream().map(ParsedTagObject::getValue).collect(toSet());
