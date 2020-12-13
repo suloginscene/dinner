@@ -18,6 +18,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Set;
 
 @Component
 @RequiredArgsConstructor
@@ -50,7 +51,7 @@ public class Initiator implements ApplicationRunner {
 
         Topic java = topic(open_java.getId(), scene.getUsername(), "자바", "자바 언어에 관한 글을 올려주세요.", "프레임워크에 관한 글은 별도의 토픽에 올려주세요.");
 
-        Article syntax = article(java.getId(), scene.getUsername(), "기초 문법", "자바 기초 문법...", true);
+        Article syntax = article(java.getId(), scene.getUsername(), "기초 문법", "자바 기초 문법...", true, "프로그래밍", "자바");
         reply(syntax.getId(), eon.getUsername(), "수고하세요.");
 
         Article eight = article(java.getId(), test.getUsername(), "자바 8", "자바 8...", true);
@@ -78,7 +79,7 @@ public class Initiator implements ApplicationRunner {
 
         Topic bad = topic(ptc.getId(), eon.getUsername(), "넌 귀여운 노인일 뿐이야.", "내가 했던 가장 나쁜 말은 무엇인가요?", "테스트 데이터 만들면서 느꼈는데, 상세 설명이 필요하지 않은 매거진이나 토픽도 많긴 하겠다.");
 
-        article(bad.getId(), eon.getUsername(), "너무 나쁜 것 같아서 검열 중인 게시물", "많도다...", false);
+        article(bad.getId(), eon.getUsername(), "너무 나쁜 것 같아서 검열 중인 게시물", "많도다...", false, "태그");
 
         magazineService.applyMember(ptc.getId(), scene.getUsername());
 
@@ -109,8 +110,8 @@ public class Initiator implements ApplicationRunner {
         return topicService.find(id);
     }
 
-    private Article article(Long topicId, String writer, String title, String content, boolean publicized) {
-        Long id = articleService.save(topicId, writer, title, content, publicized);
+    private Article article(Long topicId, String writer, String title, String content, boolean publicized, String... tags) {
+        Long id = articleService.save(topicId, writer, title, content, publicized, Set.of(tags));
         return articleService.find(id);
     }
 

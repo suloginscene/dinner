@@ -48,11 +48,7 @@ public class ArticleController {
     public String createArticle(@CurrentUser Account current, @Valid ArticleForm form, Errors errors) {
         if (errors.hasErrors()) return "page/board/article/form";
 
-        Set<String> tags = parse(form.getJsonTags());
-        tags.forEach(System.out::println);
-        // TODO
-
-        Long id = articleService.save(form.getTopicId(), current.getUsername(), form.getTitle(), form.getContent(), form.isPublicized());
+        Long id = articleService.save(form.getTopicId(), current.getUsername(), form.getTitle(), form.getContent(), form.isPublicized(), parse(form.getJsonTags()));
         return "redirect:" + ("/articles/" + id);
     }
 

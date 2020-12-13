@@ -5,28 +5,32 @@ import lombok.Getter;
 import me.scene.dinner.board.domain.common.NotOwnerException;
 import me.scene.dinner.board.domain.reply.Reply;
 import me.scene.dinner.board.domain.topic.Topic;
-import org.springframework.data.domain.AbstractAggregateRoot;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.toSet;
+import static javax.persistence.CascadeType.ALL;
 import static javax.persistence.FetchType.LAZY;
 import static me.scene.dinner.board.domain.article.RatingType.DISLIKE;
 import static me.scene.dinner.board.domain.article.RatingType.LIKE;
 import static me.scene.dinner.board.domain.article.RatingType.READ;
 
 @Entity
-@Getter @EqualsAndHashCode(of = "id", callSuper = false)
-public class Article extends AbstractAggregateRoot<Article> {
+@Getter @EqualsAndHashCode(of = "id")
+public class Article {
 
     @Id @GeneratedValue
     private Long id;
@@ -50,6 +54,9 @@ public class Article extends AbstractAggregateRoot<Article> {
 
     private int rating;
 
+    @OneToMany(cascade = ALL, orphanRemoval = true) @JoinColumn(name = "article_id")
+    private final Set<ArticleTag> articleTags = new HashSet<>();
+
 
     @ManyToOne(fetch = LAZY)
     private Topic topic;
@@ -61,7 +68,7 @@ public class Article extends AbstractAggregateRoot<Article> {
     protected Article() {
     }
 
-    public static Article create(Topic topic, String writer, String title, String content, boolean publicized) {
+    public static Article create(Topic topic, String writer, String title, String content, boolean publicized, Set<String> tagNames) {
         topic.getMagazine().checkAuthorization(writer);
         Article article = new Article();
         article.writer = writer;
@@ -70,6 +77,7 @@ public class Article extends AbstractAggregateRoot<Article> {
         article.createdAt = LocalDateTime.now();
         article.topic = topic;
         article.publicized = publicized;
+        article.articleTags.addAll(tagNames.stream().map(ArticleTag::create).collect(toSet()));
         topic.add(article);
         article.toggleWriterRegistration();
         return article;

@@ -4,10 +4,12 @@ import lombok.RequiredArgsConstructor;
 import me.scene.dinner.board.application.topic.TopicService;
 import me.scene.dinner.board.domain.article.Article;
 import me.scene.dinner.board.domain.article.ArticleRepository;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service @Transactional(readOnly = true)
@@ -16,15 +18,18 @@ public class ArticleService {
 
     private final ArticleRepository articleRepository;
     private final TopicService topicService;
+    private final ApplicationEventPublisher eventPublisher;
 
     public Article find(Long id) {
         return articleRepository.findById(id).orElseThrow(() -> new ArticleNotFoundException(id));
     }
 
     @Transactional
-    public Long save(Long topicId, String writer, String title, String content, boolean publicized) {
-        Article article = Article.create(topicService.find(topicId), writer, title, content, publicized);
-        return articleRepository.save(article).getId();
+    public Long save(Long topicId, String writer, String title, String content, boolean publicized, Set<String> tagNames) {
+        Article article = Article.create(topicService.find(topicId), writer, title, content, publicized, tagNames);
+        Long id = articleRepository.save(article).getId();
+        tagNames.forEach(t -> eventPublisher.publishEvent(new ArticleTaggedEvent(article, t)));
+        return id;
     }
 
     @Transactional

@@ -40,8 +40,8 @@ public class FactoryFacade {
         return topicFactory.create(magazine.getId(), manager.getUsername(), title, title + "에 관한 짧은 소개", title + "에 관한 긴 소개");
     }
 
-    public Article createArticle(Topic topic, Account writer, String title, boolean publicized) {
-        return articleFactory.create(topic.getId(), writer.getUsername(), title, title + "의 본문", publicized);
+    public Article createArticle(Topic topic, Account writer, String title, boolean publicized, String... tags) {
+        return articleFactory.create(topic.getId(), writer.getUsername(), title, title + "의 본문", publicized, tags);
     }
 
     public Long createReply(Article article, Account writer, String content) {

@@ -38,6 +38,8 @@ public class RepositoryFacade {
         tempAccountRepository.deleteAll();
         accountRepository.deleteAll();
 
+        tagRepository.deleteAll();
+
         replyRepository.deleteAll();
         articleRepository.deleteAll();
         topicRepository.deleteAll();
@@ -45,7 +47,6 @@ public class RepositoryFacade {
 
         likesRepository.deleteAll();
         notificationRepository.deleteAll();
-        tagRepository.deleteAll();
     }
 
     public void save(Account user) {

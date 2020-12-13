@@ -2,11 +2,14 @@ package me.scene.dinner.board.ui;
 
 import me.scene.dinner.account.domain.account.Account;
 import me.scene.dinner.board.application.article.ArticleNotFoundException;
+import me.scene.dinner.board.application.article.ArticleTaggedEvent;
 import me.scene.dinner.board.domain.article.Article;
+import me.scene.dinner.board.domain.article.ArticleTag;
 import me.scene.dinner.board.domain.magazine.Magazine;
 import me.scene.dinner.board.domain.magazine.Policy;
 import me.scene.dinner.board.domain.reply.Reply;
 import me.scene.dinner.board.domain.topic.Topic;
+import me.scene.dinner.tag.TagService;
 import me.scene.dinner.test.facade.FactoryFacade;
 import me.scene.dinner.test.facade.RepositoryFacade;
 import me.scene.dinner.test.proxy.service.ArticleServiceProxy;
@@ -24,6 +27,7 @@ import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
+import java.util.Set;
 
 import static me.scene.dinner.test.utils.Authenticators.login;
 import static me.scene.dinner.test.utils.Authenticators.logout;
@@ -31,11 +35,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.BDDMockito.then;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
@@ -53,6 +59,7 @@ class ArticleControllerTest {
     @SpyBean ArticleServiceProxy articleService;
     @SpyBean TopicServiceProxy topicService;
     @SpyBean MagazineServiceProxy magazineService;
+    @SpyBean TagService tagService;
 
     @Autowired FactoryFacade factoryFacade;
     @Autowired RepositoryFacade repositoryFacade;
@@ -564,22 +571,33 @@ class ArticleControllerTest {
         @Nested
         class OnCreate {
             @Test
-            void test() throws Exception {
+            void saves_withTags_And_publish_event() throws Exception {
+                String tag1 = "tag1";
+                String tag2 = "tag2";
+                tagService.save(tag1);
+                tagService.save(tag2);
                 mockMvc.perform(
                         post("/articles")
                                 .param("topicId", topic.getId().toString())
                                 .param("title", "Test Article")
                                 .param("content", "This is test article.")
                                 .param("status", "PUBLIC")
-                                .param("jsonTags", "[{\"value\":\"name1\"},{\"value\":\"name2\"}]")
+                                .param("jsonTags", "[{\"value\":\"tag1\"},{\"value\":\"tag2\"}]")
                                 .with(csrf())
                 )
+                        .andDo(print())
                         .andExpect(status().is3xxRedirection())
                         .andExpect(redirectedUrlPattern("/articles/*"))
                 ;
+                Article article = articleService.load("Test Article");
+                Set<ArticleTag> tags = article.getArticleTags();
+                assertThat(tags).hasSize(2);
+                then(tagService).should().onArticleTaggedEvent(new ArticleTaggedEvent(article, tag1));
+                then(tagService).should().onArticleTaggedEvent(new ArticleTaggedEvent(article, tag2));
+                assertThat(tagService.taggedArticles(tag1)).hasSize(1);
+                assertThat(tagService.taggedArticles(tag2)).hasSize(1);
             }
         }
-
 
     }
 
