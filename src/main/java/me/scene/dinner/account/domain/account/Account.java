@@ -49,7 +49,7 @@ public class Account extends AbstractAggregateRoot<Account> {
     }
 
     public void registerTempPasswordIssuedEvent(String tempRawPassword) {
-        registerEvent(new TempPasswordIssuedEvent(this, email, tempRawPassword));
+        registerEvent(new TempPasswordIssuedEvent(email, tempRawPassword));
     }
 
     public void changePassword(String encodedPassword) {

@@ -92,7 +92,7 @@ class AccountControllerTest {
                 TempAccount tempAccount = repositoryFacade.findTempByUsername("scene").orElseThrow();
                 assertThat(tempAccount.getPassword()).isNotEqualTo("password");
                 assertThat(tempAccount.getVerificationToken()).isNotNull();
-                TempAccountCreatedEvent event = new TempAccountCreatedEvent(tempAccount, tempAccount.getEmail(), tempAccount.getVerificationToken());
+                TempAccountCreatedEvent event = new TempAccountCreatedEvent(tempAccount.getEmail(), tempAccount.getVerificationToken());
                 then(mailSender).should().onApplicationEvent(event);
             }
 
@@ -385,7 +385,7 @@ class AccountControllerTest {
                 String newEncodedPassword = user.getPassword();
                 assertThat(newEncodedPassword).isNotEqualTo(oldEncodedPassword);
                 assertThat(newEncodedPassword).startsWith("{bcrypt}");
-                TempPasswordIssuedEvent event = new TempPasswordIssuedEvent(user, user.getEmail(), "rawPassword");
+                TempPasswordIssuedEvent event = new TempPasswordIssuedEvent(user.getEmail(), "rawPassword");
                 then(mailSender).should().onApplicationEvent(event);
             }
 

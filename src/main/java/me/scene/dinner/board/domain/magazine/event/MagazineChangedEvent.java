@@ -1,16 +1,13 @@
 package me.scene.dinner.board.domain.magazine.event;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import org.springframework.context.ApplicationEvent;
+import lombok.RequiredArgsConstructor;
 
-@Getter
-public class MagazineChangedEvent extends ApplicationEvent {
+@RequiredArgsConstructor
+@Getter @EqualsAndHashCode
+public class MagazineChangedEvent {
 
     private final Long id;
-
-    public MagazineChangedEvent(Object source, Long id) {
-        super(source);
-        this.id = id;
-    }
 
 }

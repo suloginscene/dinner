@@ -3,7 +3,6 @@ package me.scene.dinner.like;
 import lombok.RequiredArgsConstructor;
 import me.scene.dinner.board.application.article.ArticleService;
 import me.scene.dinner.board.domain.article.Article;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,14 +12,12 @@ public class LikesService {
 
     private final LikesRepository likesRepository;
     private final ArticleService articleService;
-    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
     public void likes(String username, Long articleId) {
         Article article = articleService.like(articleId);
-        Likes likes = Likes.create(username, articleId);
+        Likes likes = Likes.create(username, articleId, article.getTitle(), article.getWriter());
         likesRepository.save(likes);
-        eventPublisher.publishEvent(new LikedEvent(article.getWriter(), username, article.getTitle()));
     }
 
     @Transactional

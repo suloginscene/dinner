@@ -408,7 +408,7 @@ class MagazineControllerTest {
                             .andExpect(status().is3xxRedirection())
                             .andExpect(redirectedUrl("/sent-to-manager?magazineId=" + managed.getId()))
                     ;
-                    MemberAppliedEvent event = new MemberAppliedEvent(managed, managed.getId(), managed.getTitle(), manager.getUsername(), member.getUsername());
+                    MemberAppliedEvent event = new MemberAppliedEvent(managed.getId(), managed.getTitle(), manager.getUsername(), member.getUsername());
                     then(notificationListener).should().onMemberAppliedEvent(event);
                 }
             }
@@ -428,7 +428,7 @@ class MagazineControllerTest {
                     Thread.sleep(1000L);
                     List<String> members = magazineService.load(managed.getTitle()).getMembers();
                     assertThat(members).doesNotContain(member.getUsername());
-                    MemberQuitEvent event = new MemberQuitEvent(managed, managed.getId(), managed.getTitle(), manager.getUsername(), member.getUsername());
+                    MemberQuitEvent event = new MemberQuitEvent(managed.getId(), managed.getTitle(), manager.getUsername(), member.getUsername());
                     then(notificationListener).should().onMemberQuitEvent(event);
                 }
             }
@@ -467,7 +467,7 @@ class MagazineControllerTest {
                     Thread.sleep(1000L);
                     List<String> members = magazineService.load(managed.getTitle()).getMembers();
                     assertThat(members).contains(member.getUsername());
-                    MemberAddedEvent event = new MemberAddedEvent(managed, managed.getId(), managed.getTitle(), member.getUsername());
+                    MemberAddedEvent event = new MemberAddedEvent(managed.getId(), managed.getTitle(), member.getUsername());
                     then(notificationListener).should().onMemberAddedEvent(event);
                 }
 
@@ -485,7 +485,7 @@ class MagazineControllerTest {
                         Thread.sleep(1000L);
                         List<String> members = magazineService.load(managed.getTitle()).getMembers();
                         assertThat(members).contains(member.getUsername());
-                        MemberAddedEvent event = new MemberAddedEvent(managed, managed.getId(), managed.getTitle(), member.getUsername());
+                        MemberAddedEvent event = new MemberAddedEvent(managed.getId(), managed.getTitle(), member.getUsername());
                         then(notificationListener).should().onMemberAddedEvent(event);
                     }
                 }
@@ -506,7 +506,7 @@ class MagazineControllerTest {
                     Thread.sleep(1000L);
                     List<String> members = magazineService.load(managed.getTitle()).getMembers();
                     assertThat(members).doesNotContain(member.getUsername());
-                    MemberRemovedEvent event = new MemberRemovedEvent(managed, managed.getId(), managed.getTitle(), member.getUsername());
+                    MemberRemovedEvent event = new MemberRemovedEvent(managed.getId(), managed.getTitle(), member.getUsername());
                     then(notificationListener).should().onMemberRemovedEvent(event);
                 }
             }

@@ -5,6 +5,7 @@ import lombok.Getter;
 import me.scene.dinner.board.domain.common.NotDeletableException;
 import me.scene.dinner.board.domain.common.NotOwnerException;
 import me.scene.dinner.board.domain.magazine.event.MagazineChangedEvent;
+import me.scene.dinner.board.domain.magazine.event.MagazineCreatedEvent;
 import me.scene.dinner.board.domain.magazine.event.MagazineDeletedEvent;
 import me.scene.dinner.board.domain.magazine.event.MemberAddedEvent;
 import me.scene.dinner.board.domain.magazine.event.MemberAppliedEvent;
@@ -73,7 +74,7 @@ public class Magazine extends AbstractAggregateRoot<Magazine> {
         magazine.shortExplanation = shortExplanation;
         magazine.longExplanation = longExplanation;
         magazine.policy = Policy.valueOf(magazinePolicy);
-        magazine.registerEvent(new MagazineChangedEvent(magazine, null));
+        magazine.registerEvent(new MagazineCreatedEvent());
         return magazine;
     }
 
@@ -82,18 +83,18 @@ public class Magazine extends AbstractAggregateRoot<Magazine> {
         this.title = title;
         this.shortExplanation = shortExplanation;
         this.longExplanation = longExplanation;
-        registerEvent(new MagazineChangedEvent(this, id));
+        registerEvent(new MagazineChangedEvent(id));
     }
 
     public void rate(int point) {
         rating += point;
-        if (rating % 100 == 0) registerEvent(new MagazineChangedEvent(this, id));
+        if (rating % 100 == 0) registerEvent(new MagazineChangedEvent(id));
     }
 
     public void beforeDelete(String current) {
         confirmManager(current);
         confirmDeletable();
-        registerEvent(new MagazineDeletedEvent(this, id));
+        registerEvent(new MagazineDeletedEvent(id));
     }
 
 
@@ -157,7 +158,7 @@ public class Magazine extends AbstractAggregateRoot<Magazine> {
         confirmPolicyManaged();
         if (members.contains(current)) return;
 
-        registerEvent(new MemberAppliedEvent(this, id, title, manager, current));
+        registerEvent(new MemberAppliedEvent(id, title, manager, current));
     }
 
     public void quitMember(String current) {
@@ -165,7 +166,7 @@ public class Magazine extends AbstractAggregateRoot<Magazine> {
         if (!members.contains(current)) return;
 
         members.remove(current);
-        registerEvent(new MemberQuitEvent(this, id, title, manager, current));
+        registerEvent(new MemberQuitEvent(id, title, manager, current));
     }
 
     public void addMember(String current, String member) {
@@ -174,7 +175,7 @@ public class Magazine extends AbstractAggregateRoot<Magazine> {
         if (members.contains(member)) return;
 
         members.add(member);
-        registerEvent(new MemberAddedEvent(this, id, title, member));
+        registerEvent(new MemberAddedEvent(id, title, member));
     }
 
     public void removeMember(String current, String target) {
@@ -183,7 +184,7 @@ public class Magazine extends AbstractAggregateRoot<Magazine> {
         if (!members.contains(target)) return;
 
         members.remove(target);
-        registerEvent(new MemberRemovedEvent(this, id, title, target));
+        registerEvent(new MemberRemovedEvent(id, title, target));
     }
 
     public List<TopicSummary> getTopicSummaries() {

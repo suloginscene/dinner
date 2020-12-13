@@ -38,7 +38,7 @@ public class TempAccount extends AbstractAggregateRoot<TempAccount> {
         tempAccount.email = email;
         tempAccount.password = encodedPassword;
         tempAccount.verificationToken = UUID.randomUUID().toString();
-        tempAccount.registerEvent(new TempAccountCreatedEvent(tempAccount, email, tempAccount.verificationToken));
+        tempAccount.registerEvent(new TempAccountCreatedEvent(email, tempAccount.verificationToken));
         return tempAccount;
     }
 

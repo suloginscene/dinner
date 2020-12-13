@@ -2,6 +2,7 @@ package me.scene.dinner.board.application.magazine;
 
 import lombok.RequiredArgsConstructor;
 import me.scene.dinner.board.domain.magazine.event.MagazineChangedEvent;
+import me.scene.dinner.board.domain.magazine.event.MagazineCreatedEvent;
 import me.scene.dinner.board.domain.magazine.event.MagazineDeletedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
@@ -24,6 +25,11 @@ public class MagazineBestListCache {
         bestMagazines = magazineService.best(COUNT);
     }
 
+    @EventListener
+    public void onApplicationEvent(MagazineCreatedEvent event) {
+        if ((bestMagazines.size() >= COUNT) || (event == null)) return;
+        bestMagazines = magazineService.best(COUNT);
+    }
 
     @EventListener
     public void onApplicationEvent(MagazineChangedEvent event) {
