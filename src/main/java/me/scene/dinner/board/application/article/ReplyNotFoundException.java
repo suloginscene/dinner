@@ -1,4 +1,4 @@
-package me.scene.dinner.board.application.reply;
+package me.scene.dinner.board.application.article;
 
 import me.scene.dinner.board.application.common.BoardNotFoundException;
 

@@ -3,7 +3,6 @@ package me.scene.dinner.board.domain.article;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import me.scene.dinner.board.domain.common.NotOwnerException;
-import me.scene.dinner.board.domain.reply.Reply;
 import me.scene.dinner.board.domain.topic.Topic;
 
 import javax.persistence.Entity;
@@ -18,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -61,7 +61,7 @@ public class Article {
     @ManyToOne(fetch = LAZY)
     private Topic topic;
 
-    @OneToMany(mappedBy = "article", orphanRemoval = true)
+    @OneToMany(cascade = ALL, orphanRemoval = true) @JoinColumn(name = "article_id")
     private final List<Reply> replies = new ArrayList<>();
 
 
@@ -137,6 +137,10 @@ public class Article {
 
     public void remove(Reply reply) {
         replies.remove(reply);
+    }
+
+    public Optional<Reply> findReplyById(Long replyId) {
+        return replies.stream().filter(r -> r.getId().equals(replyId)).findAny();
     }
 
     public TopicSummary topicSummary() {

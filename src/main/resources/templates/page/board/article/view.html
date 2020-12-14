@@ -57,7 +57,11 @@
                     <span><a th:href="@{'/@'+${reply.writer}}" th:text="${reply.writer}"></a></span>
                     <span th:text="${reply.content}"></span>
                     <span th:text="${#temporals.format(reply.createdAt, 'yyyy-MM-dd HH:mm')}"></span>
-                    <form th:if="${#authentication.name}==${reply.writer}" th:action="'/replies/'+${reply.id}" th:method="delete">
+                    <form th:if="${#authentication.name}==${reply.writer}" th:action="@{/replies}" th:method="delete">
+                        <label>
+                            <input type="text" name="articleId" th:value="*{id}" hidden>
+                            <input type="text" name="replyId" th:value="${reply.id}" hidden>
+                        </label>
                         <button type="submit">delete</button>
                     </form>
                 </li>

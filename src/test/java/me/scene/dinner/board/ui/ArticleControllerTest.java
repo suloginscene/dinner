@@ -7,7 +7,6 @@ import me.scene.dinner.board.domain.article.Article;
 import me.scene.dinner.board.domain.article.ArticleTag;
 import me.scene.dinner.board.domain.magazine.Magazine;
 import me.scene.dinner.board.domain.magazine.Policy;
-import me.scene.dinner.board.domain.reply.Reply;
 import me.scene.dinner.board.domain.topic.Topic;
 import me.scene.dinner.tag.ArticleSummary;
 import me.scene.dinner.tag.TagService;
@@ -461,25 +460,6 @@ class ArticleControllerTest {
             assertThat(topic.getArticles()).isEmpty();
             magazine = magazineService.load(magazine.getTitle());
             assertThat(magazine.getWriters()).doesNotContain(user.getUsername());
-        }
-
-        @Nested
-        class With_child {
-            @Test
-            void removes_Recursively() throws Exception {
-                Long id = article.getId();
-                factoryFacade.createReply(article, manager, "Reply...");
-                mockMvc.perform(
-                        delete("/articles/" + id)
-                                .with(csrf())
-                )
-                        .andExpect(status().is3xxRedirection())
-                        .andExpect(redirectedUrl("/topics/" + topic.getId()))
-                ;
-                assertThrows(ArticleNotFoundException.class, () -> articleService.find(id));
-                List<Reply> replies = repositoryFacade.findAllReplies();
-                assertThat(replies).isEmpty();
-            }
         }
 
         @Nested

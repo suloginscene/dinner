@@ -44,8 +44,8 @@ public class FactoryFacade {
         return articleFactory.create(topic.getId(), writer.getUsername(), title, title + "의 본문", publicized, tags);
     }
 
-    public Long createReply(Article article, Account writer, String content) {
-        return replyFactory.create(article.getId(), writer.getUsername(), content);
+    public void createReply(Article article, Account writer, String content) {
+        replyFactory.create(article.getId(), writer.getUsername(), content);
     }
 
 }

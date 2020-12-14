@@ -4,7 +4,7 @@ import me.scene.dinner.account.domain.account.Account;
 import me.scene.dinner.board.domain.article.Article;
 import me.scene.dinner.board.domain.magazine.Magazine;
 import me.scene.dinner.board.domain.magazine.Policy;
-import me.scene.dinner.board.domain.reply.Reply;
+import me.scene.dinner.board.domain.article.Reply;
 import me.scene.dinner.board.domain.topic.Topic;
 import me.scene.dinner.test.facade.FactoryFacade;
 import me.scene.dinner.test.facade.RepositoryFacade;
@@ -105,17 +105,21 @@ class ReplyControllerTest {
     @Nested
     class Delete {
 
-        Long replyId;
+        Reply reply;
 
         @BeforeEach
         void setup() {
-            replyId = factoryFacade.createReply(article, user, "Test Reply");
+            factoryFacade.createReply(article, user, "Test Reply");
+            article = articleService.load(article.getTitle());
+            reply = article.getReplies().stream().filter(r -> r.getContent().equals("Test Reply")).findFirst().orElseThrow();
         }
 
         @Test
         void deletes_And_redirectsTo_article() throws Exception {
             mockMvc.perform(
-                    delete("/replies/" + replyId)
+                    delete("/replies")
+                            .param("articleId", article.getId().toString())
+                            .param("replyId", reply.getId().toString())
                             .with(csrf())
             )
                     .andExpect(status().is3xxRedirection())
@@ -134,7 +138,9 @@ class ReplyControllerTest {
                 Account stranger = factoryFacade.createAccount("stranger");
                 login(stranger);
                 mockMvc.perform(
-                        delete("/replies/" + replyId)
+                        delete("/replies")
+                                .param("articleId", article.getId().toString())
+                                .param("replyId", reply.getId().toString())
                                 .with(csrf())
                 )
                         .andExpect(status().isOk())

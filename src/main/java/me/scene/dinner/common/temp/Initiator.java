@@ -7,7 +7,7 @@ import me.scene.dinner.account.domain.tempaccount.TempAccount;
 import me.scene.dinner.account.domain.tempaccount.TempAccountRepository;
 import me.scene.dinner.board.application.article.ArticleService;
 import me.scene.dinner.board.application.magazine.MagazineService;
-import me.scene.dinner.board.application.reply.ReplyService;
+import me.scene.dinner.board.application.article.ReplyService;
 import me.scene.dinner.board.application.topic.TopicService;
 import me.scene.dinner.board.domain.article.Article;
 import me.scene.dinner.board.domain.magazine.Magazine;
@@ -130,7 +130,7 @@ public class Initiator implements ApplicationRunner {
         }
 
         private void reply(Long articleId, String writer, String content) {
-            replyService.save(articleId, writer, content);
+            replyService.save(writer, articleId, content);
         }
 
     }
