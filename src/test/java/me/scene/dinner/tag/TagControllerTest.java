@@ -1,6 +1,10 @@
 package me.scene.dinner.tag;
 
 import me.scene.dinner.account.domain.account.Account;
+import me.scene.dinner.board.domain.article.Article;
+import me.scene.dinner.board.domain.magazine.Magazine;
+import me.scene.dinner.board.domain.magazine.Policy;
+import me.scene.dinner.board.domain.topic.Topic;
 import me.scene.dinner.test.facade.FactoryFacade;
 import me.scene.dinner.test.facade.RepositoryFacade;
 import org.junit.jupiter.api.AfterEach;
@@ -18,10 +22,11 @@ import java.util.List;
 import static me.scene.dinner.test.utils.Authenticators.login;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
@@ -77,7 +82,7 @@ class TagControllerTest {
 
         @Test
         void create_tag() throws Exception {
-            String newTag = "New";
+            String newTag = "new";
             mockMvc.perform(
                     post("/api/tags/" + newTag)
                             .with(csrf())
@@ -103,6 +108,50 @@ class TagControllerTest {
             ;
             List<String> tags = tagService.findAll();
             assertThat(tags).isEmpty();
+        }
+
+        @Nested
+        class OnReferred {
+            @Test
+            void not_delete() throws Exception {
+                Magazine magazine = factoryFacade.createMagazine(user, "Magazine", Policy.OPEN);
+                Topic topic = factoryFacade.createTopic(magazine, user, "Topic");
+                factoryFacade.createArticle(topic, user, "Article", true, tag.getName());
+                mockMvc.perform(
+                        delete("/api/tags/" + tag.getName())
+                                .with(csrf())
+                )
+                        .andExpect(status().isOk())
+                ;
+                List<String> tags = tagService.findAll();
+                assertThat(tags).isNotEmpty();
+            }
+        }
+
+    }
+
+    @Nested
+    class Page {
+
+        Article article;
+
+        @BeforeEach
+        void setup() {
+            Magazine magazine = factoryFacade.createMagazine(user, "Magazine", Policy.OPEN);
+            Topic topic = factoryFacade.createTopic(magazine, user, "Topic");
+            article = factoryFacade.createArticle(topic, user, "Article", true, tag.getName());
+        }
+
+        @Test
+        void show_taggedArticles() throws Exception {
+            TagDto expected = new TagDto(tag.getName(), List.of(new ArticleSummary(article.getId(), article.getTitle())));
+            mockMvc.perform(
+                    get("/tags/" + tag.getName())
+            )
+                    .andExpect(status().isOk())
+                    .andExpect(view().name("page/tag/view"))
+                    .andExpect(model().attributeExists("tag"))
+                    .andExpect(model().attribute("tag", is(expected)));
         }
 
     }

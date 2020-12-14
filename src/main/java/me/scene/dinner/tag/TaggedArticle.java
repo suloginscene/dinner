@@ -30,4 +30,8 @@ public class TaggedArticle {
         return taggedArticle;
     }
 
+    public boolean isPublicized() {
+        return article.isPublicized();
+    }
+
 }

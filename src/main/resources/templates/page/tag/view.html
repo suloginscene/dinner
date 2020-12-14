@@ -1,14 +1,19 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 
-    <div th:replace="layout/layout::head(${name}, ~{::link}, ~{})">
+    <div th:replace="layout/layout::head(${tag.name}, ~{::link}, ~{})">
         <link rel="stylesheet" href="/css/page/tag/view.css"/>
     </div>
 
     <body th:replace="layout/layout::body(~{::section})">
-        <section>
-            <div th:text="${name}"></div>
-            <div>개별 태그 화면입니다.</div>
+        <section th:object="${tag}">
+            <h1><span th:text="*{name}"></span> 태그의 글</h1>
+            <div th:if="*{articles.isEmpty()}">공개된 게시글이 없습니다.</div>
+            <ul th:unless="*{articles.isEmpty()}">
+                <li th:each="article:*{articles}">
+                    <a th:href="'/articles/'+${article.id}" th:text="${article.title}"> </a>
+                </li>
+            </ul>
         </section>
     </body>
 

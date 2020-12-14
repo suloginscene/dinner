@@ -25,6 +25,13 @@ public class TagController {
         return "page/tag/list";
     }
 
+    @GetMapping("/tags/{name}")
+    public String showTaggedArticles(@PathVariable String name, Model model) {
+        TagDto loadedTag = tagService.findLoadedTag(name);
+        model.addAttribute("tag", loadedTag);
+        return "page/tag/view";
+    }
+
     @PostMapping("/api/tags/{name}")
     public @ResponseBody ResponseEntity<Object> createTag(@PathVariable String name) {
         tagService.save(name);

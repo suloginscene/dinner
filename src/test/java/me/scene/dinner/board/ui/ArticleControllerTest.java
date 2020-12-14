@@ -9,6 +9,7 @@ import me.scene.dinner.board.domain.magazine.Magazine;
 import me.scene.dinner.board.domain.magazine.Policy;
 import me.scene.dinner.board.domain.reply.Reply;
 import me.scene.dinner.board.domain.topic.Topic;
+import me.scene.dinner.tag.ArticleSummary;
 import me.scene.dinner.tag.TagService;
 import me.scene.dinner.test.facade.FactoryFacade;
 import me.scene.dinner.test.facade.RepositoryFacade;
@@ -594,8 +595,12 @@ class ArticleControllerTest {
                 assertThat(tags).hasSize(2);
                 then(tagService).should().onArticleTaggedEvent(new ArticleTaggedEvent(article, tag1));
                 then(tagService).should().onArticleTaggedEvent(new ArticleTaggedEvent(article, tag2));
-                assertThat(tagService.taggedArticles(tag1)).hasSize(1);
-                assertThat(tagService.taggedArticles(tag2)).hasSize(1);
+                List<ArticleSummary> articles1 = tagService.findLoadedTag(tag1).getArticles();
+                assertThat(articles1).hasSize(1);
+                assertThat(articles1.get(0).getTitle()).isEqualTo("Test Article");
+                List<ArticleSummary> articles2 = tagService.findLoadedTag(tag2).getArticles();
+                assertThat(articles2).hasSize(1);
+                assertThat(articles2.get(0).getTitle()).isEqualTo("Test Article");
             }
         }
 

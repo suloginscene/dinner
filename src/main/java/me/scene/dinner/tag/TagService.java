@@ -1,18 +1,15 @@
 package me.scene.dinner.tag;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import me.scene.dinner.board.application.article.ArticleTaggedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Set;
 
 import static java.util.stream.Collectors.toList;
 
-@Slf4j
 @Service @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class TagService {
@@ -37,7 +34,7 @@ public class TagService {
     @Transactional
     public void delete(String name) {
         Tag tag = find(name);
-        // TODO check deletable
+        if (!tag.getTaggedArticles().isEmpty()) return;
         tagRepository.delete(tag);
     }
 
@@ -49,12 +46,14 @@ public class TagService {
         tag.addTaggedArticle(taggedArticle);
     }
 
-    public Set<TaggedArticle> taggedArticles(String name) {
+    public TagDto findLoadedTag(String name) {
         Tag tag = find(name);
         // TODO fetch join
-        Set<TaggedArticle> taggedArticles = tag.getTaggedArticles();
-        log.debug("load: {}", taggedArticles);
-        return taggedArticles;
+        return new TagDto(name,
+                tag.getPublicizedTaggedArticles().stream()
+                        .map(TaggedArticle::getArticle)
+                        .map(a -> new ArticleSummary(a.getId(), a.getTitle()))
+                        .collect(toList()));
     }
 
 }

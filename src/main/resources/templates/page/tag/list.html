@@ -7,10 +7,12 @@
 
     <body th:replace="layout/layout::body(~{::section})">
         <section>
-            <div>
-                전체 태그 목록 화면입니다.
-            </div>
-            <a href="/tags/tag">개별 태그</a>
+            <h1>디너의 모든 태그</h1>
+            <ul>
+                <li th:each="tag:${tags}">
+                    <a th:href="'/tags/'+${tag}" th:text="${tag}">개별 태그</a>
+                </li>
+            </ul>
         </section>
     </body>
 

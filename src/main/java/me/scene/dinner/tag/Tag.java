@@ -11,6 +11,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static javax.persistence.CascadeType.ALL;
 
@@ -38,6 +39,10 @@ public class Tag {
 
     public void addTaggedArticle(TaggedArticle taggedArticle) {
         taggedArticles.add(taggedArticle);
+    }
+
+    public Set<TaggedArticle> getPublicizedTaggedArticles() {
+        return taggedArticles.stream().filter(TaggedArticle::isPublicized).collect(Collectors.toSet());
     }
 
 }

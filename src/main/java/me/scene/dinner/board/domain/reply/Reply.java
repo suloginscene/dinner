@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 
 import static javax.persistence.FetchType.LAZY;
 
+// TODO
 @Entity
 @Getter @EqualsAndHashCode(of = "id")
 public class Reply {
