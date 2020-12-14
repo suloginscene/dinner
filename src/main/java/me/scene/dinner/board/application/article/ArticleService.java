@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import me.scene.dinner.board.application.topic.TopicService;
 import me.scene.dinner.board.domain.article.Article;
 import me.scene.dinner.board.domain.article.ArticleRepository;
+import me.scene.dinner.board.domain.article.ArticleTag;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -85,7 +86,7 @@ public class ArticleService {
 
     private ArticleDto extractDto(Article a) {
         return new ArticleDto(a.getId(), a.getWriter(), a.getTitle(), a.getContent(), a.isPublicized(),
-                a.getCreatedAt(), a.getRead(), a.getLikes(), a.topicSummary(), a.replySummaries());
+                a.getCreatedAt(), a.getRead(), a.getLikes(), a.getArticleTags().stream().map(ArticleTag::getName).collect(Collectors.toSet()), a.topicSummary(), a.replySummaries());
     }
 
 }

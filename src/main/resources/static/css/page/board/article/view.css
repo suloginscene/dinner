@@ -69,3 +69,10 @@ section article p img {
 #like-icon:hover {
     font-size: 30px;
 }
+
+.tag {
+    background-color: #bbddbb;
+    border-radius: 10px;
+    padding: 2px 6px;
+    margin: 3px;
+}

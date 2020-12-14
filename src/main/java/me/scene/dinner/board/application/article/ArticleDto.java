@@ -7,6 +7,7 @@ import me.scene.dinner.board.domain.article.TopicSummary;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 public class ArticleDto {
@@ -31,12 +32,15 @@ public class ArticleDto {
     private final int likes;
 
     @JsonIgnore
+    private final Set<String> tags;
+
+    @JsonIgnore
     private final TopicSummary topic;
 
     @JsonIgnore
     private final List<ReplySummary> replies;
 
-    public ArticleDto(Long id, String writer, String title, String content, boolean publicized, LocalDateTime createdAt, int read, int likes, TopicSummary topic, List<ReplySummary> replies) {
+    public ArticleDto(Long id, String writer, String title, String content, boolean publicized, LocalDateTime createdAt, int read, int likes, Set<String> tags, TopicSummary topic, List<ReplySummary> replies) {
         this.id = id;
         this.writer = writer;
         this.title = title;
@@ -45,6 +49,7 @@ public class ArticleDto {
         this.createdAt = createdAt;
         this.read = read;
         this.likes = likes;
+        this.tags = tags;
         this.topic = topic;
         this.replies = replies;
     }
