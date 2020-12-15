@@ -14,7 +14,16 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor @Slf4j
 public class MagazineService {
 
+    private final MagazineBestListCache bestListCache;
     private final MagazineRepository magazineRepository;
+
+    private void updateCache() {
+        List<MagazineDto> allMagazines = all();
+        List<MagazineDto> magazineDtos = (allMagazines.size() > bestListCache.getSize()) ?
+                allMagazines.subList(0, bestListCache.getSize()) : allMagazines;
+        bestListCache.setBestMagazines(magazineDtos);
+    }
+
 
     public Magazine find(Long id) {
         return magazineRepository.findById(id).orElseThrow(() -> new MagazineNotFoundException(id));
@@ -27,16 +36,13 @@ public class MagazineService {
                 .collect(Collectors.toList());
     }
 
-    public List<MagazineDto> best(int count) {
-        List<MagazineDto> allMagazines = all();
-        return (allMagazines.size() > count) ?
-                allMagazines.subList(0, count) : allMagazines;
-    }
 
     @Transactional
     public Long save(String manager, String title, String shortExplanation, String longExplanation, String policy) {
         Magazine magazine = Magazine.create(manager, title, shortExplanation, longExplanation, policy);
-        return magazineRepository.save(magazine).getId();
+        Long id = magazineRepository.save(magazine).getId();
+        updateCache();
+        return id;
     }
 
     public MagazineDto read(Long id) {
@@ -61,15 +67,15 @@ public class MagazineService {
     public void update(Long id, String current, String title, String shortExplanation, String longExplanation) {
         Magazine magazine = find(id);
         magazine.update(current, title, shortExplanation, longExplanation);
-        publishEvent(magazine);
+        updateCache();
     }
 
     @Transactional
     public void delete(Long id, String current) {
         Magazine magazine = find(id);
         magazine.beforeDelete(current);
-        publishEvent(magazine);
         magazineRepository.delete(magazine);
+        updateCache();
     }
 
     @Transactional

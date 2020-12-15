@@ -15,8 +15,8 @@
                 <form th:object="${signupForm}" th:action="@{/signup}" th:method="post" id="signup-form" novalidate>
                     <div class="form-texts">
                         <label>
-                            <input type="text" th:field="*{username}" placeholder="이름 (2~16자의 영어 소문자, 숫자, -, _)"
-                                   required pattern="[a-z0-9\-_]{2,16}">
+                            <input type="text" th:field="*{username}" placeholder="이름 (2~16자의 한글, 영(소), 숫자, -, _)"
+                                   required pattern="[a-z가-힣0-9\-_]{2,16}">
                             <small class="invalid-feedback"><i class="fa fa-ban"></i></small>
                             <small class="valid-feedback"><i class="fa fa-check"></i></small>
                             <small th:if="${#fields.hasErrors('username')}" th:errors="*{username}" class="form-text text-danger"></small>

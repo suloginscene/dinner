@@ -119,12 +119,14 @@ public class MagazineController {
     }
 
     @GetMapping("/api/magazines")
-    public @ResponseBody List<MagazineDto> bestList() {
-        return bestListCache.get();
+    public @ResponseBody
+    List<MagazineDto> bestList() {
+        return bestListCache.getBestMagazines();
     }
 
     @GetMapping("/api/magazines/{username}")
-    public @ResponseBody List<MagazineDto> byUser(@PathVariable String username) {
+    public @ResponseBody
+    List<MagazineDto> byUser(@PathVariable String username) {
         return magazineService.findByManager(username);
     }
 

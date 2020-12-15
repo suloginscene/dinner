@@ -14,7 +14,7 @@ import javax.validation.constraints.Pattern;
 public class SignupForm {
 
     @Length(min = 2, max = 16, message = "이름은 2자 이상, 16자 이하여야 합니다.")
-    @Pattern(regexp = "^[a-z0-9\\-_]{2,16}$", message = "이름에는 영어 소문자, 숫자, -와 _를 사용할 수 있습니다.")
+    @Pattern(regexp = "^[a-z가-힣0-9\\-_]{2,16}$", message = "이름에는 한글, 영어 소문자, 숫자, -와 _를 사용할 수 있습니다.")
     private String username;
 
     @NotBlank(message = "이메일은 공백일 수 없습니다.")

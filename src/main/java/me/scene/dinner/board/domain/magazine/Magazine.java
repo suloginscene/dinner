@@ -4,9 +4,6 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import me.scene.dinner.board.domain.common.NotDeletableException;
 import me.scene.dinner.board.domain.common.NotOwnerException;
-import me.scene.dinner.board.domain.magazine.event.MagazineChangedEvent;
-import me.scene.dinner.board.domain.magazine.event.MagazineCreatedEvent;
-import me.scene.dinner.board.domain.magazine.event.MagazineDeletedEvent;
 import me.scene.dinner.board.domain.magazine.event.MemberAddedEvent;
 import me.scene.dinner.board.domain.magazine.event.MemberAppliedEvent;
 import me.scene.dinner.board.domain.magazine.event.MemberQuitEvent;
@@ -74,7 +71,6 @@ public class Magazine extends AbstractAggregateRoot<Magazine> {
         magazine.shortExplanation = shortExplanation;
         magazine.longExplanation = longExplanation;
         magazine.policy = Policy.valueOf(magazinePolicy);
-        magazine.registerEvent(new MagazineCreatedEvent());
         return magazine;
     }
 
@@ -83,18 +79,15 @@ public class Magazine extends AbstractAggregateRoot<Magazine> {
         this.title = title;
         this.shortExplanation = shortExplanation;
         this.longExplanation = longExplanation;
-        registerEvent(new MagazineChangedEvent(id));
     }
 
     public void rate(int point) {
         rating += point;
-        if (rating % 100 == 0) registerEvent(new MagazineChangedEvent(id));
     }
 
     public void beforeDelete(String current) {
         confirmManager(current);
         confirmDeletable();
-        registerEvent(new MagazineDeletedEvent(id));
     }
 
 

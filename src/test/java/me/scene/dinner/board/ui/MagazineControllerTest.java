@@ -69,7 +69,6 @@ class MagazineControllerTest {
     void setUp() {
         manager = factoryFacade.createAccount("manager");
         login(manager);
-        bestListCache.init();
     }
 
     void expectRedirectionToLogin(MockHttpServletRequestBuilder requestBuilder) throws Exception {
@@ -134,7 +133,8 @@ class MagazineControllerTest {
                 assertThat(magazine.getLongExplanation()).isEqualTo(longExplanation);
                 assertThat(magazine.getPolicy()).isEqualTo(Policy.OPEN);
                 assertThat(magazine.getManager()).isEqualTo(manager.getUsername());
-                assertThat(bestListCache.contains(magazine.getId())).isTrue();
+                List<MagazineDto> magazineDtos = bestListCache.getBestMagazines();
+                assertThat(magazineDtos.stream().anyMatch(m -> m.getId().equals(magazine.getId()))).isTrue();
             }
 
             @Nested
@@ -264,8 +264,9 @@ class MagazineControllerTest {
                 assertThat(magazine.getTitle()).isEqualTo("Updated");
                 assertThat(magazine.getShortExplanation()).isEqualTo("Updated short.");
                 assertThat(magazine.getLongExplanation()).isEqualTo("Updated long.");
-                assertThat(bestListCache.contains(id)).isTrue();
-                assertThat(bestListCache.findTarget(id).getTitle()).isEqualTo("Updated");
+                List<MagazineDto> magazineDtos = bestListCache.getBestMagazines();
+                assertThat(magazineDtos.stream().anyMatch(m -> m.getId().equals(id))).isTrue();
+                assertThat(magazineDtos.stream().filter(m -> m.getId().equals(id)).findFirst().orElseThrow().getTitle()).isEqualTo("Updated");
             }
 
             @Nested
@@ -335,7 +336,7 @@ class MagazineControllerTest {
                     .andExpect(redirectedUrl("/"))
             ;
             assertThrows(MagazineNotFoundException.class, () -> magazineService.find(magazine.getId()));
-            List<MagazineDto> bestList = bestListCache.get();
+            List<MagazineDto> bestList = bestListCache.getBestMagazines();
             assertThat(bestList).isEmpty();
         }
 

@@ -2,6 +2,7 @@ package me.scene.dinner.test.proxy.service;
 
 import lombok.extern.slf4j.Slf4j;
 import me.scene.dinner.account.domain.account.Account;
+import me.scene.dinner.board.application.magazine.MagazineBestListCache;
 import me.scene.dinner.board.application.magazine.MagazineService;
 import me.scene.dinner.board.domain.magazine.Magazine;
 import me.scene.dinner.test.proxy.repository.MagazineRepositoryProxy;
@@ -13,8 +14,8 @@ public class MagazineServiceProxy extends MagazineService {
 
     private final MagazineRepositoryProxy magazineRepository;
 
-    public MagazineServiceProxy(MagazineRepositoryProxy magazineRepository) {
-        super(magazineRepository);
+    public MagazineServiceProxy(MagazineBestListCache bestListCache, MagazineRepositoryProxy magazineRepository) {
+        super(bestListCache, magazineRepository);
         this.magazineRepository = magazineRepository;
     }
 
