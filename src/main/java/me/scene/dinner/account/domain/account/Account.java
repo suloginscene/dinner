@@ -3,7 +3,6 @@ package me.scene.dinner.account.domain.account;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import me.scene.dinner.account.domain.tempaccount.TempAccount;
 
 import javax.persistence.Column;
 import javax.persistence.Embedded;

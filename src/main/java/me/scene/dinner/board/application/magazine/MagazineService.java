@@ -113,9 +113,9 @@ public class MagazineService {
 
         // TODO fetch join
         List<String> members = m.getMembers();
-        log.debug("load: {}", members);
+        log.info("load: {}", members);
         List<String> writers = m.getWriters();
-        log.debug("load: {}", writers);
+        log.info("load: {}", writers);
 
         return new MagazineDto(m.getId(), m.getManager(), m.getTitle(), m.getShortExplanation(), m.getLongExplanation(),
                 m.getPolicy().name(), members, writers, m.getTopicSummaries());
