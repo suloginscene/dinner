@@ -2,8 +2,10 @@ package me.scene.dinner.board.application.magazine;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import me.scene.dinner.board.domain.common.Owner;
 import me.scene.dinner.board.domain.magazine.Magazine;
 import me.scene.dinner.board.domain.magazine.MagazineRepository;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,6 +18,7 @@ public class MagazineService {
 
     private final MagazineBestListCache bestListCache;
     private final MagazineRepository magazineRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
     private void updateCache() {
         List<MagazineDto> allMagazines = all();
@@ -39,7 +42,7 @@ public class MagazineService {
 
     @Transactional
     public Long save(String manager, String title, String shortExplanation, String longExplanation, String policy) {
-        Magazine magazine = Magazine.create(manager, title, shortExplanation, longExplanation, policy);
+        Magazine magazine = new Magazine(manager, title, shortExplanation, longExplanation, policy);
         Long id = magazineRepository.save(magazine).getId();
         updateCache();
         return id;
@@ -52,13 +55,13 @@ public class MagazineService {
 
     public MagazineDto findToUpdate(Long id, String current) {
         Magazine magazine = find(id);
-        magazine.confirmManager(current);
+        magazine.getOwner().identify(current);
         return extractDto(magazine);
     }
 
     public MagazineDto findToManageMember(Long id, String current) {
         Magazine magazine = find(id);
-        magazine.confirmManager(current);
+        magazine.getOwner().identify(current);
         magazine.confirmPolicyManaged();
         return extractDto(magazine);
     }
@@ -81,37 +84,29 @@ public class MagazineService {
     @Transactional
     public void applyMember(Long id, String current) {
         Magazine magazine = find(id);
-        magazine.applyMember(current);
-        publishEvent(magazine);
+        magazine.applyMember(current).ifPresent(eventPublisher::publishEvent);
     }
 
     @Transactional
     public void quitMember(Long id, String current) {
         Magazine magazine = find(id);
-        magazine.quitMember(current);
-        publishEvent(magazine);
+        magazine.quitMember(current).ifPresent(eventPublisher::publishEvent);
     }
 
     @Transactional
     public void addMember(Long id, String current, String target) {
         Magazine magazine = find(id);
-        magazine.addMember(current, target);
-        publishEvent(magazine);
+        magazine.addMember(current, target).ifPresent(eventPublisher::publishEvent);
     }
 
     @Transactional
     public void removeMember(Long id, String current, String target) {
         Magazine magazine = find(id);
-        magazine.removeMember(current, target);
-        publishEvent(magazine);
-    }
-
-    private void publishEvent(Magazine magazine) {
-        magazineRepository.save(magazine);
+        magazine.removeMember(current, target).ifPresent(eventPublisher::publishEvent);
     }
 
     public List<MagazineDto> findByManager(String username) {
-        return magazineRepository.findByManagerOrderByRatingDesc(username).stream()
+        return magazineRepository.findByOwnerOrderByRatingDesc(new Owner(username)).stream()
                 .map(this::extractDto).collect(Collectors.toList());
     }
 
@@ -123,7 +118,7 @@ public class MagazineService {
         List<String> writers = m.getWriters();
         log.info("load: {}", writers);
 
-        return new MagazineDto(m.getId(), m.getManager(), m.getTitle(), m.getShortExplanation(), m.getLongExplanation(),
+        return new MagazineDto(m.getId(), m.getOwner().getOwnerName(), m.getTitle(), m.getShortExplanation(), m.getLongExplanation(),
                 m.getPolicy().name(), members, writers, m.getTopicSummaries());
     }
 

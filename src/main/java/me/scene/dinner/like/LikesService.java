@@ -16,7 +16,7 @@ public class LikesService {
     @Transactional
     public void likes(String username, Long articleId) {
         Article article = articleService.like(articleId);
-        Likes likes = Likes.create(username, articleId, article.getTitle(), article.getWriter());
+        Likes likes = Likes.create(username, articleId, article.getTitle(), article.getOwner().getOwnerName());
         likesRepository.save(likes);
     }
 

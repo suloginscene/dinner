@@ -132,7 +132,7 @@ class MagazineControllerTest {
                 assertThat(magazine.getShortExplanation()).isEqualTo(shortExplanation);
                 assertThat(magazine.getLongExplanation()).isEqualTo(longExplanation);
                 assertThat(magazine.getPolicy()).isEqualTo(Policy.OPEN);
-                assertThat(magazine.getManager()).isEqualTo(manager.getUsername());
+                assertThat(magazine.getOwner().getOwnerName()).isEqualTo(manager.getUsername());
                 List<MagazineDto> magazineDtos = bestListCache.getBestMagazines();
                 assertThat(magazineDtos.stream().anyMatch(m -> m.getId().equals(magazine.getId()))).isTrue();
             }

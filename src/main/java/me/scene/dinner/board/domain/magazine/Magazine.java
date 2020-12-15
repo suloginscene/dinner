@@ -1,41 +1,36 @@
 package me.scene.dinner.board.domain.magazine;
 
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import me.scene.dinner.board.domain.common.Board;
 import me.scene.dinner.board.domain.common.NotDeletableException;
-import me.scene.dinner.board.domain.common.NotOwnerException;
+import me.scene.dinner.board.domain.common.Owner;
 import me.scene.dinner.board.domain.magazine.event.MemberAddedEvent;
 import me.scene.dinner.board.domain.magazine.event.MemberAppliedEvent;
 import me.scene.dinner.board.domain.magazine.event.MemberQuitEvent;
 import me.scene.dinner.board.domain.magazine.event.MemberRemovedEvent;
 import me.scene.dinner.board.domain.topic.Topic;
-import org.springframework.data.domain.AbstractAggregateRoot;
 
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static javax.persistence.EnumType.STRING;
 import static javax.persistence.FetchType.LAZY;
+import static lombok.AccessLevel.PROTECTED;
 import static me.scene.dinner.board.domain.magazine.Policy.EXCLUSIVE;
 import static me.scene.dinner.board.domain.magazine.Policy.MANAGED;
 import static me.scene.dinner.board.domain.magazine.Policy.OPEN;
 
 @Entity
-@Getter @EqualsAndHashCode(of = "id", callSuper = false)
-public class Magazine extends AbstractAggregateRoot<Magazine> {
-
-    @Id @GeneratedValue
-    private Long id;
-
-    private String manager;
-
+@Getter
+@NoArgsConstructor(access = PROTECTED)
+public class Magazine extends Board {
 
     private String title;
 
@@ -61,21 +56,16 @@ public class Magazine extends AbstractAggregateRoot<Magazine> {
     private final List<String> members = new ArrayList<>();
 
 
-    protected Magazine() {
-    }
-
-    public static Magazine create(String manager, String title, String shortExplanation, String longExplanation, String magazinePolicy) {
-        Magazine magazine = new Magazine();
-        magazine.manager = manager;
-        magazine.title = title;
-        magazine.shortExplanation = shortExplanation;
-        magazine.longExplanation = longExplanation;
-        magazine.policy = Policy.valueOf(magazinePolicy);
-        return magazine;
+    public Magazine(String owner, String title, String shortExplanation, String longExplanation, String magazinePolicy) {
+        this.owner = new Owner(owner);
+        this.title = title;
+        this.shortExplanation = shortExplanation;
+        this.longExplanation = longExplanation;
+        this.policy = Policy.valueOf(magazinePolicy);
     }
 
     public void update(String current, String title, String shortExplanation, String longExplanation) {
-        confirmManager(current);
+        owner.identify(current);
         this.title = title;
         this.shortExplanation = shortExplanation;
         this.longExplanation = longExplanation;
@@ -86,14 +76,8 @@ public class Magazine extends AbstractAggregateRoot<Magazine> {
     }
 
     public void beforeDelete(String current) {
-        confirmManager(current);
+        owner.identify(current);
         confirmDeletable();
-    }
-
-
-    public void confirmManager(String current) {
-        if (current.equals(manager)) return;
-        throw new NotOwnerException(current);
     }
 
     private void confirmDeletable() {
@@ -118,11 +102,11 @@ public class Magazine extends AbstractAggregateRoot<Magazine> {
         }
 
         if (policy == EXCLUSIVE) {
-            if (manager.equals(username)) return;
+            if (owner.is(username)) return;
         }
 
         if (policy == MANAGED) {
-            if (manager.equals(username)) return;
+            if (owner.is(username)) return;
             if (members.contains(username)) return;
         }
 
@@ -138,7 +122,7 @@ public class Magazine extends AbstractAggregateRoot<Magazine> {
     public void removeWriter(String writer) {
         if (!writers.contains(writer)) return;
         if (topics.stream().map(Topic::getPublicArticles).flatMap(List::stream)
-                .filter(a -> a.getWriter().equals(writer)).count() > 1) return;
+                .filter(a -> a.getOwner().is(writer)).count() > 1) return;
         writers.remove(writer);
     }
 
@@ -147,37 +131,37 @@ public class Magazine extends AbstractAggregateRoot<Magazine> {
         throw new IllegalStateException("Not Managed Magazine");
     }
 
-    public void applyMember(String current) {
+    public Optional<MemberAppliedEvent> applyMember(String current) {
         confirmPolicyManaged();
-        if (members.contains(current)) return;
+        if (members.contains(current)) return Optional.empty();
 
-        registerEvent(new MemberAppliedEvent(id, title, manager, current));
+        return Optional.of(new MemberAppliedEvent(id, title, owner.getOwnerName(), current));
     }
 
-    public void quitMember(String current) {
+    public Optional<MemberQuitEvent> quitMember(String current) {
         confirmPolicyManaged();
-        if (!members.contains(current)) return;
+        if (!members.contains(current)) return Optional.empty();
 
         members.remove(current);
-        registerEvent(new MemberQuitEvent(id, title, manager, current));
+        return Optional.of(new MemberQuitEvent(id, title, owner.getOwnerName(), current));
     }
 
-    public void addMember(String current, String member) {
-        confirmManager(current);
+    public Optional<MemberAddedEvent> addMember(String current, String member) {
+        owner.identify(current);
         confirmPolicyManaged();
-        if (members.contains(member)) return;
+        if (members.contains(member)) return Optional.empty();
 
         members.add(member);
-        registerEvent(new MemberAddedEvent(id, title, member));
+        return Optional.of(new MemberAddedEvent(id, title, member));
     }
 
-    public void removeMember(String current, String target) {
-        confirmManager(current);
+    public Optional<MemberRemovedEvent> removeMember(String current, String target) {
+        owner.identify(current);
         confirmPolicyManaged();
-        if (!members.contains(target)) return;
+        if (!members.contains(target)) return Optional.empty();
 
         members.remove(target);
-        registerEvent(new MemberRemovedEvent(id, title, target));
+        return Optional.of(new MemberRemovedEvent(id, title, target));
     }
 
     public List<TopicSummary> getTopicSummaries() {

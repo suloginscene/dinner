@@ -15,14 +15,14 @@ public class ReplyService {
 
     public void save(String writer, Long articleId, String content) {
         Article article = articleRepository.findById(articleId).orElseThrow();
-        Reply reply = Reply.create(writer, content);
+        Reply reply = new Reply(writer, content);
         article.add(reply);
     }
 
     public void delete(String current, Long articleId, Long replyId) {
         Article article = articleRepository.findById(articleId).orElseThrow();
         Reply reply = article.findReplyById(replyId).orElseThrow(() -> new ReplyNotFoundException(replyId));
-        reply.confirmWriter(current);
+        reply.getOwner().identify(current);
         article.remove(reply);
     }
 

@@ -123,7 +123,7 @@ class TopicControllerTest {
                     assertThat(topic.getShortExplanation()).isEqualTo("This is short explanation.");
                     assertThat(topic.getLongExplanation()).isEqualTo("This is long explanation of test magazine.");
                     assertThat(topic.getMagazine()).isEqualTo(magazine);
-                    assertThat(topic.getManager()).isEqualTo(user.getUsername());
+                    assertThat(topic.getOwner().getOwnerName()).isEqualTo(user.getUsername());
                 }
 
                 @Nested

@@ -20,7 +20,7 @@ public class TopicService {
 
     @Transactional
     public Long save(Long magazineId, String manager, String title, String shortExplanation, String longExplanation) {
-        Topic topic = Topic.create(magazineService.find(magazineId), manager, title, shortExplanation, longExplanation);
+        Topic topic = new Topic(magazineService.find(magazineId), manager, title, shortExplanation, longExplanation);
         return topicRepository.save(topic).getId();
     }
 
@@ -31,7 +31,7 @@ public class TopicService {
 
     public TopicDto findToUpdate(Long id, String current) {
         Topic topic = find(id);
-        topic.confirmManager(current);
+        topic.getOwner().identify(current);
         return extractDto(topic);
     }
 
@@ -50,7 +50,7 @@ public class TopicService {
     }
 
     private TopicDto extractDto(Topic t) {
-        return new TopicDto(t.getId(), t.getManager(), t.getTitle(), t.getShortExplanation(), t.getLongExplanation(),
+        return new TopicDto(t.getId(), t.getOwner().getOwnerName(), t.getTitle(), t.getShortExplanation(), t.getLongExplanation(),
                 t.magazineSummary(), t.privateArticleSummaries(), t.publicArticleSummaries());
     }
 

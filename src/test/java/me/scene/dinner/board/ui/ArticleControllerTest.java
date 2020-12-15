@@ -140,7 +140,7 @@ class ArticleControllerTest {
                     Article article = articleService.load("Test Article");
                     assertThat(article.getContent()).isEqualTo("This is test article.");
                     assertThat(article.getTopic()).isEqualTo(topic);
-                    assertThat(article.getWriter()).isEqualTo(user.getUsername());
+                    assertThat(article.getOwner().getOwnerName()).isEqualTo(user.getUsername());
                     magazine = magazineService.load(magazine.getTitle());
                     assertThat(magazine.getWriters()).contains(user.getUsername());
                 }

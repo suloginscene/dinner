@@ -6,6 +6,7 @@ import me.scene.dinner.board.application.magazine.MagazineBestListCache;
 import me.scene.dinner.board.application.magazine.MagazineService;
 import me.scene.dinner.board.domain.magazine.Magazine;
 import me.scene.dinner.test.proxy.repository.MagazineRepositoryProxy;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
@@ -14,8 +15,8 @@ public class MagazineServiceProxy extends MagazineService {
 
     private final MagazineRepositoryProxy magazineRepository;
 
-    public MagazineServiceProxy(MagazineBestListCache bestListCache, MagazineRepositoryProxy magazineRepository) {
-        super(bestListCache, magazineRepository);
+    public MagazineServiceProxy(MagazineBestListCache bestListCache, MagazineRepositoryProxy magazineRepository, ApplicationEventPublisher eventPublisher) {
+        super(bestListCache, magazineRepository, eventPublisher);
         this.magazineRepository = magazineRepository;
     }
 
@@ -27,7 +28,7 @@ public class MagazineServiceProxy extends MagazineService {
     }
 
     public void addMember(Magazine magazine, Account member) {
-        addMember(magazine.getId(), magazine.getManager(), member.getUsername());
+        addMember(magazine.getId(), magazine.getOwner().getOwnerName(), member.getUsername());
     }
 
 }

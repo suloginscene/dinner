@@ -1,19 +1,17 @@
 package me.scene.dinner.board.domain.article;
 
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import me.scene.dinner.board.domain.common.NotOwnerException;
+import lombok.NoArgsConstructor;
+import me.scene.dinner.board.domain.common.Board;
+import me.scene.dinner.board.domain.common.Owner;
 import me.scene.dinner.board.domain.topic.Topic;
 import me.scene.dinner.tag.TaggedArticle;
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -24,19 +22,15 @@ import java.util.stream.Collectors;
 
 import static javax.persistence.CascadeType.ALL;
 import static javax.persistence.FetchType.LAZY;
+import static lombok.AccessLevel.PROTECTED;
 import static me.scene.dinner.board.domain.article.RatingType.DISLIKE;
 import static me.scene.dinner.board.domain.article.RatingType.LIKE;
 import static me.scene.dinner.board.domain.article.RatingType.READ;
 
 @Entity
-@Getter @EqualsAndHashCode(of = "id")
-public class Article {
-
-    @Id @GeneratedValue
-    private Long id;
-
-    private String writer;
-
+@Getter
+@NoArgsConstructor(access = PROTECTED)
+public class Article extends Board {
 
     private String title;
 
@@ -45,18 +39,12 @@ public class Article {
 
     private boolean publicized;
 
-    private LocalDateTime createdAt;
-
-
     private int read;
-
     private int likes;
-
     private int rating;
 
     @OneToMany(mappedBy = "article")
     private final Set<TaggedArticle> taggedArticles = new HashSet<>();
-
 
     @ManyToOne(fetch = LAZY)
     private Topic topic;
@@ -65,30 +53,36 @@ public class Article {
     private final List<Reply> replies = new ArrayList<>();
 
 
-    protected Article() {
-    }
-
-    public static Article create(Topic topic, String writer, String title, String content, boolean publicized) {
-        topic.getMagazine().checkAuthorization(writer);
-        Article article = new Article();
-        article.writer = writer;
-        article.title = title;
-        article.content = content;
-        article.createdAt = LocalDateTime.now();
-        article.topic = topic;
-        article.publicized = publicized;
-        topic.add(article);
-        article.toggleWriterRegistration();
-        return article;
+    public Article(Topic topic, String owner, String title, String content, boolean publicized) {
+        topic.getMagazine().checkAuthorization(owner);
+        topic.add(this);
+        this.owner = new Owner(owner);
+        this.title = title;
+        this.content = content;
+        this.topic = topic;
+        this.publicized = publicized;
+        toggleWriterRegistration();
     }
 
     public void update(String current, String title, String content, boolean publicized) {
-        confirmWriter(current);
+        owner.identify(current);
         this.title = title;
         this.content = content;
         this.publicized = publicized;
         toggleWriterRegistration();
     }
+
+    public void beforeDelete(String current) {
+        owner.identify(current);
+        topic.getMagazine().removeWriter(owner.getOwnerName());
+        topic.remove(this);
+    }
+
+    private void toggleWriterRegistration() {
+        if (publicized) topic.getMagazine().addWriter(owner.getOwnerName());
+        else topic.getMagazine().removeWriter(owner.getOwnerName());
+    }
+
 
     private void rate(RatingType ratingType) {
         int point = ratingType.point();
@@ -112,24 +106,6 @@ public class Article {
         rate(DISLIKE);
     }
 
-    public void beforeDelete(String current) {
-        confirmWriter(current);
-        topic.getMagazine().removeWriter(writer);
-        topic.remove(this);
-    }
-
-    private void toggleWriterRegistration() {
-        if (publicized) topic.getMagazine().addWriter(writer);
-        else topic.getMagazine().removeWriter(writer);
-    }
-
-
-    public void confirmWriter(String current) {
-        if (current.equals(writer)) return;
-        throw new NotOwnerException(current);
-    }
-
-
     public void add(Reply reply) {
         replies.add(reply);
     }
@@ -148,7 +124,7 @@ public class Article {
 
     public List<ReplySummary> replySummaries() {
         return replies.stream()
-                .map(r -> new ReplySummary(r.getId(), r.getWriter(), r.getContent(), r.getCreatedAt()))
+                .map(r -> new ReplySummary(r.getId(), r.getOwner().getOwnerName(), r.getContent(), r.getCreatedAt()))
                 .sorted(Comparator.comparing(ReplySummary::getCreatedAt))
                 .collect(Collectors.toList());
     }
