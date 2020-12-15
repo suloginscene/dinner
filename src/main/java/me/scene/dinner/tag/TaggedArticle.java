@@ -21,12 +21,16 @@ public class TaggedArticle {
     @ManyToOne(fetch = LAZY)
     private Article article;
 
+    @ManyToOne(fetch = LAZY)
+    private Tag tag;
+
     protected TaggedArticle() {
     }
 
-    public static TaggedArticle create(Article article) {
+    public static TaggedArticle create(Article article, Tag tag) {
         TaggedArticle taggedArticle = new TaggedArticle();
         taggedArticle.article = article;
+        taggedArticle.tag = tag;
         return taggedArticle;
     }
 

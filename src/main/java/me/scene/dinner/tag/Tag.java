@@ -7,7 +7,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import java.util.HashSet;
 import java.util.Set;
@@ -25,7 +24,7 @@ public class Tag {
     @Column(unique = true, nullable = false)
     private String name;
 
-    @OneToMany(cascade = ALL, orphanRemoval = true) @JoinColumn(name = "tag_id")
+    @OneToMany(mappedBy = "tag", cascade = ALL, orphanRemoval = true)
     private final Set<TaggedArticle> taggedArticles = new HashSet<>();
 
     protected Tag() {

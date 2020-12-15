@@ -4,12 +4,13 @@ import me.scene.dinner.account.domain.account.Account;
 import me.scene.dinner.board.application.article.ArticleNotFoundException;
 import me.scene.dinner.board.application.article.ArticleTaggedEvent;
 import me.scene.dinner.board.domain.article.Article;
-import me.scene.dinner.board.domain.article.ArticleTag;
 import me.scene.dinner.board.domain.magazine.Magazine;
 import me.scene.dinner.board.domain.magazine.Policy;
 import me.scene.dinner.board.domain.topic.Topic;
 import me.scene.dinner.tag.ArticleSummary;
+import me.scene.dinner.tag.Tag;
 import me.scene.dinner.tag.TagService;
+import me.scene.dinner.tag.TaggedArticle;
 import me.scene.dinner.test.facade.FactoryFacade;
 import me.scene.dinner.test.facade.RepositoryFacade;
 import me.scene.dinner.test.proxy.service.ArticleServiceProxy;
@@ -28,6 +29,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static me.scene.dinner.test.utils.Authenticators.login;
 import static me.scene.dinner.test.utils.Authenticators.logout;
@@ -571,7 +573,8 @@ class ArticleControllerTest {
                         .andExpect(redirectedUrlPattern("/articles/*"))
                 ;
                 Article article = articleService.load("Test Article");
-                Set<ArticleTag> tags = article.getArticleTags();
+                Set<TaggedArticle> taggedArticles = article.getTaggedArticles();
+                Set<Tag> tags = taggedArticles.stream().map(TaggedArticle::getTag).collect(Collectors.toSet());
                 assertThat(tags).hasSize(2);
                 then(tagService).should().onArticleTaggedEvent(new ArticleTaggedEvent(article, tag1));
                 then(tagService).should().onArticleTaggedEvent(new ArticleTaggedEvent(article, tag2));

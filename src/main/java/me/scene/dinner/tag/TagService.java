@@ -42,7 +42,7 @@ public class TagService {
     @Transactional
     public void onArticleTaggedEvent(ArticleTaggedEvent event) {
         Tag tag = find(event.getTagName());
-        TaggedArticle taggedArticle = TaggedArticle.create(event.getArticle());
+        TaggedArticle taggedArticle = TaggedArticle.create(event.getArticle(), tag);
         tag.addTaggedArticle(taggedArticle);
     }
 

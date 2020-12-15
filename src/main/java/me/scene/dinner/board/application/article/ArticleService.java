@@ -4,7 +4,8 @@ import lombok.RequiredArgsConstructor;
 import me.scene.dinner.board.application.topic.TopicService;
 import me.scene.dinner.board.domain.article.Article;
 import me.scene.dinner.board.domain.article.ArticleRepository;
-import me.scene.dinner.board.domain.article.ArticleTag;
+import me.scene.dinner.tag.Tag;
+import me.scene.dinner.tag.TaggedArticle;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,7 +28,7 @@ public class ArticleService {
 
     @Transactional
     public Long save(Long topicId, String writer, String title, String content, boolean publicized, Set<String> tagNames) {
-        Article article = Article.create(topicService.find(topicId), writer, title, content, publicized, tagNames);
+        Article article = Article.create(topicService.find(topicId), writer, title, content, publicized);
         Long id = articleRepository.save(article).getId();
         tagNames.forEach(t -> eventPublisher.publishEvent(new ArticleTaggedEvent(article, t)));
         return id;
@@ -86,7 +87,7 @@ public class ArticleService {
 
     private ArticleDto extractDto(Article a) {
         return new ArticleDto(a.getId(), a.getWriter(), a.getTitle(), a.getContent(), a.isPublicized(),
-                a.getCreatedAt(), a.getRead(), a.getLikes(), a.getArticleTags().stream().map(ArticleTag::getName).collect(Collectors.toSet()), a.topicSummary(), a.replySummaries());
+                a.getCreatedAt(), a.getRead(), a.getLikes(), a.getTaggedArticles().stream().map(TaggedArticle::getTag).map(Tag::getName).collect(Collectors.toSet()), a.topicSummary(), a.replySummaries());
     }
 
 }

@@ -4,12 +4,10 @@ import lombok.extern.slf4j.Slf4j;
 import me.scene.dinner.board.application.article.ArticleService;
 import me.scene.dinner.board.application.topic.TopicService;
 import me.scene.dinner.board.domain.article.Article;
-import me.scene.dinner.board.domain.article.ArticleTag;
+import me.scene.dinner.tag.TaggedArticle;
 import me.scene.dinner.test.proxy.repository.ArticleRepositoryProxy;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.stream.Collectors;
 
 @Slf4j
 @Transactional
@@ -27,7 +25,7 @@ public class ArticleServiceProxy extends ArticleService {
         log.debug("load: " + article.getContent());
         log.debug("load: " + article.getTopic());
         log.debug("load: " + article.getReplies());
-        article.getArticleTags().stream().map(ArticleTag::getName).collect(Collectors.toSet()).forEach(tagName -> log.debug("load: " + tagName));
+        article.getTaggedArticles().stream().map(TaggedArticle::getTag).forEach(tag -> log.debug("load: " + tag));
         return article;
     }
 

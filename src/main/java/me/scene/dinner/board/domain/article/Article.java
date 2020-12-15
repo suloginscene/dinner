@@ -4,6 +4,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import me.scene.dinner.board.domain.common.NotOwnerException;
 import me.scene.dinner.board.domain.topic.Topic;
+import me.scene.dinner.tag.TaggedArticle;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -21,7 +22,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static java.util.stream.Collectors.toSet;
 import static javax.persistence.CascadeType.ALL;
 import static javax.persistence.FetchType.LAZY;
 import static me.scene.dinner.board.domain.article.RatingType.DISLIKE;
@@ -54,8 +54,8 @@ public class Article {
 
     private int rating;
 
-    @OneToMany(cascade = ALL, orphanRemoval = true) @JoinColumn(name = "article_id")
-    private final Set<ArticleTag> articleTags = new HashSet<>();
+    @OneToMany(mappedBy = "article")
+    private final Set<TaggedArticle> taggedArticles = new HashSet<>();
 
 
     @ManyToOne(fetch = LAZY)
@@ -68,7 +68,7 @@ public class Article {
     protected Article() {
     }
 
-    public static Article create(Topic topic, String writer, String title, String content, boolean publicized, Set<String> tagNames) {
+    public static Article create(Topic topic, String writer, String title, String content, boolean publicized) {
         topic.getMagazine().checkAuthorization(writer);
         Article article = new Article();
         article.writer = writer;
@@ -77,7 +77,6 @@ public class Article {
         article.createdAt = LocalDateTime.now();
         article.topic = topic;
         article.publicized = publicized;
-        article.articleTags.addAll(tagNames.stream().map(ArticleTag::create).collect(toSet()));
         topic.add(article);
         article.toggleWriterRegistration();
         return article;
