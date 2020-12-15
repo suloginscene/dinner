@@ -1,7 +1,8 @@
 package me.scene.dinner.account.ui;
 
-import me.scene.dinner.account.application.AccountService;
+import me.scene.dinner.account.application.command.AccountService;
 import me.scene.dinner.account.domain.account.Account;
+import me.scene.dinner.account.domain.account.AccountRepository;
 import me.scene.dinner.account.domain.account.Profile;
 import me.scene.dinner.test.facade.FactoryFacade;
 import me.scene.dinner.test.facade.RepositoryFacade;
@@ -36,6 +37,7 @@ class ConfigControllerTest {
     @Autowired MockMvc mockMvc;
 
     @Autowired AccountService accountService;
+    @Autowired AccountRepository accountRepository;
     @Autowired PasswordEncoder passwordEncoder;
 
     @Autowired FactoryFacade factoryFacade;
@@ -131,7 +133,7 @@ class ConfigControllerTest {
                         .andExpect(status().is3xxRedirection())
                         .andExpect(redirectedUrl("/@user"))
                 ;
-                user = accountService.find(user.getUsername());
+                user = accountRepository.findByUsername(user.getUsername()).orElseThrow();
                 assertThat(user.getProfile()).isEqualTo(new Profile("Hello"));
             }
 
@@ -200,7 +202,7 @@ class ConfigControllerTest {
                         .andExpect(status().is3xxRedirection())
                         .andExpect(redirectedUrl("/@user"))
                 ;
-                user = accountService.find(user.getUsername());
+                user = accountRepository.findByUsername(user.getUsername()).orElseThrow();
                 assertThat(passwordEncoder).matches(p -> p.matches("newPassword!", user.getPassword()));
             }
 

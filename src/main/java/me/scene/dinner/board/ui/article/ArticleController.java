@@ -3,7 +3,7 @@ package me.scene.dinner.board.ui.article;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import me.scene.dinner.account.application.CurrentUser;
+import me.scene.dinner.common.security.CurrentUser;
 import me.scene.dinner.account.domain.account.Account;
 import me.scene.dinner.board.application.article.ArticleDto;
 import me.scene.dinner.board.application.article.ArticleService;

@@ -1,7 +1,7 @@
 package me.scene.dinner.mail;
 
-import me.scene.dinner.account.domain.account.TempPasswordIssuedEvent;
-import me.scene.dinner.account.domain.tempaccount.TempAccountCreatedEvent;
+import me.scene.dinner.account.application.command.event.TempPasswordIssuedEvent;
+import me.scene.dinner.account.application.command.event.TempAccountCreatedEvent;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;

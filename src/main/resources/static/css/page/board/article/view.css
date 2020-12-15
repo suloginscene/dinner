@@ -71,6 +71,7 @@ section article p img {
 }
 
 .tag {
+    color: black;
     background-color: #bbddbb;
     border-radius: 10px;
     padding: 2px 6px;

@@ -2,8 +2,8 @@ package me.scene.dinner.account.domain.account;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import me.scene.dinner.account.domain.tempaccount.TempAccount;
-import org.springframework.data.domain.AbstractAggregateRoot;
 
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -13,11 +13,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 import static javax.persistence.EnumType.STRING;
+import static lombok.AccessLevel.PROTECTED;
 import static me.scene.dinner.account.domain.account.AccountRole.USER;
 
 @Entity
-@Getter @EqualsAndHashCode(of = "id", callSuper = false)
-public class Account extends AbstractAggregateRoot<Account> {
+@Getter @EqualsAndHashCode(of = "id")
+@NoArgsConstructor(access = PROTECTED)
+public class Account {
 
     @Id @GeneratedValue
     private Long id;
@@ -37,19 +39,10 @@ public class Account extends AbstractAggregateRoot<Account> {
     @Embedded
     private Profile profile;
 
-    protected Account() {
-    }
-
-    public static Account create(TempAccount tempAccount) {
-        Account account = new Account();
-        account.username = tempAccount.getUsername();
-        account.email = tempAccount.getEmail();
-        account.password = tempAccount.getPassword();
-        return account;
-    }
-
-    public void registerTempPasswordIssuedEvent(String tempRawPassword) {
-        registerEvent(new TempPasswordIssuedEvent(email, tempRawPassword));
+    public Account(String username, String email, String encodedPassword) {
+        this.username = username;
+        this.email = email;
+        this.password = encodedPassword;
     }
 
     public void changePassword(String encodedPassword) {

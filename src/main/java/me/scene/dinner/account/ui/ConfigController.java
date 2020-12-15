@@ -1,9 +1,10 @@
 package me.scene.dinner.account.ui;
 
 import lombok.RequiredArgsConstructor;
-import me.scene.dinner.account.application.AccountDto;
-import me.scene.dinner.account.application.AccountService;
-import me.scene.dinner.account.application.CurrentUser;
+import me.scene.dinner.account.application.query.dto.AccountDto;
+import me.scene.dinner.account.application.query.AccountQueryService;
+import me.scene.dinner.account.application.command.AccountService;
+import me.scene.dinner.common.security.CurrentUser;
 import me.scene.dinner.account.domain.account.Account;
 import me.scene.dinner.account.ui.form.PasswordForm;
 import me.scene.dinner.account.ui.form.ProfileForm;
@@ -21,17 +22,18 @@ import javax.validation.Valid;
 public class ConfigController {
 
     private final AccountService accountService;
+    private final AccountQueryService accountQueryService;
 
     @GetMapping("/@{username}")
     public String showInfo(@PathVariable String username, Model model) {
-        AccountDto account = accountService.findDto(username);
+        AccountDto account = accountQueryService.findDto(username);
         model.addAttribute("account", account);
         return "page/account/info";
     }
 
     @GetMapping("/profile")
     public String profileForm(@CurrentUser Account current, Model model) {
-        AccountDto account = accountService.findDto(current.getUsername());
+        AccountDto account = accountQueryService.findDto(current.getUsername());
         model.addAttribute("profileForm", profileForm(account));
         return "page/account/profile";
     }

@@ -1,6 +1,6 @@
 package me.scene.dinner.test.utils;
 
-import me.scene.dinner.account.application.UserAccount;
+import me.scene.dinner.account.application.query.dto.UserAccount;
 import me.scene.dinner.account.domain.account.Account;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;

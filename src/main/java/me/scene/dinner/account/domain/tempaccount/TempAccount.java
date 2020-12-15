@@ -2,7 +2,7 @@ package me.scene.dinner.account.domain.tempaccount;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import org.springframework.data.domain.AbstractAggregateRoot;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,9 +10,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import java.util.UUID;
 
+import static lombok.AccessLevel.PROTECTED;
+
 @Entity
-@Getter @EqualsAndHashCode(of = "id", callSuper = false)
-public class TempAccount extends AbstractAggregateRoot<TempAccount> {
+@Getter @EqualsAndHashCode(of = "id")
+@NoArgsConstructor(access = PROTECTED)
+public class TempAccount {
 
     @Id @GeneratedValue
     private Long id;
@@ -29,22 +32,11 @@ public class TempAccount extends AbstractAggregateRoot<TempAccount> {
     @Column
     private String verificationToken;
 
-    protected TempAccount() {
-    }
-
-    public static TempAccount create(String username, String email, String encodedPassword) {
-        TempAccount tempAccount = new TempAccount();
-        tempAccount.username = username;
-        tempAccount.email = email;
-        tempAccount.password = encodedPassword;
-        tempAccount.verificationToken = UUID.randomUUID().toString();
-        tempAccount.registerEvent(new TempAccountCreatedEvent(email, tempAccount.verificationToken));
-        return tempAccount;
-    }
-
-    public void verify(String token) {
-        if (token.equals(verificationToken)) return;
-        throw new VerificationException(token);
+    public TempAccount(String username, String email, String encodedPassword) {
+        this.username = username;
+        this.email = email;
+        this.password = encodedPassword;
+        this.verificationToken = UUID.randomUUID().toString();
     }
 
 }

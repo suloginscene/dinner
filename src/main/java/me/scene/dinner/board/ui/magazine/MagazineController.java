@@ -1,7 +1,7 @@
 package me.scene.dinner.board.ui.magazine;
 
 import lombok.RequiredArgsConstructor;
-import me.scene.dinner.account.application.CurrentUser;
+import me.scene.dinner.common.security.CurrentUser;
 import me.scene.dinner.account.domain.account.Account;
 import me.scene.dinner.board.application.magazine.MagazineBestListCache;
 import me.scene.dinner.board.application.magazine.MagazineDto;

@@ -1,8 +1,8 @@
 package me.scene.dinner.common.advice;
 
 import lombok.extern.slf4j.Slf4j;
-import me.scene.dinner.account.application.AlreadyVerifiedException;
-import me.scene.dinner.account.domain.tempaccount.VerificationException;
+import me.scene.dinner.account.application.command.exception.AlreadyVerifiedException;
+import me.scene.dinner.account.application.command.exception.VerificationException;
 import me.scene.dinner.board.application.common.BoardNotFoundException;
 import me.scene.dinner.board.domain.common.NotDeletableException;
 import me.scene.dinner.mail.RuntimeMessagingException;

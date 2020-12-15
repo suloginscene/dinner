@@ -1,10 +1,11 @@
 package me.scene.dinner.mail;
 
-import me.scene.dinner.account.application.AccountService;
+import me.scene.dinner.account.application.command.AccountService;
 import me.scene.dinner.account.domain.account.Account;
-import me.scene.dinner.account.domain.account.TempPasswordIssuedEvent;
+import me.scene.dinner.account.application.command.event.TempPasswordIssuedEvent;
+import me.scene.dinner.account.domain.account.AccountRepository;
 import me.scene.dinner.account.domain.tempaccount.TempAccount;
-import me.scene.dinner.account.domain.tempaccount.TempAccountCreatedEvent;
+import me.scene.dinner.account.application.command.event.TempAccountCreatedEvent;
 import me.scene.dinner.test.facade.FactoryFacade;
 import me.scene.dinner.test.facade.RepositoryFacade;
 import me.scene.dinner.test.proxy.service.MagazineServiceProxy;
@@ -39,6 +40,7 @@ class MailControllerTest {
     @MockBean MailSender mailSender;
 
     @Autowired AccountService accountService;
+    @Autowired AccountRepository accountRepository;
     @SpyBean MagazineServiceProxy magazineService;
 
     @Autowired FactoryFacade factoryFacade;
@@ -97,7 +99,7 @@ class MailControllerTest {
             @Test
             void rollBack_And_handles_Exception() throws Exception {
                 doThrow(RuntimeMessagingException.class).when(mailSender).onApplicationEvent(any(TempPasswordIssuedEvent.class));
-                Account user = Account.create(TempAccount.create("user", "user@email.com", "encoded"));
+                Account user = new Account("user", "user@email.com", "encoded");
                 repositoryFacade.save(user);
                 String oldEncodedPassword = user.getPassword();
                 mockMvc.perform(
@@ -108,7 +110,7 @@ class MailControllerTest {
                         .andExpect(status().isOk())
                         .andExpect(view().name("error/messaging"))
                 ;
-                user = accountService.find(user.getUsername());
+                user = accountRepository.findByUsername(user.getUsername()).orElseThrow();
                 String newEncodedPassword = user.getPassword();
                 assertThat(newEncodedPassword).isEqualTo(oldEncodedPassword);
             }

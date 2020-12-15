@@ -1,10 +1,13 @@
 package me.scene.dinner.account.ui;
 
-import me.scene.dinner.account.application.AccountService;
+import me.scene.dinner.account.application.query.dto.AccountDto;
+import me.scene.dinner.account.application.query.AccountQueryService;
+import me.scene.dinner.account.application.command.AccountService;
 import me.scene.dinner.account.domain.account.Account;
-import me.scene.dinner.account.domain.account.TempPasswordIssuedEvent;
+import me.scene.dinner.account.domain.account.AccountRepository;
+import me.scene.dinner.account.application.command.event.TempPasswordIssuedEvent;
 import me.scene.dinner.account.domain.tempaccount.TempAccount;
-import me.scene.dinner.account.domain.tempaccount.TempAccountCreatedEvent;
+import me.scene.dinner.account.application.command.event.TempAccountCreatedEvent;
 import me.scene.dinner.mail.MailSender;
 import me.scene.dinner.test.facade.FactoryFacade;
 import me.scene.dinner.test.facade.RepositoryFacade;
@@ -46,6 +49,8 @@ class AccountControllerTest {
     @MockBean MailSender mailSender;
 
     @Autowired AccountService accountService;
+    @Autowired AccountQueryService accountQueryService;
+    @Autowired AccountRepository accountRepository;
 
     @Autowired FactoryFacade factoryFacade;
     @Autowired RepositoryFacade repositoryFacade;
@@ -69,7 +74,7 @@ class AccountControllerTest {
                 )
                         .andExpect(status().isOk())
                         .andExpect(view().name("page/account/signup"))
-                        .andExpect(model().attributeExists("accountForm"))
+                        .andExpect(model().attributeExists("signupForm"))
                 ;
             }
         }
@@ -126,7 +131,7 @@ class AccountControllerTest {
                             .andExpect(status().isOk())
                             .andExpect(view().name("page/account/signup"))
                             .andExpect(model().errorCount(2))
-                            .andExpect(model().attributeHasFieldErrors("accountForm", "username"))
+                            .andExpect(model().attributeHasFieldErrors("signupForm", "username"))
                     ;
                     TempAccount temp2 = repositoryFacade.findTempByUsername("anonymousUser").orElse(null);
                     assertThat(temp2).isNull();
@@ -181,7 +186,7 @@ class AccountControllerTest {
                     .andExpect(status().isOk())
                     .andExpect(view().name("page/account/welcome"))
             ;
-            Account user = accountService.find(username);
+            AccountDto user = accountQueryService.findDto(username);
             assertThat(user.getEmail()).isEqualTo(email);
         }
 
@@ -201,7 +206,7 @@ class AccountControllerTest {
                         .andExpect(status().isOk())
                         .andExpect(view().name("error/user_not_found"))
                 ;
-                assertThrows(UsernameNotFoundException.class, () -> accountService.find(username));
+                assertThrows(UsernameNotFoundException.class, () -> accountQueryService.findDto(username));
 
                 mockMvc.perform(
                         get("/verify")
@@ -211,7 +216,7 @@ class AccountControllerTest {
                         .andExpect(status().isOk())
                         .andExpect(view().name("error/verification"))
                 ;
-                assertThrows(UsernameNotFoundException.class, () -> accountService.find(username));
+                assertThrows(UsernameNotFoundException.class, () -> accountQueryService.findDto(username));
             }
         }
 
@@ -381,7 +386,7 @@ class AccountControllerTest {
                         .andExpect(status().is3xxRedirection())
                         .andExpect(redirectedUrl("/sent-to-account?email=" + user.getEmail()))
                 ;
-                user = accountService.find(user.getUsername());
+                user = accountRepository.findByUsername(user.getUsername()).orElseThrow();
                 String newEncodedPassword = user.getPassword();
                 assertThat(newEncodedPassword).isNotEqualTo(oldEncodedPassword);
                 assertThat(newEncodedPassword).startsWith("{bcrypt}");

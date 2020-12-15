@@ -1,4 +1,4 @@
-package me.scene.dinner.account.domain.tempaccount;
+package me.scene.dinner.account.application.command.exception;
 
 public class VerificationException extends IllegalArgumentException {
 

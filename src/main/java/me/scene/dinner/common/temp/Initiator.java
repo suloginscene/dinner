@@ -1,8 +1,9 @@
 package me.scene.dinner.common.temp;
 
 import lombok.RequiredArgsConstructor;
-import me.scene.dinner.account.application.AccountService;
+import me.scene.dinner.account.application.command.AccountService;
 import me.scene.dinner.account.domain.account.Account;
+import me.scene.dinner.account.domain.account.AccountRepository;
 import me.scene.dinner.account.domain.tempaccount.TempAccount;
 import me.scene.dinner.account.domain.tempaccount.TempAccountRepository;
 import me.scene.dinner.board.application.article.ArticleService;
@@ -46,6 +47,7 @@ public class Initiator implements ApplicationRunner {
 
         private final TempAccountRepository tempAccountRepository;
         private final AccountService accountService;
+        private final AccountRepository accountRepository;
         private final MagazineService magazineService;
         private final TopicService topicService;
         private final ArticleService articleService;
@@ -109,7 +111,7 @@ public class Initiator implements ApplicationRunner {
             Long tempId = accountService.saveTemp(username, email, password);
             TempAccount temp = tempAccountRepository.findById(tempId).orElseThrow();
             accountService.transferToRegular(email, temp.getVerificationToken());
-            return accountService.find(username);
+            return accountRepository.findByUsername(username).orElseThrow();
         }
 
         private Magazine magazine(String manager, String title, String shortExplanation, String longExplanation, String magazinePolicy) {

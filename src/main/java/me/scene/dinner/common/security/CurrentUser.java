@@ -1,4 +1,4 @@
-package me.scene.dinner.account.application;
+package me.scene.dinner.common.security;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 

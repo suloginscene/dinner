@@ -1,4 +1,4 @@
-package me.scene.dinner.account.application;
+package me.scene.dinner.account.application.query.dto;
 
 import lombok.Getter;
 import me.scene.dinner.account.domain.account.Account;

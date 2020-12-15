@@ -1,7 +1,7 @@
 package me.scene.dinner.notification;
 
 import lombok.RequiredArgsConstructor;
-import me.scene.dinner.account.application.UserAccount;
+import me.scene.dinner.account.application.query.dto.UserAccount;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;

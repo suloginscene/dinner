@@ -1,7 +1,7 @@
 package me.scene.dinner.common.config;
 
 import lombok.RequiredArgsConstructor;
-import me.scene.dinner.account.application.AccountService;
+import me.scene.dinner.account.application.query.AccountQueryService;
 import me.scene.dinner.common.security.LoginSuccessHandler;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -17,7 +17,7 @@ import static org.springframework.http.HttpMethod.POST;
 @RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final AccountService accountService;
+    private final AccountQueryService accountQueryService;
     private final PersistentTokenRepository tokenRepository;
 
     @Override
@@ -46,7 +46,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         ;
 
         http.rememberMe()
-                .userDetailsService(accountService)
+                .userDetailsService(accountQueryService)
                 .tokenRepository(tokenRepository)
         ;
 
