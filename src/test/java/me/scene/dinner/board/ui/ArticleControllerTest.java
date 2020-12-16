@@ -1,16 +1,15 @@
 package me.scene.dinner.board.ui;
 
 import me.scene.dinner.account.domain.account.Account;
-import me.scene.dinner.board.application.article.ArticleNotFoundException;
-import me.scene.dinner.board.application.article.ArticleTaggedEvent;
-import me.scene.dinner.board.domain.article.Article;
-import me.scene.dinner.board.domain.magazine.Magazine;
-import me.scene.dinner.board.domain.magazine.Policy;
-import me.scene.dinner.board.domain.topic.Topic;
+import me.scene.dinner.board.article.application.ArticleNotFoundException;
+import me.scene.dinner.board.article.application.ArticleTaggedEvent;
+import me.scene.dinner.board.article.domain.Article;
+import me.scene.dinner.board.magazine.domain.Magazine;
+import me.scene.dinner.board.magazine.domain.Policy;
+import me.scene.dinner.board.magazine.domain.Writer;
+import me.scene.dinner.board.topic.domain.Topic;
 import me.scene.dinner.tag.ArticleSummary;
-import me.scene.dinner.tag.Tag;
 import me.scene.dinner.tag.TagService;
-import me.scene.dinner.tag.TaggedArticle;
 import me.scene.dinner.test.facade.FactoryFacade;
 import me.scene.dinner.test.facade.RepositoryFacade;
 import me.scene.dinner.test.proxy.service.ArticleServiceProxy;
@@ -28,8 +27,6 @@ import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import static me.scene.dinner.test.utils.Authenticators.login;
 import static me.scene.dinner.test.utils.Authenticators.logout;
@@ -142,7 +139,7 @@ class ArticleControllerTest {
                     assertThat(article.getTopic()).isEqualTo(topic);
                     assertThat(article.getOwner().getOwnerName()).isEqualTo(user.getUsername());
                     magazine = magazineService.load(magazine.getTitle());
-                    assertThat(magazine.getWriters()).contains(user.getUsername());
+                    assertThat(magazine.getWriters().stream().map(Writer::getWriterName)).contains(user.getUsername());
                 }
 
                 @Nested
@@ -389,7 +386,7 @@ class ArticleControllerTest {
                 assertThat(article.getContent()).isEqualTo("Updated content.");
                 assertThat(article.isPublicized()).isFalse();
                 magazine = magazineService.load(magazine.getTitle());
-                assertThat(magazine.getWriters()).doesNotContain(user.getUsername());
+                assertThat(magazine.getWriters().stream().map(Writer::getWriterName)).doesNotContain(user.getUsername());
             }
 
             @Nested
@@ -459,9 +456,9 @@ class ArticleControllerTest {
             ;
             assertThrows(ArticleNotFoundException.class, () -> articleService.find(id));
             topic = topicService.load(topic.getTitle());
-            assertThat(topic.getArticles()).isEmpty();
+            assertThat(topic.getArticleCount()).isEqualTo(0);
             magazine = magazineService.load(magazine.getTitle());
-            assertThat(magazine.getWriters()).doesNotContain(user.getUsername());
+            assertThat(magazine.getWriters().stream().map(Writer::getWriterName)).doesNotContain(user.getUsername());
         }
 
         @Nested
@@ -573,9 +570,6 @@ class ArticleControllerTest {
                         .andExpect(redirectedUrlPattern("/articles/*"))
                 ;
                 Article article = articleService.load("Test Article");
-                Set<TaggedArticle> taggedArticles = article.getTaggedArticles();
-                Set<Tag> tags = taggedArticles.stream().map(TaggedArticle::getTag).collect(Collectors.toSet());
-                assertThat(tags).hasSize(2);
                 then(tagService).should().onArticleTaggedEvent(new ArticleTaggedEvent(article, tag1));
                 then(tagService).should().onArticleTaggedEvent(new ArticleTaggedEvent(article, tag2));
                 List<ArticleSummary> articles1 = tagService.findLoadedTag(tag1).getArticles();

@@ -39,7 +39,7 @@
                     <form th:action="'/magazines/'+*{id}+'/form'" method="get">
                         <button type="submit">update</button>
                     </form>
-                    <form th:if="${magazine.topics.isEmpty()}" th:action="'/magazines/'+*{id}" th:method="delete">
+                    <form th:if="${magazine.getTopicCount()==0}" th:action="'/magazines/'+*{id}" th:method="delete">
                         <button type="submit">delete</button>
                     </form>
                     <form th:if="${magazine.isManaged()}" th:action="'/magazines/'+*{id}+'/members'" method="get">
@@ -67,12 +67,12 @@
                     </div>
                 </div>
             </div>
-
-            <ul>
-                <li th:each="topic:*{topics}">
-                    <a th:href="@{'/topics/'+${topic.id}}" th:text="${topic.title}"></a>
-                </li>
-            </ul>
+            <!--            TODO AJAX -->
+            <!--            <ul>-->
+            <!--                <li th:each="topic:*{topics}">-->
+            <!--                    <a th:href="@{'/topics/'+${topic.id}}" th:text="${topic.title}"></a>-->
+            <!--                </li>-->
+            <!--            </ul>-->
 
         </section>
     </body>

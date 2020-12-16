@@ -25,7 +25,7 @@
                     <form th:action="'/topics/'+*{id}+'/form'" method="get">
                         <button type="submit">update</button>
                     </form>
-                    <form th:if="${topic.isEmpty()}" th:action="'/topics/'+*{id}" th:method="delete">
+                    <form th:if="${topic.getArticleCount()==0}" th:action="'/topics/'+*{id}" th:method="delete">
                         <button type="submit">delete</button>
                     </form>
                 </div>
@@ -39,30 +39,31 @@
                 </div>
             </div>
 
-            <ul sec:authorize="isAuthenticated()">
-                <li th:each="article:*{privateArticles}" th:if="${#authentication.name}==${article.writer}" class="private">
-                    <div class="article-info">
-                        <span>temp</span> <a th:href="@{'/articles/'+${article.id}}" th:text="${article.title}"></a>
-                        <div class="article-sub-info">
-                            <a class="article-writer" th:href="@{'/@'+${article.writer}}" th:text="${article.writer}"></a>
-                            <span class="article-date" th:text="${#temporals.format(article.createdAt, 'yyyy-MM-dd HH:mm')}"></span>
-                        </div>
-                    </div>
-                    <p th:utext="${article.content}"></p>
-                </li>
-            </ul>
-            <ul>
-                <li th:each="article:*{publicArticles}">
-                    <div class="article-info">
-                        <a th:href="@{'/articles/'+${article.id}}" th:text="${article.title}"></a>
-                        <div class="article-sub-info">
-                            <a class="article-writer" th:href="@{'/@'+${article.writer}}" th:text="${article.writer}"></a>
-                            <span class="article-date" th:text="${#temporals.format(article.createdAt, 'yyyy-MM-dd HH:mm')}"></span>
-                        </div>
-                    </div>
-                    <p th:utext="${article.content}"></p>
-                </li>
-            </ul>
+            <!--            TODO AJAX -->
+            <!--            <ul sec:authorize="isAuthenticated()">-->
+            <!--                <li th:each="article:*{privateArticles}" th:if="${#authentication.name}==${article.writer}" class="private">-->
+            <!--                    <div class="article-info">-->
+            <!--                        <span>temp</span> <a th:href="@{'/articles/'+${article.id}}" th:text="${article.title}"></a>-->
+            <!--                        <div class="article-sub-info">-->
+            <!--                            <a class="article-writer" th:href="@{'/@'+${article.writer}}" th:text="${article.writer}"></a>-->
+            <!--                            <span class="article-date" th:text="${#temporals.format(article.createdAt, 'yyyy-MM-dd HH:mm')}"></span>-->
+            <!--                        </div>-->
+            <!--                    </div>-->
+            <!--                    <p th:utext="${article.content}"></p>-->
+            <!--                </li>-->
+            <!--            </ul>-->
+            <!--            <ul>-->
+            <!--                <li th:each="article:*{publicArticles}">-->
+            <!--                    <div class="article-info">-->
+            <!--                        <a th:href="@{'/articles/'+${article.id}}" th:text="${article.title}"></a>-->
+            <!--                        <div class="article-sub-info">-->
+            <!--                            <a class="article-writer" th:href="@{'/@'+${article.writer}}" th:text="${article.writer}"></a>-->
+            <!--                            <span class="article-date" th:text="${#temporals.format(article.createdAt, 'yyyy-MM-dd HH:mm')}"></span>-->
+            <!--                        </div>-->
+            <!--                    </div>-->
+            <!--                    <p th:utext="${article.content}"></p>-->
+            <!--                </li>-->
+            <!--            </ul>-->
 
         </section>
     </body>

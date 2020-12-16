@@ -1,13 +1,13 @@
 package me.scene.dinner.account.ui;
 
 import lombok.RequiredArgsConstructor;
-import me.scene.dinner.account.application.query.dto.AccountDto;
-import me.scene.dinner.account.application.query.AccountQueryService;
 import me.scene.dinner.account.application.command.AccountService;
-import me.scene.dinner.common.security.CurrentUser;
+import me.scene.dinner.account.application.query.AccountQueryService;
+import me.scene.dinner.account.application.query.dto.AccountDto;
 import me.scene.dinner.account.domain.account.Account;
 import me.scene.dinner.account.ui.form.PasswordForm;
 import me.scene.dinner.account.ui.form.ProfileForm;
+import me.scene.dinner.common.security.CurrentUser;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;

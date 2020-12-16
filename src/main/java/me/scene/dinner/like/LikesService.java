@@ -1,8 +1,8 @@
 package me.scene.dinner.like;
 
 import lombok.RequiredArgsConstructor;
-import me.scene.dinner.board.application.article.ArticleService;
-import me.scene.dinner.board.domain.article.Article;
+import me.scene.dinner.board.article.application.ArticleService;
+import me.scene.dinner.board.article.domain.Article;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

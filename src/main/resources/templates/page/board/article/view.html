@@ -13,7 +13,8 @@
             <div class="info">
                 <h2 id="topic"><a th:href="'/topics/'+*{topic.id}" th:text="*{topic.title}"></a></h2>
                 <h1 id="title" th:text="*{title}"></h1>
-                <div><a th:each="tag:*{tags}" th:text="${tag}" th:href="@{'/tags/'+${tag}}" class="tag"></a></div>
+                <!--                TODO AJAX -->
+                <!--                <div><a th:each="tag:*{tags}" th:text="${tag}" th:href="@{'/tags/'+${tag}}" class="tag"></a></div>-->
                 <div id="sub-info">
                     <div>
                         <span id="writer"><a th:href="'/@'+*{writer}" th:text="*{writer}"></a></span>

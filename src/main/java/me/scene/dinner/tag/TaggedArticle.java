@@ -1,37 +1,26 @@
 package me.scene.dinner.tag;
 
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import me.scene.dinner.board.domain.article.Article;
+import lombok.NoArgsConstructor;
+import me.scene.dinner.board.article.domain.Article;
+import me.scene.dinner.common.entity.BaseEntity;
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
 import static javax.persistence.FetchType.LAZY;
+import static lombok.AccessLevel.PROTECTED;
 
 @Entity
-@Getter @EqualsAndHashCode(of = "id")
-public class TaggedArticle {
-
-    @Id @GeneratedValue
-    private Long id;
+@Getter
+@NoArgsConstructor(access = PROTECTED)
+public class TaggedArticle extends BaseEntity {
 
     @ManyToOne(fetch = LAZY)
     private Article article;
 
-    @ManyToOne(fetch = LAZY)
-    private Tag tag;
-
-    protected TaggedArticle() {
-    }
-
-    public static TaggedArticle create(Article article, Tag tag) {
-        TaggedArticle taggedArticle = new TaggedArticle();
-        taggedArticle.article = article;
-        taggedArticle.tag = tag;
-        return taggedArticle;
+    public TaggedArticle(Article article) {
+        this.article = article;
     }
 
     public boolean isPublicized() {

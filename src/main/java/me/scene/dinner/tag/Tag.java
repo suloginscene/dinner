@@ -1,39 +1,34 @@
 package me.scene.dinner.tag;
 
-import lombok.EqualsAndHashCode;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import me.scene.dinner.common.entity.BaseEntity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import static javax.persistence.CascadeType.ALL;
+import static lombok.AccessLevel.PROTECTED;
 
 @Entity
-@Getter @EqualsAndHashCode(of = "id")
-public class Tag {
-
-    @Id @GeneratedValue
-    private Long id;
+@Getter
+@NoArgsConstructor(access = PROTECTED)
+public class Tag extends BaseEntity {
 
     @Column(unique = true, nullable = false)
     private String name;
 
-    @OneToMany(mappedBy = "tag", cascade = ALL, orphanRemoval = true)
+    @OneToMany(cascade = ALL, orphanRemoval = true) @JoinColumn(name = "tag_id")
     private final Set<TaggedArticle> taggedArticles = new HashSet<>();
 
-    protected Tag() {
-    }
-
-    public static Tag create(String name) {
-        Tag tag = new Tag();
-        tag.name = name;
-        return tag;
+    public Tag(String name) {
+        this.name = name;
     }
 
     public void addTaggedArticle(TaggedArticle taggedArticle) {

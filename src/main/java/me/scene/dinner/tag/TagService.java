@@ -1,7 +1,7 @@
 package me.scene.dinner.tag;
 
 import lombok.RequiredArgsConstructor;
-import me.scene.dinner.board.application.article.ArticleTaggedEvent;
+import me.scene.dinner.board.article.application.ArticleTaggedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,7 +28,7 @@ public class TagService {
     @Transactional
     public void save(String name) {
         if (tagRepository.existsByName(name)) return;
-        tagRepository.save(Tag.create(name));
+        tagRepository.save(new Tag(name));
     }
 
     @Transactional
@@ -42,7 +42,7 @@ public class TagService {
     @Transactional
     public void onArticleTaggedEvent(ArticleTaggedEvent event) {
         Tag tag = find(event.getTagName());
-        TaggedArticle taggedArticle = TaggedArticle.create(event.getArticle(), tag);
+        TaggedArticle taggedArticle = new TaggedArticle(event.getArticle());
         tag.addTaggedArticle(taggedArticle);
     }
 

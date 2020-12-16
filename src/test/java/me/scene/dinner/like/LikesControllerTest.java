@@ -1,10 +1,10 @@
 package me.scene.dinner.like;
 
 import me.scene.dinner.account.domain.account.Account;
-import me.scene.dinner.board.domain.article.Article;
-import me.scene.dinner.board.domain.magazine.Magazine;
-import me.scene.dinner.board.domain.magazine.Policy;
-import me.scene.dinner.board.domain.topic.Topic;
+import me.scene.dinner.board.article.domain.Article;
+import me.scene.dinner.board.magazine.domain.Magazine;
+import me.scene.dinner.board.magazine.domain.Policy;
+import me.scene.dinner.board.topic.domain.Topic;
 import me.scene.dinner.notification.NotificationListener;
 import me.scene.dinner.test.facade.FactoryFacade;
 import me.scene.dinner.test.facade.RepositoryFacade;

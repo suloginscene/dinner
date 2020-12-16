@@ -1,8 +1,8 @@
 package me.scene.dinner.account.ui;
 
 import lombok.RequiredArgsConstructor;
-import me.scene.dinner.account.application.query.dto.AccountDto;
 import me.scene.dinner.account.application.query.AccountQueryService;
+import me.scene.dinner.account.application.query.dto.AccountDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

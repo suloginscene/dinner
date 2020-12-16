@@ -1,7 +1,7 @@
 package me.scene.dinner.test.proxy.repository;
 
-import me.scene.dinner.board.domain.topic.Topic;
-import me.scene.dinner.board.domain.topic.TopicRepository;
+import me.scene.dinner.board.topic.domain.Topic;
+import me.scene.dinner.board.topic.domain.TopicRepository;
 
 import java.util.Optional;
 

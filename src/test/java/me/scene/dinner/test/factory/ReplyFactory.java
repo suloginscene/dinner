@@ -1,7 +1,7 @@
 package me.scene.dinner.test.factory;
 
 import lombok.RequiredArgsConstructor;
-import me.scene.dinner.board.application.article.ReplyService;
+import me.scene.dinner.board.article.application.ReplyService;
 import org.springframework.stereotype.Component;
 
 @Component

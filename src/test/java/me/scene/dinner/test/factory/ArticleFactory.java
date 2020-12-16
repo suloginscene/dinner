@@ -1,8 +1,8 @@
 package me.scene.dinner.test.factory;
 
 import lombok.RequiredArgsConstructor;
-import me.scene.dinner.board.application.article.ArticleService;
-import me.scene.dinner.board.domain.article.Article;
+import me.scene.dinner.board.article.application.ArticleService;
+import me.scene.dinner.board.article.domain.Article;
 import org.springframework.stereotype.Component;
 
 import java.util.Set;

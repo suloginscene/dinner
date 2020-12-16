@@ -1,15 +1,15 @@
 package me.scene.dinner.board.ui;
 
 import me.scene.dinner.account.domain.account.Account;
-import me.scene.dinner.board.application.magazine.MagazineBestListCache;
-import me.scene.dinner.board.application.magazine.MagazineDto;
-import me.scene.dinner.board.application.magazine.MagazineNotFoundException;
-import me.scene.dinner.board.domain.magazine.Magazine;
-import me.scene.dinner.board.domain.magazine.Policy;
-import me.scene.dinner.board.domain.magazine.event.MemberAddedEvent;
-import me.scene.dinner.board.domain.magazine.event.MemberAppliedEvent;
-import me.scene.dinner.board.domain.magazine.event.MemberQuitEvent;
-import me.scene.dinner.board.domain.magazine.event.MemberRemovedEvent;
+import me.scene.dinner.board.magazine.application.MagazineBestListCache;
+import me.scene.dinner.board.magazine.application.MagazineNotFoundException;
+import me.scene.dinner.board.magazine.application.MagazineSimpleDto;
+import me.scene.dinner.board.magazine.domain.Magazine;
+import me.scene.dinner.board.magazine.domain.Policy;
+import me.scene.dinner.board.magazine.domain.event.MemberAddedEvent;
+import me.scene.dinner.board.magazine.domain.event.MemberAppliedEvent;
+import me.scene.dinner.board.magazine.domain.event.MemberQuitEvent;
+import me.scene.dinner.board.magazine.domain.event.MemberRemovedEvent;
 import me.scene.dinner.notification.NotificationListener;
 import me.scene.dinner.test.facade.FactoryFacade;
 import me.scene.dinner.test.facade.RepositoryFacade;
@@ -133,7 +133,7 @@ class MagazineControllerTest {
                 assertThat(magazine.getLongExplanation()).isEqualTo(longExplanation);
                 assertThat(magazine.getPolicy()).isEqualTo(Policy.OPEN);
                 assertThat(magazine.getOwner().getOwnerName()).isEqualTo(manager.getUsername());
-                List<MagazineDto> magazineDtos = bestListCache.getBestMagazines();
+                List<MagazineSimpleDto> magazineDtos = bestListCache.getBestMagazines();
                 assertThat(magazineDtos.stream().anyMatch(m -> m.getId().equals(magazine.getId()))).isTrue();
             }
 
@@ -264,7 +264,7 @@ class MagazineControllerTest {
                 assertThat(magazine.getTitle()).isEqualTo("Updated");
                 assertThat(magazine.getShortExplanation()).isEqualTo("Updated short.");
                 assertThat(magazine.getLongExplanation()).isEqualTo("Updated long.");
-                List<MagazineDto> magazineDtos = bestListCache.getBestMagazines();
+                List<MagazineSimpleDto> magazineDtos = bestListCache.getBestMagazines();
                 assertThat(magazineDtos.stream().anyMatch(m -> m.getId().equals(id))).isTrue();
                 assertThat(magazineDtos.stream().filter(m -> m.getId().equals(id)).findFirst().orElseThrow().getTitle()).isEqualTo("Updated");
             }
@@ -336,7 +336,7 @@ class MagazineControllerTest {
                     .andExpect(redirectedUrl("/"))
             ;
             assertThrows(MagazineNotFoundException.class, () -> magazineService.find(magazine.getId()));
-            List<MagazineDto> bestList = bestListCache.getBestMagazines();
+            List<MagazineSimpleDto> bestList = bestListCache.getBestMagazines();
             assertThat(bestList).isEmpty();
         }
 
