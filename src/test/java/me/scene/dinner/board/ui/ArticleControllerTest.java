@@ -8,8 +8,9 @@ import me.scene.dinner.board.magazine.domain.Magazine;
 import me.scene.dinner.board.magazine.domain.Policy;
 import me.scene.dinner.board.magazine.domain.Writer;
 import me.scene.dinner.board.topic.domain.Topic;
-import me.scene.dinner.tag.ArticleSummary;
-import me.scene.dinner.tag.TagService;
+import me.scene.dinner.tag.application.TaggedEventListener;
+import me.scene.dinner.tag.application.dto.ArticleSummary;
+import me.scene.dinner.tag.application.TagService;
 import me.scene.dinner.test.facade.FactoryFacade;
 import me.scene.dinner.test.facade.RepositoryFacade;
 import me.scene.dinner.test.proxy.service.ArticleServiceProxy;
@@ -59,6 +60,7 @@ class ArticleControllerTest {
     @SpyBean TopicServiceProxy topicService;
     @SpyBean MagazineServiceProxy magazineService;
     @SpyBean TagService tagService;
+    @SpyBean TaggedEventListener taggedEventListener;
 
     @Autowired FactoryFacade factoryFacade;
     @Autowired RepositoryFacade repositoryFacade;
@@ -520,11 +522,10 @@ class ArticleControllerTest {
             @Test
             void returns_list() throws Exception {
                 mockMvc.perform(
-                        get("/private-articles")
+                        get("/api/private-articles")
                 )
                         .andExpect(status().isOk())
-                        .andExpect(view().name("page/board/article/private"))
-                        .andExpect(model().attribute("articles", hasSize(1)))
+                        .andExpect(jsonPath("$", hasSize(1)))
                 ;
             }
 
@@ -570,8 +571,8 @@ class ArticleControllerTest {
                         .andExpect(redirectedUrlPattern("/articles/*"))
                 ;
                 Article article = articleService.load("Test Article");
-                then(tagService).should().onArticleTaggedEvent(new ArticleTaggedEvent(article, tag1));
-                then(tagService).should().onArticleTaggedEvent(new ArticleTaggedEvent(article, tag2));
+                then(taggedEventListener).should().onArticleTaggedEvent(new ArticleTaggedEvent(article, tag1));
+                then(taggedEventListener).should().onArticleTaggedEvent(new ArticleTaggedEvent(article, tag2));
                 List<ArticleSummary> articles1 = tagService.findLoadedTag(tag1).getArticles();
                 assertThat(articles1).hasSize(1);
                 assertThat(articles1.get(0).getTitle()).isEqualTo("Test Article");

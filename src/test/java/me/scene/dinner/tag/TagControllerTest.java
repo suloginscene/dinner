@@ -5,6 +5,10 @@ import me.scene.dinner.board.article.domain.Article;
 import me.scene.dinner.board.magazine.domain.Magazine;
 import me.scene.dinner.board.magazine.domain.Policy;
 import me.scene.dinner.board.topic.domain.Topic;
+import me.scene.dinner.tag.application.dto.ArticleSummary;
+import me.scene.dinner.tag.application.dto.TagDto;
+import me.scene.dinner.tag.application.TagService;
+import me.scene.dinner.tag.domain.Tag;
 import me.scene.dinner.test.facade.FactoryFacade;
 import me.scene.dinner.test.facade.RepositoryFacade;
 import org.junit.jupiter.api.AfterEach;
@@ -89,7 +93,7 @@ class TagControllerTest {
             )
                     .andExpect(status().isOk())
             ;
-            List<String> tags = tagService.findAll();
+            List<String> tags = tagService.findAllTagNames();
             assertThat(tags).contains(newTag);
         }
 
@@ -106,7 +110,7 @@ class TagControllerTest {
             )
                     .andExpect(status().isOk())
             ;
-            List<String> tags = tagService.findAll();
+            List<String> tags = tagService.findAllTagNames();
             assertThat(tags).isEmpty();
         }
 
@@ -123,7 +127,7 @@ class TagControllerTest {
                 )
                         .andExpect(status().isOk())
                 ;
-                List<String> tags = tagService.findAll();
+                List<String> tags = tagService.findAllTagNames();
                 assertThat(tags).isNotEmpty();
             }
         }

@@ -6,6 +6,8 @@ import me.scene.dinner.account.application.command.event.TempPasswordIssuedEvent
 import me.scene.dinner.account.domain.account.AccountRepository;
 import me.scene.dinner.account.domain.tempaccount.TempAccount;
 import me.scene.dinner.account.application.command.event.TempAccountCreatedEvent;
+import me.scene.dinner.mail.application.MailListener;
+import me.scene.dinner.mail.application.sender.RuntimeMessagingException;
 import me.scene.dinner.test.facade.FactoryFacade;
 import me.scene.dinner.test.facade.RepositoryFacade;
 import me.scene.dinner.test.proxy.service.MagazineServiceProxy;
@@ -37,7 +39,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class MailControllerTest {
 
     @Autowired MockMvc mockMvc;
-    @MockBean MailSender mailSender;
+    @MockBean MailListener mailListener;
 
     @Autowired AccountService accountService;
     @Autowired AccountRepository accountRepository;
@@ -50,7 +52,7 @@ class MailControllerTest {
     @AfterEach
     void clear() {
         repositoryFacade.deleteAll();
-        reset(mailSender);
+        reset(mailListener);
     }
 
 
@@ -77,7 +79,7 @@ class MailControllerTest {
         class OnTempAccountCreated {
             @Test
             void rollBack() throws Exception {
-                doThrow(RuntimeMessagingException.class).when(mailSender).onApplicationEvent(any(TempAccountCreatedEvent.class));
+                doThrow(RuntimeMessagingException.class).when(mailListener).onApplicationEvent(any(TempAccountCreatedEvent.class));
                 mockMvc.perform(
                         post("/signup")
                                 .with(csrf())
@@ -98,7 +100,7 @@ class MailControllerTest {
         class OnTempPasswordIssued {
             @Test
             void rollBack_And_handles_Exception() throws Exception {
-                doThrow(RuntimeMessagingException.class).when(mailSender).onApplicationEvent(any(TempPasswordIssuedEvent.class));
+                doThrow(RuntimeMessagingException.class).when(mailListener).onApplicationEvent(any(TempPasswordIssuedEvent.class));
                 Account user = new Account("user", "user@email.com", "encoded");
                 repositoryFacade.save(user);
                 String oldEncodedPassword = user.getPassword();

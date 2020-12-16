@@ -13,7 +13,7 @@ const ajaxMagazines = function () {
 
     $.ajax({
         type: 'get',
-        url: '/api/magazines',
+        url: '/api/best-magazines',
         success: loadMagazinesOnNav
     });
 

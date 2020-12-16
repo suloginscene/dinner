@@ -5,7 +5,9 @@ import me.scene.dinner.board.article.domain.Article;
 import me.scene.dinner.board.magazine.domain.Magazine;
 import me.scene.dinner.board.magazine.domain.Policy;
 import me.scene.dinner.board.topic.domain.Topic;
-import me.scene.dinner.notification.NotificationListener;
+import me.scene.dinner.like.application.LikeService;
+import me.scene.dinner.like.domain.LikedEvent;
+import me.scene.dinner.notification.application.NotificationListener;
 import me.scene.dinner.test.facade.FactoryFacade;
 import me.scene.dinner.test.facade.RepositoryFacade;
 import me.scene.dinner.test.proxy.service.ArticleServiceProxy;
@@ -41,7 +43,7 @@ class LikesControllerTest {
     @Autowired MockMvc mockMvc;
     @SpyBean NotificationListener notificationListener;
 
-    @Autowired LikesService likesService;
+    @Autowired LikeService likesService;
     @SpyBean ArticleServiceProxy articleService;
 
     @Autowired FactoryFacade factoryFacade;
@@ -77,25 +79,24 @@ class LikesControllerTest {
         @Test
         void adds_likes() throws Exception {
             mockMvc.perform(
-                    post("/api/likes")
+                    post("/api/like")
                             .with(csrf())
                             .param("username", reader.getUsername())
                             .param("articleId", article.getId().toString())
             )
                     .andExpect(status().isOk())
             ;
-            Thread.sleep(1000L);
             article = articleService.find(article.getId());
             assertThat(article.getLikes()).isEqualTo(1);
-            LikedEvent event = new LikedEvent(writer.getUsername(), reader.getUsername(), article.getTitle());
+            LikedEvent event = new LikedEvent(reader.getUsername(), article.getId(), writer.getUsername(), article.getTitle());
             then(notificationListener).should().onLikedEvent(event);
         }
 
         @Test
         void removes_likes() throws Exception {
-            likesService.likes(reader.getUsername(), article.getId());
+            likesService.like(reader.getUsername(), article.getId());
             mockMvc.perform(
-                    delete("/api/likes")
+                    delete("/api/like")
                             .with(csrf())
                             .param("username", reader.getUsername())
                             .param("articleId", article.getId().toString())
@@ -112,7 +113,7 @@ class LikesControllerTest {
             void redirectsTo_login() throws Exception {
                 logout();
                 mockMvc.perform(
-                        post("/api/likes")
+                        post("/api/like")
                                 .with(csrf())
                 )
                         .andExpect(status().is3xxRedirection())
@@ -129,7 +130,7 @@ class LikesControllerTest {
         @Test
         void returns_boolean() throws Exception {
             mockMvc.perform(
-                    get("/api/likes")
+                    get("/api/like")
                             .with(csrf())
                             .param("username", reader.getUsername())
                             .param("articleId", article.getId().toString())
@@ -138,9 +139,9 @@ class LikesControllerTest {
                     .andExpect(jsonPath("$").value(false))
             ;
 
-            likesService.likes(reader.getUsername(), article.getId());
+            likesService.like(reader.getUsername(), article.getId());
             mockMvc.perform(
-                    get("/api/likes")
+                    get("/api/like")
                             .with(csrf())
                             .param("username", reader.getUsername())
                             .param("articleId", article.getId().toString())

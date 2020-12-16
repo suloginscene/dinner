@@ -8,7 +8,7 @@ import me.scene.dinner.account.domain.account.AccountRepository;
 import me.scene.dinner.account.application.command.event.TempPasswordIssuedEvent;
 import me.scene.dinner.account.domain.tempaccount.TempAccount;
 import me.scene.dinner.account.application.command.event.TempAccountCreatedEvent;
-import me.scene.dinner.mail.MailSender;
+import me.scene.dinner.mail.application.MailListener;
 import me.scene.dinner.test.facade.FactoryFacade;
 import me.scene.dinner.test.facade.RepositoryFacade;
 import org.junit.jupiter.api.AfterEach;
@@ -46,7 +46,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class AccountControllerTest {
 
     @Autowired MockMvc mockMvc;
-    @MockBean MailSender mailSender;
+    @MockBean MailListener mailListener;
 
     @Autowired AccountService accountService;
     @Autowired AccountQueryService accountQueryService;
@@ -98,7 +98,7 @@ class AccountControllerTest {
                 assertThat(tempAccount.getPassword()).isNotEqualTo("password");
                 assertThat(tempAccount.getVerificationToken()).isNotNull();
                 TempAccountCreatedEvent event = new TempAccountCreatedEvent(tempAccount.getEmail(), tempAccount.getVerificationToken());
-                then(mailSender).should().onApplicationEvent(event);
+                then(mailListener).should().onApplicationEvent(event);
             }
 
             @Nested
@@ -391,7 +391,7 @@ class AccountControllerTest {
                 assertThat(newEncodedPassword).isNotEqualTo(oldEncodedPassword);
                 assertThat(newEncodedPassword).startsWith("{bcrypt}");
                 TempPasswordIssuedEvent event = new TempPasswordIssuedEvent(user.getEmail(), "rawPassword");
-                then(mailSender).should().onApplicationEvent(event);
+                then(mailListener).should().onApplicationEvent(event);
             }
 
             @Nested

@@ -5,7 +5,9 @@ import me.scene.dinner.board.article.domain.Article;
 import me.scene.dinner.board.magazine.domain.Magazine;
 import me.scene.dinner.board.magazine.domain.Policy;
 import me.scene.dinner.board.topic.domain.Topic;
-import me.scene.dinner.like.LikesService;
+import me.scene.dinner.like.application.LikeService;
+import me.scene.dinner.notification.application.NotificationService;
+import me.scene.dinner.notification.domain.Notification;
 import me.scene.dinner.test.facade.FactoryFacade;
 import me.scene.dinner.test.facade.RepositoryFacade;
 import org.junit.jupiter.api.AfterEach;
@@ -39,7 +41,7 @@ class NotificationControllerTest {
     @Autowired MockMvc mockMvc;
 
     @Autowired NotificationService notificationService;
-    @Autowired LikesService likesService;
+    @Autowired LikeService likeService;
 
     @Autowired FactoryFacade factoryFacade;
     @Autowired RepositoryFacade repositoryFacade;
@@ -75,8 +77,8 @@ class NotificationControllerTest {
 
         @Test
         void returns_notifications() throws Exception {
-            likesService.likes(user.getUsername(), article.getId());
-            Thread.sleep(1000L);
+            likeService.like(user.getUsername(), article.getId());
+            Thread.sleep(100);
             mockMvc.perform(
                     get("/notifications")
             )
@@ -90,8 +92,8 @@ class NotificationControllerTest {
             checked = notificationService.findChecked(user.getUsername());
             assertThat(checked).hasSize(1);
 
-            likesService.likes(reader.getUsername(), article.getId());
-            Thread.sleep(1000L);
+            likeService.like(reader.getUsername(), article.getId());
+            Thread.sleep(100);
             mockMvc.perform(
                     get("/notifications")
             )
@@ -127,8 +129,8 @@ class NotificationControllerTest {
 
         @Test
         void returns_count() throws Exception {
-            likesService.likes(reader.getUsername(), article.getId());
-            Thread.sleep(1000L);
+            likeService.like(reader.getUsername(), article.getId());
+            Thread.sleep(100);
             mockMvc.perform(
                     get("/")
             )

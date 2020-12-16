@@ -10,7 +10,7 @@ import me.scene.dinner.board.magazine.domain.event.MemberAddedEvent;
 import me.scene.dinner.board.magazine.domain.event.MemberAppliedEvent;
 import me.scene.dinner.board.magazine.domain.event.MemberQuitEvent;
 import me.scene.dinner.board.magazine.domain.event.MemberRemovedEvent;
-import me.scene.dinner.notification.NotificationListener;
+import me.scene.dinner.notification.application.NotificationListener;
 import me.scene.dinner.test.facade.FactoryFacade;
 import me.scene.dinner.test.facade.RepositoryFacade;
 import me.scene.dinner.test.proxy.service.MagazineServiceProxy;
@@ -549,7 +549,7 @@ class MagazineControllerTest {
                 factoryFacade.createMagazine(manager, "Magazine 5", Policy.OPEN);
                 factoryFacade.createMagazine(manager, "Magazine 6", Policy.OPEN);
                 mockMvc.perform(
-                        get("/api/magazines")
+                        get("/api/best-magazines")
                 )
                         .andExpect(status().isOk())
                         .andExpect(jsonPath("$", hasSize(5)))

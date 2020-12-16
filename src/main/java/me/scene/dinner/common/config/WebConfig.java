@@ -1,7 +1,7 @@
 package me.scene.dinner.common.config;
 
 import lombok.RequiredArgsConstructor;
-import me.scene.dinner.notification.NotificationInterceptor;
+import me.scene.dinner.notification.ui.NotificationInterceptor;
 import org.springframework.boot.autoconfigure.security.StaticResourceLocation;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;

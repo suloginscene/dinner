@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import me.scene.dinner.account.domain.account.Account;
 import me.scene.dinner.board.article.application.ArticleService;
 import me.scene.dinner.board.article.application.ArticleSimpleDto;
+import me.scene.dinner.board.article.ui.form.ArticleForm;
+import me.scene.dinner.board.article.ui.form.TagForm;
 import me.scene.dinner.common.security.CurrentUser;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,11 +19,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.validation.Valid;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import static java.util.stream.Collectors.toSet;
@@ -32,7 +32,6 @@ public class ArticleController {
 
     private final ArticleService articleService;
     private final ObjectMapper objectMapper;
-    private final ParsedTagObjectSetTypeReference tagSetType;
 
     @GetMapping("/article-form")
     public String shipArticleForm(@RequestParam Long topicId, Model model) {
@@ -48,16 +47,6 @@ public class ArticleController {
 
         Long id = articleService.save(form.getTopicId(), current.getUsername(), form.getTitle(), form.getContent(), form.isPublicized(), parse(form.getJsonTags()));
         return "redirect:" + ("/articles/" + id);
-    }
-
-    private Set<String> parse(String jsonTags) {
-        if (StringUtils.isEmpty(jsonTags)) return new HashSet<>();
-        try {
-            Set<ParsedTagObject> tags = objectMapper.readValue(jsonTags, tagSetType);
-            return tags.stream().map(ParsedTagObject::getValue).collect(toSet());
-        } catch (JsonProcessingException e) {
-            throw new IllegalStateException("Cannot parse json for tag: " + e.getMessage());
-        }
     }
 
     @GetMapping("/articles/{articleId}")
@@ -76,15 +65,6 @@ public class ArticleController {
         return "page/board/article/update";
     }
 
-    private ArticleForm updateForm(ArticleSimpleDto a) {
-        ArticleForm f = new ArticleForm();
-        f.setTopicId(a.getTopic().getId());
-        f.setTitle(a.getTitle());
-        f.setContent(a.getContent());
-        f.setStatus(a.getStatus());
-        return f;
-    }
-
     @PutMapping("/articles/{articleId}")
     public String update(@PathVariable Long articleId, @CurrentUser Account current, @Valid ArticleForm form, Errors errors) {
         if (errors.hasErrors()) return "redirect:" + ("/articles/" + articleId + "/form");
@@ -99,16 +79,28 @@ public class ArticleController {
         return "redirect:" + ("/topics/" + topicId);
     }
 
-    @GetMapping("/api/articles/{username}")
-    public @ResponseBody
-    List<ArticleSimpleDto> byUserPublic(@PathVariable String username) {
-        return articleService.findPublicByWriter(username);
+    @GetMapping("/private-articles")
+    public String myPrivateArticles() {
+        return "page/board/article/private";
     }
 
-    @GetMapping("/private-articles")
-    public String byUserPrivate(@CurrentUser Account current, Model model) {
-        model.addAttribute("articles", articleService.findPrivateByWriter(current.getUsername()));
-        return "page/board/article/private";
+    private ArticleForm updateForm(ArticleSimpleDto a) {
+        ArticleForm f = new ArticleForm();
+        f.setTopicId(a.getTopic().getId());
+        f.setTitle(a.getTitle());
+        f.setContent(a.getContent());
+        f.setStatus(a.getStatus());
+        return f;
+    }
+
+    private Set<String> parse(String jsonTags) {
+        if (StringUtils.isEmpty(jsonTags)) return new HashSet<>();
+        try {
+            Set<TagForm> tags = objectMapper.readValue(jsonTags, TagForm.TYPE);
+            return tags.stream().map(TagForm::getValue).collect(toSet());
+        } catch (JsonProcessingException e) {
+            throw new IllegalStateException("Cannot parse json for tag: " + e.getMessage());
+        }
     }
 
 }

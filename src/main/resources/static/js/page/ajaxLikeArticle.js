@@ -44,7 +44,7 @@ const ajaxLikeArticle = function () {
         const method = (doesLike) ? 'delete' : 'post';
         $.ajax({
             type: method,
-            url: '/api/likes/',
+            url: '/api/like/',
             data: {
                 articleId: articleId,
                 username: username

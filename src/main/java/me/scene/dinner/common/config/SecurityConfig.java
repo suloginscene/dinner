@@ -28,7 +28,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/", "/about", "/magazines", "/tags",
                         "/signup", "/verify", "/login", "/forgot", "/sent-to-account", "/@*",
                         "/magazines/*", "/topics/*", "/articles/*", "/tags/*",
-                        "/api/magazines", "/api/magazines/*", "/api/articles/*"
+                        "/api/best-magazines", "/api/magazines/*", "/api/articles/*"
                 ).permitAll()
                 .mvcMatchers(POST,
                         "/signup", "/forgot"

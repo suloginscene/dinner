@@ -24,11 +24,9 @@
                         <span>Read: <span th:text="*{read}"></span></span>
                         <span>Like: <span th:text="*{likes}" id="like-count"></span></span>
                         <th:block sec:authorize="isAuthenticated()">
-                            <form id="like-form" th:method="post" th:action="@{/api/likes}">
+                            <form id="like-form" th:method="post" th:action="@{/api/like}">
                                 <label hidden>
                                     <input type="text" name="articleId" th:value="*{id}" hidden>
-                                </label>
-                                <label hidden>
                                     <input type="text" name="username" th:value="${#authentication.name}" id="username" hidden>
                                 </label>
                                 <button id="like" type="submit"><i class="fa fa-heart-o" id="like-icon"></i></button>
@@ -55,10 +53,10 @@
 
             <ul>
                 <li th:each="reply:*{replies}">
-                    <span><a th:href="@{'/@'+${reply.writer}}" th:text="${reply.writer}"></a></span>
+                    <span><a th:href="@{'/@'+${reply.owner}}" th:text="${reply.owner}"></a></span>
                     <span th:text="${reply.content}"></span>
                     <span th:text="${#temporals.format(reply.createdAt, 'yyyy-MM-dd HH:mm')}"></span>
-                    <form th:if="${#authentication.name}==${reply.writer}" th:action="@{/replies}" th:method="delete">
+                    <form th:if="${#authentication.name}==${reply.owner}" th:action="@{/replies}" th:method="delete">
                         <label>
                             <input type="text" name="articleId" th:value="*{id}" hidden>
                             <input type="text" name="replyId" th:value="${reply.id}" hidden>

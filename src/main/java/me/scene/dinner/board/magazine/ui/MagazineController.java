@@ -2,7 +2,6 @@ package me.scene.dinner.board.magazine.ui;
 
 import lombok.RequiredArgsConstructor;
 import me.scene.dinner.account.domain.account.Account;
-import me.scene.dinner.board.magazine.application.MagazineBestListCache;
 import me.scene.dinner.board.magazine.application.MagazineService;
 import me.scene.dinner.board.magazine.application.MagazineSimpleDto;
 import me.scene.dinner.common.security.CurrentUser;
@@ -14,7 +13,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -24,7 +22,6 @@ import java.util.List;
 public class MagazineController {
 
     private final MagazineService magazineService;
-    private final MagazineBestListCache bestListCache;
 
     @GetMapping("/magazine-form")
     public String shipMagazineForm(Model model) {
@@ -116,18 +113,6 @@ public class MagazineController {
         List<MagazineSimpleDto> all = magazineService.all();
         model.addAttribute("magazines", all);
         return "page/board/magazine/list";
-    }
-
-    @GetMapping("/api/magazines")
-    public @ResponseBody
-    List<MagazineSimpleDto> bestList() {
-        return bestListCache.getBestMagazines();
-    }
-
-    @GetMapping("/api/magazines/{username}")
-    public @ResponseBody
-    List<MagazineSimpleDto> byUser(@PathVariable String username) {
-        return magazineService.findByManager(username);
     }
 
 }

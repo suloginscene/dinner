@@ -5,7 +5,7 @@ import me.scene.dinner.account.application.command.exception.AlreadyVerifiedExce
 import me.scene.dinner.account.application.command.exception.VerificationException;
 import me.scene.dinner.board.common.BoardNotFoundException;
 import me.scene.dinner.board.common.NotDeletableException;
-import me.scene.dinner.mail.RuntimeMessagingException;
+import me.scene.dinner.mail.application.sender.RuntimeMessagingException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
