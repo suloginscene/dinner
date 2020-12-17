@@ -1,27 +1,23 @@
 package me.scene.dinner.account.domain.account;
 
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import me.scene.dinner.common.entity.BaseEntity;
 
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 
 import static javax.persistence.EnumType.STRING;
 import static lombok.AccessLevel.PROTECTED;
-import static me.scene.dinner.account.domain.account.AccountRole.USER;
+import static me.scene.dinner.account.domain.account.Role.USER;
+
 
 @Entity
-@Getter @EqualsAndHashCode(of = "id")
+@Getter
 @NoArgsConstructor(access = PROTECTED)
-public class Account {
-
-    @Id @GeneratedValue
-    private Long id;
+public class Account extends BaseEntity {
 
     @Column(unique = true)
     private String username;
@@ -33,10 +29,11 @@ public class Account {
     private String password;
 
     @Enumerated(STRING)
-    private final AccountRole role = USER;
+    private final Role role = USER;
 
     @Embedded
-    private Profile profile;
+    private Profile profile = new Profile();
+
 
     public Account(String username, String email, String encodedPassword) {
         this.username = username;
@@ -45,15 +42,11 @@ public class Account {
     }
 
     public void changePassword(String encodedPassword) {
-        password = encodedPassword;
+        this.password = encodedPassword;
     }
 
-    public void update(String introduction) {
-        this.profile = new Profile(introduction);
-    }
-
-    public String shortIntroduction() {
-        return (profile != null) ? profile.getShortIntroduction() : "";
+    public void changeIntroduction(Profile profile) {
+        this.profile = profile;
     }
 
 }

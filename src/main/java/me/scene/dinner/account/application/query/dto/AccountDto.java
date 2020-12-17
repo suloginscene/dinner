@@ -1,18 +1,18 @@
 package me.scene.dinner.account.application.query.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.Data;
+import me.scene.dinner.account.domain.account.Account;
 
-@Getter
-@RequiredArgsConstructor
+
+@Data
 public class AccountDto {
 
     private final String username;
-
     private final String email;
 
-    @JsonIgnore
-    private final String shortIntroduction;
+    public AccountDto(Account account) {
+        username = account.getUsername();
+        email = account.getEmail();
+    }
 
 }

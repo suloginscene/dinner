@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.servlet.http.HttpServletRequest;
 
+
 @Controller
 @RequiredArgsConstructor
 public class LoginController {
@@ -17,6 +18,7 @@ public class LoginController {
     private String url;
 
     private final AccountService accountService;
+
 
     @GetMapping("/login")
     public String loginPage(HttpServletRequest req) {
@@ -34,7 +36,7 @@ public class LoginController {
 
     @PostMapping("/forgot")
     public String forgotPassword(String email) {
-        accountService.issueTempPassword(email);
+        accountService.setRandomPassword(email);
         return "redirect:" + ("/sent-to-account?email=" + email);
     }
 

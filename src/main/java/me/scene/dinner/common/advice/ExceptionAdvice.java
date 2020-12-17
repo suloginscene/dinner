@@ -1,8 +1,7 @@
 package me.scene.dinner.common.advice;
 
 import lombok.extern.slf4j.Slf4j;
-import me.scene.dinner.account.application.command.exception.AlreadyVerifiedException;
-import me.scene.dinner.account.application.command.exception.VerificationException;
+import me.scene.dinner.account.domain.tempaccount.VerificationException;
 import me.scene.dinner.board.common.BoardNotFoundException;
 import me.scene.dinner.board.common.NotDeletableException;
 import me.scene.dinner.mail.application.sender.RuntimeMessagingException;
@@ -61,12 +60,6 @@ public class ExceptionAdvice {
     public String verificationException(HttpServletRequest req, VerificationException e) {
         warn(req, e);
         return "error/verification";
-    }
-
-    @ExceptionHandler
-    public String alreadyVerifiedException(HttpServletRequest req, AlreadyVerifiedException e) {
-        warn(req, e);
-        return "error/already_verified";
     }
 
     @ExceptionHandler

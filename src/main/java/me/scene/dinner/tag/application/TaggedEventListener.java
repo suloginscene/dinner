@@ -1,7 +1,7 @@
 package me.scene.dinner.tag.application;
 
 import lombok.RequiredArgsConstructor;
-import me.scene.dinner.board.article.application.ArticleTaggedEvent;
+import me.scene.dinner.board.article.command.application.ArticleTaggedEvent;
 import me.scene.dinner.tag.domain.Tag;
 import me.scene.dinner.tag.domain.TagRepository;
 import me.scene.dinner.tag.domain.TaggedArticle;

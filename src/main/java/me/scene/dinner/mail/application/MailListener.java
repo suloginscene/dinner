@@ -1,8 +1,8 @@
 package me.scene.dinner.mail.application;
 
 import lombok.RequiredArgsConstructor;
-import me.scene.dinner.account.application.command.event.TempAccountCreatedEvent;
-import me.scene.dinner.account.application.command.event.TempPasswordIssuedEvent;
+import me.scene.dinner.account.domain.tempaccount.TempAccountCreatedEvent;
+import me.scene.dinner.account.application.command.RandomPasswordAppliedEvent;
 import me.scene.dinner.mail.application.sender.MailSender;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.event.EventListener;
@@ -34,9 +34,9 @@ public class MailListener {
     }
 
     @EventListener
-    public void onApplicationEvent(TempPasswordIssuedEvent event) {
+    public void onApplicationEvent(RandomPasswordAppliedEvent event) {
         String email = event.getEmail();
-        String tempRawPassword = event.getTempRawPassword();
+        String tempRawPassword = event.getRawPassword();
         String text = String.format(ON_FORGOT_TEMPLATE, tempRawPassword);
 
         mailSender.send(ON_FORGOT_TITLE, email, text);

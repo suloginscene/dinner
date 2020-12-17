@@ -1,7 +1,7 @@
 package me.scene.dinner.like.application;
 
 import lombok.RequiredArgsConstructor;
-import me.scene.dinner.board.article.application.ArticleService;
+import me.scene.dinner.board.article.command.application.ArticleService;
 import me.scene.dinner.board.article.domain.Article;
 import me.scene.dinner.like.domain.Like;
 import me.scene.dinner.like.domain.LikeRepository;

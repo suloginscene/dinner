@@ -1,7 +1,9 @@
 package me.scene.dinner.board.topic.application;
 
 import lombok.RequiredArgsConstructor;
-import me.scene.dinner.board.magazine.application.MagazineService;
+import me.scene.dinner.board.common.BoardNotFoundException;
+import me.scene.dinner.board.magazine.domain.common.Magazine;
+import me.scene.dinner.board.magazine.domain.common.MagazineRepository;
 import me.scene.dinner.board.topic.domain.Topic;
 import me.scene.dinner.board.topic.domain.TopicRepository;
 import org.springframework.stereotype.Service;
@@ -12,15 +14,16 @@ import org.springframework.transaction.annotation.Transactional;
 public class TopicService {
 
     private final TopicRepository topicRepository;
-    private final MagazineService magazineService;
+    private final MagazineRepository magazineRepository;
 
     public Topic find(Long id) {
-        return topicRepository.findById(id).orElseThrow(() -> new TopicNotFoundException(id));
+        return topicRepository.findById(id).orElseThrow(() -> new BoardNotFoundException(id));
     }
 
     @Transactional
     public Long save(Long magazineId, String manager, String title, String shortExplanation, String longExplanation) {
-        Topic topic = new Topic(magazineService.find(magazineId), manager, title, shortExplanation, longExplanation);
+        Magazine magazine = magazineRepository.findById(magazineId).orElseThrow(() -> new BoardNotFoundException(magazineId));
+        Topic topic = new Topic(magazine, manager, title, shortExplanation, longExplanation);
         return topicRepository.save(topic).getId();
     }
 

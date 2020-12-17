@@ -9,12 +9,12 @@ import javax.persistence.Embeddable;
 
 import static lombok.AccessLevel.PROTECTED;
 
+
 @Embeddable
 @Getter @EqualsAndHashCode
-@NoArgsConstructor(access = PROTECTED)
-@AllArgsConstructor
+@NoArgsConstructor(access = PROTECTED) @AllArgsConstructor
 public class Profile {
 
-    private String shortIntroduction;
+    private String greeting;
 
 }

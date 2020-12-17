@@ -1,21 +1,18 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 
-    <div th:replace="layout/layout::head(${profileForm.username}, ~{::link}, ~{})">
+    <div th:replace="layout/layout::head(${#authentication.name}, ~{::link}, ~{})">
         <link rel="stylesheet" href="/css/page/account/profile.css"/>
     </div>
 
     <body th:replace="layout/layout::body(~{::section})">
         <section th:object="${profileForm}">
             <h1 th:text="*{username}"></h1>
-            <div>자신을 소개할 문장을 써 주세요.</div>
             <form th:action="@{/profile}" th:method="post">
-                <label hidden> <input type="text" th:field="*{username}" hidden> </label>
-                <label hidden> <input type="text" th:field="*{email}" hidden> </label>
                 <label>
-                    <textarea th:field="*{introduction}"></textarea>
+                    <textarea th:field="*{greeting}"></textarea>
                 </label>
-                <small th:if="${#fields.hasErrors('introduction')}" th:errors="*{introduction}" class="form-text text-danger"></small>
+                <small th:if="${#fields.hasErrors('greeting')}" th:errors="*{greeting}" class="form-text text-danger"></small>
                 <button type="submit">수정</button>
             </form>
             <div th:text="*{email}"></div>

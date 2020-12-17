@@ -2,9 +2,14 @@ package me.scene.dinner.board.magazine.ui;
 
 import lombok.RequiredArgsConstructor;
 import me.scene.dinner.account.domain.account.Account;
-import me.scene.dinner.board.magazine.application.MagazineService;
-import me.scene.dinner.board.magazine.application.MagazineSimpleDto;
-import me.scene.dinner.common.security.CurrentUser;
+import me.scene.dinner.board.magazine.application.command.MagazineService;
+import me.scene.dinner.board.magazine.application.command.request.MagazineCreateRequest;
+import me.scene.dinner.board.magazine.application.command.request.MagazineUpdateRequest;
+import me.scene.dinner.board.magazine.application.query.dto.MagazineSimpleDto;
+import me.scene.dinner.board.magazine.application.query.MagazineQueryService;
+import me.scene.dinner.board.magazine.ui.form.MagazineForm;
+import me.scene.dinner.board.magazine.ui.form.MagazineUpdateForm;
+import me.scene.dinner.common.security.Current;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
@@ -21,98 +26,82 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MagazineController {
 
-    private final MagazineService magazineService;
+    private final MagazineService service;
+    private final MagazineQueryService queryService;
 
-    @GetMapping("/magazine-form")
-    public String shipMagazineForm(Model model) {
-        model.addAttribute("magazineForm", new MagazineForm());
-        return "page/board/magazine/form";
+
+    @GetMapping("/magazines")
+    public String showList(Model model) {
+        List<MagazineSimpleDto> magazines = queryService.findAll();
+        model.addAttribute("magazines", magazines);
+        return "page/board/magazine/list";
     }
 
-    @PostMapping("/magazines")
-    public String createMagazine(@CurrentUser Account current, @Valid MagazineForm form, Errors errors) {
-        if (errors.hasErrors()) return "page/board/magazine/form";
-
-        Long id = magazineService.save(current.getUsername(), form.getTitle(), form.getShortExplanation(), form.getLongExplanation(), form.getPolicy());
-        return "redirect:" + ("/magazines/" + id);
-    }
-
-    @GetMapping("/magazines/{magazineId}")
-    public String showMagazine(@PathVariable Long magazineId, Model model) {
-        MagazineSimpleDto magazine = magazineService.read(magazineId);
+    @GetMapping("/magazines/{id}")
+    public String showMagazine(@PathVariable Long id, Model model) {
+        MagazineSimpleDto magazine = queryService.findById(id);
         model.addAttribute("magazine", magazine);
         return "page/board/magazine/view";
     }
 
-    @GetMapping("/magazines/{magazineId}/form")
-    public String updateForm(@PathVariable Long magazineId, @CurrentUser Account current, Model model) {
-        MagazineSimpleDto magazine = magazineService.findToUpdate(magazineId, current.getUsername());
-        model.addAttribute("id", magazineId);
-        model.addAttribute("updateForm", updateForm(magazine));
+
+    @GetMapping("/magazine-form")
+    public String shipMagazineForm(Model model) {
+        MagazineForm magazineForm = new MagazineForm();
+        model.addAttribute("magazineForm", magazineForm);
+        return "page/board/magazine/form";
+    }
+
+    @PostMapping("/magazines")
+    public String createMagazine(@Current Account current, @Valid MagazineForm form, Errors errors) {
+        if (errors.hasErrors()) return "page/board/magazine/form";
+
+        String username = current.getUsername();
+        MagazineCreateRequest magazineCreateRequest = createMagazineCreateRequest(username, form);
+        Long id = service.save(magazineCreateRequest);
+        return "redirect:" + ("/magazines/" + id);
+    }
+
+
+    @GetMapping("/magazines/{id}/form")
+    public String updateForm(@PathVariable Long id, Model model) {
+        MagazineSimpleDto magazine = queryService.findById(id);
+        MagazineUpdateForm updateForm = updateForm(magazine);
+        model.addAttribute("updateForm", updateForm);
         return "page/board/magazine/update";
     }
 
-    private MagazineForm updateForm(MagazineSimpleDto m) {
-        MagazineForm f = new MagazineForm();
-        f.setTitle(m.getTitle());
-        f.setShortExplanation(m.getShortExplanation());
-        f.setLongExplanation(m.getLongExplanation());
-        f.setPolicy(m.getPolicy());
-        return f;
+    @PutMapping("/magazines/{id}")
+    public String update(@PathVariable Long id, @Current Account current, @Valid MagazineUpdateForm form, Errors errors) {
+        if (errors.hasErrors()) return "redirect:" + ("/magazines/" + id + "/form");
+
+        String username = current.getUsername();
+        MagazineUpdateRequest request = createMagazineUpdateRequest(username, form);
+        service.update(id, request);
+        return "redirect:" + ("/magazines/" + id);
     }
 
-    @PutMapping("/magazines/{magazineId}")
-    public String update(@PathVariable Long magazineId, @CurrentUser Account current, @Valid MagazineForm form, Errors errors) {
-        if (errors.hasErrors()) return "redirect:" + ("/magazines/" + magazineId + "/form");
 
-        magazineService.update(magazineId, current.getUsername(), form.getTitle(), form.getShortExplanation(), form.getLongExplanation());
-        return "redirect:" + ("/magazines/" + magazineId);
-    }
-
-    @DeleteMapping("/magazines/{magazineId}")
-    public String delete(@PathVariable Long magazineId, @CurrentUser Account current) {
-        magazineService.delete(magazineId, current.getUsername());
+    @DeleteMapping("/magazines/{id}")
+    public String delete(@PathVariable Long id, @Current Account current) {
+        String username = current.getUsername();
+        service.delete(id, username);
         return "redirect:" + ("/");
     }
 
-    @PostMapping("/magazines/{magazineId}/members")
-    public String applyMember(@PathVariable Long magazineId, @CurrentUser Account current) {
-        magazineService.applyMember(magazineId, current.getUsername());
-        return "redirect:" + ("/sent-to-manager?magazineId=" + magazineId);
+
+    // private ---------------------------------------------------------------------------------------------------------
+
+    private MagazineCreateRequest createMagazineCreateRequest(String currentUser, MagazineForm f) {
+        return new MagazineCreateRequest(currentUser, f.getTitle(), f.getShortExplanation(), f.getLongExplanation(), f.getPolicy());
     }
 
-    @DeleteMapping("/magazines/{magazineId}/members")
-    public String quitMember(@PathVariable Long magazineId, @CurrentUser Account current) {
-        String currentUsername = current.getUsername();
-        magazineService.quitMember(magazineId, currentUsername);
-        return "redirect:" + ("/magazines/" + magazineId);
+    private MagazineUpdateRequest createMagazineUpdateRequest(String currentUser, MagazineUpdateForm f) {
+        return new MagazineUpdateRequest(currentUser, f.getTitle(), f.getShortExplanation(), f.getLongExplanation());
     }
 
-    @GetMapping("/magazines/{magazineId}/members")
-    public String manageMembers(@PathVariable Long magazineId, @CurrentUser Account current, Model model) {
-        MagazineSimpleDto magazine = magazineService.findToManageMember(magazineId, current.getUsername());
-        model.addAttribute("id", magazineId);
-        model.addAttribute("members", magazine.getMembers());
-        return "page/board/magazine/members";
-    }
-
-    @GetMapping("/magazines/{magazineId}/{member}")
-    public String addMember(@PathVariable Long magazineId, @PathVariable String member, @CurrentUser Account current) {
-        magazineService.addMember(magazineId, current.getUsername(), member);
-        return "redirect:" + ("/magazines/" + magazineId + "/members");
-    }
-
-    @DeleteMapping("/magazines/{magazineId}/{member}")
-    public String removeMember(@PathVariable Long magazineId, @PathVariable String member, @CurrentUser Account current) {
-        magazineService.removeMember(magazineId, current.getUsername(), member);
-        return "redirect:" + ("/magazines/" + magazineId + "/members");
-    }
-
-    @GetMapping("/magazines")
-    public String showList(Model model) {
-        List<MagazineSimpleDto> all = magazineService.all();
-        model.addAttribute("magazines", all);
-        return "page/board/magazine/list";
+    private MagazineUpdateForm updateForm(MagazineSimpleDto m) {
+        return new MagazineUpdateForm(m.getId(), m.getPolicy(), m.getTitle(), m.getShortExplanation(), m.getLongExplanation());
     }
 
 }

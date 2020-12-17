@@ -1,7 +1,6 @@
 package me.scene.dinner.account.ui.form;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.AssertTrue;
@@ -10,7 +9,8 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
-@Getter @Setter
+
+@Data
 public class SignupForm {
 
     @Length(min = 2, max = 16, message = "이름은 2자 이상, 16자 이하여야 합니다.")

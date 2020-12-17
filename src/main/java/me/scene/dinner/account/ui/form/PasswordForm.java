@@ -1,12 +1,11 @@
 package me.scene.dinner.account.ui.form;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotBlank;
 
-@Getter @Setter
+@Data
 public class PasswordForm {
 
     @NotBlank(message = "비밀번호는 공백일 수 없습니다.")

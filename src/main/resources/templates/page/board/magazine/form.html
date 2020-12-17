@@ -29,7 +29,7 @@
                             <small th:if="${#fields.hasErrors('shortExplanation')}" th:errors="*{shortExplanation}" class="form-text text-danger"></small>
                         </label>
                         <label>
-                            <textarea th:field="*{longExplanation}" rows="5" placeholder="자세한 소개는 최대 250자까지 가능합니다." required maxlength="250"></textarea>
+                            <textarea th:field="*{longExplanation}" rows="5" placeholder="자세한 소개는 최대 255자까지 가능합니다." required maxlength="255"></textarea>
                             <small class="invalid-feedback"><i class="fa fa-ban"></i></small>
                             <small class="valid-feedback"><i class="fa fa-check"></i></small>
                             <small th:if="${#fields.hasErrors('longExplanation')}" th:errors="*{longExplanation}" class="form-text text-danger"></small>
@@ -37,9 +37,9 @@
                     </div>
                     <div class="form-checks">
                         <div class="magazine-form-info">매거진 성격을 설정해주세요.</div>
-                        <label for="radio-1"><input th:field="*{policy}" type="radio" id="radio-1" value="OPEN"/>open</label>
-                        <label for="radio-2"><input th:field="*{policy}" type="radio" id="radio-2" value="MANAGED"/>managed</label>
-                        <label for="radio-3"><input th:field="*{policy}" type="radio" id="radio-3" value="EXCLUSIVE"/>exclusive</label>
+                        <label for="radio-1"><input name="policy" type="radio" id="radio-1" value="OPEN" checked/>open</label>
+                        <label for="radio-2"><input name="policy" type="radio" id="radio-2" value="MANAGED"/>managed</label>
+                        <label for="radio-3"><input name="policy" type="radio" id="radio-3" value="EXCLUSIVE"/>exclusive</label>
                         <small th:if="${#fields.hasErrors('policy')}" th:errors="*{policy}" class="form-text text-danger"></small>
                     </div>
                     <button type="submit">

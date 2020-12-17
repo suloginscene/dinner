@@ -5,7 +5,7 @@ import lombok.NoArgsConstructor;
 import me.scene.dinner.board.common.Board;
 import me.scene.dinner.board.common.NotDeletableException;
 import me.scene.dinner.board.common.Owner;
-import me.scene.dinner.board.magazine.domain.Magazine;
+import me.scene.dinner.board.magazine.domain.common.Magazine;
 
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
@@ -23,9 +23,6 @@ public class Topic extends Board {
     private String shortExplanation;
 
     private String longExplanation;
-
-
-    private int rating;
 
 
     @ManyToOne(fetch = LAZY)
@@ -64,8 +61,9 @@ public class Topic extends Board {
         articleCount--;
     }
 
+    @Override
     public void rate(int point) {
-        rating += point;
+        super.rate(point);
         magazine.rate(point);
     }
 

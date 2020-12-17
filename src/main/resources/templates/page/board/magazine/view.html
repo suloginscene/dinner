@@ -42,7 +42,7 @@
                     <form th:if="${magazine.getTopicCount()==0}" th:action="'/magazines/'+*{id}" th:method="delete">
                         <button type="submit">delete</button>
                     </form>
-                    <form th:if="${magazine.isManaged()}" th:action="'/magazines/'+*{id}+'/members'" method="get">
+                    <form th:if="${magazine.isManaged()}" th:action="'/magazines/'+*{id}+'/members/page'" method="get">
                         <button type="submit">member</button>
                     </form>
                 </div>

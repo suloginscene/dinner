@@ -2,9 +2,9 @@ package me.scene.dinner.board.article.ui;
 
 import lombok.RequiredArgsConstructor;
 import me.scene.dinner.account.domain.account.Account;
-import me.scene.dinner.board.article.application.ArticleService;
-import me.scene.dinner.board.article.application.ArticleSimpleDto;
-import me.scene.dinner.common.security.CurrentUser;
+import me.scene.dinner.board.article.query.dto.ArticleSimpleDto;
+import me.scene.dinner.board.article.query.ArticleQueryService;
+import me.scene.dinner.common.security.Current;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,7 +15,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ArticleApiController {
 
-    private final ArticleService articleService;
+    private final ArticleQueryService articleService;
 
     @GetMapping("/api/articles/{username}")
     public List<ArticleSimpleDto> byUserPublic(@PathVariable String username) {
@@ -23,7 +23,7 @@ public class ArticleApiController {
     }
 
     @GetMapping("/api/private-articles")
-    public List<ArticleSimpleDto> byUserPrivate(@CurrentUser Account current) {
+    public List<ArticleSimpleDto> byUserPrivate(@Current Account current) {
         return articleService.findPrivateByWriter(current.getUsername());
 
     }

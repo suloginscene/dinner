@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import me.scene.dinner.board.common.Board;
 import me.scene.dinner.board.common.Owner;
+import me.scene.dinner.board.common.Point;
 import me.scene.dinner.board.topic.domain.Topic;
 
 import javax.persistence.Entity;
@@ -18,9 +19,6 @@ import java.util.Optional;
 import static javax.persistence.CascadeType.ALL;
 import static javax.persistence.FetchType.LAZY;
 import static lombok.AccessLevel.PROTECTED;
-import static me.scene.dinner.board.article.domain.RatingType.DISLIKE;
-import static me.scene.dinner.board.article.domain.RatingType.LIKE;
-import static me.scene.dinner.board.article.domain.RatingType.READ;
 
 @Entity
 @Getter
@@ -36,7 +34,6 @@ public class Article extends Board {
 
     private int read;
     private int likes;
-    private int rating;
 
     @ManyToOne(fetch = LAZY)
     private Topic topic;
@@ -56,6 +53,7 @@ public class Article extends Board {
         logWriter();
     }
 
+
     public void update(String current, String title, String content, boolean publicized) {
         owner.identify(current);
         this.title = title;
@@ -72,31 +70,25 @@ public class Article extends Board {
     }
 
     private void logWriter() {
-        if (publicized) topic.getMagazine().logWritingBy(owner.getOwnerName());
-        else topic.getMagazine().logErasingBy(owner.getOwnerName());
+        if (publicized) topic.getMagazine().logWriting(owner.getOwnerName());
+        else topic.getMagazine().logErasing(owner.getOwnerName());
     }
 
-
-    private void rate(RatingType ratingType) {
-        int point = ratingType.point();
-        rating += point;
-        topic.rate(point);
-    }
 
     public void read() {
         read++;
-        rate(READ);
+        rate(Point.READ);
     }
 
     public void like() {
         likes++;
-        rate(LIKE);
+        rate(Point.LIKE);
     }
 
     public void dislike() {
         if (likes < 1) return;
         likes--;
-        rate(DISLIKE);
+        rate(-Point.LIKE);
     }
 
     public void add(Reply reply) {
@@ -109,6 +101,12 @@ public class Article extends Board {
 
     public Optional<Reply> findReplyById(Long replyId) {
         return replies.stream().filter(r -> r.getId().equals(replyId)).findAny();
+    }
+
+    @Override
+    public void rate(int point) {
+        super.rate(point);
+        topic.rate(point);
     }
 
 }

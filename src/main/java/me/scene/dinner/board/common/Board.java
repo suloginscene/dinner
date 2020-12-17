@@ -18,7 +18,14 @@ public abstract class Board extends BaseEntity {
     @Embedded
     protected Owner owner;
 
+    @Embedded
+    protected Point point = new Point();
+
     @CreatedDate @Column(updatable = false)
     protected LocalDateTime createdAt;
+
+    public void rate(int point) {
+        this.point.add(point);
+    }
 
 }
