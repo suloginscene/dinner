@@ -1,16 +1,17 @@
-package me.scene.dinner.board.magazine.application.command.request;
+package me.scene.dinner.board.topic.application.command.request;
 
 import lombok.Data;
 
 
 @Data
-public class MagazineCreateRequest {
+public class TopicCreateRequest {
 
     private final String ownerName;
+
+    private final Long magazineId;
 
     private final String title;
     private final String shortExplanation;
     private final String longExplanation;
-    private final String type;
 
 }

@@ -13,7 +13,7 @@
 //import me.scene.dinner.board.magazine.application.member.MemberService;
 //import me.scene.dinner.board.magazine.domain.common.Magazine;
 //import me.scene.dinner.board.magazine.domain.common.MagazineRepository;
-//import me.scene.dinner.board.topic.application.TopicService;
+//import me.scene.dinner.board.topic.application.command.TopicService;
 //import me.scene.dinner.board.topic.domain.Topic;
 //import me.scene.dinner.tag.application.TagService;
 //import org.springframework.boot.ApplicationArguments;
