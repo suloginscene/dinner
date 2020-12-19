@@ -10,7 +10,7 @@
 //import me.scene.dinner.board.article.command.application.ReplyService;
 //import me.scene.dinner.board.article.domain.Article;
 //import me.scene.dinner.board.magazine.application.command.MagazineService;
-//import me.scene.dinner.board.magazine.application.member.MemberService;
+//import me.scene.dinner.board.magazine.application.command.MemberService;
 //import me.scene.dinner.board.magazine.domain.common.Magazine;
 //import me.scene.dinner.board.magazine.domain.common.MagazineRepository;
 //import me.scene.dinner.board.topic.application.command.TopicService;

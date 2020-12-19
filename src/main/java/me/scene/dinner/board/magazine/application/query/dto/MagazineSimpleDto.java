@@ -38,7 +38,7 @@ public class MagazineSimpleDto {
         this.shortExplanation = m.getShortExplanation();
         this.longExplanation = m.getLongExplanation();
         this.hasChild = m.hasChild();
-        this.policy = m.type();
+        this.policy = m.type().name();
         this.members = m.memberNames();
         this.writers = m.writerNames();
     }

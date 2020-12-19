@@ -13,11 +13,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import static java.util.stream.Collectors.toList;
 import static javax.persistence.CascadeType.ALL;
 import static lombok.AccessLevel.PROTECTED;
-import static me.scene.dinner.board.magazine.domain.common.Type.OPEN;
+import static me.scene.dinner.board.magazine.domain.common.Magazine.Type.OPEN;
+
 
 @Entity
 @NoArgsConstructor(access = PROTECTED)
@@ -33,8 +35,13 @@ public class OpenMagazine extends Magazine {
 
 
     @Override
-    public String type() {
-        return OPEN.name();
+    public Type type() {
+        return OPEN;
+    }
+
+    @Override
+    protected Predicate<String> authorize() {
+        return username -> true;
     }
 
     @Override

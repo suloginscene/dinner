@@ -2,13 +2,13 @@ package me.scene.dinner.board.magazine.domain;
 
 import lombok.NoArgsConstructor;
 import me.scene.dinner.board.common.Owner;
-import me.scene.dinner.board.magazine.domain.common.AccessException;
 import me.scene.dinner.board.magazine.domain.common.Magazine;
 
 import javax.persistence.Entity;
+import java.util.function.Predicate;
 
 import static lombok.AccessLevel.PROTECTED;
-import static me.scene.dinner.board.magazine.domain.common.Type.EXCLUSIVE;
+import static me.scene.dinner.board.magazine.domain.common.Magazine.Type.EXCLUSIVE;
 
 
 @Entity
@@ -21,14 +21,14 @@ public class ExclusiveMagazine extends Magazine {
 
 
     @Override
-    public String type() {
-        return EXCLUSIVE.name();
+    public Type type() {
+        return EXCLUSIVE;
     }
 
+
     @Override
-    public void checkAuthorization(String username) {
-        if (owner.is(username)) return;
-        throw new AccessException(username, getTitle(), EXCLUSIVE);
+    protected Predicate<String> authorize() {
+        return username -> owner.is(username);
     }
 
 }

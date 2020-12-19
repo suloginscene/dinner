@@ -1,12 +1,11 @@
 package me.scene.dinner.account.application.query;
 
 import lombok.RequiredArgsConstructor;
-import me.scene.dinner.account.domain.account.Account;
-import me.scene.dinner.account.domain.account.AccountRepository;
-import me.scene.dinner.account.domain.tempaccount.TempAccount;
-import me.scene.dinner.account.domain.tempaccount.TempAccountRepository;
 import me.scene.dinner.account.application.query.dto.AccountDto;
 import me.scene.dinner.account.application.query.dto.AccountView;
+import me.scene.dinner.account.domain.account.Account;
+import me.scene.dinner.account.domain.account.AccountRepository;
+import me.scene.dinner.account.domain.tempaccount.TempAccountRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -25,47 +24,30 @@ public class AccountQueryService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Account account = (username.contains("@")) ? findByEmail(username) : find(username);
+        Account account = (username.contains("@"))
+                ? repository.findAccountByEmail(username)
+                : repository.find(username);
         return new UserAccount(account);
     }
 
 
     public AccountDto accountDto(String username) {
-        Account account = find(username);
+        Account account = repository.find(username);
         return new AccountDto(account);
     }
 
     public AccountView accountView(String username) {
-        Account account = find(username);
+        Account account = repository.find(username);
         return new AccountView(account);
     }
 
 
     public boolean globalExistsByUsername(String username) {
-        Account account = repository.findByUsername(username).orElse(null);
-        if (account != null) return true;
-
-        TempAccount temp = tempRepository.findByUsername(username).orElse(null);
-        return temp != null;
+        return repository.existsByUsername(username) || tempRepository.existsByUsername(username);
     }
 
     public boolean globalExistsByEmail(String email) {
-        Account account = repository.findByEmail(email).orElse(null);
-        if (account != null) return true;
-
-        TempAccount temp = tempRepository.findByEmail(email).orElse(null);
-        return temp != null;
-    }
-
-
-    // private ---------------------------------------------------------------------------------------------------------
-
-    private Account find(String username) {
-        return repository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException(username));
-    }
-
-    private Account findByEmail(String email) {
-        return repository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException(email));
+        return repository.existsByEmail(email) || tempRepository.existsByEmail(email);
     }
 
 }

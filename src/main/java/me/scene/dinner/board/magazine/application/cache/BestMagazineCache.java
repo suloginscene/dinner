@@ -8,49 +8,39 @@ import me.scene.dinner.board.magazine.application.query.dto.MagazineLink;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static java.util.stream.Collectors.toList;
-
 @Component
-@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class BestMagazineCache {
 
     @Getter
     private List<MagazineLink> magazines;
-    private final static int SIZE = 5;
+    private static final int SIZE = 5;
 
     private final MagazineQueryService queryService;
 
 
     @Scheduled(cron = "0 0 * * * *")
-    public void cron() {
+    protected void cron() {
         update();
     }
 
     @EventListener
     public void onMagazineUpdatedEvent(MagazineUpdatedEvent event) {
         Long id = event.getId();
-        if (!isFull() || contains(id)) {
-            update();
-        }
+
+        boolean isFull = magazines.size() == SIZE;
+        boolean contains = magazines.stream().anyMatch(m -> m.getId().equals(id));
+        if (isFull && !contains) return;
+
+        update();
     }
 
 
     private void update() {
-        this.magazines = queryService.findBest(SIZE);
-    }
-
-
-    private boolean isFull() {
-        return magazines.size() >= SIZE;
-    }
-
-    private boolean contains(Long id) {
-        return magazines.stream().map(MagazineLink::getId).collect(toList()).contains(id);
+        magazines = queryService.findBest(SIZE);
     }
 
 }

@@ -11,6 +11,7 @@ import javax.persistence.Entity;
 import javax.persistence.Inheritance;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 
 import static javax.persistence.InheritanceType.JOINED;
 import static lombok.AccessLevel.PROTECTED;
@@ -21,8 +22,11 @@ import static lombok.AccessLevel.PROTECTED;
 @NoArgsConstructor(access = PROTECTED)
 public abstract class Magazine extends Board {
 
+    public enum Type {OPEN, MANAGED, EXCLUSIVE}
+
+
     @Getter @Column(nullable = false, length = 20)
-    private String title;
+    protected String title;
 
     @Getter @Column(nullable = false, length = 30)
     private String shortExplanation;
@@ -33,11 +37,21 @@ public abstract class Magazine extends Board {
     private int topicCount;
 
 
-    public abstract String type();
+    public abstract Type type();
 
-
-    public void checkAuthorization(String username) throws AccessException {
+    public void checkType(Type expected) {
+        Type actual = type();
+        if (actual == expected) return;
+        throw new TypeMismatchException(title, actual, expected);
     }
+
+
+    public final void checkAuthorization(String username) {
+        if (authorize().test(username)) return;
+        throw new AccessException(username, title, type());
+    }
+
+    protected abstract Predicate<String> authorize();
 
     public List<String> memberNames() {
         return new ArrayList<>();
