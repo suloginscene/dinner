@@ -1,17 +1,17 @@
 package me.scene.dinner.board.magazine.application.command;
 
 import lombok.RequiredArgsConstructor;
-import me.scene.dinner.board.common.Owner;
+import me.scene.dinner.board.common.domain.Owner;
 import me.scene.dinner.board.magazine.application.command.request.MagazineCreateRequest;
 import me.scene.dinner.board.magazine.application.command.request.MagazineUpdateRequest;
-import me.scene.dinner.board.magazine.domain.ExclusiveMagazine;
-import me.scene.dinner.board.magazine.domain.ManagedMagazine;
-import me.scene.dinner.board.magazine.domain.OpenMagazine;
+import me.scene.dinner.board.magazine.domain.common.ChangedEvent;
 import me.scene.dinner.board.magazine.domain.common.Magazine;
 import me.scene.dinner.board.magazine.domain.common.MagazineRepository;
+import me.scene.dinner.board.magazine.domain.common.Type;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 
 @Service
 @Transactional
@@ -26,21 +26,23 @@ public class MagazineService {
     public Long save(MagazineCreateRequest request) {
         Magazine magazine = createMagazine(request);
         Long id = repository.save(magazine).getId();
-        publishMagazineUpdatedEvent(id);
+
+        ChangedEvent event = magazine.changedEvent();
+        publisher.publishEvent(event);
         return id;
     }
 
     public void update(Long id, MagazineUpdateRequest request) {
         Magazine magazine = repository.find(id);
-        updateMagazine(magazine, request);
-        publishMagazineUpdatedEvent(id);
+        ChangedEvent event = updateMagazine(magazine, request);
+        publisher.publishEvent(event);
     }
 
     public void delete(Long id, String current) {
         Magazine magazine = repository.find(id);
-        magazine.beforeDelete(current);
+        ChangedEvent event = magazine.beforeDelete(current);
         repository.delete(magazine);
-        publishMagazineUpdatedEvent(id);
+        publisher.publishEvent(event);
     }
 
 
@@ -52,26 +54,12 @@ public class MagazineService {
         String shortExplanation = r.getShortExplanation();
         String longExplanation = r.getLongExplanation();
 
-        String type = r.getType();
-        switch (Magazine.Type.valueOf(type)) {
-            case OPEN:
-                return new OpenMagazine(owner, title, shortExplanation, longExplanation);
-            case MANAGED:
-                return new ManagedMagazine(owner, title, shortExplanation, longExplanation);
-            case EXCLUSIVE:
-                return new ExclusiveMagazine(owner, title, shortExplanation, longExplanation);
-            default:
-                throw new IllegalStateException();
-        }
+        Type type = Type.valueOf(r.getType());
+        return Magazine.create(type, owner, title, shortExplanation, longExplanation);
     }
 
-    private void updateMagazine(Magazine magazine, MagazineUpdateRequest r) {
-        magazine.update(r.getCurrentUsername(), r.getTitle(), r.getShortExplanation(), r.getLongExplanation());
-    }
-
-    private void publishMagazineUpdatedEvent(Long id) {
-        MagazineUpdatedEvent event = new MagazineUpdatedEvent(id);
-        publisher.publishEvent(event);
+    private ChangedEvent updateMagazine(Magazine magazine, MagazineUpdateRequest r) {
+        return magazine.update(r.getCurrentUsername(), r.getTitle(), r.getShortExplanation(), r.getLongExplanation());
     }
 
 }

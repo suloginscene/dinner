@@ -1,7 +1,7 @@
 package me.scene.dinner.account.application.query;
 
 import lombok.RequiredArgsConstructor;
-import me.scene.dinner.account.application.query.dto.AccountDto;
+import me.scene.dinner.account.application.query.dto.AccountInfo;
 import me.scene.dinner.account.application.query.dto.AccountView;
 import me.scene.dinner.account.domain.account.Account;
 import me.scene.dinner.account.domain.account.AccountRepository;
@@ -31,9 +31,9 @@ public class AccountQueryService implements UserDetailsService {
     }
 
 
-    public AccountDto accountDto(String username) {
+    public AccountInfo accountInfo(String username) {
         Account account = repository.find(username);
-        return new AccountDto(account);
+        return new AccountInfo(account);
     }
 
     public AccountView accountView(String username) {

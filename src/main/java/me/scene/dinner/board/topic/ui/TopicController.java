@@ -6,7 +6,7 @@ import me.scene.dinner.board.topic.application.command.TopicService;
 import me.scene.dinner.board.topic.application.command.request.TopicCreateRequest;
 import me.scene.dinner.board.topic.application.command.request.TopicUpdateRequest;
 import me.scene.dinner.board.topic.application.query.TopicQueryService;
-import me.scene.dinner.board.topic.application.query.dto.TopicSimpleDto;
+import me.scene.dinner.board.topic.application.query.dto.TopicView;
 import me.scene.dinner.board.topic.ui.form.TopicForm;
 import me.scene.dinner.board.topic.ui.form.TopicUpdateForm;
 import me.scene.dinner.common.security.Current;
@@ -33,7 +33,8 @@ public class TopicController {
 
     @GetMapping("/topics/{id}")
     public String showTopic(@PathVariable Long id, Model model) {
-        TopicSimpleDto topic = queryService.findById(id);
+        TopicView topic = queryService.find(id);
+
         model.addAttribute("topic", topic);
         return "page/board/topic/view";
     }
@@ -42,58 +43,72 @@ public class TopicController {
     @GetMapping("/topic-form")
     public String shipTopicForm(@RequestParam Long magazineId, Model model) {
         TopicForm topicForm = new TopicForm(magazineId);
+
         model.addAttribute("topicForm", topicForm);
         return "page/board/topic/form";
     }
 
     @PostMapping("/topics")
-    public String createTopic(@Current Account current, @Valid TopicForm form, Errors errors) {
+    public String createTopic(@Current Account current,
+                              @Valid TopicForm form, Errors errors) {
+
         if (errors.hasErrors()) return "page/board/topic/form";
 
         String username = current.getUsername();
-        TopicCreateRequest request = createTopicCreateRequest(username, form);
+        Long magazineId = form.getMagazineId();
+        String title = form.getTitle();
+        String shortExplanation = form.getShortExplanation();
+        String longExplanation = form.getLongExplanation();
+
+        TopicCreateRequest request = new TopicCreateRequest(username, magazineId, title, shortExplanation, longExplanation);
         Long id = service.save(request);
+
         return "redirect:" + ("/topics/" + id);
     }
 
 
     @GetMapping("/topics/{id}/form")
     public String updateForm(@PathVariable Long id, Model model) {
-        TopicSimpleDto topic = queryService.findById(id);
-        model.addAttribute("updateForm", updateForm(topic));
+        TopicView topic = queryService.find(id);
+
+        TopicUpdateForm updateForm = new TopicUpdateForm(
+                topic.getId(),
+                topic.getTitle(),
+                topic.getShortExplanation(),
+                topic.getLongExplanation()
+        );
+
+        model.addAttribute("updateForm", updateForm);
         return "page/board/topic/update";
     }
 
     @PutMapping("/topics/{id}")
-    public String update(@PathVariable Long id, @Current Account current, @Valid TopicUpdateForm form, Errors errors) {
-        if (errors.hasErrors()) return "redirect:" + ("/topics/" + id + "/form");
+    public String update(@PathVariable Long id,
+                         @Current Account current,
+                         @Valid TopicUpdateForm form, Errors errors) {
+
+        if (errors.hasErrors()) return "page/board/topic/update";
 
         String username = current.getUsername();
-        TopicUpdateRequest request = createTopicUpdateRequest(username, form);
-        service.update(id, request);
+        String title = form.getTitle();
+        String shortExplanation = form.getShortExplanation();
+        String longExplanation = form.getLongExplanation();
+
+        TopicUpdateRequest request = new TopicUpdateRequest(username, id, title, shortExplanation, longExplanation);
+        service.update(request);
+
         return "redirect:" + ("/topics/" + id);
     }
 
 
     @DeleteMapping("/topics/{id}")
-    public String delete(@PathVariable Long id, @Current Account current) {
-        Long magazineId = service.delete(id, current.getUsername());
+    public String delete(@PathVariable Long id,
+                         @Current Account current) {
+
+        String username = current.getUsername();
+        Long magazineId = service.delete(id, username);
+
         return "redirect:" + ("/magazines/" + magazineId);
-    }
-
-
-    // private ---------------------------------------------------------------------------------------------------------
-
-    private TopicCreateRequest createTopicCreateRequest(String currentUser, TopicForm f) {
-        return new TopicCreateRequest(currentUser, f.getMagazineId(), f.getTitle(), f.getShortExplanation(), f.getLongExplanation());
-    }
-
-    private TopicUpdateRequest createTopicUpdateRequest(String currentUser, TopicUpdateForm f) {
-        return new TopicUpdateRequest(currentUser, f.getMagazineId(), f.getTitle(), f.getShortExplanation(), f.getLongExplanation());
-    }
-
-    private TopicUpdateForm updateForm(TopicSimpleDto t) {
-        return new TopicUpdateForm(t.getMagazine().getId(), t.getId(), t.getTitle(), t.getShortExplanation(), t.getLongExplanation());
     }
 
 }

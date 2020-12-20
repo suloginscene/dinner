@@ -1,13 +1,9 @@
 package me.scene.dinner.like.domain;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
+import lombok.Data;
 
-@RequiredArgsConstructor
-@Getter @EqualsAndHashCode
-@ToString
+
+@Data
 public class LikedEvent {
 
     private final String user;

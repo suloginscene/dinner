@@ -1,9 +1,12 @@
 package me.scene.dinner.board.magazine.application.command;
 
 import lombok.RequiredArgsConstructor;
-import me.scene.dinner.board.magazine.domain.ManagedMagazine;
 import me.scene.dinner.board.magazine.domain.common.Magazine;
 import me.scene.dinner.board.magazine.domain.common.MagazineRepository;
+import me.scene.dinner.board.magazine.domain.managed.ManagedMagazine;
+import me.scene.dinner.board.magazine.domain.managed.ManagedEvent;
+import me.scene.dinner.board.magazine.domain.managed.MemberQuitEvent;
+import me.scene.dinner.board.magazine.domain.managed.MemberAppliedEvent;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
-import static me.scene.dinner.board.magazine.domain.common.Magazine.Type.MANAGED;
+import static me.scene.dinner.board.magazine.domain.common.Type.MANAGED;
 
 
 @Service
@@ -32,33 +35,33 @@ public class MemberService {
 
     public void applyMember(Long id, String memberName) {
         ManagedMagazine magazine = findManagedMagazine(id);
-        Optional<ManagedMagazine.Member.ManagerEvent> event = magazine.apply(memberName);
+        Optional<MemberAppliedEvent> event = magazine.apply(memberName);
         event.ifPresent(publisher::publishEvent);
     }
 
     public void quitMember(Long id, String memberName) {
         ManagedMagazine magazine = findManagedMagazine(id);
-        Optional<ManagedMagazine.Member.ManagerEvent> event = magazine.quit(memberName);
+        Optional<MemberQuitEvent> event = magazine.quit(memberName);
         event.ifPresent(publisher::publishEvent);
     }
 
 
     public void addMember(Long id, String ownerName, String memberName) {
         ManagedMagazine magazine = findManagedMagazine(id);
-        Optional<ManagedMagazine.Member.MemberEvent> event = magazine.addMember(ownerName, memberName);
+        Optional<ManagedEvent> event = magazine.addMember(ownerName, memberName);
         event.ifPresent(publisher::publishEvent);
     }
 
     public void removeMember(Long id, String ownerName, String memberName) {
         ManagedMagazine magazine = findManagedMagazine(id);
-        Optional<ManagedMagazine.Member.MemberEvent> event = magazine.removeMember(ownerName, memberName);
+        Optional<ManagedEvent> event = magazine.removeMember(ownerName, memberName);
         event.ifPresent(publisher::publishEvent);
     }
 
 
     private ManagedMagazine findManagedMagazine(Long id) {
         Magazine magazine = repository.find(id);
-        magazine.checkType(MANAGED);
+        magazine.type().check(MANAGED);
         return (ManagedMagazine) magazine;
     }
 

@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 public class TopicCreateRequest {
 
-    private final String ownerName;
+    private final String username;
 
     private final Long magazineId;
 

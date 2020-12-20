@@ -1,10 +1,9 @@
 package me.scene.dinner.board.magazine.application.query;
 
 import lombok.RequiredArgsConstructor;
-import me.scene.dinner.board.common.BoardNotFoundException;
-import me.scene.dinner.board.common.Owner;
+import me.scene.dinner.board.common.domain.Owner;
 import me.scene.dinner.board.magazine.application.query.dto.MagazineLink;
-import me.scene.dinner.board.magazine.application.query.dto.MagazineSimpleDto;
+import me.scene.dinner.board.magazine.application.query.dto.MagazineView;
 import me.scene.dinner.board.magazine.domain.common.Magazine;
 import me.scene.dinner.board.magazine.domain.common.MagazineRepository;
 import org.springframework.data.domain.PageRequest;
@@ -24,39 +23,35 @@ import static org.springframework.data.domain.Sort.by;
 @RequiredArgsConstructor
 public class MagazineQueryService {
 
-    private final MagazineRepository magazineRepository;
+    private final MagazineRepository repository;
 
 
-    public MagazineSimpleDto findById(Long id) {
-        Magazine magazine = find(id);
-        return new MagazineSimpleDto(magazine);
+    public MagazineView find(Long id) {
+        Magazine magazine = repository.find(id);
+        return new MagazineView(magazine);
     }
 
 
-    public List<MagazineSimpleDto> findByUsername(String username) {
+    public List<MagazineLink> findByUsername(String username) {
         Owner owner = new Owner(username);
-        List<Magazine> magazines = magazineRepository.findByOwnerOrderByPointDesc(owner);
+        List<Magazine> magazines = repository.findByOwnerOrderByPointDesc(owner);
         return magazines.stream()
-                .map(MagazineSimpleDto::new)
+                .map(MagazineLink::new)
                 .collect(toList());
     }
 
-    public List<MagazineSimpleDto> findAll() {
-        List<Magazine> all = magazineRepository.findAll();
-        return all.stream().map(MagazineSimpleDto::new).collect(toList());
+    public List<MagazineLink> findAll() {
+        List<Magazine> magazines = repository.findAll();
+        return magazines.stream()
+                .map(MagazineLink::new)
+                .collect(toList());
     }
 
     public List<MagazineLink> findBest(int size) {
-        PageRequest request = PageRequest.of(0, size, by(DESC, "point"));
-        Slice<Magazine> magazines = magazineRepository.findAll(request);
-        return magazines.map(MagazineLink::new).getContent();
-    }
-
-
-    // private ---------------------------------------------------------------------------------------------------------
-
-    private Magazine find(Long id) {
-        return magazineRepository.findById(id).orElseThrow(() -> new BoardNotFoundException(id));
+        Slice<Magazine> magazines = repository.findAll(PageRequest.of(0, size, by(DESC, "point")));
+        return magazines
+                .map(MagazineLink::new)
+                .getContent();
     }
 
 }

@@ -33,15 +33,15 @@
                     <input th:type="text" id="tagInput" th:field="*{jsonTags}" placeholder="태그 (최대 3개, 한글/영(소)/숫자/_)"><label for="tagInput"></label>
                     <div th:text="${_csrf.token}" id="tagify-csrf" hidden></div>
                     <div class="form-checks">
-                        <label for="radio-1"><input name="status" type="radio" id="radio-1" value="PUBLIC" checked/>public</label>
-                        <label for="radio-2"><input name="status" type="radio" id="radio-2" value="PRIVATE"/>private</label>
+                        <label for="radio-1"><input name="action" type="radio" id="radio-1" value="PUBLIC" checked/>public</label>
+                        <label for="radio-2"><input name="action" type="radio" id="radio-2" value="PRIVATE"/>private</label>
                     </div>
                 </div>
                 <div id="error-message">
                     <span th:if="${#fields.hasErrors('topicId')}" th:errors="*{topicId}" class="form-text text-danger"></span>
                     <span th:if="${#fields.hasErrors('title')}" th:errors="*{title}" class="form-text text-danger"></span>
                     <span th:if="${#fields.hasErrors('content')}" th:errors="*{content}" class="form-text text-danger"></span>
-                    <small th:if="${#fields.hasErrors('status')}" th:errors="*{status}" class="form-text text-danger"></small>
+                    <small th:if="${#fields.hasErrors('action')}" th:errors="*{action}" class="form-text text-danger"></small>
                 </div>
             </form>
         </section>

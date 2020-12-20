@@ -1,7 +1,6 @@
 package me.scene.dinner.board.topic.application.command;
 
 import lombok.RequiredArgsConstructor;
-import me.scene.dinner.board.common.BoardNotFoundException;
 import me.scene.dinner.board.magazine.domain.common.Magazine;
 import me.scene.dinner.board.magazine.domain.common.MagazineRepository;
 import me.scene.dinner.board.topic.application.command.request.TopicCreateRequest;
@@ -22,41 +21,33 @@ public class TopicService {
 
 
     public Long save(TopicCreateRequest request) {
-        Magazine magazine = findMagazine(request.getMagazineId());
-        Topic topic = createTopic(magazine, request);
+        String username = request.getUsername();
+        Long magazineId = request.getMagazineId();
+        String title = request.getTitle();
+        String shortExplanation = request.getShortExplanation();
+        String longExplanation = request.getLongExplanation();
+
+        Magazine magazine = magazineRepository.find(magazineId);
+        Topic topic = new Topic(magazine, username, title, shortExplanation, longExplanation);
         return repository.save(topic).getId();
     }
 
-    public void update(Long id, TopicUpdateRequest request) {
-        Topic topic = find(id);
-        updateTopic(topic, request);
+    public void update(TopicUpdateRequest request) {
+        Long id = request.getId();
+        String username = request.getUsername();
+        String title = request.getTitle();
+        String shortExplanation = request.getShortExplanation();
+        String longExplanation = request.getLongExplanation();
+
+        Topic topic = repository.find(id);
+        topic.update(username, title, shortExplanation, longExplanation);
     }
 
     public Long delete(Long id, String current) {
-        Topic topic = find(id);
+        Topic topic = repository.find(id);
         topic.beforeDelete(current);
         repository.delete(topic);
         return topic.getMagazine().getId();
-    }
-
-
-    // private ---------------------------------------------------------------------------------------------------------
-
-    private Topic find(Long id) {
-        return repository.findById(id).orElseThrow(() -> new BoardNotFoundException(id));
-    }
-
-    private Magazine findMagazine(Long id) {
-        return magazineRepository.findById(id).orElseThrow(() -> new BoardNotFoundException(id));
-    }
-
-
-    private Topic createTopic(Magazine magazine, TopicCreateRequest r) {
-        return new Topic(magazine, r.getOwnerName(), r.getTitle(), r.getShortExplanation(), r.getLongExplanation());
-    }
-
-    private void updateTopic(Topic topic, TopicUpdateRequest r) {
-        topic.update(r.getCurrentUsername(), r.getTitle(), r.getShortExplanation(), r.getLongExplanation());
     }
 
 }

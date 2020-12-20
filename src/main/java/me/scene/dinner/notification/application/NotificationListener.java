@@ -1,7 +1,9 @@
 package me.scene.dinner.notification.application;
 
 import lombok.RequiredArgsConstructor;
-import me.scene.dinner.board.magazine.domain.ManagedMagazine;
+import me.scene.dinner.board.magazine.domain.managed.ManagedEvent;
+import me.scene.dinner.board.magazine.domain.managed.MemberAppliedEvent;
+import me.scene.dinner.board.magazine.domain.managed.MemberQuitEvent;
 import me.scene.dinner.like.domain.LikedEvent;
 import me.scene.dinner.notification.domain.Notification;
 import me.scene.dinner.notification.domain.NotificationRepository;
@@ -9,6 +11,8 @@ import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+
+import static me.scene.dinner.board.magazine.domain.managed.ManagedEvent.Action.ADD;
 
 
 @Component
@@ -21,7 +25,7 @@ public class NotificationListener {
 
     @Async
     @EventListener
-    public void onLikedEvent(LikedEvent event) {
+    public void onUserLikeArticle(LikedEvent event) {
         String receiver = event.getArticleWriter();
 
         String user = accountWithLink(event.getUser());
@@ -35,47 +39,40 @@ public class NotificationListener {
 
 
     @EventListener
-    public void notifyManager(ManagedMagazine.Member.ManagerEvent event) {
-        String receiver = event.getManagerName();
+    public void onMemberApplyMagazine(MemberAppliedEvent event) {
+        String receiver = event.getManager();
 
-        String member = accountWithLink(event.getMemberName());
-        String magazine = magazineWithLink(event.getMagazineId(), event.getMagazineTitle());
+        String member = accountWithLink(event.getName());
+        String magazine = magazineWithLink(event.getId(), event.getTitle());
 
-        String template;
-        switch (event.getStatus()) {
-            case APPLIED:
-                template = "%s가 %s에 지원했습니다.";
-                break;
-            case QUIT:
-                template = "%s가 %s에서 탈퇴했습니다.";
-                break;
-            default:
-                throw new IllegalStateException("ManagerEvent status should be APPLIED or QUIT.");
-        }
-        String message = String.format(template, member, magazine);
+        String message = String.format("%s가 %s에 지원했습니다.", member, magazine);
+
+        Notification notification = new Notification(receiver, message);
+        repository.save(notification);
+    }
+
+    @Async
+    @EventListener
+    public void onMemberQuitMagazine(MemberQuitEvent event) {
+        String receiver = event.getManager();
+
+        String member = accountWithLink(event.getName());
+        String magazine = magazineWithLink(event.getId(), event.getTitle());
+
+        String message = String.format("%s가 %s에서 탈퇴했습니다.", member, magazine);
 
         Notification notification = new Notification(receiver, message);
         repository.save(notification);
     }
 
     @EventListener
-    public void notifyMember(ManagedMagazine.Member.MemberEvent event) {
-        String receiver = event.getMemberName();
+    public void onManagerManageMember(ManagedEvent event) {
+        String receiver = event.getName();
 
-        String magazine = magazineWithLink(event.getMagazineId(), event.getMagazineTitle());
+        String magazine = magazineWithLink(event.getId(), event.getTitle());
 
-        String template;
-        switch (event.getStatus()) {
-            case ADDED:
-                template = "%s의 멤버로 등록되었습니다.";
-                break;
-            case REMOVED:
-                template = "%s의 멤버에서 제외되었습니다.";
-                break;
-            default:
-                throw new IllegalStateException("MemberEvent status should be ADDED or REMOVED.");
-        }
-        String message = String.format(template, magazine);
+        String message = String.format(
+                (event.getAction() == ADD) ? "%s의 멤버로 등록되었습니다." : "%s의 멤버에서 제외되었습니다.", magazine);
 
         Notification notification = new Notification(receiver, message);
         repository.save(notification);

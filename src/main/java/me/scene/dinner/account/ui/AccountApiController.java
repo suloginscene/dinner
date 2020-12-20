@@ -2,7 +2,7 @@ package me.scene.dinner.account.ui;
 
 import lombok.RequiredArgsConstructor;
 import me.scene.dinner.account.application.query.AccountQueryService;
-import me.scene.dinner.account.application.query.dto.AccountDto;
+import me.scene.dinner.account.application.query.dto.AccountInfo;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,8 +17,8 @@ public class AccountApiController {
 
 
     @GetMapping("/api/accounts/{username}")
-    public ResponseEntity<AccountDto> find(@PathVariable String username) {
-        AccountDto dto = queryService.accountDto(username);
+    public ResponseEntity<AccountInfo> find(@PathVariable String username) {
+        AccountInfo dto = queryService.accountInfo(username);
         return ResponseEntity.ok(dto);
     }
 

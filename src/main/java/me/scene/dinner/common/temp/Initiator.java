@@ -6,8 +6,8 @@
 //import me.scene.dinner.account.domain.account.AccountRepository;
 //import me.scene.dinner.account.domain.tempaccount.TempAccount;
 //import me.scene.dinner.account.domain.tempaccount.TempAccountRepository;
-//import me.scene.dinner.board.article.command.application.ArticleService;
-//import me.scene.dinner.board.article.command.application.ReplyService;
+//import me.scene.dinner.board.article.application.command.ArticleService;
+//import me.scene.dinner.board.article.application.command.ReplyService;
 //import me.scene.dinner.board.article.domain.Article;
 //import me.scene.dinner.board.magazine.application.command.MagazineService;
 //import me.scene.dinner.board.magazine.application.command.MemberService;

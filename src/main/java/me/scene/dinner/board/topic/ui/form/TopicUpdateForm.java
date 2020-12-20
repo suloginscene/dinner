@@ -6,11 +6,11 @@ import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotBlank;
 
+
 @Data
 @AllArgsConstructor
 public class TopicUpdateForm {
 
-    private final Long magazineId;
     private final Long id;
 
     @NotBlank(message = "제목을 적어주세요.")

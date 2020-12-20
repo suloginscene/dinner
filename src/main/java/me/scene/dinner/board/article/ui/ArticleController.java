@@ -4,10 +4,13 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import me.scene.dinner.account.domain.account.Account;
-import me.scene.dinner.board.article.command.application.ArticleService;
-import me.scene.dinner.board.article.query.dto.ArticleSimpleDto;
-import me.scene.dinner.board.article.query.ArticleQueryService;
+import me.scene.dinner.board.article.application.command.ArticleService;
+import me.scene.dinner.board.article.application.command.request.ArticleCreateRequest;
+import me.scene.dinner.board.article.application.command.request.ArticleUpdateRequest;
+import me.scene.dinner.board.article.application.query.ArticleQueryService;
+import me.scene.dinner.board.article.application.query.dto.ArticleView;
 import me.scene.dinner.board.article.ui.form.ArticleForm;
+import me.scene.dinner.board.article.ui.form.ArticleUpdateForm;
 import me.scene.dinner.board.article.ui.form.TagForm;
 import me.scene.dinner.common.security.Current;
 import org.springframework.stereotype.Controller;
@@ -27,74 +30,112 @@ import java.util.Set;
 
 import static java.util.stream.Collectors.toSet;
 
+
 @Controller
 @RequiredArgsConstructor
 public class ArticleController {
 
-    private final ArticleService articleService;
-    private final ArticleQueryService articleQueryService;
+    private final ArticleService service;
+    private final ArticleQueryService queryService;
 
     private final ObjectMapper objectMapper;
 
+
+    @GetMapping("/articles/{id}")
+    public String showArticle(@PathVariable Long id,
+                              @Current Account current, Model model) {
+
+        String username = (current != null) ? current.getUsername() : "anonymousUser";
+        ArticleView article = queryService.read(id, username);
+
+        model.addAttribute("article", article);
+        return "page/board/article/view";
+    }
+
+
     @GetMapping("/article-form")
     public String shipArticleForm(@RequestParam Long topicId, Model model) {
-        ArticleForm articleForm = new ArticleForm();
-        articleForm.setTopicId(topicId);
+        ArticleForm articleForm = new ArticleForm(topicId);
+
         model.addAttribute("articleForm", articleForm);
         return "page/board/article/form";
     }
 
     @PostMapping("/articles")
-    public String createArticle(@Current Account current, @Valid ArticleForm form, Errors errors) {
+    public String createArticle(@Current Account current,
+                                @Valid ArticleForm form, Errors errors) {
+
         if (errors.hasErrors()) return "page/board/article/form";
 
-        Long id = articleService.save(form.getTopicId(), current.getUsername(), form.getTitle(), form.getContent(), form.isPublicized(), parse(form.getJsonTags()));
+        String username = current.getUsername();
+        Long topicId = form.getTopicId();
+        String title = form.getTitle();
+        String content = form.getContent();
+        boolean publicized = form.getStatus().equals("PUBLIC");
+
+        ArticleCreateRequest request = new ArticleCreateRequest(username, topicId, title, content, publicized);
+        Long id = service.save(request);
+
+        String jsonTags = form.getJsonTags();
+        Set<String> tagNames = parse(jsonTags);
+        service.publishTaggedEvent(id, tagNames);
+
         return "redirect:" + ("/articles/" + id);
     }
 
-    @GetMapping("/articles/{articleId}")
-    public String showArticle(@PathVariable Long articleId, @Current Account current, Model model) {
-        String username = (current != null) ? current.getUsername() : "anonymousUser";
-        ArticleSimpleDto article = articleQueryService.read(articleId, username);
-        model.addAttribute("article", article);
-        return "page/board/article/view";
-    }
 
-    @GetMapping("/articles/{articleId}/form")
-    public String updateForm(@PathVariable Long articleId, @Current Account current, Model model) {
-        ArticleSimpleDto article = articleQueryService.findToUpdate(articleId, current.getUsername());
-        model.addAttribute("id", articleId);
-        model.addAttribute("updateForm", updateForm(article));
+    @GetMapping("/articles/{id}/form")
+    public String updateForm(@PathVariable Long id, Model model) {
+
+        ArticleView article = queryService.find(id);
+
+        ArticleUpdateForm form = ArticleUpdateForm.builder()
+                .topicId(article.getTopic().getId())
+                .title(article.getTitle())
+                .content(article.getContent())
+                .status(article.isPublicized() ? "PUBLIC" : "PRIVATE")
+                .build();
+
+        model.addAttribute("updateForm", form);
         return "page/board/article/update";
     }
 
-    @PutMapping("/articles/{articleId}")
-    public String update(@PathVariable Long articleId, @Current Account current, @Valid ArticleForm form, Errors errors) {
-        if (errors.hasErrors()) return "redirect:" + ("/articles/" + articleId + "/form");
+    @PutMapping("/articles/{id}")
+    public String update(@Current Account current,
+                         @PathVariable Long id,
+                         @Valid ArticleUpdateForm form, Errors errors) {
 
-        articleService.update(articleId, current.getUsername(), form.getTitle(), form.getContent(), form.isPublicized());
-        return "redirect:" + ("/articles/" + articleId);
+        if (errors.hasErrors()) return "page/board/article/update";
+
+        String username = current.getUsername();
+        String title = form.getTitle();
+        String content = form.getContent();
+        boolean publicized = form.getStatus().equals("PUBLIC");
+
+        ArticleUpdateRequest request = new ArticleUpdateRequest(username, id, title, content, publicized);
+        service.update(request);
+
+        return "redirect:" + ("/articles/" + id);
     }
 
-    @DeleteMapping("/articles/{articleId}")
-    public String delete(@PathVariable Long articleId, @Current Account current) {
-        Long topicId = articleService.delete(articleId, current.getUsername());
+
+    @DeleteMapping("/articles/{id}")
+    public String delete(@Current Account current,
+                         @PathVariable Long id) {
+
+        String username = current.getUsername();
+
+        Long topicId = service.delete(id, username);
+
         return "redirect:" + ("/topics/" + topicId);
     }
+
 
     @GetMapping("/private-articles")
     public String myPrivateArticles() {
         return "page/board/article/private";
     }
 
-    private ArticleForm updateForm(ArticleSimpleDto a) {
-        ArticleForm f = new ArticleForm();
-        f.setTopicId(a.getTopic().getId());
-        f.setTitle(a.getTitle());
-        f.setContent(a.getContent());
-        f.setStatus(a.getStatus());
-        return f;
-    }
 
     private Set<String> parse(String jsonTags) {
         if (StringUtils.isEmpty(jsonTags)) return new HashSet<>();

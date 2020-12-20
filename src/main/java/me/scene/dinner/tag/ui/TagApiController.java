@@ -8,11 +8,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+
 @RestController
 @RequiredArgsConstructor
 public class TagApiController {
 
     private final TagService service;
+
 
     @PostMapping("/api/tags/{name}")
     public ResponseEntity<Object> createTag(@PathVariable String name) {

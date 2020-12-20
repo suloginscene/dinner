@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.List;
 
+
 @Controller
 @RequiredArgsConstructor
 public class MemberController {
@@ -20,39 +21,55 @@ public class MemberController {
     private final MemberService service;
 
 
-    @GetMapping("/magazines/{magazineId}/members/page")
-    public String memberPage(@PathVariable Long magazineId, Model model) {
-        List<String> memberNames = service.memberNames(magazineId);
-        model.addAttribute("id", magazineId);
+    @GetMapping("/magazines/{id}/members/page")
+    public String memberPage(@PathVariable Long id, Model model) {
+        List<String> memberNames = service.memberNames(id);
+
+        model.addAttribute("id", id);
         model.addAttribute("members", memberNames);
         return "page/board/magazine/members";
     }
 
 
-    @PostMapping("/magazines/{magazineId}/members")
-    public String applyMember(@PathVariable Long magazineId, @Current Account current) {
-        service.applyMember(magazineId, current.getUsername());
-        return "redirect:" + ("/sent-to-manager?magazineId=" + magazineId);
+    @PostMapping("/magazines/{id}/members")
+    public String applyMember(@PathVariable Long id,
+                              @Current Account current) {
+
+        String username = current.getUsername();
+        service.applyMember(id, username);
+
+        return "redirect:" + ("/sent-to-manager?magazineId=" + id);
     }
 
-    @DeleteMapping("/magazines/{magazineId}/members")
-    public String quitMember(@PathVariable Long magazineId, @Current Account current) {
-        String currentUsername = current.getUsername();
-        service.quitMember(magazineId, currentUsername);
-        return "redirect:" + ("/magazines/" + magazineId);
+    @DeleteMapping("/magazines/{id}/members")
+    public String quitMember(@PathVariable Long id,
+                             @Current Account current) {
+
+        String username = current.getUsername();
+        service.quitMember(id, username);
+
+        return "redirect:" + ("/magazines/" + id);
     }
 
 
-    @GetMapping("/magazines/{magazineId}/{member}")
-    public String addMember(@PathVariable Long magazineId, @PathVariable String member, @Current Account current) {
-        service.addMember(magazineId, current.getUsername(), member);
-        return "redirect:" + ("/magazines/" + magazineId + "/members");
+    @GetMapping("/magazines/{id}/{member}")
+    public String addMember(@PathVariable Long id, @PathVariable String member,
+                            @Current Account current) {
+
+        String username = current.getUsername();
+        service.addMember(id, username, member);
+
+        return "redirect:" + ("/magazines/" + id + "/members");
     }
 
-    @DeleteMapping("/magazines/{magazineId}/{member}")
-    public String removeMember(@PathVariable Long magazineId, @PathVariable String member, @Current Account current) {
-        service.removeMember(magazineId, current.getUsername(), member);
-        return "redirect:" + ("/magazines/" + magazineId + "/members");
+    @DeleteMapping("/magazines/{id}/{member}")
+    public String removeMember(@PathVariable Long id, @PathVariable String member,
+                               @Current Account current) {
+
+        String username = current.getUsername();
+        service.removeMember(id, username, member);
+
+        return "redirect:" + ("/magazines/" + id + "/members");
     }
 
 }

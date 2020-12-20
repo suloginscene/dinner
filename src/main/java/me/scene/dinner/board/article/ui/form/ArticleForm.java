@@ -1,17 +1,15 @@
 package me.scene.dinner.board.article.ui.form;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
-@Getter @Setter
+
+@Data
 public class ArticleForm {
 
-    @NotNull(message = "토픽 ID가 있어야 합니다.")
-    private Long topicId;
+    private final Long topicId;
 
     @NotBlank(message = "제목을 적어주세요.")
     @Length(max = 30, message = "제목은 최대 30자까지 가능합니다.")
@@ -24,9 +22,5 @@ public class ArticleForm {
     private String status;
 
     private String jsonTags;
-
-    public boolean isPublicized() {
-        return status.equals("PUBLIC");
-    }
 
 }

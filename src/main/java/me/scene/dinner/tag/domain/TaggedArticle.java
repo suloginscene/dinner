@@ -11,20 +11,23 @@ import javax.persistence.ManyToOne;
 import static javax.persistence.FetchType.LAZY;
 import static lombok.AccessLevel.PROTECTED;
 
+
 @Entity
 @Getter
 @NoArgsConstructor(access = PROTECTED)
 public class TaggedArticle extends BaseEntity {
 
     @ManyToOne(fetch = LAZY)
+    private Tag tag;
+
+    @ManyToOne(fetch = LAZY)
     private Article article;
 
-    public TaggedArticle(Article article) {
-        this.article = article;
-    }
 
-    public boolean isPublicized() {
-        return article.isPublicized();
+    public TaggedArticle(Tag tag, Article article) {
+        this.tag = tag;
+        this.article = article;
+        tag.getTaggedArticles().add(this);
     }
 
 }

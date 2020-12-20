@@ -34,8 +34,8 @@
                     <input th:type="text" id="tagInput" placeholder="태그를 입력하세요."><label for="tagInput"></label>
                     <div th:text="${_csrf.token}" id="tagify-csrf" hidden></div>
                     <div class="form-checks">
-                        <label for="radio-1"><input th:field="*{status}" type="radio" id="radio-1" value="PUBLIC"/>public</label>
-                        <label for="radio-2"><input th:field="*{status}" type="radio" id="radio-2" value="PRIVATE"/>private</label>
+                        <label for="radio-1"><input th:field="*{action}" type="radio" id="radio-1" value="PUBLIC"/>public</label>
+                        <label for="radio-2"><input th:field="*{action}" type="radio" id="radio-2" value="PRIVATE"/>private</label>
                     </div>
                 </div>
             </form>

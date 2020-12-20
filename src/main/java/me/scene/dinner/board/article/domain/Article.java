@@ -2,9 +2,11 @@ package me.scene.dinner.board.article.domain;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import me.scene.dinner.board.common.Board;
-import me.scene.dinner.board.common.Owner;
-import me.scene.dinner.board.common.Point;
+import me.scene.dinner.board.common.domain.Board;
+import me.scene.dinner.board.common.domain.Owner;
+import me.scene.dinner.board.common.domain.Point;
+import me.scene.dinner.board.magazine.domain.common.Magazine;
+import me.scene.dinner.board.magazine.domain.open.OpenMagazine;
 import me.scene.dinner.board.topic.domain.Topic;
 
 import javax.persistence.Entity;
@@ -19,13 +21,13 @@ import java.util.Optional;
 import static javax.persistence.CascadeType.ALL;
 import static javax.persistence.FetchType.LAZY;
 import static lombok.AccessLevel.PROTECTED;
+import static me.scene.dinner.board.magazine.domain.common.Type.OPEN;
+
 
 @Entity
 @Getter
 @NoArgsConstructor(access = PROTECTED)
 public class Article extends Board {
-
-    private String title;
 
     @Lob
     private String content;
@@ -33,7 +35,10 @@ public class Article extends Board {
     private boolean publicized;
 
     private int read;
-    private int likes;
+    private int like;
+
+    @ManyToOne(fetch = LAZY)
+    private Magazine magazine;
 
     @ManyToOne(fetch = LAZY)
     private Topic topic;
@@ -43,37 +48,53 @@ public class Article extends Board {
 
 
     public Article(Topic topic, String owner, String title, String content, boolean publicized) {
-        topic.getMagazine().checkAuthorization(owner);
-        topic.addArticle();
+        this.magazine = topic.getMagazine();
+        magazine.authorization().check(owner);
+
+        this.topic = topic;
+        topic.getArticles().add();
+
         this.owner = new Owner(owner);
         this.title = title;
         this.content = content;
-        this.topic = topic;
         this.publicized = publicized;
+
         logWriter();
     }
 
 
     public void update(String current, String title, String content, boolean publicized) {
         owner.identify(current);
+
         this.title = title;
         this.content = content;
         this.publicized = publicized;
+
         logWriter();
     }
 
     public void beforeDelete(String current) {
         owner.identify(current);
-        this.publicized = false;
+
+        publicized = false;
+        topic.getArticles().remove();
+
         logWriter();
-        topic.removeArticle();
     }
+
 
     private void logWriter() {
-        if (publicized) topic.getMagazine().logWriting(owner.getOwnerName());
-        else topic.getMagazine().logErasing(owner.getOwnerName());
+        if (magazine.type() != OPEN) return;
+
+        OpenMagazine open = (OpenMagazine) magazine;
+        String writer = owner.getName();
+
+        if (publicized) open.logWriting(writer);
+        else open.logErasing(writer);
     }
 
+
+    // rate ------------------------------------------------------------------------------------------------------------
 
     public void read() {
         read++;
@@ -81,32 +102,44 @@ public class Article extends Board {
     }
 
     public void like() {
-        likes++;
+        like++;
         rate(Point.LIKE);
     }
 
     public void dislike() {
-        if (likes < 1) return;
-        likes--;
+        if (like < 1) return;
+        like--;
         rate(-Point.LIKE);
     }
+
+
+    @Override
+    protected void propagateRate(int point) {
+        topic.rate(point);
+    }
+
+
+    // reply -----------------------------------------------------------------------------------------------------------
 
     public void add(Reply reply) {
         replies.add(reply);
     }
 
-    public void remove(Reply reply) {
-        replies.remove(reply);
+    public void remove(Long replyId, String ownerName) {
+
+        Optional<Reply> optionalReply = findReply(replyId);
+        optionalReply.ifPresent(reply -> {
+            reply.getOwner().identify(ownerName);
+            replies.remove(reply);
+        });
+
     }
 
-    public Optional<Reply> findReplyById(Long replyId) {
-        return replies.stream().filter(r -> r.getId().equals(replyId)).findAny();
-    }
 
-    @Override
-    public void rate(int point) {
-        super.rate(point);
-        topic.rate(point);
+    private Optional<Reply> findReply(Long id) {
+        return replies.stream()
+                .filter(reply -> reply.getId().equals(id))
+                .findAny();
     }
 
 }

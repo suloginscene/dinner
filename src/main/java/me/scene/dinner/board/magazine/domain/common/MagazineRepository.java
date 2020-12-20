@@ -1,7 +1,7 @@
 package me.scene.dinner.board.magazine.domain.common;
 
-import me.scene.dinner.board.common.BoardNotFoundException;
-import me.scene.dinner.board.common.Owner;
+import me.scene.dinner.board.common.domain.BoardNotFoundException;
+import me.scene.dinner.board.common.domain.Owner;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

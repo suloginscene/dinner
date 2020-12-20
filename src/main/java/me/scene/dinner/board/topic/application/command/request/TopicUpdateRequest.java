@@ -6,9 +6,9 @@ import lombok.Data;
 @Data
 public class TopicUpdateRequest {
 
-    private final String currentUsername;
+    private final String username;
 
-    private final Long magazineId;
+    private final Long id;
 
     private final String title;
     private final String shortExplanation;
