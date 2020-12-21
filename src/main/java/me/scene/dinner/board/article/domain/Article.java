@@ -9,6 +9,7 @@ import me.scene.dinner.board.magazine.domain.common.Magazine;
 import me.scene.dinner.board.magazine.domain.open.OpenMagazine;
 import me.scene.dinner.board.topic.domain.Topic;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
@@ -35,6 +36,8 @@ public class Article extends Board {
     private boolean publicized;
 
     private int read;
+
+    @Column(name = "likes")
     private int like;
 
     @ManyToOne(fetch = LAZY)
@@ -86,8 +89,10 @@ public class Article extends Board {
     private void logWriter() {
         if (magazine.type() != OPEN) return;
 
-        OpenMagazine open = (OpenMagazine) magazine;
         String writer = owner.getName();
+        if (magazine.getOwner().is(writer)) return;
+
+        OpenMagazine open = (OpenMagazine) magazine;
 
         if (publicized) open.logWriting(writer);
         else open.logErasing(writer);

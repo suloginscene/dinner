@@ -32,7 +32,7 @@ public class Account extends BaseEntity {
     private final Role role = USER;
 
     @Embedded
-    private Profile profile = new Profile();
+    private Profile profile = new Profile("");
 
 
     public Account(String username, String email, String encodedPassword) {

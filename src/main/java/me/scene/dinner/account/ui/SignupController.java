@@ -16,24 +16,26 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
 
+
 @Controller
 @RequiredArgsConstructor
 public class SignupController {
 
     private final AccountService accountService;
 
-    private final SignupFormValidator signupFormValidator;
+    private final SignupFormValidator validator;
 
 
     @InitBinder("signupForm")
     public void initBinder(WebDataBinder webDataBinder) {
-        webDataBinder.addValidators(signupFormValidator);
+        webDataBinder.addValidators(validator);
     }
 
 
     @GetMapping("/signup")
     public String signupPage(Model model) {
         SignupForm form = new SignupForm();
+
         model.addAttribute("signupForm", form);
         return "page/account/signup";
     }
@@ -43,8 +45,13 @@ public class SignupController {
     public String signupSubmit(@Valid SignupForm form, Errors errors) {
         if (errors.hasErrors()) return "page/account/signup";
 
-        SignupRequest request = createSignupRequest(form);
+        String username = form.getUsername();
+        String email = form.getEmail();
+        String password = form.getPassword();
+
+        SignupRequest request = new SignupRequest(username, email, password);
         accountService.signup(request);
+
         return "redirect:" + ("/sent-to-account?email=" + form.getEmail());
     }
 
@@ -52,15 +59,9 @@ public class SignupController {
     @GetMapping("/verify")
     public String verifyEmail(@RequestParam String email, @RequestParam String token, Model model) {
         accountService.verify(email, token);
+
         model.addAttribute("email", email);
         return "page/account/welcome";
-    }
-
-
-    // private ---------------------------------------------------------------------------------------------------------
-
-    private SignupRequest createSignupRequest(SignupForm f) {
-        return new SignupRequest(f.getUsername(), f.getEmail(), f.getPassword());
     }
 
 }

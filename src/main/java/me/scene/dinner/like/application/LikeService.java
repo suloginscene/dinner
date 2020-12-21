@@ -31,10 +31,9 @@ public class LikeService {
 
 
     public void like(String username, Long articleId) {
-        Article article = articleRepository.find(articleId);
-        article.like();
+        Article article = articleRepository.findToLike(articleId);
 
-        Like like = new Like(username, article);
+        Like like = Like.create(username, article);
         repository.save(like);
 
         LikedEvent event = like.createEvent();
@@ -42,11 +41,12 @@ public class LikeService {
     }
 
     public void dislike(String username, Long articleId) {
-        Article article = articleRepository.find(articleId);
-        article.dislike();
+        Optional<Like> optionalLike = repository.findToDislike(username, articleId);
 
-        Optional<Like> optionalLike = repository.findByUsernameAndArticleId(username, articleId);
-        optionalLike.ifPresent(repository::delete);
+        optionalLike.ifPresent(like -> {
+            like.destruct();
+            repository.delete(like);
+        });
     }
 
 }

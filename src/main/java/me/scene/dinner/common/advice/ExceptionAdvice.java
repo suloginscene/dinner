@@ -2,7 +2,6 @@ package me.scene.dinner.common.advice;
 
 import lombok.extern.slf4j.Slf4j;
 import me.scene.dinner.account.domain.tempaccount.VerificationException;
-import me.scene.dinner.board.common.domain.BoardNotFoundException;
 import me.scene.dinner.board.common.domain.NotDeletableException;
 import me.scene.dinner.board.common.domain.NotOwnerException;
 import me.scene.dinner.board.magazine.domain.common.AuthorizationException;
@@ -13,6 +12,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.NoSuchElementException;
 
 
 @Slf4j
@@ -37,9 +37,9 @@ public class ExceptionAdvice {
 
 
     @ExceptionHandler
-    public String boardNotFoundException(HttpServletRequest req, BoardNotFoundException e) {
+    public String noSuchElementException(HttpServletRequest req, NoSuchElementException e) {
         warn(req, e);
-        return "error/board_not_found";
+        return "error/not_found";
     }
 
     @ExceptionHandler

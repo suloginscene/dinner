@@ -25,7 +25,7 @@ public class MailListener {
 
 
     @EventListener
-    public void onApplicationEvent(TempAccountCreatedEvent event) {
+    public void sendVerification(TempAccountCreatedEvent event) {
         String email = event.getEmail();
         String token = event.getVerificationToken();
         String text = String.format(ON_JOIN_TEMPLATE, url, email, token);
@@ -34,7 +34,7 @@ public class MailListener {
     }
 
     @EventListener
-    public void onApplicationEvent(RandomPasswordAppliedEvent event) {
+    public void sendRandomPassword(RandomPasswordAppliedEvent event) {
         String email = event.getEmail();
         String tempRawPassword = event.getRawPassword();
         String text = String.format(ON_FORGOT_TEMPLATE, tempRawPassword);

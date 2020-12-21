@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import me.scene.dinner.board.common.domain.Board;
 import me.scene.dinner.board.common.domain.Owner;
+import me.scene.dinner.board.common.domain.ToManyInfo;
 import me.scene.dinner.board.magazine.domain.common.Magazine;
 
 import javax.persistence.Embedded;
@@ -12,6 +13,7 @@ import javax.persistence.ManyToOne;
 
 import static javax.persistence.FetchType.LAZY;
 import static lombok.AccessLevel.PROTECTED;
+
 
 @Entity
 @Getter
@@ -23,7 +25,7 @@ public class Topic extends Board {
     private String longExplanation;
 
     @Embedded
-    private final Articles articles = new Articles();
+    private final ToManyInfo articles = new ToManyInfo();
 
 
     @ManyToOne(fetch = LAZY)

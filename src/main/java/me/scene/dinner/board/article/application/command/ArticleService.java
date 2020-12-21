@@ -32,7 +32,7 @@ public class ArticleService {
         String content = request.getContent();
         boolean publicized = request.isPublicized();
 
-        Topic topic = topicRepository.find(topicId);
+        Topic topic = topicRepository.findToInjectById(topicId);
 
         Article article = new Article(topic, username, title, content, publicized);
         return repository.save(article).getId();

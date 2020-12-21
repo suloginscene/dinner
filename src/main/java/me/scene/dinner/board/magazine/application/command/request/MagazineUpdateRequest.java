@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 public class MagazineUpdateRequest {
 
-    private final String currentUsername;
+    private final String username;
 
     private final String title;
     private final String shortExplanation;

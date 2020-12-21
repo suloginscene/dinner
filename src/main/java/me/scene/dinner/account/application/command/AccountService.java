@@ -30,27 +30,50 @@ public class AccountService {
 
 
     public void signup(SignupRequest request) {
-        TempAccount tempAccount = createTempAccount(request);
+        String username = request.getUsername();
+        String email = request.getEmail();
+        String rawPassword = request.getPassword();
+
+        String encodedPassword = encoder.encode(rawPassword);
+
+        TempAccount tempAccount = new TempAccount(username, email, encodedPassword);
         tempRepository.save(tempAccount);
 
         TempAccountCreatedEvent event = tempAccount.createdEvent();
         publisher.publishEvent(event);
     }
 
-
     public void verify(String email, String token) {
         boolean verified = repository.existsByEmail(email);
         if (verified) return;
 
-        TempAccount tempAccount = tempRepository.findAccountByEmail(email);
-        tempAccount.verify(token);
+        TempAccount temp = tempRepository.findAccountByEmail(email);
+        temp.verify(token);
 
-        Account account = createAccount(tempAccount);
+        String username = temp.getUsername();
+        String password = temp.getPassword();
+        tempRepository.delete(temp);
+
+        Account account = new Account(username, email, password);
         repository.save(account);
-
-        tempRepository.delete(tempAccount);
     }
 
+
+    public void updateProfile(String username, ProfileUpdateRequest request) {
+        String greeting = request.getGreeting();
+
+        Profile profile = new Profile(greeting);
+
+        Account account = repository.find(username);
+        account.changeIntroduction(profile);
+    }
+
+    public void changePassword(String username, String rawPassword) {
+        String encodedPassword = encoder.encode(rawPassword);
+
+        Account account = repository.find(username);
+        account.changePassword(encodedPassword);
+    }
 
     public void setRandomPassword(String email) {
         String randomPassword = UUID.randomUUID().toString();
@@ -62,38 +85,5 @@ public class AccountService {
         RandomPasswordAppliedEvent event = new RandomPasswordAppliedEvent(email, randomPassword);
         publisher.publishEvent(event);
     }
-
-
-    public void updateProfile(String username, ProfileUpdateRequest request) {
-        Profile profile = createProfile(request);
-
-        Account account = repository.find(username);
-        account.changeIntroduction(profile);
-    }
-
-
-    public void changePassword(String username, String rawPassword) {
-        String encodedPassword = encoder.encode(rawPassword);
-
-        Account account = repository.find(username);
-        account.changePassword(encodedPassword);
-    }
-
-
-    // private ---------------------------------------------------------------------------------------------------------
-
-    private TempAccount createTempAccount(SignupRequest r) {
-        String encodedPassword = encoder.encode(r.getPassword());
-        return new TempAccount(r.getUsername(), r.getEmail(), encodedPassword);
-    }
-
-    private Account createAccount(TempAccount t) {
-        return new Account(t.getUsername(), t.getEmail(), t.getPassword());
-    }
-
-    private Profile createProfile(ProfileUpdateRequest r) {
-        return new Profile(r.getGreeting());
-    }
-
 
 }

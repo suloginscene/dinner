@@ -9,26 +9,28 @@ import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
+
 
 @Component
 @RequiredArgsConstructor
 public class BestMagazineCache {
 
     @Getter
-    private List<MagazineLink> magazines;
+    private List<MagazineLink> magazines = new ArrayList<>();
     private static final int SIZE = 5;
 
     private final MagazineQueryService queryService;
 
 
     @Scheduled(cron = "0 0 * * * *")
-    protected void cron() {
+    protected void updateBySchedule() {
         update();
     }
 
     @EventListener
-    public void onMagazineUpdatedEvent(ChangedEvent event) {
+    public void updateByEvent(ChangedEvent event) {
         Long id = event.getId();
 
         boolean isFull = magazines.size() == SIZE;

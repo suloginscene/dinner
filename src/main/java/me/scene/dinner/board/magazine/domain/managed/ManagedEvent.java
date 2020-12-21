@@ -13,7 +13,7 @@ public class ManagedEvent {
     private final String name;
     private final Action action;
 
-    protected ManagedEvent(ManagedMagazine magazine, String memberName, Action action) {
+    public ManagedEvent(ManagedMagazine magazine, String memberName, Action action) {
         id = magazine.getId();
         title = magazine.getTitle();
         name = memberName;

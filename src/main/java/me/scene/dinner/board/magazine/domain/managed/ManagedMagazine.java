@@ -1,7 +1,6 @@
 package me.scene.dinner.board.magazine.domain.managed;
 
 import lombok.NoArgsConstructor;
-import me.scene.dinner.board.common.domain.Owner;
 import me.scene.dinner.board.magazine.domain.common.Authorization;
 import me.scene.dinner.board.magazine.domain.common.Magazine;
 import me.scene.dinner.board.magazine.domain.common.Type;
@@ -34,7 +33,7 @@ public class ManagedMagazine extends Magazine {
     private final Set<Member> members = new HashSet<>();
 
 
-    public ManagedMagazine(Owner owner, String title, String shortExplanation, String longExplanation) {
+    public ManagedMagazine(String owner, String title, String shortExplanation, String longExplanation) {
         super(owner, title, shortExplanation, longExplanation);
     }
 

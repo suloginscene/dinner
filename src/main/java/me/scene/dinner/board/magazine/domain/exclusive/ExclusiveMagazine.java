@@ -20,7 +20,7 @@ public class ExclusiveMagazine extends Magazine {
     @Transient
     private final Authorization authorization = new Authorization(username -> owner.is(username));
 
-    public ExclusiveMagazine(Owner owner, String title, String shortExplanation, String longExplanation) {
+    public ExclusiveMagazine(String owner, String title, String shortExplanation, String longExplanation) {
         super(owner, title, shortExplanation, longExplanation);
     }
 

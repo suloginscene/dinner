@@ -1,7 +1,10 @@
 package me.scene.dinner.board.common.domain;
 
+import javax.persistence.Embeddable;
 
-public abstract class ToManyInfo {
+
+@Embeddable
+public class ToManyInfo {
 
     private int count;
 

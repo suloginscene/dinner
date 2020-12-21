@@ -32,8 +32,8 @@ public class Reply extends BaseEntity {
     protected LocalDateTime createdAt;
 
 
-    public Reply(Owner owner, String content) {
-        this.owner = owner;
+    public Reply(String owner, String content) {
+        this.owner = new Owner(owner);
         this.content = content;
     }
 

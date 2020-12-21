@@ -26,7 +26,7 @@ public class ArticleTaggedEventListener {
 
 
     @EventListener
-    public void renewTaggedArticles(ArticleTaggedEvent event) {
+    public void renew(ArticleTaggedEvent event) {
         Article article = event.getArticle();
         Set<TaggedArticle> oldTaggedArticles = repository.findByArticle(article);
         repository.deleteAll(oldTaggedArticles);

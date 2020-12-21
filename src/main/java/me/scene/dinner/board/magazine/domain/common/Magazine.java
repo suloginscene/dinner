@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import me.scene.dinner.board.common.domain.Board;
 import me.scene.dinner.board.common.domain.Owner;
+import me.scene.dinner.board.common.domain.ToManyInfo;
 import me.scene.dinner.board.magazine.domain.exclusive.ExclusiveMagazine;
 import me.scene.dinner.board.magazine.domain.managed.ManagedMagazine;
 import me.scene.dinner.board.magazine.domain.open.OpenMagazine;
@@ -29,7 +30,7 @@ public abstract class Magazine extends Board {
     private String longExplanation;
 
     @Embedded
-    private final Topics topics = new Topics();
+    private final ToManyInfo topics = new ToManyInfo();
 
 
     public abstract Type type();
@@ -37,14 +38,14 @@ public abstract class Magazine extends Board {
     public abstract Authorization authorization();
 
 
-    protected Magazine(Owner owner, String title, String shortExplanation, String longExplanation) {
-        this.owner = owner;
+    protected Magazine(String owner, String title, String shortExplanation, String longExplanation) {
+        this.owner = new Owner(owner);
         this.title = title;
         this.shortExplanation = shortExplanation;
         this.longExplanation = longExplanation;
     }
 
-    public static Magazine create(Type type, Owner owner, String title, String shortExplanation, String longExplanation) {
+    public static Magazine create(Type type, String owner, String title, String shortExplanation, String longExplanation) {
         switch (type) {
             case OPEN:
                 return new OpenMagazine(owner, title, shortExplanation, longExplanation);
@@ -73,9 +74,11 @@ public abstract class Magazine extends Board {
         return new ChangedEvent(id);
     }
 
+
     public ChangedEvent changedEvent() {
         return new ChangedEvent(id);
     }
+
 
     @Override
     protected void propagateRate(int point) {

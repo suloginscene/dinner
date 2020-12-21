@@ -11,7 +11,7 @@ public class MemberAppliedEvent {
     private final String manager;
     private final String name;
 
-    protected MemberAppliedEvent(ManagedMagazine magazine, String memberName) {
+    public MemberAppliedEvent(ManagedMagazine magazine, String memberName) {
         id = magazine.getId();
         title = magazine.getTitle();
         manager = magazine.getOwner().getName();

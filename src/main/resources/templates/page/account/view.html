@@ -18,9 +18,7 @@
             <div>
                 <h1 th:text="*{username}" id="username"></h1>
                 <a th:if="${#authentication.name}==*{username}" href="/profile">수정</a>
-                <div th:object="*{profile}">
-                    <div th:text="*{greeting}"></div>
-                </div>
+                <div th:text="*{profile?.greeting}"></div>
             </div>
             <div>
                 <div>

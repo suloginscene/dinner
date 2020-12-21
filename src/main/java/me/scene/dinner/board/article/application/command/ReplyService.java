@@ -6,7 +6,6 @@ import me.scene.dinner.board.article.application.command.request.ReplyDeleteRequ
 import me.scene.dinner.board.article.domain.Article;
 import me.scene.dinner.board.article.domain.ArticleRepository;
 import me.scene.dinner.board.article.domain.Reply;
-import me.scene.dinner.board.common.domain.Owner;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,11 +22,12 @@ public class ReplyService {
         String username = request.getUsername();
         String content = request.getContent();
 
-        Owner replyWriter = new Owner(username);
-        Reply reply = new Reply(replyWriter, content);
+        Reply reply = new Reply(username, content);
 
         Article article = repository.find(articleId);
         article.add(reply);
+
+        // TODO notification
     }
 
     public void delete(ReplyDeleteRequest request) {

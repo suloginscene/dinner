@@ -31,27 +31,38 @@ public class AccountController {
     @GetMapping("/@{username}")
     public String account(@PathVariable String username, Model model) {
         AccountView account = queryService.accountView(username);
+
         model.addAttribute("account", account);
         return "page/account/view";
     }
 
 
-    @GetMapping("/introduction")
+    @GetMapping("/profile")
     public String profileForm(@Current Account current, Model model) {
         String username = current.getUsername();
-        AccountView accountView = queryService.accountView(username);
-        ProfileForm profileForm = createProfileForm(accountView);
+
+        AccountView account = queryService.accountView(username);
+        Profile profile = account.getProfile();
+
+        ProfileForm profileForm = new ProfileForm(
+                account.getUsername(),
+                account.getEmail(),
+                profile.getGreeting()
+        );
+
         model.addAttribute("profileForm", profileForm);
         return "page/account/profile";
     }
 
-    @PostMapping("/introduction")
+    @PostMapping("/profile")
     public String updateProfile(@Current Account current, @Valid ProfileForm form, Errors errors) {
         if (errors.hasErrors()) return "page/account/profile";
 
         String username = current.getUsername();
-        ProfileUpdateRequest request = createProfileUpdateRequest(form);
+
+        ProfileUpdateRequest request = new ProfileUpdateRequest(form.getGreeting());
         service.updateProfile(username, request);
+
         return "redirect:" + ("/@" + username);
     }
 
@@ -59,6 +70,7 @@ public class AccountController {
     @GetMapping("/password")
     public String passwordForm(Model model) {
         PasswordForm passwordForm = new PasswordForm();
+
         model.addAttribute("passwordForm", passwordForm);
         return "page/account/password";
     }
@@ -68,21 +80,11 @@ public class AccountController {
         if (errors.hasErrors()) return "page/account/password";
 
         String username = current.getUsername();
+
         String password = passwordForm.getPassword();
         service.changePassword(username, password);
+
         return "redirect:" + ("/@" + username);
-    }
-
-
-    // private ---------------------------------------------------------------------------------------------------------
-
-    private ProfileForm createProfileForm(AccountView a) {
-        Profile old = a.getProfile();
-        return new ProfileForm(a.getUsername(), a.getEmail(), old.getGreeting());
-    }
-
-    private ProfileUpdateRequest createProfileUpdateRequest(ProfileForm f) {
-        return new ProfileUpdateRequest(f.getGreeting());
     }
 
 }

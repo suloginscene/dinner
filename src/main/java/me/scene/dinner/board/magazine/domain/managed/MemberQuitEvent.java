@@ -10,7 +10,7 @@ public class MemberQuitEvent {
     private final String manager;
     private final String name;
 
-    protected MemberQuitEvent(ManagedMagazine magazine, String memberName) {
+    public MemberQuitEvent(ManagedMagazine magazine, String memberName) {
         id = magazine.getId();
         title = magazine.getTitle();
         manager = magazine.getOwner().getName();
