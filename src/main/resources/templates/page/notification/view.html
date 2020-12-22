@@ -6,23 +6,23 @@
     </div>
 
     <body th:replace="layout/layout::body(~{::section})">
-        <section>
+        <section th:object="${notifications}">
 
             <div>
                 <h2>읽지 않은 메시지 입니다.</h2>
                 <ul>
-                    <li th:each="unchecked:${uncheckedList}">
+                    <li th:each="unchecked:*{uncheckedList}">
                         <span th:utext="${unchecked.message}"></span>
-                        <span th:text="*{#temporals.format(unchecked.createdAt, 'yyyy-MM-dd HH:mm')}"></span>
+                        <span th:text="${#temporals.format(unchecked.createdAt, 'yyyy-MM-dd HH:mm')}"></span>
                     </li>
                 </ul>
             </div>
             <div>
                 <h2>읽은 메시지 입니다.</h2>
                 <ul>
-                    <li th:each="checked:${checkedList}">
+                    <li th:each="checked:*{checkedList}">
                         <span th:utext="${checked.message}"></span>
-                        <span th:text="*{#temporals.format(checked.createdAt, 'yyyy-MM-dd HH:mm')}"></span>
+                        <span th:text="${#temporals.format(checked.createdAt, 'yyyy-MM-dd HH:mm')}"></span>
                     </li>
                 </ul>
             </div>

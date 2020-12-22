@@ -1,7 +1,7 @@
-package me.scene.dinner.account.infra.mail;
+package me.scene.dinner.common.mail.infra;
 
 import lombok.extern.slf4j.Slf4j;
-import me.scene.dinner.account.application.command.mail.MailSender;
+import me.scene.dinner.common.mail.service.sender.MailSender;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 

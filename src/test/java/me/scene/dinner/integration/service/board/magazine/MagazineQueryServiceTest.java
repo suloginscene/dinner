@@ -50,35 +50,6 @@ class MagazineQueryServiceTest {
     }
 
 
-    @Nested class OnFindView {
-        @Nested class WithOpen {
-            @Test
-            void has_writers() {
-                MagazineView magazine = query.find(open);
-                assertThat(magazine.getWriters()).isNotNull();
-                assertThat(magazine.getMembers()).isNull();
-            }
-        }
-
-        @Nested class WithManaged {
-            @Test
-            void has_members() {
-                MagazineView magazine = query.find(managed);
-                assertThat(magazine.getWriters()).isNull();
-                assertThat(magazine.getMembers()).isNotNull();
-            }
-        }
-
-        @Nested class WithExclusive {
-            @Test
-            void does_not_have() {
-                MagazineView magazine = query.find(exclusive);
-                assertThat(magazine.getWriters()).isNull();
-                assertThat(magazine.getMembers()).isNull();
-            }
-        }
-    }
-
     @Nested class OnFindListOfUser {
         @Test
         void returns_list() {

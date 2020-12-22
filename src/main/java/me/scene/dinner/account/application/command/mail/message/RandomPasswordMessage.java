@@ -1,6 +1,7 @@
-package me.scene.dinner.account.application.command.message;
+package me.scene.dinner.account.application.command.mail.message;
 
-import me.scene.dinner.account.application.command.mail.MailMessage;
+import me.scene.dinner.common.mail.service.sender.MailMessage;
+
 
 public class RandomPasswordMessage extends MailMessage {
 

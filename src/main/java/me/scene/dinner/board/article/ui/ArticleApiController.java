@@ -17,19 +17,24 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ArticleApiController {
 
-    private final ArticleQueryService service;
+    private final ArticleQueryService query;
 
 
     @GetMapping("/api/articles/{username}")
     public ResponseEntity<List<ArticleExtendedLink>> byUserPublic(@PathVariable String username) {
-        List<ArticleExtendedLink> articles = service.findPublicByWriter(username);
+        List<ArticleExtendedLink> articles = query.findPublicByWriter(username);
         return ResponseEntity.ok(articles);
     }
 
     @GetMapping("/api/private-articles")
     public ResponseEntity<List<ArticleExtendedLink>> byUserPrivate(@Current Account current) {
-        List<ArticleExtendedLink> articles = service.findPrivateByWriter(current.getUsername());
+        List<ArticleExtendedLink> articles = query.findPrivateByWriter(current.getUsername());
         return ResponseEntity.ok(articles);
+    }
+
+    @GetMapping("/api/articles/of/{topicId}")
+    public List<ArticleExtendedLink> articlesOfTopic(@PathVariable Long topicId) {
+        return query.findArticles(topicId);
     }
 
 }

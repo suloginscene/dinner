@@ -1,4 +1,4 @@
-package me.scene.dinner.account.application.command.mail;
+package me.scene.dinner.common.mail.service.sender;
 
 import org.springframework.stereotype.Component;
 

@@ -9,7 +9,7 @@ import me.scene.dinner.board.magazine.domain.magazine.repository.MagazineReposit
 import me.scene.dinner.board.magazine.domain.magazine.model.Type;
 import me.scene.dinner.board.magazine.domain.managed.model.ManagedMagazine;
 import me.scene.dinner.integration.utils.MagazineTestHelper;
-import me.scene.dinner.account.application.command.notification.NotificationListener;
+import me.scene.dinner.account.application.listener.NotificationListener;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

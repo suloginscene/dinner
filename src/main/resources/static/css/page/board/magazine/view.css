@@ -17,7 +17,8 @@ section .info #authorities #policy {
     background-color: lightgray;
 }
 
-section .info #authorities .writer {
+section .info #authorities .owner {
+    font-weight: bold;
 }
 
 section ul {

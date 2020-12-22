@@ -5,6 +5,9 @@ import me.scene.dinner.board.article.domain.article.model.Article;
 import me.scene.dinner.board.common.dto.Link;
 
 import java.time.LocalDateTime;
+import java.util.List;
+
+import static java.util.stream.Collectors.toList;
 
 
 @Getter
@@ -19,6 +22,8 @@ public class ArticleExtendedLink extends Link {
     private final LocalDateTime createdAt;
     private final boolean publicized;
 
+    private final List<String> tags;
+
 
     public ArticleExtendedLink(Article article) {
         super(article);
@@ -31,6 +36,9 @@ public class ArticleExtendedLink extends Link {
 
         this.createdAt = article.getCreatedAt();
         this.publicized = article.isPublicized();
+        tags = article.getArticleTags()
+                .stream().map(articleTag -> articleTag.getTag().getName())
+                .collect(toList());
     }
 
 }

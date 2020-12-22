@@ -46,7 +46,7 @@ public class ArticleService {
         String content = request.getContent();
         boolean publicized = request.isPublicized();
 
-        Topic topic = topicRepository.findToInjectById(topicId);
+        Topic topic = topicRepository.findFetch(topicId);
 
         Article article = new Article(topic, username, title, content, publicized);
         Long id = repository.save(article).getId();

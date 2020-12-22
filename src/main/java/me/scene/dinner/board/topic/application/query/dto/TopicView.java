@@ -2,7 +2,7 @@ package me.scene.dinner.board.topic.application.query.dto;
 
 import lombok.Getter;
 import me.scene.dinner.board.common.dto.View;
-import me.scene.dinner.board.magazine.application.query.dto.MagazineLink;
+import me.scene.dinner.board.magazine.application.query.dto.MagazineInfo;
 import me.scene.dinner.board.topic.domain.model.Topic;
 
 
@@ -14,7 +14,7 @@ public class TopicView extends View {
 
     private final boolean hasChild;
 
-    private final MagazineLink magazine;
+    private final MagazineInfo magazine;
 
 
     public TopicView(Topic topic) {
@@ -25,7 +25,7 @@ public class TopicView extends View {
 
         this.hasChild = topic.getArticles().exists();
 
-        this.magazine = new MagazineLink(topic.getMagazine());
+        magazine = new MagazineInfo(topic.getMagazine());
     }
 
 }

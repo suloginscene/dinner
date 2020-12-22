@@ -1,6 +1,6 @@
 package me.scene.dinner.integration.service.board.article;
 
-import me.scene.dinner.account.application.command.notification.NotificationListener;
+import me.scene.dinner.account.application.listener.NotificationListener;
 import me.scene.dinner.board.article.application.command.LikeService;
 import me.scene.dinner.board.article.application.query.LikeQueryService;
 import me.scene.dinner.board.magazine.domain.magazine.model.Type;

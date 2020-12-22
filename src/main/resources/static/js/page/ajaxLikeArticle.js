@@ -59,7 +59,7 @@ const ajaxLikeArticle = function () {
 
     $.ajax({
         type: 'get',
-        url: '/api/likes/',
+        url: '/api/like/',
         data: {
             articleId: articleId,
             username: username

@@ -21,6 +21,9 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
             " where a.id = :id")
     Article findFetch(@Param("id") Long id);
 
+    @Query("select a from Article a where a.topic.id = :topicId")
+    List<Article> findByTopicId(@Param("topicId") Long topicId);
+
 
     default Article find(Long id) {
         return findById(id).orElseThrow();

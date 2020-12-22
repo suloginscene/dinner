@@ -1,7 +1,8 @@
-package me.scene.dinner.account.application.command.notification;
+package me.scene.dinner.account.application.listener;
 
 import lombok.RequiredArgsConstructor;
-import me.scene.dinner.common.event.NotificationEvent;
+import me.scene.dinner.account.application.command.NotificationService;
+import me.scene.dinner.common.notification.event.NotificationEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;

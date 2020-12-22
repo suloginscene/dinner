@@ -3,8 +3,8 @@ package me.scene.dinner.board.article.application.query;
 import lombok.RequiredArgsConstructor;
 import me.scene.dinner.board.article.application.query.dto.ArticleExtendedLink;
 import me.scene.dinner.board.article.application.query.dto.ArticleView;
-import me.scene.dinner.board.article.domain.article.repository.ArticleRepository;
 import me.scene.dinner.board.article.domain.article.model.Article;
+import me.scene.dinner.board.article.domain.article.repository.ArticleRepository;
 import me.scene.dinner.board.common.domain.model.Owner;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,6 +40,14 @@ public class ArticleQueryService {
         Owner key = new Owner(username);
         List<Article> articles = repository.findByOwnerAndPublicizedOrderByCreatedAtAsc(key, false);
         return articles.stream()
+                .map(ArticleExtendedLink::new)
+                .collect(toList());
+    }
+
+    public List<ArticleExtendedLink> findArticles(Long topicId) {
+        List<Article> topics = repository.findByTopicId(topicId);
+        return topics.stream()
+                .filter(Article::isPublicized)
                 .map(ArticleExtendedLink::new)
                 .collect(toList());
     }

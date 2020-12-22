@@ -21,10 +21,11 @@
         <script src="/js/common/scrollSensibleNavbar.js"></script>
         <script src="/js/common/overLayingNav.js"></script>
         <script src="/js/common/ajaxMagazines.js"></script>
+        <script src="/js/common/ajaxNotification.js"></script>
+
         <script type="text/template" id="magazine-template">
             <li><a href="/magazines/{id}">{title}</a></li>
         </script>
-
     </th:block>
 
     <header th:fragment="navbar" class="navbar">
@@ -53,12 +54,11 @@
     <div th:fragment="account">
         <button sec:authorize="!isAuthenticated()" onclick="location.href='/login'">login</button>
         <div sec:authorize="isAuthenticated()" id="account-dropdown">
-            <button>desk</button>
+            <button th:text="${#authentication.name}"></button>
             <div id="accounts">
-                <a th:href="@{'/@' + ${#authentication.name}}" th:text="${#authentication.name}"></a>
-                <a href="/notificationView">
-                    <span th:replace="layout/notification_interceptor::count"></span>
-                    <span>notif</span>
+                <a th:href="@{'/@' + ${#authentication.name}}">my page</a>
+                <a href="/notifications">
+                    <span id="notification-count"></span> <span>notif</span>
                 </a>
                 <form th:action="@{/logout}" method="post">
                     <button type="submit">logout</button>

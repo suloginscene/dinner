@@ -1,17 +1,18 @@
 package me.scene.dinner.account.application.command;
 
 import lombok.RequiredArgsConstructor;
-import me.scene.dinner.account.application.command.message.RandomPasswordMessage;
-import me.scene.dinner.account.application.command.message.VerificationMessage;
+import me.scene.dinner.account.application.command.mail.event.AccountMailEvent;
+import me.scene.dinner.account.application.command.mail.message.RandomPasswordMessage;
+import me.scene.dinner.account.application.command.mail.message.VerificationMessage;
 import me.scene.dinner.account.application.command.request.ProfileUpdateRequest;
 import me.scene.dinner.account.application.command.request.SignupRequest;
-import me.scene.dinner.account.application.command.mail.MailSender;
 import me.scene.dinner.account.domain.account.model.Account;
 import me.scene.dinner.account.domain.account.model.Profile;
 import me.scene.dinner.account.domain.account.repository.AccountRepository;
 import me.scene.dinner.account.domain.tempaccount.model.TempAccount;
 import me.scene.dinner.account.domain.tempaccount.repository.TempAccountRepository;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,10 +29,10 @@ public class AccountService {
     private final TempAccountRepository tempRepository;
 
     private final PasswordEncoder encoder;
+    private final ApplicationEventPublisher publisher;
 
     @Value("${dinner.url}")
     private String url;
-    private final MailSender mail;
 
 
     public void signup(SignupRequest request) {
@@ -46,7 +47,8 @@ public class AccountService {
 
         String token = temp.getVerificationToken();
         VerificationMessage message = new VerificationMessage(email, url, token);
-        mail.send(message);
+        AccountMailEvent event = new AccountMailEvent(message);
+        publisher.publishEvent(event);
     }
 
     public void verify(String email, String token) {
@@ -89,7 +91,8 @@ public class AccountService {
         account.changePassword(encodedPassword);
 
         RandomPasswordMessage message = new RandomPasswordMessage(email, randomPassword);
-        mail.send(message);
+        AccountMailEvent event = new AccountMailEvent(message);
+        publisher.publishEvent(event);
     }
 
 }

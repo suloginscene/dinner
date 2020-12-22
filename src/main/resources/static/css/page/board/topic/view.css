@@ -51,3 +51,11 @@ section ul li p {
     text-indent: 15px;
     font-size: 18px;
 }
+
+.tag {
+    color: black;
+    background-color: #bbddbb;
+    border-radius: 10px;
+    padding: 2px 6px;
+    margin: 3px;
+}

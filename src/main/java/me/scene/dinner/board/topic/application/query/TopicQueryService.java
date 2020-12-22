@@ -1,11 +1,16 @@
 package me.scene.dinner.board.topic.application.query;
 
 import lombok.RequiredArgsConstructor;
+import me.scene.dinner.board.topic.application.query.dto.TopicLink;
 import me.scene.dinner.board.topic.application.query.dto.TopicView;
 import me.scene.dinner.board.topic.domain.model.Topic;
 import me.scene.dinner.board.topic.domain.repository.TopicRepository;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+
+import static java.util.stream.Collectors.toList;
 
 
 @Component
@@ -17,8 +22,15 @@ public class TopicQueryService {
 
 
     public TopicView find(Long id) {
-        Topic topic = repository.find(id);
+        Topic topic = repository.findFetch(id);
         return new TopicView(topic);
+    }
+
+    public List<TopicLink> findTopics(Long magazineId) {
+        List<Topic> topics = repository.findByMagazineId(magazineId);
+        return topics.stream()
+                .map(TopicLink::new)
+                .collect(toList());
     }
 
 }

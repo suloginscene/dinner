@@ -27,8 +27,9 @@ public class LikeService {
         Set<Like> likes = article.getLikes();
 
         Like like = new Like(reader);
-        likes.add(like);
+        if (likes.contains(like)) return;
 
+        likes.add(like);
         article.rate(Point.LIKE);
 
         LikedEvent event = new LikedEvent(reader, article);
@@ -39,9 +40,10 @@ public class LikeService {
         Article article = repository.findFetch(articleId);
         Set<Like> likes = article.getLikes();
 
-        Like target = new Like(username);
-        likes.remove(target);
+        Like like = new Like(username);
+        if (!likes.contains(like)) return;
 
+        likes.remove(like);
         article.rate(-Point.LIKE);
     }
 

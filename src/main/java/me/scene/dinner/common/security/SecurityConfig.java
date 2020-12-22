@@ -1,4 +1,4 @@
-package me.scene.dinner.common.config;
+package me.scene.dinner.common.security;
 
 import lombok.RequiredArgsConstructor;
 import me.scene.dinner.common.security.LoginSuccessHandler;
@@ -9,6 +9,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
+import org.springframework.web.bind.annotation.GetMapping;
 
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
@@ -29,7 +30,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/", "/about", "/magazines", "/tags",
                         "/signup", "/verify", "/login", "/forgot", "/sent-to-account", "/@*",
                         "/magazines/*", "/topics/*", "/articles/*", "/tags/*",
-                        "/api/best-magazines", "/api/magazines/*", "/api/articles/*"
+                        "/api/best-magazines", "/api/magazines/*", "/api/articles/*",
+                        "/api/topics/of/*", "/api/articles/of/*"
                 ).permitAll()
                 .mvcMatchers(POST,
                         "/signup", "/forgot"

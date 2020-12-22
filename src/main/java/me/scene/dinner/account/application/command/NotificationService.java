@@ -1,4 +1,4 @@
-package me.scene.dinner.account.application.command.notification;
+package me.scene.dinner.account.application.command;
 
 import lombok.RequiredArgsConstructor;
 import me.scene.dinner.account.domain.account.model.Account;

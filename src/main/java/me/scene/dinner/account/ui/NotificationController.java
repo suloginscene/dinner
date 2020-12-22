@@ -1,7 +1,7 @@
 package me.scene.dinner.account.ui;
 
 import lombok.RequiredArgsConstructor;
-import me.scene.dinner.account.application.command.notification.NotificationService;
+import me.scene.dinner.account.application.command.NotificationService;
 import me.scene.dinner.account.application.query.NotificationQueryService;
 import me.scene.dinner.account.application.query.dto.NotificationView;
 import me.scene.dinner.account.domain.account.model.Account;

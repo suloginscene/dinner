@@ -7,6 +7,7 @@ import me.scene.dinner.board.magazine.domain.magazine.model.Type;
 import me.scene.dinner.board.magazine.domain.managed.model.ManagedMagazine;
 import me.scene.dinner.board.magazine.domain.open.model.OpenMagazine;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -19,8 +20,8 @@ public class MagazineView extends View {
     private final boolean hasChild;
 
     private final String policy;
-    private List<String> members;
-    private List<String> writers;
+    private final List<String> members = new ArrayList<>();
+    private final List<String> writers = new ArrayList<>();
 
 
     public MagazineView(Magazine magazine) {
@@ -33,10 +34,12 @@ public class MagazineView extends View {
 
         this.policy = magazine.type().name();
         if (magazine.type() == Type.MANAGED) {
-            this.members = ((ManagedMagazine) magazine).memberNames();
+            ManagedMagazine managed = (ManagedMagazine) magazine;
+            members.addAll(managed.memberNames());
         }
         if (magazine.type() == Type.OPEN) {
-            this.writers = ((OpenMagazine) magazine).writerNames();
+            OpenMagazine open = (OpenMagazine) magazine;
+            writers.addAll(open.writerNames());
         }
     }
 

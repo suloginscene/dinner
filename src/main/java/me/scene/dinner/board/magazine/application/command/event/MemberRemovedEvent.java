@@ -1,7 +1,7 @@
 package me.scene.dinner.board.magazine.application.command.event;
 
 import me.scene.dinner.board.magazine.domain.managed.model.ManagedMagazine;
-import me.scene.dinner.common.event.NotificationEvent;
+import me.scene.dinner.common.notification.event.NotificationEvent;
 import me.scene.dinner.util.LinkUtils;
 
 

@@ -1,0 +1,31 @@
+package me.scene.dinner.board.magazine.application.query.dto;
+
+import lombok.Data;
+import me.scene.dinner.board.magazine.domain.magazine.model.Magazine;
+import me.scene.dinner.board.magazine.domain.magazine.model.Type;
+import me.scene.dinner.board.magazine.domain.managed.model.ManagedMagazine;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@Data
+public class MagazineInfo {
+
+    private final Long id;
+    private final String title;
+
+    private final String policy;
+    private final List<String> members = new ArrayList<>();
+
+
+    public MagazineInfo(Magazine magazine) {
+        id = magazine.getId();
+        title = magazine.getTitle();
+        policy = magazine.type().name();
+        if (magazine.type() == Type.MANAGED) {
+            ManagedMagazine managed = (ManagedMagazine) magazine;
+            members.addAll(managed.memberNames());
+        }
+    }
+
+}

@@ -1,4 +1,4 @@
-package me.scene.dinner.common.event;
+package me.scene.dinner.common.notification.event;
 
 import lombok.Data;
 

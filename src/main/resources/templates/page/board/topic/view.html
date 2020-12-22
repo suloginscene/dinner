@@ -5,6 +5,23 @@
     <div th:replace="layout/layout::head(${topic.title},~{::link}, ~{::script})">
         <link rel="stylesheet" href="/css/page/board/topic/view.css"/>
         <script src="/js/page/accor_board.js"></script>
+        <script src="/js/page/ajaxTopicArticles.js"></script>
+
+        <script type="text/template" id="article-template">
+            <li>
+                <div class="article-info">
+                    <a href="/articles/{id}">{title}</a>
+                    {tags}
+                    <div class="article-sub-info">
+                        <a class="article-writer" href="/@{writer}">{writer}</a>
+                        <span class="article-date">{createdAt}</span>
+                    </div>
+                </div>
+            </li>
+        </script>
+        <script type="text/template" id="tag-template">
+            <a href="/tags/{tag}" class="tag">{tag}</a>
+        </script>
     </div>
 
     <body th:replace="layout/layout::body(~{::section})">
@@ -13,7 +30,7 @@
             <div class="info">
                 <h2 id="magazine"><a th:href="'/magazines/'+*{magazine.id}" th:text="*{magazine.title}"></a></h2>
                 <h1 id="title" th:text="*{title}"></h1>
-                <div>Opened by <span th:text="*{manager}"></span></div>
+                <div>by <a th:href="'/@'+*{owner}" th:text="*{owner}"></a></div>
                 <a href="#" id="board-accordion">
                     <span th:text="*{shortExplanation}"></span> <i class="fa fa-chevron-down"></i>
                 </a>
@@ -21,15 +38,15 @@
             </div>
 
             <div id="button-container" sec:authorize="isAuthenticated()">
-                <div th:if="${#authentication.name}==*{manager}">
+                <div th:if="${#authentication.name}==*{owner}">
                     <form th:action="'/topics/'+*{id}+'/form'" method="get">
                         <button type="submit">update</button>
                     </form>
-                    <form th:if="${topic.getArticleCount()==0}" th:action="'/topics/'+*{id}" th:method="delete">
+                    <form th:unless="${topic.hasChild}" th:action="'/topics/'+*{id}" th:method="delete">
                         <button type="submit">delete</button>
                     </form>
                 </div>
-                <div th:if="${topic.magazine.doesAccept(#authentication.name)}">
+                <div th:if="${topic.magazine.policy.equals('OPEN')}or${topic.magazine.members.contains(#authentication.name)}">
                     <form action="/article-form" method="get">
                         <label>
                             <input type="text" name="topicId" th:value="*{id}" hidden>
@@ -39,31 +56,8 @@
                 </div>
             </div>
 
-            <!--            TODO AJAX -->
-            <!--            <ul sec:authorize="isAuthenticated()">-->
-            <!--                <li th:each="article:*{privateArticles}" th:if="${#authentication.name}==${article.writer}" class="private">-->
-            <!--                    <div class="article-info">-->
-            <!--                        <span>temp</span> <a th:href="@{'/articles/'+${article.id}}" th:text="${article.title}"></a>-->
-            <!--                        <div class="article-sub-info">-->
-            <!--                            <a class="article-writer" th:href="@{'/@'+${article.writer}}" th:text="${article.writer}"></a>-->
-            <!--                            <span class="article-date" th:text="${#temporals.format(article.createdAt, 'yyyy-MM-dd HH:mm')}"></span>-->
-            <!--                        </div>-->
-            <!--                    </div>-->
-            <!--                    <p th:utext="${article.content}"></p>-->
-            <!--                </li>-->
-            <!--            </ul>-->
-            <!--            <ul>-->
-            <!--                <li th:each="article:*{publicArticles}">-->
-            <!--                    <div class="article-info">-->
-            <!--                        <a th:href="@{'/articles/'+${article.id}}" th:text="${article.title}"></a>-->
-            <!--                        <div class="article-sub-info">-->
-            <!--                            <a class="article-writer" th:href="@{'/@'+${article.writer}}" th:text="${article.writer}"></a>-->
-            <!--                            <span class="article-date" th:text="${#temporals.format(article.createdAt, 'yyyy-MM-dd HH:mm')}"></span>-->
-            <!--                        </div>-->
-            <!--                    </div>-->
-            <!--                    <p th:utext="${article.content}"></p>-->
-            <!--                </li>-->
-            <!--            </ul>-->
+            <ul id="articles"></ul>
+            <div id="topic-id" th:text="*{id}" hidden></div>
 
         </section>
     </body>
