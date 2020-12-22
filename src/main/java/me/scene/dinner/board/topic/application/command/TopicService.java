@@ -1,12 +1,12 @@
 package me.scene.dinner.board.topic.application.command;
 
 import lombok.RequiredArgsConstructor;
-import me.scene.dinner.board.magazine.domain.common.Magazine;
-import me.scene.dinner.board.magazine.domain.common.MagazineRepository;
+import me.scene.dinner.board.magazine.domain.magazine.model.Magazine;
+import me.scene.dinner.board.magazine.domain.magazine.repository.MagazineRepository;
 import me.scene.dinner.board.topic.application.command.request.TopicCreateRequest;
 import me.scene.dinner.board.topic.application.command.request.TopicUpdateRequest;
-import me.scene.dinner.board.topic.domain.Topic;
-import me.scene.dinner.board.topic.domain.TopicRepository;
+import me.scene.dinner.board.topic.domain.model.Topic;
+import me.scene.dinner.board.topic.domain.repository.TopicRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

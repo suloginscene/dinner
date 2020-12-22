@@ -3,9 +3,9 @@ package me.scene.dinner.board.article.application.query;
 import lombok.RequiredArgsConstructor;
 import me.scene.dinner.board.article.application.query.dto.ArticleExtendedLink;
 import me.scene.dinner.board.article.application.query.dto.ArticleView;
-import me.scene.dinner.board.article.domain.Article;
-import me.scene.dinner.board.article.domain.ArticleRepository;
-import me.scene.dinner.board.common.domain.Owner;
+import me.scene.dinner.board.article.domain.article.repository.ArticleRepository;
+import me.scene.dinner.board.article.domain.article.model.Article;
+import me.scene.dinner.board.common.domain.model.Owner;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,16 +21,6 @@ public class ArticleQueryService {
 
     private final ArticleRepository repository;
 
-
-    @Transactional
-    public ArticleView read(Long id, String username) {
-        Article article = repository.find(id);
-
-        if (article.isPublicized()) article.read();
-        else article.getOwner().identify(username);
-
-        return new ArticleView(article);
-    }
 
     public ArticleView find(Long id) {
         Article article = repository.find(id);

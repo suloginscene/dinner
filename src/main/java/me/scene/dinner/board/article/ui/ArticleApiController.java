@@ -1,7 +1,7 @@
 package me.scene.dinner.board.article.ui;
 
 import lombok.RequiredArgsConstructor;
-import me.scene.dinner.account.domain.account.Account;
+import me.scene.dinner.account.domain.account.model.Account;
 import me.scene.dinner.board.article.application.query.ArticleQueryService;
 import me.scene.dinner.board.article.application.query.dto.ArticleExtendedLink;
 import me.scene.dinner.common.security.Current;

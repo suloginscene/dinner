@@ -3,7 +3,7 @@ package me.scene.dinner.board.topic.application.query.dto;
 import lombok.Getter;
 import me.scene.dinner.board.common.dto.View;
 import me.scene.dinner.board.magazine.application.query.dto.MagazineLink;
-import me.scene.dinner.board.topic.domain.Topic;
+import me.scene.dinner.board.topic.domain.model.Topic;
 
 
 @Getter

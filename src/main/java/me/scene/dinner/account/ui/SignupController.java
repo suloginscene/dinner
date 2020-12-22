@@ -21,8 +21,7 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 public class SignupController {
 
-    private final AccountService accountService;
-
+    private final AccountService service;
     private final SignupFormValidator validator;
 
 
@@ -40,7 +39,6 @@ public class SignupController {
         return "page/account/signup";
     }
 
-
     @PostMapping("/signup")
     public String signupSubmit(@Valid SignupForm form, Errors errors) {
         if (errors.hasErrors()) return "page/account/signup";
@@ -50,15 +48,15 @@ public class SignupController {
         String password = form.getPassword();
 
         SignupRequest request = new SignupRequest(username, email, password);
-        accountService.signup(request);
+        service.signup(request);
 
-        return "redirect:" + ("/sent-to-account?email=" + form.getEmail());
+        return "redirect:" + ("/");
     }
 
 
     @GetMapping("/verify")
     public String verifyEmail(@RequestParam String email, @RequestParam String token, Model model) {
-        accountService.verify(email, token);
+        service.verify(email, token);
 
         model.addAttribute("email", email);
         return "page/account/welcome";

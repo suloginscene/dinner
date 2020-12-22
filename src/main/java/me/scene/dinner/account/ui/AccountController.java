@@ -3,8 +3,8 @@ package me.scene.dinner.account.ui;
 import lombok.RequiredArgsConstructor;
 import me.scene.dinner.account.application.command.AccountService;
 import me.scene.dinner.account.application.command.request.ProfileUpdateRequest;
-import me.scene.dinner.account.domain.account.Account;
-import me.scene.dinner.account.domain.account.Profile;
+import me.scene.dinner.account.domain.account.model.Account;
+import me.scene.dinner.account.domain.account.model.Profile;
 import me.scene.dinner.account.application.query.AccountQueryService;
 import me.scene.dinner.account.application.query.dto.AccountView;
 import me.scene.dinner.account.ui.form.ProfileForm;
@@ -25,12 +25,12 @@ import javax.validation.Valid;
 public class AccountController {
 
     private final AccountService service;
-    private final AccountQueryService queryService;
+    private final AccountQueryService query;
 
 
     @GetMapping("/@{username}")
     public String account(@PathVariable String username, Model model) {
-        AccountView account = queryService.accountView(username);
+        AccountView account = query.accountView(username);
 
         model.addAttribute("account", account);
         return "page/account/view";
@@ -41,7 +41,7 @@ public class AccountController {
     public String profileForm(@Current Account current, Model model) {
         String username = current.getUsername();
 
-        AccountView account = queryService.accountView(username);
+        AccountView account = query.accountView(username);
         Profile profile = account.getProfile();
 
         ProfileForm profileForm = new ProfileForm(

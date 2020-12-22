@@ -56,7 +56,7 @@
             <button>desk</button>
             <div id="accounts">
                 <a th:href="@{'/@' + ${#authentication.name}}" th:text="${#authentication.name}"></a>
-                <a href="/notifications">
+                <a href="/notificationView">
                     <span th:replace="layout/notification_interceptor::count"></span>
                     <span>notif</span>
                 </a>

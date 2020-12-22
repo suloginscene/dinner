@@ -1,15 +1,17 @@
 package me.scene.dinner.account.application.command;
 
 import lombok.RequiredArgsConstructor;
+import me.scene.dinner.account.application.command.message.RandomPasswordMessage;
+import me.scene.dinner.account.application.command.message.VerificationMessage;
 import me.scene.dinner.account.application.command.request.ProfileUpdateRequest;
 import me.scene.dinner.account.application.command.request.SignupRequest;
-import me.scene.dinner.account.domain.account.Account;
-import me.scene.dinner.account.domain.account.AccountRepository;
-import me.scene.dinner.account.domain.account.Profile;
-import me.scene.dinner.account.domain.tempaccount.TempAccount;
-import me.scene.dinner.account.domain.tempaccount.TempAccountCreatedEvent;
-import me.scene.dinner.account.domain.tempaccount.TempAccountRepository;
-import org.springframework.context.ApplicationEventPublisher;
+import me.scene.dinner.account.application.command.mail.MailSender;
+import me.scene.dinner.account.domain.account.model.Account;
+import me.scene.dinner.account.domain.account.model.Profile;
+import me.scene.dinner.account.domain.account.repository.AccountRepository;
+import me.scene.dinner.account.domain.tempaccount.model.TempAccount;
+import me.scene.dinner.account.domain.tempaccount.repository.TempAccountRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,7 +28,10 @@ public class AccountService {
     private final TempAccountRepository tempRepository;
 
     private final PasswordEncoder encoder;
-    private final ApplicationEventPublisher publisher;
+
+    @Value("${dinner.url}")
+    private String url;
+    private final MailSender mail;
 
 
     public void signup(SignupRequest request) {
@@ -36,11 +41,12 @@ public class AccountService {
 
         String encodedPassword = encoder.encode(rawPassword);
 
-        TempAccount tempAccount = new TempAccount(username, email, encodedPassword);
-        tempRepository.save(tempAccount);
+        TempAccount temp = new TempAccount(username, email, encodedPassword);
+        tempRepository.save(temp);
 
-        TempAccountCreatedEvent event = tempAccount.createdEvent();
-        publisher.publishEvent(event);
+        String token = temp.getVerificationToken();
+        VerificationMessage message = new VerificationMessage(email, url, token);
+        mail.send(message);
     }
 
     public void verify(String email, String token) {
@@ -82,8 +88,8 @@ public class AccountService {
         Account account = repository.findAccountByEmail(email);
         account.changePassword(encodedPassword);
 
-        RandomPasswordAppliedEvent event = new RandomPasswordAppliedEvent(email, randomPassword);
-        publisher.publishEvent(event);
+        RandomPasswordMessage message = new RandomPasswordMessage(email, randomPassword);
+        mail.send(message);
     }
 
 }

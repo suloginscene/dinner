@@ -1,20 +1,20 @@
 package me.scene.dinner.board.magazine.application.command;
 
 import lombok.RequiredArgsConstructor;
-import me.scene.dinner.board.magazine.domain.common.Magazine;
-import me.scene.dinner.board.magazine.domain.common.MagazineRepository;
-import me.scene.dinner.board.magazine.domain.managed.ManagedMagazine;
-import me.scene.dinner.board.magazine.domain.managed.ManagedEvent;
-import me.scene.dinner.board.magazine.domain.managed.MemberQuitEvent;
-import me.scene.dinner.board.magazine.domain.managed.MemberAppliedEvent;
+import me.scene.dinner.board.magazine.application.command.event.MemberAddedEvent;
+import me.scene.dinner.board.magazine.application.command.event.MemberAppliedEvent;
+import me.scene.dinner.board.magazine.application.command.event.MemberQuitEvent;
+import me.scene.dinner.board.magazine.application.command.event.MemberRemovedEvent;
+import me.scene.dinner.board.magazine.domain.magazine.model.Magazine;
+import me.scene.dinner.board.magazine.domain.magazine.repository.MagazineRepository;
+import me.scene.dinner.board.magazine.domain.managed.model.ManagedMagazine;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
-import static me.scene.dinner.board.magazine.domain.common.Type.MANAGED;
+import static me.scene.dinner.board.magazine.domain.magazine.model.Type.MANAGED;
 
 
 @Service
@@ -23,7 +23,6 @@ import static me.scene.dinner.board.magazine.domain.common.Type.MANAGED;
 public class MemberService {
 
     private final MagazineRepository repository;
-
     private final ApplicationEventPublisher publisher;
 
 
@@ -35,27 +34,35 @@ public class MemberService {
 
     public void applyMember(Long id, String memberName) {
         ManagedMagazine magazine = findManagedMagazine(id);
-        Optional<MemberAppliedEvent> event = magazine.apply(memberName);
-        event.ifPresent(publisher::publishEvent);
+        if (magazine.apply(memberName)) {
+            MemberAppliedEvent event = new MemberAppliedEvent(magazine, memberName);
+            publisher.publishEvent(event);
+        }
     }
 
     public void quitMember(Long id, String memberName) {
         ManagedMagazine magazine = findManagedMagazine(id);
-        Optional<MemberQuitEvent> event = magazine.quit(memberName);
-        event.ifPresent(publisher::publishEvent);
+        if (magazine.quit(memberName)) {
+            MemberQuitEvent event = new MemberQuitEvent(magazine, memberName);
+            publisher.publishEvent(event);
+        }
     }
 
 
     public void addMember(Long id, String ownerName, String memberName) {
         ManagedMagazine magazine = findManagedMagazine(id);
-        Optional<ManagedEvent> event = magazine.addMember(ownerName, memberName);
-        event.ifPresent(publisher::publishEvent);
+        if (magazine.addMember(ownerName, memberName)) {
+            MemberAddedEvent event = new MemberAddedEvent(magazine, memberName);
+            publisher.publishEvent(event);
+        }
     }
 
     public void removeMember(Long id, String ownerName, String memberName) {
         ManagedMagazine magazine = findManagedMagazine(id);
-        Optional<ManagedEvent> event = magazine.removeMember(ownerName, memberName);
-        event.ifPresent(publisher::publishEvent);
+        if (magazine.removeMember(ownerName, memberName)) {
+            MemberRemovedEvent event = new MemberRemovedEvent(magazine, memberName);
+            publisher.publishEvent(event);
+        }
     }
 
 

@@ -3,9 +3,9 @@ package me.scene.dinner.integration.utils;
 import lombok.RequiredArgsConstructor;
 import me.scene.dinner.account.application.command.AccountService;
 import me.scene.dinner.account.application.command.request.SignupRequest;
-import me.scene.dinner.account.domain.account.AccountRepository;
-import me.scene.dinner.account.domain.tempaccount.TempAccount;
-import me.scene.dinner.account.domain.tempaccount.TempAccountRepository;
+import me.scene.dinner.account.domain.account.repository.AccountRepository;
+import me.scene.dinner.account.domain.tempaccount.model.TempAccount;
+import me.scene.dinner.account.domain.tempaccount.repository.TempAccountRepository;
 import me.scene.dinner.integration.utils.aop.LogAround;
 import org.springframework.stereotype.Component;
 

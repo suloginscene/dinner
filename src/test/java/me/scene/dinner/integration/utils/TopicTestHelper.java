@@ -3,7 +3,7 @@ package me.scene.dinner.integration.utils;
 import lombok.RequiredArgsConstructor;
 import me.scene.dinner.board.topic.application.command.TopicService;
 import me.scene.dinner.board.topic.application.command.request.TopicCreateRequest;
-import me.scene.dinner.board.topic.domain.TopicRepository;
+import me.scene.dinner.board.topic.domain.repository.TopicRepository;
 import me.scene.dinner.integration.utils.aop.LogAround;
 import org.springframework.stereotype.Component;
 

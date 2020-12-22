@@ -17,7 +17,7 @@ public class LoginController {
     @Value("${dinner.url}")
     private String url;
 
-    private final AccountService accountService;
+    private final AccountService service;
 
 
     @GetMapping("/login")
@@ -36,8 +36,8 @@ public class LoginController {
 
     @PostMapping("/forgot")
     public String forgotPassword(String email) {
-        accountService.setRandomPassword(email);
-        return "redirect:" + ("/sent-to-account?email=" + email);
+        service.setRandomPassword(email);
+        return "redirect:" + ("/");
     }
 
 

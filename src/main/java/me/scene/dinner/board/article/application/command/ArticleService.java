@@ -3,15 +3,19 @@ package me.scene.dinner.board.article.application.command;
 import lombok.RequiredArgsConstructor;
 import me.scene.dinner.board.article.application.command.request.ArticleCreateRequest;
 import me.scene.dinner.board.article.application.command.request.ArticleUpdateRequest;
-import me.scene.dinner.board.article.domain.Article;
-import me.scene.dinner.board.article.domain.ArticleRepository;
-import me.scene.dinner.board.topic.domain.Topic;
-import me.scene.dinner.board.topic.domain.TopicRepository;
-import org.springframework.context.ApplicationEventPublisher;
+import me.scene.dinner.board.article.domain.article.model.Article;
+import me.scene.dinner.board.article.domain.article.model.ArticleTag;
+import me.scene.dinner.board.article.domain.article.repository.ArticleRepository;
+import me.scene.dinner.board.article.domain.tag.model.Tag;
+import me.scene.dinner.board.article.domain.tag.repository.TagRepository;
+import me.scene.dinner.board.common.domain.model.Point;
+import me.scene.dinner.board.topic.domain.model.Topic;
+import me.scene.dinner.board.topic.domain.repository.TopicRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Set;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -21,9 +25,19 @@ public class ArticleService {
 
     private final ArticleRepository repository;
     private final TopicRepository topicRepository;
+    private final TagRepository tagRepository;
 
-    private final ApplicationEventPublisher eventPublisher;
 
+    public void read(Long id, String username) {
+        Article article = repository.findFetch(id);
+
+        if (article.isPublicized()) {
+            article.read();
+            article.rate(Point.READ);
+        } else {
+            article.getOwner().identify(username);
+        }
+    }
 
     public Long save(ArticleCreateRequest request) {
         Long topicId = request.getTopicId();
@@ -35,7 +49,12 @@ public class ArticleService {
         Topic topic = topicRepository.findToInjectById(topicId);
 
         Article article = new Article(topic, username, title, content, publicized);
-        return repository.save(article).getId();
+        Long id = repository.save(article).getId();
+
+        Set<String> tagNames = request.getTagNames();
+        renewTags(article, tagNames);
+
+        return id;
     }
 
     public void update(ArticleUpdateRequest request) {
@@ -45,22 +64,28 @@ public class ArticleService {
         String content = request.getContent();
         boolean publicized = request.isPublicized();
 
-        Article article = repository.find(id);
+        Article article = repository.findFetch(id);
         article.update(username, title, content, publicized);
     }
 
     public Long delete(Long id, String current) {
-        Article article = repository.find(id);
+        Article article = repository.findFetch(id);
         article.beforeDelete(current);
         repository.delete(article);
         return article.getTopic().getId();
     }
 
+    private void renewTags(Article article, Set<String> tagNames) {
+        Set<Tag> tags = tagNames.stream()
+                .map(tagRepository::find)
+                .collect(Collectors.toSet());
 
-    public void publishTaggedEvent(Long id, Set<String> tagNames) {
-        Article article = repository.find(id);
-        ArticleTaggedEvent event = new ArticleTaggedEvent(article, tagNames);
-        eventPublisher.publishEvent(event);
+        Set<ArticleTag> articleTags = article.getArticleTags();
+        articleTags.clear();
+        for (Tag tag : tags) {
+            ArticleTag articleTag = new ArticleTag(article, tag);
+            articleTags.add(articleTag);
+        }
     }
 
 }

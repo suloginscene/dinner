@@ -1,7 +1,7 @@
 package me.scene.dinner.board.magazine.ui;
 
 import lombok.RequiredArgsConstructor;
-import me.scene.dinner.account.domain.account.Account;
+import me.scene.dinner.account.domain.account.model.Account;
 import me.scene.dinner.board.magazine.application.command.MagazineService;
 import me.scene.dinner.board.magazine.application.command.request.MagazineCreateRequest;
 import me.scene.dinner.board.magazine.application.command.request.MagazineUpdateRequest;
@@ -29,12 +29,12 @@ import java.util.List;
 public class MagazineController {
 
     private final MagazineService service;
-    private final MagazineQueryService queryService;
+    private final MagazineQueryService query;
 
 
     @GetMapping("/magazines")
     public String showList(Model model) {
-        List<MagazineLink> magazines = queryService.findAll();
+        List<MagazineLink> magazines = query.findAll();
 
         model.addAttribute("magazines", magazines);
         return "page/board/magazine/list";
@@ -42,7 +42,7 @@ public class MagazineController {
 
     @GetMapping("/magazines/{id}")
     public String showMagazine(@PathVariable Long id, Model model) {
-        MagazineView magazine = queryService.find(id);
+        MagazineView magazine = query.find(id);
 
         model.addAttribute("magazine", magazine);
         return "page/board/magazine/view";
@@ -78,7 +78,7 @@ public class MagazineController {
 
     @GetMapping("/magazines/{id}/form")
     public String updateForm(@PathVariable Long id, Model model) {
-        MagazineView magazine = queryService.find(id);
+        MagazineView magazine = query.find(id);
 
         MagazineUpdateForm updateForm = new MagazineUpdateForm(
                 magazine.getId(),

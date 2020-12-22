@@ -1,23 +1,24 @@
 package me.scene.dinner.common.config;
 
 import lombok.RequiredArgsConstructor;
-import me.scene.dinner.account.application.query.AccountQueryService;
 import me.scene.dinner.common.security.LoginSuccessHandler;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
 
+
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final AccountQueryService accountQueryService;
+    private final UserDetailsService userDetailsService;
     private final PersistentTokenRepository tokenRepository;
 
     @Override
@@ -46,7 +47,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         ;
 
         http.rememberMe()
-                .userDetailsService(accountQueryService)
+                .userDetailsService(userDetailsService)
                 .tokenRepository(tokenRepository)
         ;
 

@@ -1,7 +1,7 @@
 package me.scene.dinner.board.topic.ui;
 
 import lombok.RequiredArgsConstructor;
-import me.scene.dinner.account.domain.account.Account;
+import me.scene.dinner.account.domain.account.model.Account;
 import me.scene.dinner.board.topic.application.command.TopicService;
 import me.scene.dinner.board.topic.application.command.request.TopicCreateRequest;
 import me.scene.dinner.board.topic.application.command.request.TopicUpdateRequest;

@@ -2,6 +2,8 @@ package me.scene.dinner.board.article.application.command.request;
 
 import lombok.Data;
 
+import java.util.Set;
+
 
 @Data
 public class ArticleCreateRequest {
@@ -13,5 +15,7 @@ public class ArticleCreateRequest {
     private final String title;
     private final String content;
     private final boolean publicized;
+
+    private final Set<String> tagNames;
 
 }

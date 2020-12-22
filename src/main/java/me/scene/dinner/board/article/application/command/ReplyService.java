@@ -3,11 +3,13 @@ package me.scene.dinner.board.article.application.command;
 import lombok.RequiredArgsConstructor;
 import me.scene.dinner.board.article.application.command.request.ReplyCreateRequest;
 import me.scene.dinner.board.article.application.command.request.ReplyDeleteRequest;
-import me.scene.dinner.board.article.domain.Article;
-import me.scene.dinner.board.article.domain.ArticleRepository;
-import me.scene.dinner.board.article.domain.Reply;
+import me.scene.dinner.board.article.domain.article.repository.ArticleRepository;
+import me.scene.dinner.board.article.domain.article.model.Reply;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -17,6 +19,7 @@ public class ReplyService {
 
     private final ArticleRepository repository;
 
+
     public void save(ReplyCreateRequest request) {
         Long articleId = request.getArticleId();
         String username = request.getUsername();
@@ -24,8 +27,8 @@ public class ReplyService {
 
         Reply reply = new Reply(username, content);
 
-        Article article = repository.find(articleId);
-        article.add(reply);
+        List<Reply> replies = repository.find(articleId).getReplies();
+        replies.add(reply);
 
         // TODO notification
     }
@@ -35,8 +38,16 @@ public class ReplyService {
         Long replyId = request.getReplyId();
         String username = request.getUsername();
 
-        Article article = repository.find(articleId);
-        article.remove(replyId, username);
+        List<Reply> replies = repository.find(articleId).getReplies();
+
+        Optional<Reply> optionalReply = replies.stream()
+                .filter(reply -> reply.getId().equals(replyId))
+                .findAny();
+
+        optionalReply.ifPresent(reply -> {
+            reply.getOwner().identify(username);
+            replies.remove(reply);
+        });
     }
 
 }

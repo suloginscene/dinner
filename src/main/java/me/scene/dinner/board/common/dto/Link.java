@@ -1,7 +1,7 @@
 package me.scene.dinner.board.common.dto;
 
 import lombok.Data;
-import me.scene.dinner.board.common.domain.Board;
+import me.scene.dinner.board.common.domain.model.Board;
 
 
 @Data

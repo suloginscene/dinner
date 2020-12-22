@@ -3,7 +3,7 @@ package me.scene.dinner.board.article.ui;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import me.scene.dinner.account.domain.account.Account;
+import me.scene.dinner.account.domain.account.model.Account;
 import me.scene.dinner.board.article.application.command.ArticleService;
 import me.scene.dinner.board.article.application.command.request.ArticleCreateRequest;
 import me.scene.dinner.board.article.application.command.request.ArticleUpdateRequest;
@@ -46,7 +46,9 @@ public class ArticleController {
                               @Current Account current, Model model) {
 
         String username = (current != null) ? current.getUsername() : "anonymousUser";
-        ArticleView article = queryService.read(id, username);
+
+        service.read(id, username);
+        ArticleView article = queryService.find(id);
 
         model.addAttribute("article", article);
         return "page/board/article/view";
@@ -72,13 +74,10 @@ public class ArticleController {
         String title = form.getTitle();
         String content = form.getContent();
         boolean publicized = form.getStatus().equals("PUBLIC");
+        Set<String> tagNames = parse(form.getJsonTags());
 
-        ArticleCreateRequest request = new ArticleCreateRequest(username, topicId, title, content, publicized);
+        ArticleCreateRequest request = new ArticleCreateRequest(username, topicId, title, content, publicized, tagNames);
         Long id = service.save(request);
-
-        String jsonTags = form.getJsonTags();
-        Set<String> tagNames = parse(jsonTags);
-        service.publishTaggedEvent(id, tagNames);
 
         return "redirect:" + ("/articles/" + id);
     }
@@ -120,8 +119,8 @@ public class ArticleController {
 
 
     @DeleteMapping("/articles/{id}")
-    public String delete(@Current Account current,
-                         @PathVariable Long id) {
+    public String delete(@PathVariable Long id,
+                         @Current Account current) {
 
         String username = current.getUsername();
 

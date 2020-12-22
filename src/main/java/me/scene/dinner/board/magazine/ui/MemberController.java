@@ -1,7 +1,7 @@
 package me.scene.dinner.board.magazine.ui;
 
 import lombok.RequiredArgsConstructor;
-import me.scene.dinner.account.domain.account.Account;
+import me.scene.dinner.account.domain.account.model.Account;
 import me.scene.dinner.board.magazine.application.command.MemberService;
 import me.scene.dinner.common.security.Current;
 import org.springframework.stereotype.Controller;

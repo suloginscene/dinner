@@ -1,7 +1,7 @@
 package me.scene.dinner.account.application.query.dto;
 
-import me.scene.dinner.account.domain.account.Account;
-import me.scene.dinner.account.domain.account.Profile;
+import me.scene.dinner.account.domain.account.model.Account;
+import me.scene.dinner.account.domain.account.model.Profile;
 
 import lombok.Data;
 

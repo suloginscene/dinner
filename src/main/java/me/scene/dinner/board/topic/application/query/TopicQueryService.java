@@ -2,8 +2,8 @@ package me.scene.dinner.board.topic.application.query;
 
 import lombok.RequiredArgsConstructor;
 import me.scene.dinner.board.topic.application.query.dto.TopicView;
-import me.scene.dinner.board.topic.domain.Topic;
-import me.scene.dinner.board.topic.domain.TopicRepository;
+import me.scene.dinner.board.topic.domain.model.Topic;
+import me.scene.dinner.board.topic.domain.repository.TopicRepository;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 

@@ -3,8 +3,8 @@ package me.scene.dinner.integration.utils;
 import lombok.RequiredArgsConstructor;
 import me.scene.dinner.board.magazine.application.command.MagazineService;
 import me.scene.dinner.board.magazine.application.command.request.MagazineCreateRequest;
-import me.scene.dinner.board.magazine.domain.common.MagazineRepository;
-import me.scene.dinner.board.magazine.domain.common.Type;
+import me.scene.dinner.board.magazine.domain.magazine.repository.MagazineRepository;
+import me.scene.dinner.board.magazine.domain.magazine.model.Type;
 import me.scene.dinner.integration.utils.aop.LogAround;
 import org.springframework.stereotype.Component;
 

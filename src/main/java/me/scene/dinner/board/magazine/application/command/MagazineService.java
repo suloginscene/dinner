@@ -3,10 +3,10 @@ package me.scene.dinner.board.magazine.application.command;
 import lombok.RequiredArgsConstructor;
 import me.scene.dinner.board.magazine.application.command.request.MagazineCreateRequest;
 import me.scene.dinner.board.magazine.application.command.request.MagazineUpdateRequest;
-import me.scene.dinner.board.magazine.domain.common.ChangedEvent;
-import me.scene.dinner.board.magazine.domain.common.Magazine;
-import me.scene.dinner.board.magazine.domain.common.MagazineRepository;
-import me.scene.dinner.board.magazine.domain.common.Type;
+import me.scene.dinner.board.magazine.application.command.event.MagazineDatabaseChangedEvent;
+import me.scene.dinner.board.magazine.domain.magazine.model.Magazine;
+import me.scene.dinner.board.magazine.domain.magazine.repository.MagazineRepository;
+import me.scene.dinner.board.magazine.domain.magazine.model.Type;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class MagazineService {
 
     private final MagazineRepository repository;
-
     private final ApplicationEventPublisher publisher;
 
 
@@ -34,7 +33,7 @@ public class MagazineService {
         Magazine magazine = Magazine.create(type, username, title, shortExplanation, longExplanation);
         Long id = repository.save(magazine).getId();
 
-        ChangedEvent event = magazine.changedEvent();
+        MagazineDatabaseChangedEvent event = new MagazineDatabaseChangedEvent(id);
         publisher.publishEvent(event);
 
         return id;
@@ -47,16 +46,18 @@ public class MagazineService {
         String longExplanation = request.getLongExplanation();
 
         Magazine magazine = repository.find(id);
-        ChangedEvent event = magazine.update(username, title, shortExplanation, longExplanation);
+        magazine.update(username, title, shortExplanation, longExplanation);
 
+        MagazineDatabaseChangedEvent event = new MagazineDatabaseChangedEvent(id);
         publisher.publishEvent(event);
     }
 
     public void delete(Long id, String current) {
         Magazine magazine = repository.find(id);
-        ChangedEvent event = magazine.beforeDelete(current);
+        magazine.beforeDelete(current);
         repository.delete(magazine);
 
+        MagazineDatabaseChangedEvent event = new MagazineDatabaseChangedEvent(id);
         publisher.publishEvent(event);
     }
 

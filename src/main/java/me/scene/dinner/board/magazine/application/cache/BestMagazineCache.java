@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import me.scene.dinner.board.magazine.application.query.MagazineQueryService;
 import me.scene.dinner.board.magazine.application.query.dto.MagazineLink;
-import me.scene.dinner.board.magazine.domain.common.ChangedEvent;
+import me.scene.dinner.board.magazine.application.command.event.MagazineDatabaseChangedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -30,7 +30,7 @@ public class BestMagazineCache {
     }
 
     @EventListener
-    public void updateByEvent(ChangedEvent event) {
+    public void updateByEvent(MagazineDatabaseChangedEvent event) {
         Long id = event.getId();
 
         boolean isFull = magazines.size() == SIZE;

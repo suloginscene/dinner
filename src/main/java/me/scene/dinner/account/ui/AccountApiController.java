@@ -13,13 +13,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class AccountApiController {
 
-    private final AccountQueryService queryService;
+    private final AccountQueryService query;
 
 
     @GetMapping("/api/accounts/{username}")
     public ResponseEntity<AccountInfo> find(@PathVariable String username) {
-        AccountInfo dto = queryService.accountInfo(username);
-        return ResponseEntity.ok(dto);
+        AccountInfo account = query.accountInfo(username);
+        return ResponseEntity.ok(account);
     }
 
 }

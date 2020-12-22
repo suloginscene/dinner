@@ -1,11 +1,11 @@
 package me.scene.dinner.board.magazine.application.query;
 
 import lombok.RequiredArgsConstructor;
-import me.scene.dinner.board.common.domain.Owner;
+import me.scene.dinner.board.common.domain.model.Owner;
 import me.scene.dinner.board.magazine.application.query.dto.MagazineLink;
 import me.scene.dinner.board.magazine.application.query.dto.MagazineView;
-import me.scene.dinner.board.magazine.domain.common.Magazine;
-import me.scene.dinner.board.magazine.domain.common.MagazineRepository;
+import me.scene.dinner.board.magazine.domain.magazine.model.Magazine;
+import me.scene.dinner.board.magazine.domain.magazine.repository.MagazineRepository;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Component;
