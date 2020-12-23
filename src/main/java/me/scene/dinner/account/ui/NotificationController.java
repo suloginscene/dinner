@@ -26,7 +26,7 @@ public class NotificationController {
         service.check(username);
 
         model.addAttribute("notifications", notificationView);
-        return "page/notification/view";
+        return "page/account/notification";
     }
 
 }

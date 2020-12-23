@@ -6,6 +6,7 @@ import me.scene.dinner.board.magazine.application.query.MagazineQueryService;
 import me.scene.dinner.board.magazine.application.query.dto.MagazineLink;
 import me.scene.dinner.board.magazine.application.command.event.MagazineDatabaseChangedEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -29,6 +30,7 @@ public class BestMagazineCache {
         update();
     }
 
+    @Async
     @EventListener
     public void updateByEvent(MagazineDatabaseChangedEvent event) {
         Long id = event.getId();

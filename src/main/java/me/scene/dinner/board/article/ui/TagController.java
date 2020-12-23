@@ -23,7 +23,7 @@ public class TagController {
         List<String> tags = query.findAllTagNames();
 
         model.addAttribute("tags", tags);
-        return "page/tag/list";
+        return "page/board/article/tags";
     }
 
     @GetMapping("/tags/{name}")
@@ -31,7 +31,7 @@ public class TagController {
         TagView tag = query.find(name);
 
         model.addAttribute("tag", tag);
-        return "page/tag/view";
+        return "page/board/article/tag";
     }
 
 }
