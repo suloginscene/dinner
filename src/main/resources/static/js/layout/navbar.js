@@ -1,4 +1,4 @@
-const scrollSensibleNavbar = function () {
+window.addEventListener('load', function () {
 
     let scrolled = false;
     let hidden = false;
@@ -28,6 +28,4 @@ const scrollSensibleNavbar = function () {
     window.addEventListener('scroll', scrollSensor);
     setInterval(scrollHandler, 250);
 
-};
-
-window.addEventListener('load', scrollSensibleNavbar);
+});

@@ -1,4 +1,4 @@
-const ajaxLikeArticle = function () {
+window.addEventListener('load', function () {
 
     const queryString = $("#like-form").serialize();
     if (queryString === "") return;
@@ -69,7 +69,4 @@ const ajaxLikeArticle = function () {
 
     $("#like").click(like);
 
-};
-
-
-window.addEventListener('load', ajaxLikeArticle);
+});

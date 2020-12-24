@@ -1,4 +1,4 @@
-const ajaxPrivateArticles = function () {
+window.addEventListener('load', function () {
 
     const articles = $('#private-articles');
     const articleTemplate = document.querySelector("#private-article-template").innerHTML;
@@ -19,7 +19,4 @@ const ajaxPrivateArticles = function () {
         success: appendArticles
     });
 
-};
-
-
-window.addEventListener('load', ajaxPrivateArticles);
+});

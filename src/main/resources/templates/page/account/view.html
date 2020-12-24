@@ -3,7 +3,7 @@
 
     <div th:replace="layout/layout::head(${account.username}, ~{::link}, ~{::script})">
         <link rel="stylesheet" href="/css/page/account/info.css"/>
-        <script src="/js/page/ajaxShowAccount.js"></script>
+        <script src="/js/ajax/works_of_account.js"></script>
         <script type="text/template" id="article-template">
             <li>
                 <a href="/articles/{id}">{title}</a><span>{date}</span>

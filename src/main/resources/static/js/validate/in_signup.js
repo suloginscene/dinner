@@ -1,4 +1,6 @@
-const validateTerm = function () {
+window.addEventListener('load', function () {
+
+    validate('#signup-form');
 
     const form = document.getElementById('signup-form');
     const term = document.getElementById('term');
@@ -17,10 +19,4 @@ const validateTerm = function () {
     form.addEventListener('submit', checkTerm, false);
     term.addEventListener('input', checkTerm, false);
 
-};
-
-
-window.addEventListener('load', function () {
-    validate('#signup-form');
-    validateTerm();
 });

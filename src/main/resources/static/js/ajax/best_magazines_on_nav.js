@@ -1,4 +1,4 @@
-const ajaxMagazines = function () {
+window.addEventListener('load', function () {
 
     const loadMagazinesOnNav = function (magazineArr) {
         const template = document.querySelector("#magazine-template").innerHTML;
@@ -17,6 +17,4 @@ const ajaxMagazines = function () {
         success: loadMagazinesOnNav
     });
 
-};
-
-window.addEventListener('load', ajaxMagazines);
+});

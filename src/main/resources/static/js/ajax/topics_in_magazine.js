@@ -1,4 +1,4 @@
-const ajaxMagazineTopics = function () {
+window.addEventListener('load', function () {
 
     const magazineId = $('#magazine-id').text();
     const topics = $('#topics');
@@ -19,7 +19,4 @@ const ajaxMagazineTopics = function () {
         success: appendTopics
     });
 
-};
-
-
-window.addEventListener('load', ajaxMagazineTopics);
+});

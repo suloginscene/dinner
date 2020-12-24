@@ -1,4 +1,4 @@
-const ajaxNotification = function () {
+window.addEventListener('load', function () {
 
     const logUncheckedCount = function (count) {
         const $count = $('#notification-count');
@@ -12,7 +12,4 @@ const ajaxNotification = function () {
         success: logUncheckedCount
     });
 
-};
-
-
-window.addEventListener('load', ajaxNotification);
+});

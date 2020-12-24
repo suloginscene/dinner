@@ -1,4 +1,4 @@
-const ajaxShowAccount = function () {
+window.addEventListener('load', function () {
 
     const username = $('#username').text();
     const magazines = $('#magazines-of-user');
@@ -37,7 +37,4 @@ const ajaxShowAccount = function () {
         success: appendArticles
     });
 
-};
-
-
-window.addEventListener('load', ajaxShowAccount);
+});

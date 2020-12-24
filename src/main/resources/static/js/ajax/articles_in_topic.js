@@ -1,4 +1,4 @@
-const ajaxTopicArticles = function () {
+window.addEventListener('load', function () {
 
     const topicId = $('#topic-id').text();
     const articles = $('#articles');
@@ -32,7 +32,4 @@ const ajaxTopicArticles = function () {
         success: appendArticles
     });
 
-};
-
-
-window.addEventListener('load', ajaxTopicArticles);
+});

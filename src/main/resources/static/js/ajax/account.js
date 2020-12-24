@@ -1,4 +1,4 @@
-const ajaxFindAccount_magazine = function () {
+window.addEventListener('load', function () {
 
     const template = document.querySelector("#account-template").innerHTML;
     const position = $('#found-position');
@@ -49,7 +49,4 @@ const ajaxFindAccount_magazine = function () {
 
     $("#findByUsername").click(findAccount);
 
-};
-
-
-window.addEventListener('load', ajaxFindAccount_magazine);
+});

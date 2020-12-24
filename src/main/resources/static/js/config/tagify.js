@@ -1,4 +1,4 @@
-const ajaxTagifyArticle = function () {
+window.addEventListener('load', function () {
 
     const tagRequest = function (method, name) {
         $.ajax({
@@ -28,7 +28,4 @@ const ajaxTagifyArticle = function () {
     tagify.on("add", onAdd);
     tagify.on("remove", onRemove);
 
-};
-
-
-window.addEventListener('load', ajaxTagifyArticle);
+});

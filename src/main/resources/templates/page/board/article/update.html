@@ -2,14 +2,14 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 
     <div th:replace="layout/layout::head(_,~{::link}, ~{::script})">
-        <link rel="stylesheet" href="/css/page/board/article/form.css"/>
-        <script src="/js/page/valid_board.js"></script>
         <link rel="stylesheet" href="/node_modules/summernote/dist/summernote-bs4.min.css"/>
-        <script src="/node_modules/summernote/dist/summernote-bs4.min.js"></script>
-        <script src="/js/page/summernote_article.js"></script>
         <link rel="stylesheet" href="/node_modules/@yaireo/tagify/dist/tagify.css">
+        <link rel="stylesheet" href="/css/page/board/article/form.css"/>
+        <script src="/node_modules/summernote/dist/summernote-bs4.min.js"></script>
         <script src="/node_modules/@yaireo/tagify/dist/tagify.min.js"></script>
-        <script src="/js/page/ajaxTagifyArticle.js"></script>
+        <script src="/js/config/summernote.js"></script>
+        <script src="/js/config/tagify.js"></script>
+        <script src="/js/validate/in_board.js"></script>
     </div>
 
     <body th:replace="layout/layout::body(~{::section})">
@@ -34,8 +34,8 @@
                     <input th:type="text" id="tagInput" placeholder="태그를 입력하세요."><label for="tagInput"></label>
                     <div th:text="${_csrf.token}" id="tagify-csrf" hidden></div>
                     <div class="form-checks">
-                        <label for="radio-1"><input th:field="*{action}" type="radio" id="radio-1" value="PUBLIC"/>public</label>
-                        <label for="radio-2"><input th:field="*{action}" type="radio" id="radio-2" value="PRIVATE"/>private</label>
+                        <label for="radio-1"><input th:field="*{status}" type="radio" id="radio-1" value="PUBLIC"/>public</label>
+                        <label for="radio-2"><input th:field="*{status}" type="radio" id="radio-2" value="PRIVATE"/>private</label>
                     </div>
                 </div>
             </form>

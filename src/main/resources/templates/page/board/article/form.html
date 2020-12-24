@@ -2,14 +2,14 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 
     <div th:replace="layout/layout::head(_,~{::link}, ~{::script})">
-        <link rel="stylesheet" href="/css/page/board/article/form.css"/>
-        <script src="/js/page/valid_board.js"></script>
         <link rel="stylesheet" href="/node_modules/summernote/dist/summernote-bs4.min.css"/>
-        <script src="/node_modules/summernote/dist/summernote-bs4.min.js"></script>
-        <script src="/js/page/summernote_article.js"></script>
         <link rel="stylesheet" href="/node_modules/@yaireo/tagify/dist/tagify.css">
+        <link rel="stylesheet" href="/css/page/board/article/form.css"/>
+        <script src="/node_modules/summernote/dist/summernote-bs4.min.js"></script>
         <script src="/node_modules/@yaireo/tagify/dist/tagify.min.js"></script>
-        <script src="/js/page/ajaxTagifyArticle.js"></script>
+        <script src="/js/config/summernote.js"></script>
+        <script src="/js/config/tagify.js"></script>
+        <script src="/js/validate/in_board.js"></script>
     </div>
 
     <body th:replace="layout/layout::body(~{::section})">

@@ -4,8 +4,8 @@
 
     <div th:replace="layout/layout::head(${magazine.title},~{::link}, ~{::script})">
         <link rel="stylesheet" href="/css/page/board/magazine/view.css"/>
-        <script src="/js/page/accor_board.js"></script>
-        <script src="/js/page/ajaxMagazineTopics.js"></script>
+        <script src="/js/accordion/in_board.js"></script>
+        <script src="/js/ajax/topics_in_magazine.js"></script>
 
         <script type="text/template" id="topic-template">
             <li><a href="/topics/{id}">{title}</a></li>
