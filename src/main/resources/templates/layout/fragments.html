@@ -56,7 +56,8 @@
         <div sec:authorize="isAuthenticated()" id="account-dropdown">
             <button th:text="${#authentication.name}"></button>
             <div id="accounts">
-                <a th:href="@{'/@' + ${#authentication.name}}">my page</a>
+                <a th:href="@{'/@' + ${#authentication.name}}">about</a>
+                <a href="/private-articles">draft</a>
                 <a href="/notifications">
                     <span id="notification-count"></span> <span>notif</span>
                 </a>

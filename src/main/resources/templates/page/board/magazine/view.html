@@ -8,7 +8,7 @@
         <script src="/js/ajax/topics_in_magazine.js"></script>
 
         <script type="text/template" id="topic-template">
-            <li><a href="/topics/{id}">{title}</a></li>
+            <li class="topic-link"><a href="/topics/{id}">{title}</a></li>
         </script>
     </div>
 
@@ -18,8 +18,8 @@
             <div class="info">
                 <h1 id="title" th:text="*{title}"></h1>
                 <div id="authorities">
-                    by
-                    <a th:href="'/@'+*{owner}" th:text="*{owner}" class="owner"></a>
+                    <span id="policy" th:text="*{policy}"></span> by
+                    <a th:href="'/@'+*{owner}" th:text="*{owner}" id="owner"></a>
                     <th:block th:each="member:*{members}">
                         <a class="writer" th:href="@{'/@'+${member}}" th:text="${member}"></a>
                     </th:block>

@@ -2,7 +2,11 @@ window.addEventListener('load', function () {
 
     const logUncheckedCount = function (count) {
         const $count = $('#notification-count');
-        $count.text(count);
+        if (count !== 0) {
+            $count.text(count);
+        } else {
+            $count.text("");
+        }
     };
 
 

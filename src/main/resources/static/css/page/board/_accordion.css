@@ -1,16 +1,16 @@
-section .info #board-accordion {
+#board-accordion {
     color: black;
     font-size: 20px;
 }
 
-section .info #board-accordion i {
+#board-accordion i {
     font-size: 16px;
     color: lightslategray;
     transition: 0.3s; /* Vertical Flip */
     margin-left: 10px;
 }
 
-section .info .panel {
+.panel {
     padding: 0 8vw;
     margin-top: 16px;
     overflow: hidden;

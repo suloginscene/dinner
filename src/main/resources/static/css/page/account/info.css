@@ -1,1 +1,47 @@
 @import "/css/page/account/_base.css";
+@import "/css/lib/_centered.css";
+
+#info {
+    margin-bottom: 50px;
+}
+
+#username {
+    margin-bottom: 25px;
+}
+
+#greeting {
+    margin-bottom: 5px;
+}
+
+#works {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.box {
+    width: 45%
+}
+
+#magazines-of-user {
+    width: 100%;
+}
+
+#articles-of-user {
+    width: 100%;
+}
+
+.article-title-col {
+    width: 50%;
+}
+
+.article-date-col {
+    width: 20%;
+}
+
+.article-read-col {
+    width: 15%;
+}
+
+.article-like-col {
+    width: 15%;
+}

@@ -7,16 +7,28 @@
 
     <body th:replace="layout/layout::body(~{::section})">
         <section th:object="${profileForm}">
-            <h1 th:text="*{username}"></h1>
-            <form th:action="@{/profile}" th:method="post">
-                <label>
-                    <textarea th:field="*{greeting}"></textarea>
-                </label>
-                <small th:if="${#fields.hasErrors('greeting')}" th:errors="*{greeting}" class="form-text text-danger"></small>
-                <button type="submit">수정</button>
-            </form>
-            <div th:text="*{email}"></div>
-            <a href="/password">비밀번호 수정</a>
+            <div class="centered-content">
+
+                <h1 th:text="*{username}" id="username"></h1>
+                <form th:action="@{/profile}" th:method="post" id="profile-form">
+                    <textarea th:field="*{greeting}" placeholder="인삿말을 남겨주세요." id="greeting"></textarea>
+                    <label for="greeting" hidden></label>
+                    <small th:if="${#fields.hasErrors('greeting')}" th:errors="*{greeting}" class="form-text text-danger"></small>
+                    <div>
+                        <button type="submit">수정</button>
+                    </div>
+                </form>
+
+                <div id="link-to-config">
+                    <div class="box">
+                        <span th:text="*{email}"></span>
+                    </div>
+                    <div class="box">
+                        <a href="/password">비밀번호 수정</a>
+                    </div>
+                </div>
+
+            </div>
         </section>
     </body>
 

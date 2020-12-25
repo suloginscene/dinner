@@ -3,22 +3,18 @@ section {
     text-align: justify;
 }
 
-section .info {
+.info {
     text-align: center;
     position: relative;
     min-height: 130px;
     overflow: auto;
+    margin-bottom: 25px;
 }
 
-section #button-container {
+#button-container {
     overflow: auto;
-    padding: 30px 0;
 }
 
-section #button-container button {
+#button-container button {
     float: right;
-}
-
-@media (max-width: 768px) {
-
 }

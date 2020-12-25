@@ -6,9 +6,9 @@ window.addEventListener('load', function () {
     const render = function (account) {
         return account ?
             template
-                .replace("{1}", account.username)
-                .replace("{2}", account.email)
-                .replace("{3}", account.username)
+                .replace("{username}", account.username)
+                .replace("{username}", account.username)
+                .replace("{username}", account.username)
             : "<div>사용자가 존재하지 않습니다.</div>";
     };
 

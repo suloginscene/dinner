@@ -1,2 +1,18 @@
 @import "/css/page/board/_base.css";
 @import "/css/lib/_centered.css";
+
+#registration {
+    min-height: 150px;
+}
+
+.member-form {
+    display: inline;
+}
+
+#members {
+    min-height: 150px;
+}
+
+#member-table {
+    margin: auto;
+}

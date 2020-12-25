@@ -1,61 +1,68 @@
 @import "/css/page/board/_base.css";
 @import "/css/page/board/_accordion.css";
 
-section .info #magazine {
+#magazine {
     font-size: 30px;
-    margin: 15px 0;
-    padding: 0;
+    margin-bottom: 25px;
 }
 
-section .info #title {
-    margin: 15px 0;
+#title {
+    margin-bottom: 15px;
 }
 
-section ul {
+#owner {
+    margin-bottom: 25px;
+}
+
+#articles {
     list-style-type: none;
-    padding-left: 0;
-}
-
-section ul li {
-    height: 150px;
-    overflow: hidden;
-    padding: 15px;
-    margin: 30px 0;
-    border: solid 1px dimgray;
-    border-radius: 15px;
-}
-
-section ul .private {
-    background-color: lightgray;
-}
-
-section ul li .article-info {
     overflow: auto;
+    padding-left: 0;
+    margin-top: 30px;
+}
+
+.article {
+    padding-bottom: 5px;
+    border-bottom: solid 1px dimgray;
+    margin-bottom: 15px;
     font-size: 20px;
-    padding: 5px;
-    margin-bottom: 5px;
+    overflow: auto;
 }
 
-section ul li .article-info .article-sub-info {
-    float: right;
+.left {
+    float: left;
 }
 
-section ul li .article-info .article-sub-info .article-writer {
-}
-
-section ul li .article-info .article-sub-info .article-date {
-}
-
-section ul li p {
-    margin: 0;
-    text-indent: 15px;
-    font-size: 18px;
+.title {
+    font-size: 22px;
+    margin-right: 5px;
 }
 
 .tag {
-    color: black;
+    font-size: 15px;
     background-color: #bbddbb;
-    border-radius: 10px;
-    padding: 2px 6px;
-    margin: 3px;
+    border-radius: 5px;
+    padding: 1px 5px;
+    margin-left: 1px;
+}
+
+.right {
+    float: right;
+}
+
+.writer {
+    margin-right: 10px;
+}
+
+
+@media (max-width: 768px) {
+
+    .tag {
+        display: none;
+    }
+
+    .date {
+        display: none;
+    }
+
 }

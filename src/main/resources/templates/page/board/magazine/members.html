@@ -6,8 +6,8 @@
         <script src="/js/ajax/account.js"></script>
         <script id="account-template" type="text/template">
             <div>
-                <span>이름 {1}</span><span>이메일 {2}</span>
-                <form th:action="'/magazines/'+${id}+'/{3}'" th:method="get">
+                <a href="/@{username}">{username}</a>
+                <form th:action="'/magazines/'+${id}+'/{username}'" th:method="get" class="member-form">
                     <button type="submit">add</button>
                 </form>
             </div>
@@ -17,23 +17,8 @@
     <body th:replace="layout/layout::body(~{::section})">
         <section>
             <div class="centered-content">
-                <div class="message">
-                    작가 관리 페이지입니다.
-                </div>
-                <div>
-                    <h2>현재 등록된 작가</h2>
-                    <div th:if="${members.isEmpty()}">허가된 작가가 없습니다.</div>
-                    <ul th:unless="${members.isEmpty()}">
-                        <li th:each="member:${members}">
-                            <a th:href="@{'/@'+${member}}" th:text="${member}"></a>
-                            <form th:action="'/magazines/'+${id}+'/'+${member}" th:method="delete">
-                                <button type="submit">remove</button>
-                            </form>
-                        </li>
-                    </ul>
-                </div>
-                <div>
-                    <h2>작가 등록</h2>
+                <div id="registration">
+                    <h2>멤버 등록</h2>
                     <form id="username-form">
                         <label hidden>
                             <input name="current" type="text" th:value="${#authentication.name}" hidden>
@@ -44,6 +29,20 @@
                         <button type="submit" id="findByUsername">find</button>
                     </form>
                     <div id="found-position"></div>
+                </div>
+                <div id="members">
+                    <h2>현재 멤버</h2>
+                    <div th:if="${members.isEmpty()}">멤버가 없습니다.</div>
+                    <table th:unless="${members.isEmpty()}" id="member-table">
+                        <tr th:each="member:${members}">
+                            <td><a th:href="@{'/@'+${member}}" th:text="${member}"></a></td>
+                            <td>
+                                <form th:action="'/magazines/'+${id}+'/'+${member}" th:method="delete">
+                                    <button type="submit">remove</button>
+                                </form>
+                            </td>
+                        </tr>
+                    </table>
                 </div>
                 <a th:href="'/magazines/'+${id}">수정 완료</a>
             </div>

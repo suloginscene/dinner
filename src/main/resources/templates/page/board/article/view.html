@@ -50,34 +50,41 @@
 
             <article th:utext="*{content}"></article>
 
-            <ul>
-                <li th:each="reply:*{replies}">
-                    <span><a th:href="@{'/@'+${reply.owner}}" th:text="${reply.owner}"></a></span>
-                    <span th:text="${reply.content}"></span>
-                    <span th:text="${#temporals.format(reply.createdAt, 'yyyy-MM-dd HH:mm')}"></span>
-                    <form th:if="${#authentication.name}==${reply.owner}" th:action="@{/replies}" th:method="delete">
-                        <label>
-                            <input type="text" name="articleId" th:value="*{id}" hidden>
-                            <input type="text" name="replyId" th:value="${reply.id}" hidden>
-                        </label>
-                        <button type="submit">delete</button>
-                    </form>
-                </li>
-            </ul>
-
-            <div sec:authorize="!isAuthenticated()">
-                Reply need login.
-            </div>
-            <div sec:authorize="isAuthenticated()">
-                <form th:action="@{/replies}" th:method="post">
+            <div id="reply-form-container">
+                <div sec:authorize="!isAuthenticated()">
+                    Reply need login.
+                </div>
+                <form sec:authorize="isAuthenticated()" th:action="@{/replies}" th:method="post">
                     <span th:text="${#authentication.name}"></span>
-                    <label>
-                        <input type="text" name="articleId" th:value="*{id}" hidden>
-                        <input type="text" name="content" placeholder="reply">
-                    </label>
+                    <label hidden><input type="text" name="articleId" th:value="*{id}"></label>
+                    <input type="text" name="content" placeholder="reply" id="reply-input">
+                    <label for="reply-input"></label>
                     <button type="submit">write</button>
                 </form>
             </div>
+
+            <table id="replies">
+                <tr th:each="reply:*{replies}">
+                    <td class="writer-col">
+                        <a th:href="@{'/@'+${reply.owner}}" th:text="${reply.owner}"></a>
+                    </td>
+                    <td class="content-col">
+                        <span th:text="${reply.content}"></span>
+                    </td>
+                    <td>
+                        <form th:if="${#authentication.name}==${reply.owner}" th:action="@{/replies}" th:method="delete" class="reply-delete">
+                            <label>
+                                <input type="text" name="articleId" th:value="*{id}" hidden>
+                                <input type="text" name="replyId" th:value="${reply.id}" hidden>
+                            </label>
+                            <button type="submit">delete</button>
+                        </form>
+                    </td>
+                    <td class="date-col">
+                        <span th:text="${#temporals.format(reply.createdAt, 'yyyy-MM-dd HH:mm')}"></span>
+                    </td>
+                </tr>
+            </table>
 
         </section>
     </body>

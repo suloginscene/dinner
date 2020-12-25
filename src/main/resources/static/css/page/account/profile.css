@@ -1,1 +1,28 @@
 @import "/css/page/account/_base.css";
+@import "/css/lib/_centered.css";
+
+
+#username {
+    margin-bottom: 50px;
+}
+
+#profile-form {
+    margin-bottom: 30px;
+}
+
+#greeting {
+    padding: 10px;
+    width: 75%;
+}
+
+#link-to-config {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.box {
+    width: 30%;
+    border: solid 1px dimgray;
+    background-color: white;
+    padding: 15px;
+}

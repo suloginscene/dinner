@@ -1,36 +1,32 @@
 @import "/css/page/board/_base.css";
 
-section .info #topic {
+#topic {
     font-size: 30px;
     margin: 15px 0;
     padding: 0;
 }
 
-section .info #title {
+#title {
     margin: 15px 0;
 }
 
-section .info #sub-info {
+#sub-info {
     font-size: 20px;
     margin: 15px 0;
     float: right;
 }
 
-section .info #sub-info #writer {
+#writer {
     margin-right: 10px;
 }
 
-section .info #sub-info #date {
+#sub-info #date {
     margin-right: 10px;
 }
 
-section article {
+article {
     padding-bottom: 30px;
     border-bottom: 1px solid dimgray;
-}
-
-section h1 {
-
 }
 
 section h2 {
@@ -54,8 +50,29 @@ section article p img {
     width: 100%;
 }
 
-#like-form {
-    display: inline;
+#reply-form-container {
+    margin: 25px 0;
+}
+
+#reply-input {
+    width: 55%;
+    margin-left: 50px;
+}
+
+#replies {
+    width: 100%;
+}
+
+.writer-col {
+    width: 15%;
+}
+
+.content-col {
+    width: 55%
+}
+
+.date-col {
+    text-align: right;
 }
 
 #like {
@@ -64,6 +81,10 @@ section article p img {
     padding: 0;
     background-color: unset;
     color: red;
+}
+
+#like-form {
+    display: inline;
 }
 
 #like-icon:hover {

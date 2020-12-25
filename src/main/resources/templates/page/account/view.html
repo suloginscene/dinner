@@ -4,32 +4,39 @@
     <div th:replace="layout/layout::head(${account.username}, ~{::link}, ~{::script})">
         <link rel="stylesheet" href="/css/page/account/info.css"/>
         <script src="/js/ajax/works_of_account.js"></script>
+        <script type="text/template" id="magazine-template-table">
+            <tr>
+                <td><a href="/magazines/{id}">{title}</a></td>
+            </tr>
+        </script>
         <script type="text/template" id="article-template">
-            <li>
-                <a href="/articles/{id}">{title}</a><span>{date}</span>
-                <span>Read: <span>{read}</span></span>
-                <span>Like: <span>{like}</span></span>
-            </li>
+            <tr>
+                <td class="article-title-col"><a href="/articles/{id}">{title}</a></td>
+                <td class="article-date-col">{date}</td>
+                <td class="article-read-col">Read: <span>{read}</span></td>
+                <td class="article-like-col">Like: <span>{like}</span></td>
+            </tr>
         </script>
     </div>
 
     <body th:replace="layout/layout::body(~{::section})">
         <section th:object="${account}">
-            <div>
-                <h1 th:text="*{username}" id="username"></h1>
-                <a th:if="${#authentication.name}==*{username}" href="/profile">수정</a>
-                <div th:text="*{profile?.greeting}"></div>
-            </div>
-            <div>
-                <div>
-                    <h2>매거진</h2>
-                    <ul id="magazines-of-user"></ul>
+            <div class="centered-content">
+                <div id="info">
+                    <h1 th:text="*{username}" id="username"></h1>
+                    <div th:text="*{profile?.greeting}" id="greeting"></div>
+                    <a th:if="${#authentication.name}==*{username}" href="/profile">수정</a>
                 </div>
-                <div>
-                    <h2>아티클</h2>
-                    <ul id="articles-of-user"></ul>
+                <div id="works">
+                    <div class="box">
+                        <h2>매거진</h2>
+                        <table id="magazines-of-user"></table>
+                    </div>
+                    <div class="box">
+                        <h2>아티클</h2>
+                        <table id="articles-of-user"></table>
+                    </div>
                 </div>
-                <a th:if="${#authentication.name}==*{username}" href="/private-articles">비공개 아티클 목록</a>
             </div>
         </section>
     </body>

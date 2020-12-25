@@ -8,14 +8,14 @@
         <script src="/js/ajax/articles_in_topic.js"></script>
 
         <script type="text/template" id="article-template">
-            <li>
-                <div class="article-info">
-                    <a href="/articles/{id}">{title}</a>
+            <li class="article">
+                <div class="left">
+                    <a class="title" href="/articles/{id}">{title}</a>
                     {tags}
-                    <div class="article-sub-info">
-                        <a class="article-writer" href="/@{writer}">{writer}</a>
-                        <span class="article-date">{createdAt}</span>
-                    </div>
+                </div>
+                <div class="right">
+                    <a class="writer" href="/@{writer}">{writer}</a>
+                    <span class="date">{createdAt}</span>
                 </div>
             </li>
         </script>
@@ -30,7 +30,7 @@
             <div class="info">
                 <h2 id="magazine"><a th:href="'/magazines/'+*{magazine.id}" th:text="*{magazine.title}"></a></h2>
                 <h1 id="title" th:text="*{title}"></h1>
-                <div>by <a th:href="'/@'+*{owner}" th:text="*{owner}"></a></div>
+                <div id="owner">by <a th:href="'/@'+*{owner}" th:text="*{owner}"></a></div>
                 <a href="#" id="board-accordion">
                     <span th:text="*{shortExplanation}"></span> <i class="fa fa-chevron-down"></i>
                 </a>

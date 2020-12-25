@@ -1,56 +1,49 @@
 @import "/css/page/board/_base.css";
 @import "/css/page/board/_accordion.css";
 
-section .info #title {
-    padding: 10px 0;
-    margin: 0;
+#title {
+    margin-bottom: 25px;
 }
 
-section .info #authorities {
-    padding: 10px 0;
-    margin-bottom: 10px;
+#authorities {
+    margin-bottom: 25px;
 }
 
-section .info #authorities #policy {
-    padding: 5px;
+#policy {
+    font-size: 14px;
+    padding: 3px 7px;
     border-radius: 5px;
     background-color: lightgray;
 }
 
-section .info #authorities .owner {
+#owner {
     font-weight: bold;
 }
 
-section ul {
+#topics {
     list-style-type: none;
-    padding-left: 0;
     overflow: auto;
+    padding-left: 0;
+    margin-top: 25px;
 }
 
-section ul li {
+.topic-link {
+    font-size: 20px;
     float: left;
-    height: 100px;
-    width: 45%;
-    margin: 15px 2.5%;
-    padding: 25px;
+    height: 200px;
+    width: 200px;
+    margin: 10px;
     overflow: hidden;
     border: solid 1px dimgray;
-    border-radius: 15px;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-section ul li a {
-    text-align: center;
-    font-size: 20px;
-}
-
 @media (max-width: 768px) {
-    section ul li {
+    .topic-link {
         float: none;
         width: auto;
-        height: auto;
-        margin: 30px 5px;
+        height: 80px;
     }
 }

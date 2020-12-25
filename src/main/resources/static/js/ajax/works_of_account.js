@@ -4,7 +4,7 @@ window.addEventListener('load', function () {
     const magazines = $('#magazines-of-user');
     const articles = $('#articles-of-user');
 
-    const magazineTemplate = document.querySelector("#magazine-template").innerHTML;
+    const magazineTemplate = document.querySelector("#magazine-template-table").innerHTML;
     const articleTemplate = document.querySelector("#article-template").innerHTML;
 
     const appendMagazines = function (magazineArr) {

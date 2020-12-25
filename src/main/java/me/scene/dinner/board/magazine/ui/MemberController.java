@@ -59,7 +59,7 @@ public class MemberController {
         String username = current.getUsername();
         service.addMember(id, username, member);
 
-        return "redirect:" + ("/magazines/" + id + "/members");
+        return "redirect:" + ("/magazines/" + id + "/members/page");
     }
 
     @DeleteMapping("/magazines/{id}/{member}")
@@ -69,7 +69,7 @@ public class MemberController {
         String username = current.getUsername();
         service.removeMember(id, username, member);
 
-        return "redirect:" + ("/magazines/" + id + "/members");
+        return "redirect:" + ("/magazines/" + id + "/members/page");
     }
 
 }

@@ -4,7 +4,7 @@ section {
     align-items: center;
 }
 
-section .centered-content {
+.centered-content {
     text-align: center;
     width: 66vw;
 }
