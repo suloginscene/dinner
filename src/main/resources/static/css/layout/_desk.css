@@ -34,7 +34,7 @@
 }
 
 .opened #accounts {
-    height: 120px;
+    height: 150px;
 }
 
 @media (max-width: 768px) {

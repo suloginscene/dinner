@@ -34,7 +34,7 @@ public class ArticleApiController {
 
     @GetMapping("/api/articles/of/{topicId}")
     public List<ArticleExtendedLink> articlesOfTopic(@PathVariable Long topicId) {
-        return query.findArticles(topicId);
+        return query.linksOfTopic(topicId);
     }
 
 }

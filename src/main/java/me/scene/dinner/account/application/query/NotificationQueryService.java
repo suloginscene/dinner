@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.function.Predicate;
+
 
 @Component
 @Transactional(readOnly = true)
@@ -19,10 +19,7 @@ public class NotificationQueryService {
 
 
     public long countUnchecked(String username) {
-        List<Notification> notifications = repository.find(username).getNotifications();
-        return notifications.stream()
-                .filter(Predicate.not(Notification::isChecked))
-                .count();
+        return repository.countUncheckedNotification(username);
     }
 
     public NotificationView find(String username) {

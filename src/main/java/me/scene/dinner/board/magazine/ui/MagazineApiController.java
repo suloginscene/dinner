@@ -26,7 +26,7 @@ public class MagazineApiController {
 
     @GetMapping("/api/magazines/{username}")
     public List<MagazineLink> magazinesByUser(@PathVariable String username) {
-        return service.findByUsername(username);
+        return service.linksOfUser(username);
     }
 
 }

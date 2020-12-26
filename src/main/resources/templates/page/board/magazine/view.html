@@ -45,7 +45,7 @@
                         <button type="submit">member</button>
                     </form>
                 </div>
-                <div th:if="${magazine.policy.equals('OPEN')}or${magazine.members.contains(#authentication.name)}">
+                <div th:if="${magazine.policy.equals('OPEN')}or${magazine.owner.equals(#authentication.name)}or${magazine.members.contains(#authentication.name)}">
                     <form action="/topic-form" method="get">
                         <label>
                             <input type="text" name="magazineId" th:value="*{id}" hidden>

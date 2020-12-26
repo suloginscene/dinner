@@ -26,13 +26,13 @@ public class MagazineQueryService {
     private final MagazineRepository repository;
 
 
-    public MagazineView find(Long id) {
+    public MagazineView view(Long id) {
         Magazine magazine = repository.find(id);
         return new MagazineView(magazine);
     }
 
 
-    public List<MagazineLink> findByUsername(String username) {
+    public List<MagazineLink> linksOfUser(String username) {
         Owner owner = new Owner(username);
         List<Magazine> magazines = repository.findByOwnerOrderByPointDesc(owner);
         return magazines.stream()
@@ -40,14 +40,14 @@ public class MagazineQueryService {
                 .collect(toList());
     }
 
-    public List<MagazineLink> findAll() {
+    public List<MagazineLink> allLinks() {
         List<Magazine> magazines = repository.findAll();
         return magazines.stream()
                 .map(MagazineLink::new)
                 .collect(toList());
     }
 
-    public List<MagazineLink> findBest(int size) {
+    public List<MagazineLink> bestLinks(int size) {
         Slice<Magazine> magazines = repository.findAll(PageRequest.of(0, size, by(DESC, "point")));
         return magazines
                 .map(MagazineLink::new)

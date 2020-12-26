@@ -28,7 +28,7 @@ public class TagController {
 
     @GetMapping("/tags/{name}")
     public String showTaggedArticles(@PathVariable String name, Model model) {
-        TagView tag = query.find(name);
+        TagView tag = query.view(name);
 
         model.addAttribute("tag", tag);
         return "page/board/article/tag";

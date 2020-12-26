@@ -36,7 +36,7 @@ import static java.util.stream.Collectors.toSet;
 public class ArticleController {
 
     private final ArticleService service;
-    private final ArticleQueryService queryService;
+    private final ArticleQueryService query;
 
     private final ObjectMapper objectMapper;
 
@@ -48,7 +48,7 @@ public class ArticleController {
         String username = (current != null) ? current.getUsername() : "anonymousUser";
 
         service.read(id, username);
-        ArticleView article = queryService.find(id);
+        ArticleView article = query.view(id);
 
         model.addAttribute("article", article);
         return "page/board/article/view";
@@ -86,7 +86,7 @@ public class ArticleController {
     @GetMapping("/articles/{id}/form")
     public String updateForm(@PathVariable Long id, Model model) {
 
-        ArticleView article = queryService.find(id);
+        ArticleView article = query.view(id);
 
         ArticleUpdateForm form = ArticleUpdateForm.builder()
                 .topicId(article.getTopic().getId())

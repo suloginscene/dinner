@@ -44,7 +44,7 @@ public class BestMagazineCache {
 
 
     private void update() {
-        magazines = queryService.findBest(SIZE);
+        magazines = queryService.bestLinks(SIZE);
     }
 
 }

@@ -29,7 +29,7 @@ public class ArticleService {
 
 
     public void read(Long id, String username) {
-        Article article = repository.findFetch(id);
+        Article article = repository.fetchToRate(id);
 
         if (article.isPublicized()) {
             article.read();
@@ -64,12 +64,12 @@ public class ArticleService {
         String content = request.getContent();
         boolean publicized = request.isPublicized();
 
-        Article article = repository.findFetch(id);
+        Article article = repository.fetchToRate(id);
         article.update(username, title, content, publicized);
     }
 
     public Long delete(Long id, String current) {
-        Article article = repository.findFetch(id);
+        Article article = repository.fetchToRate(id);
         article.beforeDelete(current);
         repository.delete(article);
         return article.getTopic().getId();

@@ -23,7 +23,7 @@ public class LikeService {
 
 
     public void like(String reader, Long id) {
-        Article article = repository.findFetch(id);
+        Article article = repository.fetchToRate(id);
         Set<Like> likes = article.getLikes();
 
         Like like = new Like(reader);
@@ -37,7 +37,7 @@ public class LikeService {
     }
 
     public void dislike(String username, Long articleId) {
-        Article article = repository.findFetch(articleId);
+        Article article = repository.fetchToRate(articleId);
         Set<Like> likes = article.getLikes();
 
         Like like = new Like(username);

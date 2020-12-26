@@ -12,6 +12,9 @@
                 <div class="left">
                     <a class="title" href="/articles/{id}">{title}</a>
                     {tags}
+                    <span class="article-sub-info">
+                        reply: {reply} / read: {read} / like: {like}
+                    </span>
                 </div>
                 <div class="right">
                     <a class="writer" href="/@{writer}">{writer}</a>
@@ -46,7 +49,7 @@
                         <button type="submit">delete</button>
                     </form>
                 </div>
-                <div th:if="${topic.magazine.policy.equals('OPEN')}or${topic.magazine.members.contains(#authentication.name)}">
+                <div th:if="${topic.magazine.policy.equals('OPEN')}or${topic.magazine.owner.equals(#authentication.name)}or${topic.magazine.members.contains(#authentication.name)}">
                     <form action="/article-form" method="get">
                         <label>
                             <input type="text" name="topicId" th:value="*{id}" hidden>

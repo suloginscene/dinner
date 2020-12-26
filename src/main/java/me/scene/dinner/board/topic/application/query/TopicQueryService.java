@@ -26,7 +26,7 @@ public class TopicQueryService {
         return new TopicView(topic);
     }
 
-    public List<TopicLink> findTopics(Long magazineId) {
+    public List<TopicLink> linksOfMagazine(Long magazineId) {
         List<Topic> topics = repository.findByMagazineId(magazineId);
         return topics.stream()
                 .map(TopicLink::new)

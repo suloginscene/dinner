@@ -68,10 +68,10 @@ class ArticleServiceTest {
             ArticleCreateRequest request = new ArticleCreateRequest("user", topicId, "article", "content", true, tagNames);
             Long id = service.save(request);
 
-            ArticleView article = query.find(id);
+            ArticleView article = query.view(id);
             assertThat(article.getTags().size()).isEqualTo(2);
 
-            TagView tag = tagQuery.find("tag");
+            TagView tag = tagQuery.view("tag");
             assertThat(tag.getArticles().size()).isEqualTo(1);
         }
 
@@ -96,7 +96,7 @@ class ArticleServiceTest {
 
             service.delete(id, "user");
 
-            TagView tag = tagQuery.find("tag");
+            TagView tag = tagQuery.view("tag");
             assertThat(tag.getArticles().size()).isEqualTo(0);
         }
     }

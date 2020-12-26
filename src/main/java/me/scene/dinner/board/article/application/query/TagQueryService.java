@@ -26,8 +26,8 @@ public class TagQueryService {
                 .collect(toList());
     }
 
-    public TagView find(String name) {
-        Tag tag = repository.find(name);
+    public TagView view(String name) {
+        Tag tag = repository.fetchToShow(name);
         return new TagView(tag);
     }
 

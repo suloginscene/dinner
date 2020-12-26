@@ -34,7 +34,7 @@ public class MagazineController {
 
     @GetMapping("/magazines")
     public String showList(Model model) {
-        List<MagazineLink> magazines = query.findAll();
+        List<MagazineLink> magazines = query.allLinks();
 
         model.addAttribute("magazines", magazines);
         return "page/board/magazine/list";
@@ -42,7 +42,7 @@ public class MagazineController {
 
     @GetMapping("/magazines/{id}")
     public String showMagazine(@PathVariable Long id, Model model) {
-        MagazineView magazine = query.find(id);
+        MagazineView magazine = query.view(id);
 
         model.addAttribute("magazine", magazine);
         return "page/board/magazine/view";
@@ -78,7 +78,7 @@ public class MagazineController {
 
     @GetMapping("/magazines/{id}/form")
     public String updateForm(@PathVariable Long id, Model model) {
-        MagazineView magazine = query.find(id);
+        MagazineView magazine = query.view(id);
 
         MagazineUpdateForm updateForm = new MagazineUpdateForm(
                 magazine.getId(),

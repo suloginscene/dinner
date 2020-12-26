@@ -13,13 +13,13 @@ import static java.util.stream.Collectors.toList;
 public class TagView {
 
     private final String name;
-    private final List<ArticleExtendedLink> articles;
+    private final List<ArticleInTag> articles;
 
     public TagView(Tag tag) {
         this.name = tag.getName();
         this.articles = tag.publicTaggedArticles().stream()
                 .map(ArticleTag::getArticle)
-                .map(ArticleExtendedLink::new)
+                .map(ArticleInTag::new)
                 .collect(toList());
     }
 

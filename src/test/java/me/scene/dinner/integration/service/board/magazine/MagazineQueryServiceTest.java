@@ -3,7 +3,6 @@ package me.scene.dinner.integration.service.board.magazine;
 import me.scene.dinner.board.common.dto.Link;
 import me.scene.dinner.board.magazine.application.query.MagazineQueryService;
 import me.scene.dinner.board.magazine.application.query.dto.MagazineLink;
-import me.scene.dinner.board.magazine.application.query.dto.MagazineView;
 import me.scene.dinner.board.magazine.domain.magazine.model.Magazine;
 import me.scene.dinner.board.magazine.domain.magazine.repository.MagazineRepository;
 import me.scene.dinner.board.magazine.domain.magazine.model.Type;
@@ -53,7 +52,7 @@ class MagazineQueryServiceTest {
     @Nested class OnFindListOfUser {
         @Test
         void returns_list() {
-            List<MagazineLink> magazines = query.findByUsername("A");
+            List<MagazineLink> magazines = query.linksOfUser("A");
             assertThat(magazines.size()).isEqualTo(2);
         }
     }
@@ -61,7 +60,7 @@ class MagazineQueryServiceTest {
     @Nested class OnFindAll {
         @Test
         void returns_all() {
-            List<MagazineLink> magazines = query.findAll();
+            List<MagazineLink> magazines = query.allLinks();
             assertThat(magazines.size()).isEqualTo(3);
         }
     }
@@ -73,7 +72,7 @@ class MagazineQueryServiceTest {
             String managedMagazine = rate(managed, 20);
             String exclusiveMagazine = rate(exclusive, 30);
 
-            List<MagazineLink> magazines = query.findBest(2);
+            List<MagazineLink> magazines = query.bestLinks(2);
             assertThat(magazines.size()).isEqualTo(2);
 
             List<String> titles = magazines.stream().map(Link::getTitle).collect(Collectors.toList());

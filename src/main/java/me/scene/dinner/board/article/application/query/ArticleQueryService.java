@@ -22,32 +22,31 @@ public class ArticleQueryService {
     private final ArticleRepository repository;
 
 
-    public ArticleView find(Long id) {
-        Article article = repository.find(id);
+    public ArticleView view(Long id) {
+        Article article = repository.fetchToView(id);
         return new ArticleView(article);
     }
 
 
     public List<ArticleExtendedLink> findPublicByWriter(String username) {
-        Owner key = new Owner(username);
-        List<Article> articles = repository.findByOwnerAndPublicizedOrderByPointDesc(key, true);
+        Owner owner = new Owner(username);
+        List<Article> articles = repository.findByUsername(owner);
         return articles.stream()
                 .map(ArticleExtendedLink::new)
                 .collect(toList());
     }
 
     public List<ArticleExtendedLink> findPrivateByWriter(String username) {
-        Owner key = new Owner(username);
-        List<Article> articles = repository.findByOwnerAndPublicizedOrderByCreatedAtAsc(key, false);
+        Owner owner = new Owner(username);
+        List<Article> articles = repository.findPrivateByUsername(owner);
         return articles.stream()
                 .map(ArticleExtendedLink::new)
                 .collect(toList());
     }
 
-    public List<ArticleExtendedLink> findArticles(Long topicId) {
-        List<Article> topics = repository.findByTopicId(topicId);
-        return topics.stream()
-                .filter(Article::isPublicized)
+    public List<ArticleExtendedLink> linksOfTopic(Long topicId) {
+        List<Article> articles = repository.findPublicByTopicId(topicId);
+        return articles.stream()
                 .map(ArticleExtendedLink::new)
                 .collect(toList());
     }

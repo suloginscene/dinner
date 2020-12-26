@@ -9,9 +9,11 @@ window.addEventListener('load', function () {
 
     const appendArticles = function (articleArr) {
         articleArr.forEach(function (a) {
-            const date = a.createdAt.substring(0, "yyyy-MM-dd".length);
-            const article = articleTemplate.replace("{id}", a.id).replace("{title}", a.title)
-                .replace("{writer}", a.owner).replace("{writer}", a.owner).replace("{createdAt}", date)
+            const article = articleTemplate
+                .replace("{id}", a.id)
+                .replace("{title}", a.title)
+                .replace("{writer}", a.owner).replace("{writer}", a.owner)
+                .replace("{createdAt}", a.createdAt.substring(0, "yyyy-MM-dd".length))
                 .replace("{tags}", function () {
                     const tags = a.tags;
                     let tagListString = "";
@@ -20,7 +22,11 @@ window.addEventListener('load', function () {
                         tagListString += renderedTag;
                     });
                     return tagListString;
-                });
+                })
+                .replace("{reply}", a.reply)
+                .replace("{read}", a.read)
+                .replace("{like}", a.like)
+            ;
             articles.append(article);
         });
     };

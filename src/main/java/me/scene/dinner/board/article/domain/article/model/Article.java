@@ -7,6 +7,7 @@ import me.scene.dinner.board.common.domain.model.Owner;
 import me.scene.dinner.board.magazine.domain.magazine.model.Magazine;
 import me.scene.dinner.board.magazine.domain.open.model.OpenMagazine;
 import me.scene.dinner.board.topic.domain.model.Topic;
+import org.hibernate.annotations.BatchSize;
 
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -40,14 +41,16 @@ public class Article extends Board {
     @ManyToOne(fetch = LAZY)
     private Topic topic;
 
+    @BatchSize(size = 100)
     @OneToMany(cascade = ALL, orphanRemoval = true) @JoinColumn(name = "article_id")
     private final List<Reply> replies = new ArrayList<>();
 
-    @OneToMany(cascade = ALL, orphanRemoval = true, mappedBy = "article")
-    private final Set<ArticleTag> articleTags = new HashSet<>();
-
+    @BatchSize(size = 100)
     @OneToMany(cascade = ALL, orphanRemoval = true) @JoinColumn(name = "article_id")
     private final Set<Like> likes = new HashSet<>();
+
+    @OneToMany(cascade = ALL, orphanRemoval = true, mappedBy = "article")
+    private final Set<ArticleTag> articleTags = new HashSet<>();
 
 
     public Article(Topic topic, String owner, String title, String content, boolean publicized) {

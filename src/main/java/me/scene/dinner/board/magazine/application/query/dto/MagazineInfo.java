@@ -15,6 +15,7 @@ public class MagazineInfo {
     private final String title;
 
     private final String policy;
+    private final String owner;
     private final List<String> members = new ArrayList<>();
 
 
@@ -22,6 +23,7 @@ public class MagazineInfo {
         id = magazine.getId();
         title = magazine.getTitle();
         policy = magazine.type().name();
+        owner = magazine.getOwner().name();
         if (magazine.type() == Type.MANAGED) {
             ManagedMagazine managed = (ManagedMagazine) magazine;
             members.addAll(managed.memberNames());
