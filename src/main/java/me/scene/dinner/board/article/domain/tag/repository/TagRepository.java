@@ -15,10 +15,6 @@ public interface TagRepository extends JpaRepository<Tag, Long> {
 
     Optional<Tag> findByName(String name);
 
-    @Query("select t from Tag t" +
-            " join fetch t.articleTags at join fetch at.article" +
-            " where t.name = :name")
-    Tag fetchToShow(@Param("name") String name);
 
     default Tag find(String name) {
         return findByName(name).orElseThrow(() -> new NoSuchElementException(name));

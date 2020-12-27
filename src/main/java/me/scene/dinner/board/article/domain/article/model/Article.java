@@ -49,6 +49,7 @@ public class Article extends Board {
     @OneToMany(cascade = ALL, orphanRemoval = true) @JoinColumn(name = "article_id")
     private final Set<Like> likes = new HashSet<>();
 
+    @BatchSize(size = 100)
     @OneToMany(cascade = ALL, orphanRemoval = true, mappedBy = "article")
     private final Set<ArticleTag> articleTags = new HashSet<>();
 

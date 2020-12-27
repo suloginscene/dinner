@@ -9,7 +9,7 @@ import me.scene.dinner.common.entity.BaseEntity;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 
-import static javax.persistence.FetchType.LAZY;
+import static javax.persistence.FetchType.EAGER;
 import static lombok.AccessLevel.PROTECTED;
 
 
@@ -18,10 +18,10 @@ import static lombok.AccessLevel.PROTECTED;
 @NoArgsConstructor(access = PROTECTED)
 public class ArticleTag extends BaseEntity {
 
-    @ManyToOne(fetch = LAZY)
+    @ManyToOne(fetch = EAGER)
     private Article article;
 
-    @ManyToOne(fetch = LAZY)
+    @ManyToOne(fetch = EAGER)
     private Tag tag;
 
 

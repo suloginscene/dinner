@@ -11,18 +11,6 @@ import java.util.List;
 
 public interface ArticleRepository extends JpaRepository<Article, Long> {
 
-    @Query("select distinct a from Article a" +
-            " join fetch a.articleTags at join fetch at.tag" +
-            " where a.owner = :owner and a.publicized = true" +
-            " order by a.point desc")
-    List<Article> findByUsername(@Param("owner") Owner owner);
-
-    @Query("select distinct a from Article a" +
-            " join fetch a.articleTags at join fetch at.tag" +
-            " where a.owner = :owner and a.publicized = false" +
-            " order by a.createdAt")
-    List<Article> findPrivateByUsername(@Param("owner") Owner owner);
-
     @Query("select a from Article a" +
             " join fetch a.topic t" +
             " join fetch t.magazine" +
@@ -34,9 +22,18 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
             " where a.id = :id")
     Article fetchToView(@Param("id") Long id);
 
+    @Query("select distinct a from Article a" +
+            " where a.owner = :owner and a.publicized = true" +
+            " order by a.point desc")
+    List<Article> findByUsername(@Param("owner") Owner owner);
+
+    @Query("select distinct a from Article a" +
+            " where a.owner = :owner and a.publicized = false" +
+            " order by a.createdAt")
+    List<Article> findPrivateByUsername(@Param("owner") Owner owner);
+
     @Query("select distinct a" +
             " from Article a" +
-            " join fetch a.articleTags at join fetch at.tag" +
             " where a.topic.id = :topicId and a.publicized = true" +
             " order by a.createdAt")
     List<Article> findPublicByTopicId(@Param("topicId") Long topicId);
