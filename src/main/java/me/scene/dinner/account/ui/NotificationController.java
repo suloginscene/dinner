@@ -4,8 +4,7 @@ import lombok.RequiredArgsConstructor;
 import me.scene.dinner.account.application.command.NotificationService;
 import me.scene.dinner.account.application.query.NotificationQueryService;
 import me.scene.dinner.account.application.query.dto.NotificationView;
-import me.scene.dinner.account.domain.account.model.Account;
-import me.scene.dinner.common.security.Current;
+import me.scene.dinner.common.security.Principal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,8 +19,7 @@ public class NotificationController {
 
 
     @GetMapping("/notifications")
-    public String notification(@Current Account current, Model model) {
-        String username = current.getUsername();
+    public String notification(@Principal String username, Model model) {
         NotificationView notificationView = query.find(username);
         service.check(username);
 

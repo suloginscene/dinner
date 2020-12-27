@@ -3,7 +3,6 @@ package me.scene.dinner.board.article.ui;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import me.scene.dinner.account.domain.account.model.Account;
 import me.scene.dinner.board.article.application.command.ArticleService;
 import me.scene.dinner.board.article.application.command.request.ArticleCreateRequest;
 import me.scene.dinner.board.article.application.command.request.ArticleUpdateRequest;
@@ -12,7 +11,7 @@ import me.scene.dinner.board.article.application.query.dto.ArticleView;
 import me.scene.dinner.board.article.ui.form.ArticleForm;
 import me.scene.dinner.board.article.ui.form.ArticleUpdateForm;
 import me.scene.dinner.board.article.ui.form.TagForm;
-import me.scene.dinner.common.security.Current;
+import me.scene.dinner.common.security.Principal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -43,9 +42,7 @@ public class ArticleController {
 
     @GetMapping("/articles/{id}")
     public String showArticle(@PathVariable Long id,
-                              @Current Account current, Model model) {
-
-        String username = (current != null) ? current.getUsername() : "anonymousUser";
+                              @Principal String username, Model model) {
 
         service.read(id, username);
         ArticleView article = query.view(id);
@@ -64,12 +61,11 @@ public class ArticleController {
     }
 
     @PostMapping("/articles")
-    public String createArticle(@Current Account current,
+    public String createArticle(@Principal String username,
                                 @Valid ArticleForm form, Errors errors) {
 
         if (errors.hasErrors()) return "page/board/article/form";
 
-        String username = current.getUsername();
         Long topicId = form.getTopicId();
         String title = form.getTitle();
         String content = form.getContent();
@@ -100,13 +96,12 @@ public class ArticleController {
     }
 
     @PutMapping("/articles/{id}")
-    public String update(@Current Account current,
+    public String update(@Principal String username,
                          @PathVariable Long id,
                          @Valid ArticleUpdateForm form, Errors errors) {
 
         if (errors.hasErrors()) return "page/board/article/update";
 
-        String username = current.getUsername();
         String title = form.getTitle();
         String content = form.getContent();
         boolean publicized = form.getStatus().equals("PUBLIC");
@@ -120,9 +115,7 @@ public class ArticleController {
 
     @DeleteMapping("/articles/{id}")
     public String delete(@PathVariable Long id,
-                         @Current Account current) {
-
-        String username = current.getUsername();
+                         @Principal String username) {
 
         Long topicId = service.delete(id, username);
 

@@ -2,8 +2,7 @@ package me.scene.dinner.account.ui;
 
 import lombok.RequiredArgsConstructor;
 import me.scene.dinner.account.application.query.NotificationQueryService;
-import me.scene.dinner.account.domain.account.model.Account;
-import me.scene.dinner.common.security.Current;
+import me.scene.dinner.common.security.Principal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -16,10 +15,9 @@ public class NotificationApiController {
 
 
     @GetMapping("/api/notifications/count-unchecked")
-    public long countUnchecked(@Current Account current) {
-        if (current == null) return 0L;
+    public long countUnchecked(@Principal String username) {
+        if (username == null) return 0L;
 
-        String username = current.getUsername();
         return query.countUnchecked(username);
     }
 

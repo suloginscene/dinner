@@ -1,16 +1,15 @@
 package me.scene.dinner.board.magazine.ui;
 
 import lombok.RequiredArgsConstructor;
-import me.scene.dinner.account.domain.account.model.Account;
 import me.scene.dinner.board.magazine.application.command.MagazineService;
 import me.scene.dinner.board.magazine.application.command.request.MagazineCreateRequest;
 import me.scene.dinner.board.magazine.application.command.request.MagazineUpdateRequest;
+import me.scene.dinner.board.magazine.application.query.MagazineQueryService;
 import me.scene.dinner.board.magazine.application.query.dto.MagazineLink;
 import me.scene.dinner.board.magazine.application.query.dto.MagazineView;
-import me.scene.dinner.board.magazine.application.query.MagazineQueryService;
 import me.scene.dinner.board.magazine.ui.form.MagazineForm;
 import me.scene.dinner.board.magazine.ui.form.MagazineUpdateForm;
-import me.scene.dinner.common.security.Current;
+import me.scene.dinner.common.security.Principal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
@@ -58,12 +57,11 @@ public class MagazineController {
     }
 
     @PostMapping("/magazines")
-    public String createMagazine(@Current Account current,
+    public String createMagazine(@Principal String username,
                                  @Valid MagazineForm form, Errors errors) {
 
         if (errors.hasErrors()) return "page/board/magazine/form";
 
-        String username = current.getUsername();
         String title = form.getTitle();
         String shortExplanation = form.getShortExplanation();
         String longExplanation = form.getLongExplanation();
@@ -94,12 +92,11 @@ public class MagazineController {
 
     @PutMapping("/magazines/{id}")
     public String update(@PathVariable Long id,
-                         @Current Account current,
+                         @Principal String username,
                          @Valid MagazineUpdateForm form, Errors errors) {
 
         if (errors.hasErrors()) return "page/board/magazine/update";
 
-        String username = current.getUsername();
         String title = form.getTitle();
         String shortExplanation = form.getShortExplanation();
         String longExplanation = form.getLongExplanation();
@@ -113,9 +110,8 @@ public class MagazineController {
 
     @DeleteMapping("/magazines/{id}")
     public String delete(@PathVariable Long id,
-                         @Current Account current) {
+                         @Principal String username) {
 
-        String username = current.getUsername();
         service.delete(id, username);
         return "redirect:" + ("/");
     }

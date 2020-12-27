@@ -3,13 +3,12 @@ package me.scene.dinner.account.ui;
 import lombok.RequiredArgsConstructor;
 import me.scene.dinner.account.application.command.AccountService;
 import me.scene.dinner.account.application.command.request.ProfileUpdateRequest;
-import me.scene.dinner.account.domain.account.model.Account;
-import me.scene.dinner.account.domain.account.model.Profile;
 import me.scene.dinner.account.application.query.AccountQueryService;
 import me.scene.dinner.account.application.query.dto.AccountView;
-import me.scene.dinner.account.ui.form.ProfileForm;
+import me.scene.dinner.account.domain.account.model.Profile;
 import me.scene.dinner.account.ui.form.PasswordForm;
-import me.scene.dinner.common.security.Current;
+import me.scene.dinner.account.ui.form.ProfileForm;
+import me.scene.dinner.common.security.Principal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
@@ -38,9 +37,7 @@ public class AccountController {
 
 
     @GetMapping("/profile")
-    public String profileForm(@Current Account current, Model model) {
-        String username = current.getUsername();
-
+    public String profileForm(@Principal String username, Model model) {
         AccountView account = query.accountView(username);
         Profile profile = account.getProfile();
 
@@ -55,10 +52,10 @@ public class AccountController {
     }
 
     @PostMapping("/profile")
-    public String updateProfile(@Current Account current, @Valid ProfileForm form, Errors errors) {
-        if (errors.hasErrors()) return "page/account/profile";
+    public String updateProfile(@Principal String username,
+                                @Valid ProfileForm form, Errors errors) {
 
-        String username = current.getUsername();
+        if (errors.hasErrors()) return "page/account/profile";
 
         ProfileUpdateRequest request = new ProfileUpdateRequest(form.getGreeting());
         service.updateProfile(username, request);
@@ -76,10 +73,10 @@ public class AccountController {
     }
 
     @PostMapping("/password")
-    public String updatePassword(@Current Account current, @Valid PasswordForm passwordForm, Errors errors) {
-        if (errors.hasErrors()) return "page/account/password";
+    public String updatePassword(@Principal String username,
+                                 @Valid PasswordForm passwordForm, Errors errors) {
 
-        String username = current.getUsername();
+        if (errors.hasErrors()) return "page/account/password";
 
         String password = passwordForm.getPassword();
         service.changePassword(username, password);

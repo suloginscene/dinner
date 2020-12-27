@@ -1,7 +1,6 @@
 package me.scene.dinner.board.topic.ui;
 
 import lombok.RequiredArgsConstructor;
-import me.scene.dinner.account.domain.account.model.Account;
 import me.scene.dinner.board.topic.application.command.TopicService;
 import me.scene.dinner.board.topic.application.command.request.TopicCreateRequest;
 import me.scene.dinner.board.topic.application.command.request.TopicUpdateRequest;
@@ -9,7 +8,7 @@ import me.scene.dinner.board.topic.application.query.TopicQueryService;
 import me.scene.dinner.board.topic.application.query.dto.TopicView;
 import me.scene.dinner.board.topic.ui.form.TopicForm;
 import me.scene.dinner.board.topic.ui.form.TopicUpdateForm;
-import me.scene.dinner.common.security.Current;
+import me.scene.dinner.common.security.Principal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
@@ -49,12 +48,11 @@ public class TopicController {
     }
 
     @PostMapping("/topics")
-    public String createTopic(@Current Account current,
+    public String createTopic(@Principal String username,
                               @Valid TopicForm form, Errors errors) {
 
         if (errors.hasErrors()) return "page/board/topic/form";
 
-        String username = current.getUsername();
         Long magazineId = form.getMagazineId();
         String title = form.getTitle();
         String shortExplanation = form.getShortExplanation();
@@ -84,12 +82,11 @@ public class TopicController {
 
     @PutMapping("/topics/{id}")
     public String update(@PathVariable Long id,
-                         @Current Account current,
+                         @Principal String username,
                          @Valid TopicUpdateForm form, Errors errors) {
 
         if (errors.hasErrors()) return "page/board/topic/update";
 
-        String username = current.getUsername();
         String title = form.getTitle();
         String shortExplanation = form.getShortExplanation();
         String longExplanation = form.getLongExplanation();
@@ -103,9 +100,8 @@ public class TopicController {
 
     @DeleteMapping("/topics/{id}")
     public String delete(@PathVariable Long id,
-                         @Current Account current) {
+                         @Principal String username) {
 
-        String username = current.getUsername();
         Long magazineId = service.delete(id, username);
 
         return "redirect:" + ("/magazines/" + magazineId);

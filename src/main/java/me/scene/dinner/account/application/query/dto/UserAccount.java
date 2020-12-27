@@ -13,6 +13,7 @@ import java.util.Set;
 public class UserAccount extends User {
 
     private final Account account;
+    private final String username;
 
     public UserAccount(Account account) {
         super(
@@ -21,6 +22,7 @@ public class UserAccount extends User {
                 Set.of(new SimpleGrantedAuthority("ROLE_" + account.getRole().name()))
         );
         this.account = account;
+        this.username = account.getUsername();
     }
 
 }
