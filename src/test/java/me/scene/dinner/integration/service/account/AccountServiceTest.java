@@ -1,22 +1,21 @@
 package me.scene.dinner.integration.service.account;
 
 import me.scene.dinner.account.application.command.AccountService;
-import me.scene.dinner.account.application.command.mail.event.AccountMailEvent;
-import me.scene.dinner.account.application.command.mail.message.RandomPasswordMessage;
-import me.scene.dinner.account.application.command.mail.message.VerificationMessage;
+import me.scene.dinner.account.application.command.mail.AccountMailMessageFactory;
 import me.scene.dinner.account.application.command.request.SignupRequest;
 import me.scene.dinner.account.domain.account.model.Account;
 import me.scene.dinner.account.domain.account.repository.AccountRepository;
 import me.scene.dinner.account.domain.tempaccount.model.TempAccount;
 import me.scene.dinner.account.domain.tempaccount.repository.TempAccountRepository;
+import me.scene.dinner.common.mail.service.event.MailEvent;
 import me.scene.dinner.common.mail.service.event.MailEventListener;
+import me.scene.dinner.common.mail.service.sender.MailMessage;
 import me.scene.dinner.integration.utils.AccountTestHelper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -24,6 +23,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.atLeastOnce;
 
@@ -39,7 +39,7 @@ class AccountServiceTest {
 
     @Autowired PasswordEncoder encoder;
 
-    @Value("${dinner.url}") String url;
+    @Autowired AccountMailMessageFactory messageFactory;
     @SpyBean MailEventListener mail;
 
     @Autowired AccountTestHelper helper;
@@ -60,9 +60,9 @@ class AccountServiceTest {
             TempAccount temp = tempRepository.findAccountByEmail("email@email.com");
             assertThat(temp.getPassword()).matches(encoded -> encoder.matches("password", encoded));
 
-            VerificationMessage message = new VerificationMessage("email@email.com", url, temp.getVerificationToken());
-            AccountMailEvent event = new AccountMailEvent(message);
-            then(mail).should(atLeastOnce()).sendByEvent(event);
+            MailMessage message = messageFactory.verificationMessage("email@email.com", temp.getVerificationToken());
+            MailEvent event = new MailEvent(message);
+            then(mail).should().sendByEvent(event);
         }
     }
 
@@ -105,9 +105,7 @@ class AccountServiceTest {
                 String password = repository.find("username").getPassword();
                 assertThat(password).startsWith("{bcrypt}");
 
-                RandomPasswordMessage message = new RandomPasswordMessage("email@email.com", "rawPassword");
-                AccountMailEvent event = new AccountMailEvent(message);
-                then(mail).should().sendByEvent(event);
+                then(mail).should(atLeastOnce()).sendByEvent(any());
             }
         }
     }

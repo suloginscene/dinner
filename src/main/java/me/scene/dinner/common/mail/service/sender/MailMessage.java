@@ -5,8 +5,8 @@ import lombok.EqualsAndHashCode;
 
 
 @Data
-@EqualsAndHashCode(exclude = "message")
-public abstract class MailMessage {
+@EqualsAndHashCode
+public class MailMessage {
 
     private final String subject;
     private final String to;

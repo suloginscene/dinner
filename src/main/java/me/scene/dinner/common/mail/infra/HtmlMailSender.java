@@ -11,23 +11,25 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.nio.charset.StandardCharsets;
 
-@Profile({"dev", "prod"})
+
 @Component
+@Profile({"dev", "prod"})
 @RequiredArgsConstructor
 public class HtmlMailSender extends MailSender {
 
-    private final JavaMailSender javaMailSender;
+    private final JavaMailSender sender;
+
 
     @Override
     protected void doSend(String subject, String to, String message) throws MessagingException {
-        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+        MimeMessage mimeMessage = sender.createMimeMessage();
 
-        MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, false, StandardCharsets.UTF_8.name());
-        mimeMessageHelper.setSubject(subject);
-        mimeMessageHelper.setTo(to);
-        mimeMessageHelper.setText(message);
+        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, false, StandardCharsets.UTF_8.name());
+        helper.setSubject(subject);
+        helper.setTo(to);
+        helper.setText(message, true);
 
-        javaMailSender.send(mimeMessage);
+        sender.send(mimeMessage);
     }
 
 }

@@ -53,7 +53,6 @@ public class SignupController {
         return "redirect:" + ("/");
     }
 
-
     @GetMapping("/verify")
     public String verifyEmail(@RequestParam String email, @RequestParam String token, Model model) {
         service.verify(email, token);

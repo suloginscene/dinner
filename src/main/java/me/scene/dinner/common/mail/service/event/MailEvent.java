@@ -5,7 +5,7 @@ import me.scene.dinner.common.mail.service.sender.MailMessage;
 
 
 @Data
-public abstract class MailEvent {
+public class MailEvent {
 
     private final MailMessage mailMessage;
 

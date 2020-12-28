@@ -58,6 +58,7 @@ public class MemberController {
         return "redirect:" + ("/magazines/" + id + "/members/page");
     }
 
+    // TODO change
     @DeleteMapping("/magazines/{id}/{member}")
     public String removeMember(@PathVariable Long id, @PathVariable String member,
                                @Principal String username) {
