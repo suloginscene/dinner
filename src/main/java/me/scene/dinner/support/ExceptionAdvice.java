@@ -6,7 +6,7 @@ import me.scene.dinner.board.common.domain.exception.NotDeletableException;
 import me.scene.dinner.board.common.domain.exception.NotOwnerException;
 import me.scene.dinner.board.magazine.domain.magazine.exception.AuthorizationException;
 import me.scene.dinner.board.magazine.domain.magazine.exception.TypeMismatchException;
-import me.scene.dinner.common.mail.service.sender.MailException;
+import me.scene.dinner.common.mail.sender.MailException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;

@@ -1,7 +1,6 @@
-package me.scene.dinner.account.application.command.mail;
+package me.scene.dinner.common.mail.message;
 
 import lombok.RequiredArgsConstructor;
-import me.scene.dinner.common.mail.service.sender.MailMessage;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.thymeleaf.TemplateEngine;
@@ -10,7 +9,7 @@ import org.thymeleaf.context.Context;
 
 @Component
 @RequiredArgsConstructor
-public class AccountMailMessageFactory {
+public class MailMessageFactory {
 
     @Value("${dinner.url}")
     private String url;
@@ -18,7 +17,7 @@ public class AccountMailMessageFactory {
     private final TemplateEngine templateEngine;
 
 
-    public MailMessage verificationMessage(String email, String token) {
+    public MailMessage verification(String email, String token) {
         String subject = "[페이퍼] 계정 인증 메일입니다.";
 
         Context context = new Context();
@@ -30,7 +29,7 @@ public class AccountMailMessageFactory {
         return new MailMessage(subject, email, message);
     }
 
-    public MailMessage randomPasswordMessage(String email, String rawPassword) {
+    public MailMessage randomPassword(String email, String rawPassword) {
         String subject = "[페이퍼] 임의의 비밀번호가 적용되었습니다.";
 
         Context context = new Context();

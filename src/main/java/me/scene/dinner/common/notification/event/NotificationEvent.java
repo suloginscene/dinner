@@ -4,7 +4,7 @@ import lombok.Data;
 
 
 @Data
-public abstract class NotificationEvent {
+public class NotificationEvent {
 
     private final String receiver;
     private final String message;

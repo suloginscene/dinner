@@ -4,7 +4,6 @@ import me.scene.dinner.board.magazine.application.cache.BestMagazineCache;
 import me.scene.dinner.board.magazine.application.command.MagazineService;
 import me.scene.dinner.board.magazine.application.command.request.MagazineCreateRequest;
 import me.scene.dinner.board.magazine.application.command.request.MagazineUpdateRequest;
-import me.scene.dinner.board.magazine.application.command.event.MagazineDatabaseChangedEvent;
 import me.scene.dinner.board.magazine.domain.magazine.model.Type;
 import me.scene.dinner.integration.utils.MagazineTestHelper;
 import org.junit.jupiter.api.AfterEach;
@@ -42,8 +41,7 @@ class MagazineServiceTest {
             MagazineCreateRequest request = new MagazineCreateRequest("owner", "title", "short", "long", "OPEN");
             Long id = service.save(request);
 
-            MagazineDatabaseChangedEvent event = new MagazineDatabaseChangedEvent(id);
-            then(cache).should().updateByEvent(event);
+            then(cache).should().update(id);
         }
     }
 
@@ -55,8 +53,7 @@ class MagazineServiceTest {
             MagazineUpdateRequest request = new MagazineUpdateRequest("owner", "new", "short", "long");
             service.update(id, request);
 
-            MagazineDatabaseChangedEvent event = new MagazineDatabaseChangedEvent(id);
-            then(cache).should(atLeastOnce()).updateByEvent(event);
+            then(cache).should(atLeastOnce()).update(id);
         }
     }
 
@@ -67,8 +64,7 @@ class MagazineServiceTest {
 
             service.delete(id, "owner");
 
-            MagazineDatabaseChangedEvent event = new MagazineDatabaseChangedEvent(id);
-            then(cache).should(atLeastOnce()).updateByEvent(event);
+            then(cache).should(atLeastOnce()).update(id);
         }
     }
 

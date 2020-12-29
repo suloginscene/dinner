@@ -3,11 +3,9 @@ package me.scene.dinner.board.magazine.application.command;
 import lombok.RequiredArgsConstructor;
 import me.scene.dinner.board.magazine.application.command.request.MagazineCreateRequest;
 import me.scene.dinner.board.magazine.application.command.request.MagazineUpdateRequest;
-import me.scene.dinner.board.magazine.application.command.event.MagazineDatabaseChangedEvent;
 import me.scene.dinner.board.magazine.domain.magazine.model.Magazine;
-import me.scene.dinner.board.magazine.domain.magazine.repository.MagazineRepository;
 import me.scene.dinner.board.magazine.domain.magazine.model.Type;
-import org.springframework.context.ApplicationEventPublisher;
+import me.scene.dinner.board.magazine.domain.magazine.repository.MagazineRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class MagazineService {
 
     private final MagazineRepository repository;
-    private final ApplicationEventPublisher publisher;
+    private final MagazineCache cache;
 
 
     public Long save(MagazineCreateRequest request) {
@@ -33,8 +31,7 @@ public class MagazineService {
         Magazine magazine = Magazine.create(type, username, title, shortExplanation, longExplanation);
         Long id = repository.save(magazine).getId();
 
-        MagazineDatabaseChangedEvent event = new MagazineDatabaseChangedEvent(id);
-        publisher.publishEvent(event);
+        cache.update(id);
 
         return id;
     }
@@ -48,8 +45,7 @@ public class MagazineService {
         Magazine magazine = repository.find(id);
         magazine.update(username, title, shortExplanation, longExplanation);
 
-        MagazineDatabaseChangedEvent event = new MagazineDatabaseChangedEvent(id);
-        publisher.publishEvent(event);
+        cache.update(id);
     }
 
     public void delete(Long id, String current) {
@@ -57,8 +53,7 @@ public class MagazineService {
         magazine.beforeDelete(current);
         repository.delete(magazine);
 
-        MagazineDatabaseChangedEvent event = new MagazineDatabaseChangedEvent(id);
-        publisher.publishEvent(event);
+        cache.update(id);
     }
 
 }

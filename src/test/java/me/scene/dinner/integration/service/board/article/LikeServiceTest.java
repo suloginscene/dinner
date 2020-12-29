@@ -2,10 +2,11 @@ package me.scene.dinner.integration.service.board.article;
 
 import me.scene.dinner.account.application.listener.NotificationListener;
 import me.scene.dinner.board.article.application.command.LikeService;
-import me.scene.dinner.board.article.application.command.event.LikedEvent;
 import me.scene.dinner.board.article.domain.article.model.Article;
 import me.scene.dinner.board.article.domain.article.repository.ArticleRepository;
 import me.scene.dinner.board.magazine.domain.magazine.model.Type;
+import me.scene.dinner.common.notification.event.NotificationEvent;
+import me.scene.dinner.common.notification.message.NotificationMessageFactory;
 import me.scene.dinner.integration.utils.ArticleTestHelper;
 import me.scene.dinner.integration.utils.MagazineTestHelper;
 import me.scene.dinner.integration.utils.TopicTestHelper;
@@ -18,6 +19,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 
+import static org.mockito.BDDMockito.then;
+
 
 @SpringBootTest
 @DisplayName("Article_service(like)")
@@ -26,6 +29,8 @@ class LikeServiceTest {
     @Autowired LikeService service;
 
     @Autowired ArticleRepository repository;
+
+    @Autowired NotificationMessageFactory messageFactory;
     @SpyBean NotificationListener notification;
 
     @Autowired MagazineTestHelper magazineHelper;
@@ -56,8 +61,9 @@ class LikeServiceTest {
             service.like("reader", articleId);
 
             Article article = repository.find(articleId);
-            LikedEvent event = new LikedEvent("reader", article);
-            notification.notify(event);
+            String message = messageFactory.articleLiked("reader", articleId, article.getTitle());
+            NotificationEvent event = new NotificationEvent("user", message);
+            then(notification).should().notify(event);
         }
     }
 

@@ -1,7 +1,6 @@
 package me.scene.dinner.account.application.command;
 
 import lombok.RequiredArgsConstructor;
-import me.scene.dinner.account.application.command.mail.AccountMailMessageFactory;
 import me.scene.dinner.account.application.command.request.ProfileUpdateRequest;
 import me.scene.dinner.account.application.command.request.SignupRequest;
 import me.scene.dinner.account.domain.account.model.Account;
@@ -9,9 +8,9 @@ import me.scene.dinner.account.domain.account.model.Profile;
 import me.scene.dinner.account.domain.account.repository.AccountRepository;
 import me.scene.dinner.account.domain.tempaccount.model.TempAccount;
 import me.scene.dinner.account.domain.tempaccount.repository.TempAccountRepository;
-import me.scene.dinner.common.mail.service.event.MailEvent;
-import me.scene.dinner.common.mail.service.sender.MailMessage;
-import org.springframework.context.ApplicationEventPublisher;
+import me.scene.dinner.common.mail.message.MailMessage;
+import me.scene.dinner.common.mail.message.MailMessageFactory;
+import me.scene.dinner.common.mail.sender.MailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,8 +27,8 @@ public class AccountService {
     private final TempAccountRepository tempRepository;
 
     private final PasswordEncoder encoder;
-    private final AccountMailMessageFactory messageFactory;
-    private final ApplicationEventPublisher publisher;
+    private final MailMessageFactory messageFactory;
+    private final MailSender mail;
 
 
     public void signup(SignupRequest request) {
@@ -43,9 +42,8 @@ public class AccountService {
         tempRepository.save(temp);
 
         String token = temp.getVerificationToken();
-        MailMessage message = messageFactory.verificationMessage(email, token);
-        MailEvent event = new MailEvent(message);
-        publisher.publishEvent(event);
+        MailMessage message = messageFactory.verification(email, token);
+        mail.send(message);
     }
 
     public void verify(String email, String token) {
@@ -87,9 +85,8 @@ public class AccountService {
         Account account = repository.findAccountByEmail(email);
         account.changePassword(encodedPassword);
 
-        MailMessage message = messageFactory.randomPasswordMessage(email, randomPassword);
-        MailEvent event = new MailEvent(message);
-        publisher.publishEvent(event);
+        MailMessage message = messageFactory.randomPassword(email, randomPassword);
+        mail.send(message);
     }
 
 }

@@ -1,15 +1,14 @@
 package me.scene.dinner.integration.service.account;
 
 import me.scene.dinner.account.application.command.AccountService;
-import me.scene.dinner.account.application.command.mail.AccountMailMessageFactory;
 import me.scene.dinner.account.application.command.request.SignupRequest;
 import me.scene.dinner.account.domain.account.model.Account;
 import me.scene.dinner.account.domain.account.repository.AccountRepository;
 import me.scene.dinner.account.domain.tempaccount.model.TempAccount;
 import me.scene.dinner.account.domain.tempaccount.repository.TempAccountRepository;
-import me.scene.dinner.common.mail.service.event.MailEvent;
-import me.scene.dinner.common.mail.service.event.MailEventListener;
-import me.scene.dinner.common.mail.service.sender.MailMessage;
+import me.scene.dinner.common.mail.message.MailMessage;
+import me.scene.dinner.common.mail.message.MailMessageFactory;
+import me.scene.dinner.common.mail.sender.MailSender;
 import me.scene.dinner.integration.utils.AccountTestHelper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
@@ -39,8 +38,8 @@ class AccountServiceTest {
 
     @Autowired PasswordEncoder encoder;
 
-    @Autowired AccountMailMessageFactory messageFactory;
-    @SpyBean MailEventListener mail;
+    @Autowired MailMessageFactory messageFactory;
+    @SpyBean MailSender mail;
 
     @Autowired AccountTestHelper helper;
 
@@ -60,9 +59,8 @@ class AccountServiceTest {
             TempAccount temp = tempRepository.findAccountByEmail("email@email.com");
             assertThat(temp.getPassword()).matches(encoded -> encoder.matches("password", encoded));
 
-            MailMessage message = messageFactory.verificationMessage("email@email.com", temp.getVerificationToken());
-            MailEvent event = new MailEvent(message);
-            then(mail).should().sendByEvent(event);
+            MailMessage message = messageFactory.verification("email@email.com", temp.getVerificationToken());
+            then(mail).should().send(message);
         }
     }
 
@@ -105,7 +103,7 @@ class AccountServiceTest {
                 String password = repository.find("username").getPassword();
                 assertThat(password).startsWith("{bcrypt}");
 
-                then(mail).should(atLeastOnce()).sendByEvent(any());
+                then(mail).should(atLeastOnce()).send(any());
             }
         }
     }

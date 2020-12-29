@@ -21,6 +21,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final UserDetailsService userDetailsService;
     private final PersistentTokenRepository tokenRepository;
 
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 

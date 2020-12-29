@@ -1,5 +1,6 @@
-package me.scene.dinner.common.mail.service.sender;
+package me.scene.dinner.common.mail.sender;
 
+import me.scene.dinner.common.mail.message.MailMessage;
 import org.springframework.stereotype.Component;
 
 import javax.mail.MessagingException;

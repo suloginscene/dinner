@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.time.LocalDateTime;
 
+
 @Entity
 @Getter @Setter
 public class PersistentLogins {

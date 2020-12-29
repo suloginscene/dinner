@@ -1,4 +1,4 @@
-package me.scene.dinner.common.mail.service.sender;
+package me.scene.dinner.common.mail.sender;
 
 public class MailException extends RuntimeException {
 

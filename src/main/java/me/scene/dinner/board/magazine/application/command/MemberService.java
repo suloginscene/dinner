@@ -1,14 +1,11 @@
 package me.scene.dinner.board.magazine.application.command;
 
 import lombok.RequiredArgsConstructor;
-import me.scene.dinner.board.magazine.application.command.event.MemberAddedEvent;
-import me.scene.dinner.board.magazine.application.command.event.MemberAppliedEvent;
-import me.scene.dinner.board.magazine.application.command.event.MemberQuitEvent;
-import me.scene.dinner.board.magazine.application.command.event.MemberRemovedEvent;
 import me.scene.dinner.board.magazine.domain.magazine.model.Magazine;
 import me.scene.dinner.board.magazine.domain.magazine.repository.MagazineRepository;
 import me.scene.dinner.board.magazine.domain.managed.model.ManagedMagazine;
-import org.springframework.context.ApplicationEventPublisher;
+import me.scene.dinner.common.notification.message.NotificationMessageFactory;
+import me.scene.dinner.common.notification.event.NotificationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,7 +20,9 @@ import static me.scene.dinner.board.magazine.domain.magazine.model.Type.MANAGED;
 public class MemberService {
 
     private final MagazineRepository repository;
-    private final ApplicationEventPublisher publisher;
+
+    private final NotificationMessageFactory messageFactory;
+    private final NotificationEventPublisher notification;
 
 
     public List<String> memberNames(Long id) {
@@ -35,16 +34,18 @@ public class MemberService {
     public void applyMember(Long id, String memberName) {
         ManagedMagazine magazine = findManagedMagazine(id);
         if (magazine.apply(memberName)) {
-            MemberAppliedEvent event = new MemberAppliedEvent(magazine, memberName);
-            publisher.publishEvent(event);
+            String receiver = magazine.getOwner().name();
+            String message = messageFactory.memberApplied(memberName, magazine.getId(), magazine.getTitle());
+            notification.publish(receiver, message);
         }
     }
 
     public void quitMember(Long id, String memberName) {
         ManagedMagazine magazine = findManagedMagazine(id);
         if (magazine.quit(memberName)) {
-            MemberQuitEvent event = new MemberQuitEvent(magazine, memberName);
-            publisher.publishEvent(event);
+            String receiver = magazine.getOwner().name();
+            String message = messageFactory.memberQuit(memberName, magazine.getId(), magazine.getTitle());
+            notification.publish(receiver, message);
         }
     }
 
@@ -52,16 +53,16 @@ public class MemberService {
     public void addMember(Long id, String ownerName, String memberName) {
         ManagedMagazine magazine = findManagedMagazine(id);
         if (magazine.addMember(ownerName, memberName)) {
-            MemberAddedEvent event = new MemberAddedEvent(magazine, memberName);
-            publisher.publishEvent(event);
+            String message = messageFactory.memberAdded(magazine.getId(), magazine.getTitle());
+            notification.publish(memberName, message);
         }
     }
 
     public void removeMember(Long id, String ownerName, String memberName) {
         ManagedMagazine magazine = findManagedMagazine(id);
         if (magazine.removeMember(ownerName, memberName)) {
-            MemberRemovedEvent event = new MemberRemovedEvent(magazine, memberName);
-            publisher.publishEvent(event);
+            String message = messageFactory.memberRemoved(magazine.getId(), magazine.getTitle());
+            notification.publish(memberName, message);
         }
     }
 

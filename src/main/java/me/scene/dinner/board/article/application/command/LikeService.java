@@ -2,11 +2,11 @@ package me.scene.dinner.board.article.application.command;
 
 import lombok.RequiredArgsConstructor;
 import me.scene.dinner.board.article.domain.article.model.Article;
-import me.scene.dinner.board.article.domain.article.repository.ArticleRepository;
 import me.scene.dinner.board.article.domain.article.model.Like;
-import me.scene.dinner.board.article.application.command.event.LikedEvent;
+import me.scene.dinner.board.article.domain.article.repository.ArticleRepository;
 import me.scene.dinner.board.common.domain.model.Point;
-import org.springframework.context.ApplicationEventPublisher;
+import me.scene.dinner.common.notification.message.NotificationMessageFactory;
+import me.scene.dinner.common.notification.event.NotificationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,7 +19,9 @@ import java.util.Set;
 public class LikeService {
 
     private final ArticleRepository repository;
-    private final ApplicationEventPublisher publisher;
+
+    private final NotificationMessageFactory messageFactory;
+    private final NotificationEventPublisher notification;
 
 
     public void like(String reader, Long id) {
@@ -32,8 +34,9 @@ public class LikeService {
         likes.add(like);
         article.rate(Point.LIKE);
 
-        LikedEvent event = new LikedEvent(reader, article);
-        publisher.publishEvent(event);
+        String receiver = article.getOwner().name();
+        String message = messageFactory.articleLiked(reader, article.getId(), article.getTitle());
+        notification.publish(receiver, message);
     }
 
     public void dislike(String username, Long articleId) {
