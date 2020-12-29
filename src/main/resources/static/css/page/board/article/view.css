@@ -83,10 +83,6 @@ section article p img {
     color: red;
 }
 
-#like-form {
-    display: inline;
-}
-
 #like-icon:hover {
     font-size: 30px;
 }

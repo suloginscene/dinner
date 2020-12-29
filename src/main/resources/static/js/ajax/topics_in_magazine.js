@@ -15,7 +15,7 @@ window.addEventListener('load', function () {
 
     $.ajax({
         type: 'get',
-        url: '/api/topics/of/' + magazineId,
+        url: '/api/magazines/' + magazineId + '/topics',
         success: appendTopics
     });
 

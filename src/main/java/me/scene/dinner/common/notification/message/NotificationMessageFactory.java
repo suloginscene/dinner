@@ -37,6 +37,13 @@ public class NotificationMessageFactory {
         return magazine + "의 멤버에서 제외되었습니다.";
     }
 
+    public String articleReplied(String username, Long id, String title) {
+        String account = converter.account(username);
+        String article = converter.article(id, title);
+
+        return account + "가 " + article + "에 댓글을 달았습니다.";
+    }
+
     public String articleLiked(String username, Long id, String title) {
         String account = converter.account(username);
         String article = converter.article(id, title);

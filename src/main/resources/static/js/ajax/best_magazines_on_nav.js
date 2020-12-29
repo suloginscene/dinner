@@ -13,7 +13,7 @@ window.addEventListener('load', function () {
 
     $.ajax({
         type: 'get',
-        url: '/api/best-magazines',
+        url: '/api/magazines/best',
         success: loadMagazinesOnNav
     });
 

@@ -12,7 +12,7 @@
                 <div class="message">
                     누구나 매거진을 만들 수 있습니다.
                 </div>
-                <form th:action="@{/magazines}" th:method="post" th:object="${magazineForm}" id="board-form" novalidate>
+                <form th:action="'/magazines'" th:method="post" th:object="${magazineForm}" id="board-form" novalidate>
                     <div class="form-texts">
                         <div class="magazine-form-info">매거진의 이름을 정해주세요.</div>
                         <label>

@@ -27,11 +27,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.authorizeRequests()
                 .mvcMatchers(GET,
-                        "/", "/about", "/magazines", "/tags",
+                        "/", "/about",
                         "/signup", "/verify", "/login", "/forgot", "/@*",
-                        "/magazines/*", "/topics/*", "/articles/*", "/tags/*",
-                        "/api/best-magazines", "/api/magazines/*", "/api/articles/*",
-                        "/api/topics/of/*", "/api/articles/of/*"
+                        "/magazines/*", "/magazines", "/api/magazines", "/api/magazines/best",
+                        "/topics/*", "/api/magazines/*/topics",
+                        "/articles/*", "/api/topics/*/articles", "/api/articles",
+                        "/tags", "/tags/*"
+
                 ).permitAll()
                 .mvcMatchers(POST, "/signup").permitAll()
                 .mvcMatchers(PUT, "/forgot").permitAll()

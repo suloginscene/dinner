@@ -17,9 +17,9 @@ public class TopicApiController {
     private final TopicQueryService query;
 
 
-    @GetMapping("/api/topics/of/{magazineId}")
-    public List<TopicLink> topicsOfMagazine(@PathVariable Long magazineId) {
-        return query.linksOfMagazine(magazineId);
+    @GetMapping("/api/magazines/{id}/topics")
+    public List<TopicLink> topicsOfMagazine(@PathVariable Long id) {
+        return query.linksOfMagazine(id);
     }
 
 }

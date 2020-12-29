@@ -31,23 +31,6 @@ public class MagazineController {
     private final MagazineQueryService query;
 
 
-    @GetMapping("/magazines")
-    public String showList(Model model) {
-        List<MagazineLink> magazines = query.allLinks();
-
-        model.addAttribute("magazines", magazines);
-        return "page/board/magazine/list";
-    }
-
-    @GetMapping("/magazines/{id}")
-    public String showMagazine(@PathVariable Long id, Model model) {
-        MagazineView magazine = query.view(id);
-
-        model.addAttribute("magazine", magazine);
-        return "page/board/magazine/view";
-    }
-
-
     @GetMapping("/magazine-form")
     public String shipMagazineForm(Model model) {
         MagazineForm magazineForm = new MagazineForm();
@@ -71,6 +54,23 @@ public class MagazineController {
         Long id = service.save(request);
 
         return "redirect:" + ("/magazines/" + id);
+    }
+
+
+    @GetMapping("/magazines/{id}")
+    public String showMagazine(@PathVariable Long id, Model model) {
+        MagazineView magazine = query.view(id);
+
+        model.addAttribute("magazine", magazine);
+        return "page/board/magazine/view";
+    }
+
+    @GetMapping("/magazines")
+    public String showList(Model model) {
+        List<MagazineLink> magazines = query.allLinks();
+
+        model.addAttribute("magazines", magazines);
+        return "page/board/magazine/list";
     }
 
 

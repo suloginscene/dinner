@@ -34,7 +34,7 @@ window.addEventListener('load', function () {
 
     $.ajax({
         type: 'get',
-        url: '/api/articles/of/' + topicId,
+        url: '/api/topics/' + topicId + '/articles',
         success: appendArticles
     });
 

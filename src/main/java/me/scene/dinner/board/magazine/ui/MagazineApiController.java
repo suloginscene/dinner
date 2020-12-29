@@ -5,7 +5,7 @@ import me.scene.dinner.board.magazine.application.cache.BestMagazineCache;
 import me.scene.dinner.board.magazine.application.query.MagazineQueryService;
 import me.scene.dinner.board.magazine.application.query.dto.MagazineLink;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -19,13 +19,13 @@ public class MagazineApiController {
     private final MagazineQueryService service;
 
 
-    @GetMapping("/api/best-magazines")
+    @GetMapping("/api/magazines/best")
     public List<MagazineLink> bestMagazines() {
         return cache.getMagazines();
     }
 
-    @GetMapping("/api/magazines/{username}")
-    public List<MagazineLink> magazinesByUser(@PathVariable String username) {
+    @GetMapping("/api/magazines")
+    public List<MagazineLink> magazinesByUser(@RequestParam String username) {
         return service.linksOfUser(username);
     }
 

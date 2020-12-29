@@ -4,7 +4,7 @@
 
     <div th:replace="layout/layout::head(${article.title},~{::link}, ~{::script})">
         <link rel="stylesheet" href="/css/page/board/article/view.css"/>
-        <script src="/js/ajax/like.js"></script>
+        <script sec:authorize="isAuthenticated()" src="/js/ajax/like.js"></script>
     </div>
 
     <body th:replace="layout/layout::body(~{::section})">
@@ -23,13 +23,9 @@
                         <span>Read: <span th:text="*{read}"></span></span>
                         <span>Like: <span th:text="*{like}" id="like-count"></span></span>
                         <th:block sec:authorize="isAuthenticated()">
-                            <form id="like-form" th:method="post" th:action="@{/api/like}">
-                                <label hidden>
-                                    <input type="text" name="articleId" th:value="*{id}" hidden>
-                                    <input type="text" name="username" th:value="${#authentication.name}" id="username" hidden>
-                                </label>
-                                <button id="like" type="submit"><i class="fa fa-heart-o" id="like-icon"></i></button>
-                            </form>
+                            <div th:text="${_csrf.token}" id="csrf" hidden></div>
+                            <div th:text="*{id}" id="articleId" hidden></div>
+                            <button id="like" type="submit"><i class="fa fa-heart-o" id="like-icon"></i></button>
                         </th:block>
                     </div>
                 </div>
@@ -54,9 +50,8 @@
                 <div sec:authorize="!isAuthenticated()">
                     Reply need login.
                 </div>
-                <form sec:authorize="isAuthenticated()" th:action="@{/replies}" th:method="post">
+                <form sec:authorize="isAuthenticated()" th:action="'/articles/'+*{id}+'/replies'" th:method="post">
                     <span th:text="${#authentication.name}"></span>
-                    <label hidden><input type="text" name="articleId" th:value="*{id}"></label>
                     <input type="text" name="content" placeholder="reply" id="reply-input">
                     <label for="reply-input"></label>
                     <button type="submit">write</button>
@@ -72,13 +67,11 @@
                         <span th:text="${reply.content}"></span>
                     </td>
                     <td>
-                        <form th:if="${#authentication.name}==${reply.owner}" th:action="@{/replies}" th:method="delete" class="reply-delete">
-                            <label>
-                                <input type="text" name="articleId" th:value="*{id}" hidden>
-                                <input type="text" name="replyId" th:value="${reply.id}" hidden>
-                            </label>
-                            <button type="submit">delete</button>
-                        </form>
+                        <div th:if="${#authentication.name}==${reply.owner}">
+                            <form th:action="'/articles/'+*{id}+'/replies/'+${reply.id}" th:method="delete" class="reply-delete">
+                                <button type="submit">delete</button>
+                            </form>
+                        </div>
                     </td>
                     <td class="date-col">
                         <span th:text="${#temporals.format(reply.createdAt, 'yyyy-MM-dd HH:mm')}"></span>

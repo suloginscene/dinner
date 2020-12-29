@@ -1,12 +1,17 @@
 package me.scene.dinner.integration.service.board.article;
 
+import me.scene.dinner.account.application.listener.NotificationListener;
 import me.scene.dinner.board.article.application.command.ArticleService;
 import me.scene.dinner.board.article.application.command.request.ArticleCreateRequest;
 import me.scene.dinner.board.article.application.query.ArticleQueryService;
 import me.scene.dinner.board.article.application.query.TagQueryService;
 import me.scene.dinner.board.article.application.query.dto.ArticleView;
 import me.scene.dinner.board.article.application.query.dto.TagView;
+import me.scene.dinner.board.article.domain.article.model.Article;
+import me.scene.dinner.board.article.domain.article.repository.ArticleRepository;
 import me.scene.dinner.board.magazine.domain.magazine.model.Type;
+import me.scene.dinner.common.notification.event.NotificationEvent;
+import me.scene.dinner.common.notification.message.NotificationMessageFactory;
 import me.scene.dinner.integration.utils.ArticleTestHelper;
 import me.scene.dinner.integration.utils.MagazineTestHelper;
 import me.scene.dinner.integration.utils.TagTestHelper;
@@ -18,12 +23,14 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 
 import java.util.NoSuchElementException;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.BDDMockito.then;
 
 
 @SpringBootTest
@@ -34,6 +41,11 @@ class ArticleServiceTest {
 
     @Autowired ArticleQueryService query;
     @Autowired TagQueryService tagQuery;
+
+    @Autowired ArticleRepository repository;
+
+    @Autowired NotificationMessageFactory messageFactory;
+    @SpyBean NotificationListener notification;
 
     @Autowired ArticleTestHelper helper;
     @Autowired TopicTestHelper topicHelper;
@@ -98,6 +110,19 @@ class ArticleServiceTest {
 
             TagView tag = tagQuery.view("tag");
             assertThat(tag.getArticles().size()).isEqualTo(0);
+        }
+    }
+
+    @Nested class OnLike {
+        @Test
+        void publishes() {
+            Long articleId = helper.createArticle("user", topicId, "article", true);
+            service.like("reader", articleId);
+
+            Article article = repository.find(articleId);
+            String message = messageFactory.articleLiked("reader", articleId, article.getTitle());
+            NotificationEvent event = new NotificationEvent("user", message);
+            then(notification).should().notify(event);
         }
     }
 

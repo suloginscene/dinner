@@ -72,6 +72,8 @@ public class ManagedMagazine extends Magazine {
     public boolean addMember(String ownerName, String memberName) {
         owner.identify(ownerName);
 
+        if (owner.is(memberName)) return false;
+
         Optional<Member> optionalMember = findMember(memberName);
         if (optionalMember.isPresent()) return false;
 

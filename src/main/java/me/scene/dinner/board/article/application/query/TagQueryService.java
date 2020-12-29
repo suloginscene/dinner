@@ -19,6 +19,7 @@ public class TagQueryService {
 
     private final TagRepository repository;
 
+
     public List<String> findAllTagNames() {
         List<Tag> tags = repository.findAll();
         return tags.stream()

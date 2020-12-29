@@ -8,14 +8,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 
 @Service
-@Transactional(readOnly = true)
+@Transactional
 @RequiredArgsConstructor
 public class TagService {
 
     private final TagRepository repository;
 
 
-    @Transactional
     public void save(String name) {
         if (repository.existsByName(name)) return;
 
@@ -23,7 +22,6 @@ public class TagService {
         repository.save(tag);
     }
 
-    @Transactional
     public void delete(String name) {
         Tag tag = repository.find(name);
         if (!tag.getArticleTags().isEmpty()) return;

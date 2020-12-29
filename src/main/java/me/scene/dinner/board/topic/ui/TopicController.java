@@ -30,15 +30,6 @@ public class TopicController {
     private final TopicQueryService queryService;
 
 
-    @GetMapping("/topics/{id}")
-    public String showTopic(@PathVariable Long id, Model model) {
-        TopicView topic = queryService.find(id);
-
-        model.addAttribute("topic", topic);
-        return "page/board/topic/view";
-    }
-
-
     @GetMapping("/topic-form")
     public String shipTopicForm(@RequestParam Long magazineId, Model model) {
         TopicForm topicForm = new TopicForm(magazineId);
@@ -62,6 +53,15 @@ public class TopicController {
         Long id = service.save(request);
 
         return "redirect:" + ("/topics/" + id);
+    }
+
+
+    @GetMapping("/topics/{id}")
+    public String showTopic(@PathVariable Long id, Model model) {
+        TopicView topic = queryService.find(id);
+
+        model.addAttribute("topic", topic);
+        return "page/board/topic/view";
     }
 
 

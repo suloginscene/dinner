@@ -1,9 +1,5 @@
 window.addEventListener('load', function () {
 
-    const queryString = $("#like-form").serialize();
-    if (queryString === "") return;
-
-
     let doesLike;
     const perceive = function (like) {
         doesLike = like;
@@ -33,24 +29,15 @@ window.addEventListener('load', function () {
     };
 
 
-    const params = queryString.split('&');
-    const token = params[0].substring("_csrf=".length);
-    const articleId = params[1].substring("articleId=".length);
-    const username = params[2].substring("username=".length);
+    const articleId = $('#articleId').text();
 
     const like = function (e) {
         e.preventDefault();
-
-        const method = (doesLike) ? 'delete' : 'post';
         $.ajax({
-            type: method,
-            url: '/api/like/',
-            data: {
-                articleId: articleId,
-                username: username
-            },
+            type: (doesLike) ? 'delete' : 'post',
+            url: '/api/articles/' + articleId + '/like',
             beforeSend: function (xhr) {
-                xhr.setRequestHeader('X-CSRF-TOKEN', token);
+                xhr.setRequestHeader('X-CSRF-TOKEN', $('#csrf').text());
             },
             success: toggleLike
         });
@@ -59,11 +46,7 @@ window.addEventListener('load', function () {
 
     $.ajax({
         type: 'get',
-        url: '/api/like/',
-        data: {
-            articleId: articleId,
-            username: username
-        },
+        url: '/api/articles/' + articleId + '/like',
         success: perceive
     });
 

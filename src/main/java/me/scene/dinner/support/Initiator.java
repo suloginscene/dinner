@@ -8,8 +8,6 @@ import me.scene.dinner.account.domain.account.repository.AccountRepository;
 import me.scene.dinner.account.domain.tempaccount.model.TempAccount;
 import me.scene.dinner.account.domain.tempaccount.repository.TempAccountRepository;
 import me.scene.dinner.board.article.application.command.ArticleService;
-import me.scene.dinner.board.article.application.command.LikeService;
-import me.scene.dinner.board.article.application.command.ReplyService;
 import me.scene.dinner.board.article.application.command.TagService;
 import me.scene.dinner.board.article.application.command.request.ArticleCreateRequest;
 import me.scene.dinner.board.article.application.command.request.ReplyCreateRequest;
@@ -61,18 +59,15 @@ public class Initiator implements ApplicationRunner {
         private final AccountRepository accountRepository;
 
         private final MagazineService magazineService;
+        private final MemberService memberService;
         private final MagazineRepository magazineRepository;
 
         private final TopicService topicService;
         private final TopicRepository topicRepository;
 
         private final ArticleService articleService;
-        private final ArticleRepository articleRepository;
-
-        private final ReplyService replyService;
         private final TagService tagService;
-        private final LikeService likeService;
-        private final MemberService memberService;
+        private final ArticleRepository articleRepository;
 
 
         private void init() {
@@ -154,11 +149,11 @@ public class Initiator implements ApplicationRunner {
 
         private void reply(Article article, Account writer, String content) {
             ReplyCreateRequest request = new ReplyCreateRequest(writer.getUsername(), article.getId(), content);
-            replyService.save(request);
+            articleService.save(request);
         }
 
         private void like(Account reader, Article article) {
-            likeService.like(reader.getUsername(), article.getId());
+            articleService.like(reader.getUsername(), article.getId());
         }
 
         private void member(ManagedMagazine magazine, Account owner, Account member) {

@@ -41,7 +41,7 @@
                     <form th:unless="${magazine.hasChild}" th:action="'/magazines/'+*{id}" th:method="delete">
                         <button type="submit">delete</button>
                     </form>
-                    <form th:if="${magazine.policy.equals('MANAGED')}" th:action="'/magazines/'+*{id}+'/members/page'" method="get">
+                    <form th:if="${magazine.policy.equals('MANAGED')}" th:action="'/magazines/'+*{id}+'/members'" method="get">
                         <button type="submit">member</button>
                     </form>
                 </div>
@@ -55,12 +55,12 @@
                 </div>
                 <div th:if="${magazine.policy.equals('MANAGED')}and${magazine.owner!=#authentication.name}and${!magazine.members.contains(#authentication.name)}">
                     <div th:unless="${magazine.members.contains(#authentication.name)}">
-                        <form th:action="'/magazines/'+*{id}+'/members'" th:method="post">
+                        <form th:action="'/magazines/'+*{id}+'/members/apply'" th:method="post">
                             <button type="submit">apply</button>
                         </form>
                     </div>
                     <div th:if="${magazine.members.contains(#authentication.name)}">
-                        <form th:action="'/magazines/'+*{id}+'/members'" th:method="delete">
+                        <form th:action="'/magazines/'+*{id}+'/members/quit'" th:method="post">
                             <button type="submit">quit</button>
                         </form>
                     </div>

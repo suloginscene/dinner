@@ -3,46 +3,34 @@ window.addEventListener('load', function () {
     const template = document.querySelector("#account-template").innerHTML;
     const position = $('#found-position');
 
-    const render = function (account) {
-        return account ?
-            template
-                .replace("{username}", account.username)
-                .replace("{username}", account.username)
-                .replace("{username}", account.username)
-            : "<div>사용자가 존재하지 않습니다.</div>";
+    const onSuccess = function (account) {
+        const el = template
+            .replace("{username}", account.username)
+            .replace("{username}", account.username)
+            .replace("{username}", account.username);
+
+        position.empty();
+        position.append(el);
     };
 
-    const replace = function (element) {
+    const onError = function () {
+        const el = "<div>사용자가 존재하지 않습니다.</div>";
+
         position.empty();
-        position.append(element);
+        position.append(el);
     };
 
     const findAccount = function (e) {
         e.preventDefault();
 
         const queryString = $("#username-form").serialize();
-        const current = queryString.split('&')[0].substring("current=".length);
-        const username = queryString.split('&')[1].substring("username=".length);
-
-        if (username.length < 2 || username.length > 16) {
-            replace("<div>사용자 이름은 2자에서 16자 사이입니다.</div>");
-            return;
-        }
-
-        if (username === current) {
-            replace("<div>매거진 관리자는 허가 없이 글을 쓸 수 있습니다.</div>");
-            return;
-        }
+        const username = queryString.substring("username=".length);
 
         $.ajax({
             type: 'get',
             url: '/api/accounts/' + username,
-            success: function (account) {
-                replace(render(account));
-            },
-            error: function () {
-                replace(render());
-            }
+            success: onSuccess,
+            error: onError
         });
     };
 

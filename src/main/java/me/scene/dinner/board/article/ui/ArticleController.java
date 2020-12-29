@@ -1,20 +1,20 @@
 package me.scene.dinner.board.article.ui;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import me.scene.dinner.board.article.application.command.ArticleService;
 import me.scene.dinner.board.article.application.command.request.ArticleCreateRequest;
 import me.scene.dinner.board.article.application.command.request.ArticleUpdateRequest;
+import me.scene.dinner.board.article.application.command.request.ReplyCreateRequest;
+import me.scene.dinner.board.article.application.command.request.ReplyDeleteRequest;
 import me.scene.dinner.board.article.application.query.ArticleQueryService;
+import me.scene.dinner.board.article.application.query.dto.ArticleExtendedLink;
 import me.scene.dinner.board.article.application.query.dto.ArticleView;
 import me.scene.dinner.board.article.ui.form.ArticleForm;
 import me.scene.dinner.board.article.ui.form.ArticleUpdateForm;
-import me.scene.dinner.board.article.ui.form.TagForm;
+import me.scene.dinner.board.article.ui.form.TagParser;
 import me.scene.dinner.common.security.Principal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.StringUtils;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,10 +24,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
-
-import static java.util.stream.Collectors.toSet;
 
 
 @Controller
@@ -37,19 +35,7 @@ public class ArticleController {
     private final ArticleService service;
     private final ArticleQueryService query;
 
-    private final ObjectMapper objectMapper;
-
-
-    @GetMapping("/articles/{id}")
-    public String showArticle(@PathVariable Long id,
-                              @Principal String username, Model model) {
-
-        service.read(id, username);
-        ArticleView article = query.view(id);
-
-        model.addAttribute("article", article);
-        return "page/board/article/view";
-    }
+    private final TagParser tag;
 
 
     @GetMapping("/article-form")
@@ -70,12 +56,32 @@ public class ArticleController {
         String title = form.getTitle();
         String content = form.getContent();
         boolean publicized = form.getStatus().equals("PUBLIC");
-        Set<String> tagNames = parse(form.getJsonTags());
+        Set<String> tagNames = tag.parse(form.getJsonTags());
 
         ArticleCreateRequest request = new ArticleCreateRequest(username, topicId, title, content, publicized, tagNames);
         Long id = service.save(request);
 
         return "redirect:" + ("/articles/" + id);
+    }
+
+
+    @GetMapping("/articles/{id}")
+    public String showArticle(@PathVariable Long id,
+                              @Principal String username, Model model) {
+
+        service.read(id, username);
+        ArticleView article = query.view(id);
+
+        model.addAttribute("article", article);
+        return "page/board/article/view";
+    }
+
+    @GetMapping("/drafts")
+    public String myPrivateArticles(@Principal String username, Model model) {
+        List<ArticleExtendedLink> articles = query.findPrivateByWriter(username);
+
+        model.addAttribute("articles", articles);
+        return "page/board/article/private";
     }
 
 
@@ -123,20 +129,26 @@ public class ArticleController {
     }
 
 
-    @GetMapping("/private-articles")
-    public String myPrivateArticles() {
-        return "page/board/article/private";
+    @PostMapping("/articles/{id}/replies")
+    public String create(@PathVariable Long id,
+                         @Principal String username,
+                         @RequestParam String content) {
+
+        ReplyCreateRequest request = new ReplyCreateRequest(username, id, content);
+        service.save(request);
+
+        return "redirect:" + ("/articles/" + id);
     }
 
+    @DeleteMapping("/articles/{id}/replies/{replyId}")
+    public String delete(@PathVariable Long id,
+                         @PathVariable Long replyId,
+                         @Principal String username) {
 
-    private Set<String> parse(String jsonTags) {
-        if (StringUtils.isEmpty(jsonTags)) return new HashSet<>();
-        try {
-            Set<TagForm> tags = objectMapper.readValue(jsonTags, TagForm.TYPE);
-            return tags.stream().map(TagForm::getValue).collect(toSet());
-        } catch (JsonProcessingException e) {
-            throw new IllegalStateException("Cannot parse json for tag: " + e.getMessage());
-        }
+        ReplyDeleteRequest request = new ReplyDeleteRequest(username, id, replyId);
+        service.delete(request);
+
+        return "redirect:" + ("/articles/" + id);
     }
 
 }

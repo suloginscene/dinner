@@ -7,7 +7,7 @@
         <script id="account-template" type="text/template">
             <div>
                 <a href="/@{username}">{username}</a>
-                <form th:action="'/magazines/'+${id}+'/{username}'" th:method="get" class="member-form">
+                <form th:action="'/magazines/'+${id}+'/members/{username}'" th:method="put" class="member-form">
                     <button type="submit">add</button>
                 </form>
             </div>
@@ -20,9 +20,6 @@
                 <div id="registration">
                     <h2>멤버 등록</h2>
                     <form id="username-form">
-                        <label hidden>
-                            <input name="current" type="text" th:value="${#authentication.name}" hidden>
-                        </label>
                         <label>
                             <input name="username" type="text" placeholder="승인할 작가">
                         </label>
@@ -37,7 +34,7 @@
                         <tr th:each="member:${members}">
                             <td><a th:href="@{'/@'+${member}}" th:text="${member}"></a></td>
                             <td>
-                                <form th:action="'/magazines/'+${id}+'/'+${member}" th:method="delete">
+                                <form th:action="'/magazines/'+${id}+'/members/'+${member}" th:method="delete">
                                     <button type="submit">remove</button>
                                 </form>
                             </td>

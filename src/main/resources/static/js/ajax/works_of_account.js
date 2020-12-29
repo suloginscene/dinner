@@ -27,13 +27,13 @@ window.addEventListener('load', function () {
 
     $.ajax({
         type: 'get',
-        url: '/api/magazines/' + username,
+        url: '/api/magazines?username=' + username,
         success: appendMagazines
     });
 
     $.ajax({
         type: 'get',
-        url: '/api/articles/' + username,
+        url: '/api/articles?username=' + username,
         success: appendArticles
     });
 

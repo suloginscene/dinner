@@ -21,9 +21,7 @@
         <script src="/js/accordion/in_navigation.js"></script>
         <script src="/js/validate/validate.js"></script>
         <script src="/js/ajax/best_magazines_on_nav.js"></script>
-        <div sec:authorize="isAuthenticated()">
-            <script src="/js/ajax/count_unchecked_notifications.js"></script>
-        </div>
+        <script sec:authorize="isAuthenticated()" src="/js/ajax/count_unchecked_notifications.js"></script>
 
         <script type="text/template" id="magazine-template">
             <li><a href="/magazines/{id}">{title}</a></li>
@@ -38,7 +36,7 @@
     <nav th:fragment="overlay" id="myNav" class="overlay">
         <button onclick="closeNav()">&times;</button>
         <div class="overlay-content">
-            <a href="/">Dinner</a>
+            <a href="/">Paper</a>
             <hr/>
             <nav>
                 <a href="#" id="nav-accordion">&nbsp;&nbsp;&nbsp;Magazines<i class="fa fa-chevron-down"></i></a>
@@ -59,7 +57,7 @@
             <button th:text="${#authentication.name}"></button>
             <div id="accounts">
                 <a th:href="@{'/@' + ${#authentication.name}}">about</a>
-                <a href="/private-articles">draft</a>
+                <a href="/drafts">draft</a>
                 <a href="/notifications">
                     <span id="notification-count"></span> <span>notif</span>
                 </a>
