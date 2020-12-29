@@ -21,7 +21,9 @@
         <script src="/js/accordion/in_navigation.js"></script>
         <script src="/js/validate/validate.js"></script>
         <script src="/js/ajax/best_magazines_on_nav.js"></script>
-        <script src="/js/ajax/count_unchecked_notifications.js"></script>
+        <div sec:authorize="isAuthenticated()">
+            <script src="/js/ajax/count_unchecked_notifications.js"></script>
+        </div>
 
         <script type="text/template" id="magazine-template">
             <li><a href="/magazines/{id}">{title}</a></li>

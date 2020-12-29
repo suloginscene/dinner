@@ -1,18 +1,15 @@
 window.addEventListener('load', function () {
 
+    const $count = $('#notification-count');
+
     const logUncheckedCount = function (count) {
-        const $count = $('#notification-count');
-        if (count !== 0) {
-            $count.text(count);
-        } else {
-            $count.text("");
-        }
+        $count.text((count !== 0) ? count : "");
     };
 
 
     $.ajax({
         type: 'get',
-        url: '/api/notifications/count-unchecked',
+        url: '/api/notifications/count',
         success: logUncheckedCount
     });
 

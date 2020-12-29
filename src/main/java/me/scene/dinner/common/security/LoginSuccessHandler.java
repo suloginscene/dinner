@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
+
 public class LoginSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
 
     public LoginSuccessHandler(String defaultTargetUrl) {

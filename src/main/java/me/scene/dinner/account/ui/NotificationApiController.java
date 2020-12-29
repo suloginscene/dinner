@@ -14,10 +14,8 @@ public class NotificationApiController {
     private final NotificationQueryService query;
 
 
-    @GetMapping("/api/notifications/count-unchecked")
+    @GetMapping("/api/notifications/count")
     public long countUnchecked(@Principal String username) {
-        if (username == null) return 0L;
-
         return query.countUnchecked(username);
     }
 

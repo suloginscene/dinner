@@ -10,7 +10,7 @@
             <div class="centered-content">
 
                 <h1 th:text="*{username}" id="username"></h1>
-                <form th:action="@{/profile}" th:method="post" id="profile-form">
+                <form th:action="@{/profile}" th:method="put" id="profile-form">
                     <textarea th:field="*{greeting}" placeholder="인삿말을 남겨주세요." id="greeting"></textarea>
                     <label for="greeting" hidden></label>
                     <small th:if="${#fields.hasErrors('greeting')}" th:errors="*{greeting}" class="form-text text-danger"></small>

@@ -11,7 +11,7 @@
                 <div class="message">
                     <span id="login-sign">이메일 로그인</span><span id="link-to-signup"><a href="/signup">회원가입</a></span>
                 </div>
-                <form th:action="@{/forgot}" th:method="post">
+                <form th:action="@{/forgot}" th:method="put">
                     <div class="form-main">
                         <label><input type="email" name="email" placeholder="이메일" required></label>
                     </div>

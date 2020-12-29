@@ -2,7 +2,7 @@ package me.scene.dinner.board.article.application.command.event;
 
 import me.scene.dinner.board.article.domain.article.model.Article;
 import me.scene.dinner.common.notification.event.NotificationEvent;
-import me.scene.dinner.util.LinkUtils;
+import me.scene.dinner.common.util.LinkConvertUtils;
 
 
 public class LikedEvent extends NotificationEvent {
@@ -14,8 +14,8 @@ public class LikedEvent extends NotificationEvent {
         super(
                 article.getOwner().name(),
                 String.format(TEMPLATE,
-                        LinkUtils.accountLink(reader),
-                        LinkUtils.articleLink(article.getId(), article.getTitle())
+                        LinkConvertUtils.account(reader),
+                        LinkConvertUtils.article(article.getId(), article.getTitle())
                 )
         );
     }

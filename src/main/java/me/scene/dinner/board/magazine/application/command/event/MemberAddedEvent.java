@@ -2,7 +2,7 @@ package me.scene.dinner.board.magazine.application.command.event;
 
 import me.scene.dinner.board.magazine.domain.managed.model.ManagedMagazine;
 import me.scene.dinner.common.notification.event.NotificationEvent;
-import me.scene.dinner.util.LinkUtils;
+import me.scene.dinner.common.util.LinkConvertUtils;
 
 
 public class MemberAddedEvent extends NotificationEvent {
@@ -13,7 +13,7 @@ public class MemberAddedEvent extends NotificationEvent {
         super(
                 memberName,
                 String.format(TEMPLATE,
-                        LinkUtils.magazineLink(magazine.getId(), magazine.getTitle())
+                        LinkConvertUtils.magazine(magazine.getId(), magazine.getTitle())
                 )
         );
     }

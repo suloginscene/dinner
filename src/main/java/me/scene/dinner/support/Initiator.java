@@ -1,4 +1,4 @@
-package me.scene.dinner.util;
+package me.scene.dinner.support;
 
 import lombok.RequiredArgsConstructor;
 import me.scene.dinner.account.application.command.AccountService;

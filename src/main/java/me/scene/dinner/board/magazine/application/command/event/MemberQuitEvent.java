@@ -2,7 +2,7 @@ package me.scene.dinner.board.magazine.application.command.event;
 
 import me.scene.dinner.board.magazine.domain.managed.model.ManagedMagazine;
 import me.scene.dinner.common.notification.event.NotificationEvent;
-import me.scene.dinner.util.LinkUtils;
+import me.scene.dinner.common.util.LinkConvertUtils;
 
 
 public class MemberQuitEvent extends NotificationEvent {
@@ -14,8 +14,8 @@ public class MemberQuitEvent extends NotificationEvent {
         super(
                 magazine.getOwner().name(),
                 String.format(TEMPLATE,
-                        LinkUtils.accountLink(memberName),
-                        LinkUtils.magazineLink(magazine.getId(), magazine.getTitle())
+                        LinkConvertUtils.account(memberName),
+                        LinkConvertUtils.magazine(magazine.getId(), magazine.getTitle())
                 )
 
         );

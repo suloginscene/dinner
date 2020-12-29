@@ -11,6 +11,7 @@ import org.springframework.security.web.authentication.rememberme.PersistentToke
 
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
+import static org.springframework.http.HttpMethod.PUT;
 
 
 @EnableWebSecurity
@@ -31,9 +32,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/api/best-magazines", "/api/magazines/*", "/api/articles/*",
                         "/api/topics/of/*", "/api/articles/of/*"
                 ).permitAll()
-                .mvcMatchers(POST,
-                        "/signup", "/forgot"
-                ).permitAll()
+                .mvcMatchers(POST, "/signup").permitAll()
+                .mvcMatchers(PUT, "/forgot").permitAll()
                 .anyRequest().authenticated()
         ;
 
