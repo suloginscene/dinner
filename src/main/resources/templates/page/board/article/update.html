@@ -18,7 +18,7 @@
                 <label hidden><input type="text" name="topicId" th:value="*{topicId}" hidden></label>
                 <div id="bar">
                     <label id="title">
-                        <input type="text" th:field="*{title}" placeholder="새 아티클" required maxlength="30">
+                        <input type="text" th:field="*{title}" placeholder="제목은 20자까지 가능합니다." required maxlength="20">
                         <small class="invalid-feedback"><i class="fa fa-ban"></i></small>
                         <small class="valid-feedback"><i class="fa fa-check"></i></small>
                     </label>

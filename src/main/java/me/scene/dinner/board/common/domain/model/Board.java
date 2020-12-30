@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @Getter @EntityListeners(AuditingEntityListener.class)
 public abstract class Board extends BaseEntity {
 
-    @Column(nullable = false)
+    @Column(length = 20, nullable = false)
     protected String title;
 
     @Embedded
@@ -25,7 +25,7 @@ public abstract class Board extends BaseEntity {
     @Embedded
     protected Point point = new Point();
 
-    @CreatedDate @Column(updatable = false)
+    @CreatedDate @Column(updatable = false, nullable = false)
     protected LocalDateTime createdAt;
 
 

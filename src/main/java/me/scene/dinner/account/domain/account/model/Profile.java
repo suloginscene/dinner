@@ -5,6 +5,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 import static lombok.AccessLevel.PROTECTED;
@@ -15,6 +16,7 @@ import static lombok.AccessLevel.PROTECTED;
 @NoArgsConstructor(access = PROTECTED) @AllArgsConstructor
 public class Profile {
 
+    @Column(nullable = false)
     private String greeting;
 
 }

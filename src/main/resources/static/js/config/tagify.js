@@ -11,7 +11,7 @@ window.addEventListener('load', function () {
     };
 
     const onAdd = function (e) {
-        tagRequest("post", e.detail.data.value);
+        tagRequest("put", e.detail.data.value);
     };
 
     const onRemove = function (e) {

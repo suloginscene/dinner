@@ -9,6 +9,7 @@ import me.scene.dinner.board.magazine.domain.open.model.OpenMagazine;
 import me.scene.dinner.board.topic.domain.model.Topic;
 import org.hibernate.annotations.BatchSize;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;

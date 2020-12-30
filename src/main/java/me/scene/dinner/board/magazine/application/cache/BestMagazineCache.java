@@ -38,7 +38,7 @@ public class BestMagazineCache implements MagazineCache {
     }
 
 
-    private void update() {
+    public void update() {
         magazines = query.bestLinks(SIZE);
     }
 

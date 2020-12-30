@@ -12,7 +12,7 @@ public class ArticleForm {
     private final Long topicId;
 
     @NotBlank(message = "제목을 적어주세요.")
-    @Length(max = 30, message = "제목은 최대 30자까지 가능합니다.")
+    @Length(max = 20, message = "제목은 최대 20자까지 가능합니다.")
     private String title;
 
     @NotBlank(message = "본문을 적어주세요.")

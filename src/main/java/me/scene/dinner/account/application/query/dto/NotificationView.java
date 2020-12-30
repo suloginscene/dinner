@@ -7,20 +7,21 @@ import java.util.List;
 import java.util.Map;
 
 import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.toList;
 
 
 @Data
 public class NotificationView {
 
-    private final List<Notification> uncheckedList;
-    private final List<Notification> checkedList;
+    private final List<NotificationData> uncheckedList;
+    private final List<NotificationData> checkedList;
 
     public NotificationView(List<Notification> notifications) {
         Map<Boolean, List<Notification>> map = notifications.stream()
                 .collect(groupingBy(Notification::isChecked));
 
-        uncheckedList = map.get(false);
-        checkedList = map.get(true);
+        uncheckedList = map.get(false).stream().map(NotificationData::new).collect(toList());
+        checkedList = map.get(true).stream().map(NotificationData::new).collect(toList());
     }
 
 }

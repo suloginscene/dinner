@@ -26,6 +26,7 @@ public class Reply extends BaseEntity {
     @Embedded
     protected Owner owner;
 
+    @Column(nullable = false)
     private String content;
 
     @CreatedDate @Column(updatable = false)

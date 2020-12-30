@@ -24,7 +24,7 @@ import static lombok.AccessLevel.PROTECTED;
 @NoArgsConstructor(access = PROTECTED)
 public abstract class Magazine extends Board {
 
-    @Column(nullable = false, length = 30)
+    @Column(length = 30, nullable = false)
     private String shortExplanation;
 
     private String longExplanation;

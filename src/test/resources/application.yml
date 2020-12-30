@@ -1,15 +1,17 @@
 spring:
   profiles:
     active: test
+
+---
+spring:
+  profiles: test
   jpa:
-    hibernate:
-      ddl-auto: update
-    open-in-view: false
     properties:
       hibernate:
         format_sql: true
   datasource:
-    driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
-    url: jdbc:tc:postgresql://dinnerTest
+    url: jdbc:postgresql://localhost:5432/local_db
+    username: local_user
+    password: local_password
 dinner:
   url: http://localhost:8080

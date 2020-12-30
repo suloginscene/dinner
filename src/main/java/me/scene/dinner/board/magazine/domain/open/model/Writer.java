@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import me.scene.dinner.common.entity.BaseEntity;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 
 import static lombok.AccessLevel.PROTECTED;
@@ -13,8 +14,9 @@ import static lombok.AccessLevel.PROTECTED;
 @NoArgsConstructor(access = PROTECTED)
 public class Writer extends BaseEntity {
 
-    @Getter
+    @Getter @Column(length = 16, nullable = false)
     private String name;
+
     private int count;
 
 

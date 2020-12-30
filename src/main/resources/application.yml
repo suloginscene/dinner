@@ -1,8 +1,26 @@
 spring:
-  mail:
-    host: smtp.gmail.com
-    port: 587
   mvc:
     hiddenmethod:
       filter:
         enabled: true
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+  mail:
+    host: smtp.gmail.com
+    port: 587
+
+---
+spring:
+  profiles: local
+  jpa:
+    properties:
+      hibernate:
+        format_sql: true
+  datasource:
+    url: jdbc:postgresql://localhost:5432/local_db
+    username: local_user
+    password: local_password
+dinner:
+  url: http://localhost:8080

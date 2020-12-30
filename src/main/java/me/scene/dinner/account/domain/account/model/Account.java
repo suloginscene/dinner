@@ -23,16 +23,16 @@ import static lombok.AccessLevel.PROTECTED;
 @NoArgsConstructor(access = PROTECTED)
 public class Account extends BaseEntity {
 
-    @Column(unique = true)
+    @Column(length = 16, unique = true, nullable = false)
     private String username;
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String email;
 
-    @Column
+    @Column(nullable = false)
     private String password;
 
-    @Enumerated(STRING)
+    @Enumerated(STRING) @Column(nullable = false, length = 5)
     private final Role role = Role.USER;
 
     @Embedded

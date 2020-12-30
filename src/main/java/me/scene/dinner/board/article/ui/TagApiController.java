@@ -5,7 +5,7 @@ import me.scene.dinner.board.article.application.command.TagService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 
@@ -16,7 +16,7 @@ public class TagApiController {
     private final TagService service;
 
 
-    @PostMapping("/api/tags/{name}")
+    @PutMapping("/api/tags/{name}")
     public ResponseEntity<Object> createTag(@PathVariable String name) {
         service.save(name);
         return ResponseEntity.ok().build();

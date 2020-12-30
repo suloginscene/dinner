@@ -13,6 +13,7 @@ import me.scene.dinner.board.article.application.command.request.ArticleCreateRe
 import me.scene.dinner.board.article.application.command.request.ReplyCreateRequest;
 import me.scene.dinner.board.article.domain.article.model.Article;
 import me.scene.dinner.board.article.domain.article.repository.ArticleRepository;
+import me.scene.dinner.board.magazine.application.cache.BestMagazineCache;
 import me.scene.dinner.board.magazine.application.command.MagazineService;
 import me.scene.dinner.board.magazine.application.command.MemberService;
 import me.scene.dinner.board.magazine.application.command.request.MagazineCreateRequest;
@@ -28,15 +29,11 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
 import java.util.Set;
 
 
 @Component @RequiredArgsConstructor
 public class Initiator implements ApplicationRunner {
-
-    // TODO when settled, remove dev
-    private static final List<String> targets = List.of("local", "dev");
 
     private final Environment environment;
     private final InitService initService;
@@ -45,7 +42,7 @@ public class Initiator implements ApplicationRunner {
     public void run(ApplicationArguments args) {
 
         String activeProfile = environment.getActiveProfiles()[0];
-        if (!targets.contains(activeProfile)) return;
+        if (!activeProfile.equals("local")) return;
 
         initService.init();
     }
@@ -59,6 +56,7 @@ public class Initiator implements ApplicationRunner {
         private final AccountRepository accountRepository;
 
         private final MagazineService magazineService;
+        private final BestMagazineCache magazineCache;
         private final MemberService memberService;
         private final MagazineRepository magazineRepository;
 
@@ -71,6 +69,12 @@ public class Initiator implements ApplicationRunner {
 
 
         private void init() {
+
+            if (accountRepository.count() != 0) {
+                magazineCache.update();
+                return;
+            }
+
 
             Account scene = user("scene", "suloginscene@gmail.com", "password_s");
             Account doeon = user("doeon", "ahndoeon@naver.com", "password_d");

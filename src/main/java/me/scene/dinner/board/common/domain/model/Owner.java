@@ -5,6 +5,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import me.scene.dinner.board.common.domain.exception.NotOwnerException;
 
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 import static lombok.AccessLevel.PROTECTED;
@@ -15,6 +16,7 @@ import static lombok.AccessLevel.PROTECTED;
 @NoArgsConstructor(access = PROTECTED) @AllArgsConstructor
 public class Owner {
 
+    @Column(length = 16, nullable = false)
     private String name;
 
     public String name() {

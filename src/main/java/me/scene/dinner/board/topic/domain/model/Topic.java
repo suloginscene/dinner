@@ -7,6 +7,7 @@ import me.scene.dinner.board.common.domain.model.Owner;
 import me.scene.dinner.board.common.domain.model.ToManyInfo;
 import me.scene.dinner.board.magazine.domain.magazine.model.Magazine;
 
+import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
@@ -20,6 +21,7 @@ import static lombok.AccessLevel.PROTECTED;
 @NoArgsConstructor(access = PROTECTED)
 public class Topic extends Board {
 
+    @Column(length = 30, nullable = false)
     private String shortExplanation;
 
     private String longExplanation;

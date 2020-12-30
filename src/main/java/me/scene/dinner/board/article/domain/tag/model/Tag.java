@@ -20,7 +20,7 @@ import static lombok.AccessLevel.PROTECTED;
 @NoArgsConstructor(access = PROTECTED)
 public class Tag extends BaseEntity {
 
-    @Column(unique = true, nullable = false)
+    @Column(length = 16, unique = true, nullable = false)
     private String name;
 
     @OneToMany(mappedBy = "tag")
