@@ -3,6 +3,7 @@ package me.scene.dinner.account.application.query.dto;
 import lombok.Data;
 import me.scene.dinner.account.domain.account.model.Notification;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -20,8 +21,13 @@ public class NotificationView {
         Map<Boolean, List<Notification>> map = notifications.stream()
                 .collect(groupingBy(Notification::isChecked));
 
-        uncheckedList = map.get(false).stream().map(NotificationData::new).collect(toList());
-        checkedList = map.get(true).stream().map(NotificationData::new).collect(toList());
+        List<Notification> tempUnchecked = map.get(false);
+        if (tempUnchecked == null) tempUnchecked = new ArrayList<>();
+        uncheckedList = tempUnchecked.stream().map(NotificationData::new).collect(toList());
+
+        List<Notification> tempChecked = map.get(true);
+        if (tempChecked == null) tempChecked = new ArrayList<>();
+        checkedList = tempChecked.stream().map(NotificationData::new).collect(toList());
     }
 
 }
