@@ -8,6 +8,7 @@ import me.scene.dinner.board.magazine.application.query.dto.MagazineLink;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +23,10 @@ public class BestMagazineCache implements MagazineCache {
 
     private final MagazineQueryService query;
 
+    @PostConstruct
+    public void init() {
+        update();
+    }
 
     @Override
     public void update(Long id) {
