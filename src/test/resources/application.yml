@@ -1,17 +1,9 @@
-spring:
-  profiles:
-    active: test
+spring.profiles.active: test
 
 ---
-spring:
-  profiles: test
-  jpa:
-    properties:
-      hibernate:
-        format_sql: true
-  datasource:
-    url: jdbc:postgresql://localhost:5432/local_db
-    username: local_user
-    password: local_password
-dinner:
-  url: http://localhost:8080
+spring.profiles: test
+spring.datasource:
+  url: jdbc:postgresql://localhost:5432/local_db
+  username: local_user
+  password: local_password
+dinner.url: http://localhost:8080

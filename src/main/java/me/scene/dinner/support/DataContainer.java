@@ -13,6 +13,7 @@ import me.scene.dinner.board.article.application.command.request.ArticleCreateRe
 import me.scene.dinner.board.article.application.command.request.ReplyCreateRequest;
 import me.scene.dinner.board.article.domain.article.model.Article;
 import me.scene.dinner.board.article.domain.article.repository.ArticleRepository;
+import me.scene.dinner.board.article.domain.tag.repository.TagRepository;
 import me.scene.dinner.board.magazine.application.cache.BestMagazineCache;
 import me.scene.dinner.board.magazine.application.command.MagazineService;
 import me.scene.dinner.board.magazine.application.command.MemberService;
@@ -24,32 +25,43 @@ import me.scene.dinner.board.topic.application.command.TopicService;
 import me.scene.dinner.board.topic.application.command.request.TopicCreateRequest;
 import me.scene.dinner.board.topic.domain.model.Topic;
 import me.scene.dinner.board.topic.domain.repository.TopicRepository;
-import org.springframework.boot.ApplicationArguments;
-import org.springframework.boot.ApplicationRunner;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import java.util.Set;
 
 
-@Component @RequiredArgsConstructor
-public class Initiator implements ApplicationRunner {
+@Component
+@RequiredArgsConstructor
+public class DataContainer {
 
-    private final Environment environment;
-    private final InitService initService;
+    private final DataService dataService;
+    private final String profile;
 
-    @Override
-    public void run(ApplicationArguments args) {
+    @Autowired
+    public DataContainer(Environment environment, DataService dataService) {
+        this.dataService = dataService;
+        this.profile = environment.getActiveProfiles()[0];
+    }
 
-        String activeProfile = environment.getActiveProfiles()[0];
-        if (!activeProfile.equals("local")) return;
+    @PostConstruct
+    public void init() {
+        if (!profile.equals("local")) return;
+        dataService.init();
+    }
 
-        initService.init();
+    @PreDestroy
+    public void destroy() {
+        if (!profile.equals("local")) return;
+        dataService.destroy();
     }
 
 
     @Component @RequiredArgsConstructor
-    private static class InitService {
+    public static class DataService {
 
         private final AccountService accountService;
         private final TempAccountRepository tempAccountRepository;
@@ -64,8 +76,9 @@ public class Initiator implements ApplicationRunner {
         private final TopicRepository topicRepository;
 
         private final ArticleService articleService;
-        private final TagService tagService;
         private final ArticleRepository articleRepository;
+        private final TagService tagService;
+        private final TagRepository tagRepository;
 
 
         private void init() {
@@ -114,7 +127,7 @@ public class Initiator implements ApplicationRunner {
             Topic dev = topic(paper, scene, "개발과정", "페이퍼의 개발과정을 소개합니다.", "자바, 스프링, JPA 등의 기술이 사용되었습니다.");
             article(dev, scene, "개발 서버 구축", "개발 서버는 리눅스와 도커로 구축되어있습니다.", true, "paper", "linux");
             article(dev, scene, "회원 정보 관리", "가입에는 이메일 인증이 필수이며, 비밀번호는 암호화되어 저장됩니다.", true, "paper", "spring");
-            article(dev, scene, "도메인 모델", "조회용 양방향 연관관계보다 api/ajax를 활용하였습니다.", true, "paper", "jpa");
+            article(dev, scene, "도메인 모델", "조회용 양방향 연관관계보다 api/ajax 활용하였습니다.", true, "paper", "jpa");
             article(dev, scene, "패키지 디자인", "이벤트를 활용하여 의존관계의 방향을 조정하였습니다.", true, "paper", "oop");
         }
 
@@ -162,6 +175,18 @@ public class Initiator implements ApplicationRunner {
 
         private void member(ManagedMagazine magazine, Account owner, Account member) {
             memberService.addMember(magazine.getId(), owner.getUsername(), member.getUsername());
+        }
+
+
+        public void destroy() {
+            tempAccountRepository.deleteAll();
+            accountRepository.deleteAll();
+
+            articleRepository.deleteAll();
+            topicRepository.deleteAll();
+            magazineRepository.deleteAll();
+
+            tagRepository.deleteAll();
         }
 
     }

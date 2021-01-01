@@ -32,8 +32,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/magazines/*", "/magazines", "/api/magazines", "/api/magazines/best",
                         "/topics/*", "/api/magazines/*/topics",
                         "/articles/*", "/api/topics/*/articles", "/api/articles",
-                        "/tags", "/tags/*"
-
+                        "/tags", "/tags/*",
+                        "/api/status/health", "/api/status/profile", "/api/status/version"
                 ).permitAll()
                 .mvcMatchers(POST, "/signup").permitAll()
                 .mvcMatchers(PUT, "/forgot").permitAll()
