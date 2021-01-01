@@ -43,18 +43,10 @@
 }
 
 
-/*@media (max-width: 768px) {*/
+@media (max-width: 768px) {
 
-/*    .tag {*/
-/*        display: none;*/
-/*    }*/
+    .point-col {
+        display: none;
+    }
 
-/*    .article-sub-info {*/
-/*        display: none;*/
-/*    }*/
-
-/*    .date {*/
-/*        display: none;*/
-/*    }*/
-
-/*}*/
+}

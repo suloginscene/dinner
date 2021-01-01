@@ -3,17 +3,17 @@
 
 #sub-info {
     font-size: 20px;
-    margin: 15px 0;
     float: right;
 }
 
-#sub-info #date {
-    margin-right: 10px;
+.point {
+    float: right;
 }
 
 article {
     padding-bottom: 30px;
     border-bottom: 1px solid dimgray;
+    margin-bottom: 30px;
 }
 
 article h2 {
@@ -38,7 +38,7 @@ article p img {
 }
 
 #reply-form-container {
-    margin: 25px 0;
+    margin-bottom: 25px;
 }
 
 #reply-input {
@@ -63,11 +63,11 @@ article p img {
     height: 40px;
     padding: 0;
     background-color: unset;
-    color: red;
+    color: lightpink;
 }
 
 #like-icon:hover {
-    font-size: 30px;
+    color: palevioletred;
 }
 
 .tag {

@@ -3,6 +3,7 @@
 
 section .centered-content {
     width: 280px;
+    color: black;
 }
 
 section .centered-content .message {

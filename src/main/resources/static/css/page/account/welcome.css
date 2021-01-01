@@ -1,2 +1,6 @@
 @import "/css/page/account/_base.css";
 @import "/css/lib/_centered.css";
+
+.centered-content {
+    font-size: 25px;
+}

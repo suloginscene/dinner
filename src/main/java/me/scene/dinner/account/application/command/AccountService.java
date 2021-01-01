@@ -46,9 +46,9 @@ public class AccountService {
         mail.send(message);
     }
 
-    public void verify(String email, String token) {
+    public String verify(String email, String token) {
         boolean verified = repository.existsByEmail(email);
-        if (verified) return;
+        if (verified) return null;
 
         TempAccount temp = tempRepository.findAccountByEmail(email);
         temp.verify(token);
@@ -59,6 +59,7 @@ public class AccountService {
 
         Account account = new Account(username, email, password);
         repository.save(account);
+        return account.getUsername();
     }
 
 

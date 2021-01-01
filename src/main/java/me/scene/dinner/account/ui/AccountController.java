@@ -69,7 +69,8 @@ public class AccountController {
 
     @GetMapping("/verify")
     public String verifyEmail(@RequestParam String email, @RequestParam String token, Model model) {
-        service.verify(email, token);
+        // TODO email to username
+        String username = service.verify(email, token);
 
         model.addAttribute("email", email);
         return "page/account/welcome";
