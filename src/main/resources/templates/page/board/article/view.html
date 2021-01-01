@@ -11,12 +11,12 @@
         <section th:object="${article}">
 
             <div class="info">
-                <h2 id="topic"><a th:href="'/topics/'+*{topic.id}" th:text="*{topic.title}"></a></h2>
-                <h1 id="title" th:text="*{title}"></h1>
+                <h2 class="parent"><a th:href="'/topics/'+*{topic.id}" th:text="*{topic.title}"></a></h2>
+                <h1 class="title" th:text="*{title}"></h1>
                 <div><a th:each="tag:*{tags}" th:text="${tag}" th:href="@{'/tags/'+${tag}}" class="tag"></a></div>
                 <div id="sub-info">
                     <div>
-                        <span id="writer"><a th:href="'/@'+*{owner}" th:text="*{owner}"></a></span>
+                        <span class="person"><a th:href="'/@'+*{owner}" th:text="*{owner}"></a></span>
                         <span id="date" th:text="*{#temporals.format(createdAt, 'yyyy-MM-dd HH:mm')}"></span>
                     </div>
                     <div>
@@ -31,13 +31,15 @@
                 </div>
             </div>
 
-            <div id="button-container" sec:authorize="isAuthenticated()">
-                <form th:if="${#authentication.name}==*{owner}" th:action="'/articles/'+*{id}+'/form'" method="get">
-                    <button type="submit">update</button>
-                </form>
-                <form th:if="${#authentication.name}==*{owner}" th:action="'/articles/'+*{id}" th:method="delete">
-                    <button type="submit">delete</button>
-                </form>
+            <div id="button-container-wrapper">
+                <div id="button-container" sec:authorize="isAuthenticated()">
+                    <form th:if="${#authentication.name}==*{owner}" th:action="'/articles/'+*{id}+'/form'" method="get">
+                        <button type="submit">update</button>
+                    </form>
+                    <form th:if="${#authentication.name}==*{owner}" th:action="'/articles/'+*{id}" th:method="delete">
+                        <button type="submit">delete</button>
+                    </form>
+                </div>
             </div>
 
             <div th:if="${article.publicized=='PRIVATE'}">
@@ -51,17 +53,17 @@
                     Reply need login.
                 </div>
                 <form sec:authorize="isAuthenticated()" th:action="'/articles/'+*{id}+'/replies'" th:method="post">
-                    <span th:text="${#authentication.name}"></span>
+                    <span th:text="${#authentication.name}" class="person"></span>
                     <input type="text" name="content" placeholder="reply" id="reply-input">
                     <label for="reply-input"></label>
                     <button type="submit">write</button>
                 </form>
             </div>
 
-            <table id="replies">
+            <table id="replies" class="children">
                 <tr th:each="reply:*{replies}">
                     <td class="writer-col">
-                        <a th:href="@{'/@'+${reply.owner}}" th:text="${reply.owner}"></a>
+                        <a th:href="@{'/@'+${reply.owner}}" th:text="${reply.owner}" class="person"></a>
                     </td>
                     <td class="content-col">
                         <span th:text="${reply.content}"></span>

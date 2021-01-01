@@ -11,10 +11,39 @@ section {
     margin-bottom: 25px;
 }
 
-#button-container {
-    overflow: auto;
+.parent {
+    font-size: 25px;
+    font-weight: 300;
+    margin-bottom: 15px;
 }
 
-#button-container button {
+.title {
+    font-size: 40px;
+    font-weight: 400;
+    margin-bottom: 25px;
+}
+
+.bi-line {
+    font-size: 18px;
+    margin-bottom: 25px;
+}
+
+.person {
+    font-weight: 400;
+}
+
+.children {
+    width: 100%;
+    padding: 0;
+    margin: 0;
+}
+
+#button-container {
     float: right;
+    display: flex;
+}
+
+#button-container-wrapper {
+    overflow: auto;
+    margin-bottom: 25px;
 }

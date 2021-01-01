@@ -6,31 +6,19 @@
     right: 0;
     text-align: right;
     margin-right: 20px;
-    padding: 7px 15px;
+    padding: 0 15px;
     z-index: 2;
-}
-
-#accounts button {
-    all: unset;
-    cursor: pointer;
 }
 
 #accounts a {
     display: block;
-    text-decoration: none;
 }
 
 #accounts a,
 #accounts button {
     padding: 3px 0;
     font-size: 20px;
-    color: lightslategray;
-    transition: color 0.3s;
-}
-
-#accounts a:hover,
-#accounts button:hover {
-    color: dimgray;
+    font-weight: 300;
 }
 
 .opened #accounts {
@@ -42,10 +30,10 @@
         background-color: lightgray;
         width: 100%;
         margin: 0;
-        padding: 15px 30px 0 180px;
+        padding: 3px 30px 0 180px;
     }
 
     .opened #accounts {
-        height: 150px;
+        height: 160px;
     }
 }

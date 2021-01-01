@@ -1,7 +1,9 @@
 a {
     color: black;
+    transition: color 0.4s;
 }
 
 a:hover {
-    color: black;
+    color: slategray;
+    text-decoration: none;
 }

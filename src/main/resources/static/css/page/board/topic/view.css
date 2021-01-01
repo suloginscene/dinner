@@ -1,40 +1,36 @@
 @import "/css/page/board/_base.css";
 @import "/css/page/board/_accordion.css";
 
-#magazine {
-    font-size: 30px;
-    margin-bottom: 25px;
+
+.article-link {
+    border-bottom: 1px solid dimgray;
+    margin-bottom: 20px;
 }
 
-#title {
-    margin-bottom: 15px;
-}
-
-#owner {
-    margin-bottom: 25px;
-}
-
-#articles {
-    list-style-type: none;
+.article-row {
+    padding-bottom: 10px;
     overflow: auto;
-    padding-left: 0;
-    margin-top: 30px;
 }
 
-.article {
-    padding-bottom: 5px;
-    border-bottom: solid 1px dimgray;
-    margin-bottom: 15px;
+.tag-col {
+    margin-right: 10px;
+}
+
+.point-col {
+    color: dimgray;
+}
+
+.right-cols {
+    float: right;
+}
+
+.writer-col {
     font-size: 20px;
-    overflow: auto;
+    margin-right: 10px;
 }
 
-.left {
-    float: left;
-}
-
-.title {
-    font-size: 22px;
+.article-title {
+    font-size: 25px;
     margin-right: 5px;
 }
 
@@ -46,33 +42,19 @@
     margin-left: 1px;
 }
 
-.article-sub-info {
-    color: dimgray;
-    font-size: 15px;
-    margin-left: 5px;
-}
 
-.right {
-    float: right;
-}
+/*@media (max-width: 768px) {*/
 
-.writer {
-    margin-right: 10px;
-}
+/*    .tag {*/
+/*        display: none;*/
+/*    }*/
 
+/*    .article-sub-info {*/
+/*        display: none;*/
+/*    }*/
 
-@media (max-width: 768px) {
+/*    .date {*/
+/*        display: none;*/
+/*    }*/
 
-    .tag {
-        display: none;
-    }
-
-    .article-sub-info {
-        display: none;
-    }
-
-    .date {
-        display: none;
-    }
-
-}
+/*}*/

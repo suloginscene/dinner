@@ -8,19 +8,19 @@
         <script src="/js/ajax/articles_in_topic.js"></script>
 
         <script type="text/template" id="article-template">
-            <li class="article">
-                <div class="left">
-                    <a class="title" href="/articles/{id}">{title}</a>
-                    {tags}
-                    <span class="article-sub-info">
-                        reply: {reply} / read: {read} / like: {like}
+            <div class="article-link">
+                <div class="article-row">
+                    <a class="article-title" href="/articles/{id}">{title}</a>
+                </div>
+                <div class="article-row">
+                    <span class="tag-col">{tags}</span>
+                    <span class="point-col">reply: {reply} &middot; read: {read} &middot; like: {like}</span>
+                    <span class="right-cols">
+                        <span class="writer-col"><a class="person" href="/@{writer}">{writer}</a></span>
+                        <span class="date-col">{createdAt}</span>
                     </span>
                 </div>
-                <div class="right">
-                    <a class="writer" href="/@{writer}">{writer}</a>
-                    <span class="date">{createdAt}</span>
-                </div>
-            </li>
+            </div>
         </script>
         <script type="text/template" id="tag-template">
             <a href="/tags/{tag}" class="tag">{tag}</a>
@@ -31,35 +31,37 @@
         <section th:object="${topic}">
 
             <div class="info">
-                <h2 id="magazine"><a th:href="'/magazines/'+*{magazine.id}" th:text="*{magazine.title}"></a></h2>
-                <h1 id="title" th:text="*{title}"></h1>
-                <div id="owner">by <a th:href="'/@'+*{owner}" th:text="*{owner}"></a></div>
+                <h2 class="parent"><a th:href="'/magazines/'+*{magazine.id}" th:text="*{magazine.title}"></a></h2>
+                <h1 class="title" th:text="*{title}"></h1>
+                <div class="bi-line">by <a th:href="'/@'+*{owner}" th:text="*{owner}" class="person"></a></div>
                 <a href="#" id="board-accordion">
                     <span th:text="*{shortExplanation}"></span> <i class="fa fa-chevron-down"></i>
                 </a>
                 <div class="panel" th:text="*{longExplanation}"></div>
             </div>
 
-            <div id="button-container" sec:authorize="isAuthenticated()">
-                <div th:if="${#authentication.name}==*{owner}">
-                    <form th:action="'/topics/'+*{id}+'/form'" method="get">
-                        <button type="submit">update</button>
-                    </form>
-                    <form th:unless="${topic.hasChild}" th:action="'/topics/'+*{id}" th:method="delete">
-                        <button type="submit">delete</button>
-                    </form>
-                </div>
-                <div th:if="${topic.magazine.policy.equals('OPEN')}or${topic.magazine.owner.equals(#authentication.name)}or${topic.magazine.members.contains(#authentication.name)}">
-                    <form action="/article-form" method="get">
-                        <label>
-                            <input type="text" name="topicId" th:value="*{id}" hidden>
-                        </label>
-                        <button type="submit">write</button>
-                    </form>
+            <div id="button-container-wrapper">
+                <div id="button-container">
+                    <th:block th:if="${topic.magazine.policy.equals('OPEN')}or${topic.magazine.owner.equals(#authentication.name)}or${topic.magazine.members.contains(#authentication.name)}">
+                        <form action="/article-form" method="get">
+                            <label>
+                                <input type="text" name="topicId" th:value="*{id}" hidden>
+                            </label>
+                            <button type="submit">write</button>
+                        </form>
+                    </th:block>
+                    <th:block sec:authorize="isAuthenticated()" th:if="${#authentication.name}==*{owner}">
+                        <form th:action="'/topics/'+*{id}+'/form'" method="get">
+                            <button type="submit">update</button>
+                        </form>
+                        <form th:unless="${topic.hasChild}" th:action="'/topics/'+*{id}" th:method="delete">
+                            <button type="submit">delete</button>
+                        </form>
+                    </th:block>
                 </div>
             </div>
 
-            <ul id="articles"></ul>
+            <ul id="articles" class="children"></ul>
             <div id="topic-id" th:text="*{id}" hidden></div>
 
         </section>

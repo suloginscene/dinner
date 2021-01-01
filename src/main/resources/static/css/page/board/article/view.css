@@ -1,23 +1,10 @@
 @import "/css/page/board/_base.css";
 
-#topic {
-    font-size: 30px;
-    margin: 15px 0;
-    padding: 0;
-}
-
-#title {
-    margin: 15px 0;
-}
 
 #sub-info {
     font-size: 20px;
     margin: 15px 0;
     float: right;
-}
-
-#writer {
-    margin-right: 10px;
 }
 
 #sub-info #date {
@@ -29,24 +16,24 @@ article {
     border-bottom: 1px solid dimgray;
 }
 
-section h2 {
+article h2 {
     padding-top: 30px;
     margin-bottom: 15px;
 }
 
-section h3 {
+article h3 {
     text-indent: 15px;
     padding-top: 30px;
     margin-bottom: 15px;
 }
 
-section p {
+article p {
     font-size: 18px;
     text-indent: 15px;
     margin-bottom: 10px;
 }
 
-section article p img {
+article p img {
     width: 100%;
 }
 
@@ -57,10 +44,6 @@ section article p img {
 #reply-input {
     width: 55%;
     margin-left: 50px;
-}
-
-#replies {
-    width: 100%;
 }
 
 .writer-col {

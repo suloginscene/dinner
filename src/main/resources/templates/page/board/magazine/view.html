@@ -16,10 +16,9 @@
         <section th:object="${magazine}">
 
             <div class="info">
-                <h1 id="title" th:text="*{title}"></h1>
-                <div id="authorities">
-                    <span id="policy" th:text="*{policy}"></span> by
-                    <a th:href="'/@'+*{owner}" th:text="*{owner}" id="owner"></a>
+                <h1 class="title" th:text="*{title}"></h1>
+                <div class="bi-line">
+                    by <a th:href="'/@'+*{owner}" th:text="*{owner}" class="person"></a>
                     <th:block th:each="member:*{members}">
                         <a class="writer" th:href="@{'/@'+${member}}" th:text="${member}"></a>
                     </th:block>
@@ -33,40 +32,43 @@
                 <div class="panel" th:text="*{longExplanation}"></div>
             </div>
 
-            <div id="button-container" sec:authorize="isAuthenticated()">
-                <div th:if="${#authentication.name}==*{owner}">
-                    <form th:action="'/magazines/'+*{id}+'/form'" method="get">
-                        <button type="submit">update</button>
-                    </form>
-                    <form th:unless="${magazine.hasChild}" th:action="'/magazines/'+*{id}" th:method="delete">
-                        <button type="submit">delete</button>
-                    </form>
-                    <form th:if="${magazine.policy.equals('MANAGED')}" th:action="'/magazines/'+*{id}+'/members'" method="get">
-                        <button type="submit">member</button>
-                    </form>
-                </div>
-                <div th:if="${magazine.policy.equals('OPEN')}or${magazine.owner.equals(#authentication.name)}or${magazine.members.contains(#authentication.name)}">
-                    <form action="/topic-form" method="get">
-                        <label>
-                            <input type="text" name="magazineId" th:value="*{id}" hidden>
-                        </label>
-                        <button type="submit">create</button>
-                    </form>
-                </div>
-                <div th:if="${magazine.policy.equals('MANAGED')}and${magazine.owner!=#authentication.name}and${!magazine.members.contains(#authentication.name)}">
-                    <div th:unless="${magazine.members.contains(#authentication.name)}">
-                        <form th:action="'/magazines/'+*{id}+'/members/apply'" th:method="post">
-                            <button type="submit">apply</button>
+            <div id="button-container-wrapper">
+                <div id="button-container">
+                    <th:block th:if="${magazine.policy.equals('OPEN')}or${magazine.owner.equals(#authentication.name)}or${magazine.members.contains(#authentication.name)}">
+                        <form action="/topic-form" method="get">
+                            <label>
+                                <input type="text" name="magazineId" th:value="*{id}" hidden>
+                            </label>
+                            <button type="submit">create</button>
                         </form>
-                    </div>
-                    <div th:if="${magazine.members.contains(#authentication.name)}">
-                        <form th:action="'/magazines/'+*{id}+'/members/quit'" th:method="post">
-                            <button type="submit">quit</button>
+                    </th:block>
+                    <th:block th:if="${magazine.policy.equals('MANAGED')}and${magazine.owner!=#authentication.name}">
+                        <th:block th:unless="${magazine.members.contains(#authentication.name)}">
+                            <form th:action="'/magazines/'+*{id}+'/members/apply'" th:method="post">
+                                <button type="submit">apply</button>
+                            </form>
+                        </th:block>
+                        <th:block th:if="${magazine.members.contains(#authentication.name)}">
+                            <form th:action="'/magazines/'+*{id}+'/members/quit'" th:method="post">
+                                <button type="submit">quit</button>
+                            </form>
+                        </th:block>
+                    </th:block>
+                    <th:block sec:authorize="isAuthenticated()" th:if="${#authentication.name}==*{owner}">
+                        <form th:action="'/magazines/'+*{id}+'/form'" method="get">
+                            <button type="submit">update</button>
                         </form>
-                    </div>
+                        <form th:unless="${magazine.hasChild}" th:action="'/magazines/'+*{id}" th:method="delete">
+                            <button type="submit">delete</button>
+                        </form>
+                        <form th:if="${magazine.policy.equals('MANAGED')}" th:action="'/magazines/'+*{id}+'/members'" method="get">
+                            <button type="submit">member</button>
+                        </form>
+                    </th:block>
                 </div>
             </div>
-            <ul id="topics"></ul>
+
+            <ul id="topics" class="children"></ul>
             <div id="magazine-id" th:text="*{id}" hidden></div>
         </section>
     </body>

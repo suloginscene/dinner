@@ -1,22 +1,18 @@
 button {
-    color: lightslategray;
-    background-color: rgba(0, 0, 0, 0);
-    font-size: 20px;
     border: 0;
     padding: 6px 12px;
-    transition: 0.4s;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 20px;
+    font-weight: 300;
+    color: black;
+    background-color: rgba(0, 0, 0, 0);
+    transition: color 0.4s;
 }
 
 button:hover {
-    color: black;
+    color: slategray;
 }
 
-
-@media (max-width: 768px) {
-
-    header button:hover {
-        background-color: lightslategray;
-        color: ghostwhite;
-    }
-
+header button {
+    font-weight: 400;
 }

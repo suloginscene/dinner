@@ -62,12 +62,12 @@
     right: 45px;
     border: 0;
     background-color: rgba(0, 0, 0, 0);
-    font-size: 50px;
+    font-size: 40px;
 }
 
 /* The navigation links inside the overlay */
 .overlay-content a {
-    font-size: 30px;
+    font-size: 27px;
     padding: 10px;
     text-decoration: none;
     display: block; /* Display block instead of inline */
@@ -75,7 +75,7 @@
 
 /* Chevron */
 .overlay-content #nav-accordion i {
-    font-size: 20px;
+    font-size: 18px;
     color: dimgray;
     transition: 0.3s; /* Vertical Flip */
     margin-left: 8px;
@@ -84,7 +84,7 @@
 /* The lists inside the accordion panel */
 .overlay-content nav ul li a {
     padding: 5px;
-    font-size: 22px;
+    font-size: 20px;
 }
 
 /* When you mouse over the navigation links, change their color */
@@ -98,21 +98,21 @@
 @media (max-width: 768px) {
     .overlay button {
         top: 15px;
-        right: 35px;
-        font-size: 45px;
+        right: 25px;
+        font-size: 40px;
     }
 
     .overlay-content a {
-        font-size: 27px;
+        font-size: 26px;
         padding: 8px;
     }
 
     .overlay-content #nav-accordion i {
-        font-size: 17px;
+        font-size: 16px;
     }
 
     .overlay-content nav ul li a {
-        font-size: 20px;
+        font-size: 18px;
     }
 }
 
