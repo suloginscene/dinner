@@ -13,10 +13,10 @@ script:
   - ./mvnw package -DskipTests=true
 
 after_success:
-  - docker build -t dinner:latest ./
-  - docker tag dinner:latest scenecho/dinner:latest
+  - docker build -t paper:latest ./
+  - docker tag paper:latest scenecho/paper:latest
   - echo "$DOCKER_HUB_PASSWORD" | docker login -u "$DOCKER_HUB_ID" --password-stdin
-  - docker push scenecho/dinner:latest
+  - docker push scenecho/paper:latest
 
 notifications:
   email:
