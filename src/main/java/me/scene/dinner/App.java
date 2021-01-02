@@ -13,7 +13,7 @@ public class App {
 
     public static final String SPRING_CONFIGS = "spring.config.location="
             + "classpath:application.yml,"
-            + "file:/dinner-ref/app/config/file-application.yml";
+            + "file:/paper/conf/app.yml";
 
     public static void main(String[] args) {
         new SpringApplicationBuilder(App.class)

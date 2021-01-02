@@ -1,1 +1,1 @@
-java -jar dinner.jar --spring.profiles.active=$1
+java -jar paper.jar --spring.profiles.active=$1

@@ -9,13 +9,6 @@ cache:
   directories:
     - $HOME/.m2
 
-before_install:
-  - sudo mkdir /dinner-ref
-  - sudo mkdir /dinner-ref/app
-  - sudo mkdir /dinner-ref/app/logs
-  - sudo touch /dinner-ref/app/logs/dinner.log
-  - sudo chmod 666 /dinner-ref/app/logs/dinner.log
-
 script:
   - ./mvnw package -DskipTests=true
 

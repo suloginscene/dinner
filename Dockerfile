@@ -1,15 +1,8 @@
 FROM openjdk:11-jre
 
-ENV LANG=ko_KR.UTF-8
-ENV TZ=Asia/Seoul
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+RUN echo "TZ='Asia/Seoul'; export TZ" >> .profile
+RUN source ~/.profile
 
-ENV GROUP=docker-user
-ENV USER=docker-scene
-RUN groupadd -r $GROUP && useradd -r -g $GROUP $USER
-USER $USER
-WORKDIR /home/$USER
-
-COPY target/dinner-*.jar dinner.jar
+COPY target/paper-*.jar paper.jar
 COPY entrypoint.sh /entrypoint.sh
 ENTRYPOINT ["/bin/bash", "/entrypoint.sh"]

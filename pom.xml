@@ -9,9 +9,9 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>me.scene</groupId>
-    <artifactId>dinner</artifactId>
-    <version>0.0.1</version>
-    <name>dinner</name>
+    <artifactId>paper</artifactId>
+    <version>1.0.0</version>
+    <name>paper</name>
     <description>Article Platform</description>
 
     <properties>
