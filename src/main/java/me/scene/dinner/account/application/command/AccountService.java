@@ -47,8 +47,8 @@ public class AccountService {
     }
 
     public String verify(String email, String token) {
-        boolean verified = repository.existsByEmail(email);
-        if (verified) return null;
+        Account verified = repository.findByEmail(email).orElse(null);
+        if (verified != null) return verified.getUsername();
 
         TempAccount temp = tempRepository.findAccountByEmail(email);
         temp.verify(token);
