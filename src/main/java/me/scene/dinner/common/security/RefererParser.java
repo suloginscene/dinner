@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class RefererParser {
 
-    @Value("${dinner.url}")
+    @Value("${app.url}")
     private String url;
 
 

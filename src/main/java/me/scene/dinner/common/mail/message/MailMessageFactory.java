@@ -11,7 +11,7 @@ import org.thymeleaf.context.Context;
 @RequiredArgsConstructor
 public class MailMessageFactory {
 
-    @Value("${dinner.url}")
+    @Value("${app.url}")
     private String url;
 
     private final TemplateEngine templateEngine;

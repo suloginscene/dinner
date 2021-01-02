@@ -1,9 +1,14 @@
 {
   "properties": [
     {
-      "name": "dinner.url",
+      "name": "app.url",
       "type": "java.lang.String",
-      "description": "Description for dinner.url."
+      "description": "Description for app.url."
+    },
+    {
+      "name": "app.developer",
+      "type": "java.lang.String",
+      "description": "Description for app.developer."
     }
   ]
 }
