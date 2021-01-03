@@ -21,7 +21,7 @@ public class TopicView extends View {
         super(topic);
 
         this.shortExplanation = topic.getShortExplanation();
-        this.longExplanation = topic.getLongExplanation();
+        this.longExplanation = topic.getLongExplanation().replace("\n", "<br>");
 
         this.hasChild = topic.getArticles().exists();
 
