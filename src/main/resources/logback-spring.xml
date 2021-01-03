@@ -32,20 +32,20 @@
         <root level="INFO">
             <appender-ref ref="CONSOLE"/>
         </root>
-        <logger name="me.scene.dinner" level="DEBUG"/>
+        <logger name="me.scene.paper" level="DEBUG"/>
         <logger name="org.hibernate.SQL" level="DEBUG"/>
     </springProfile>
     <springProfile name="dev">
         <root level="INFO">
             <appender-ref ref="FILE"/>
         </root>
-        <logger name="me.scene.dinner" level="INFO"/>
+        <logger name="me.scene.paper" level="INFO"/>
     </springProfile>
     <springProfile name="prod1, prod2">
         <root level="INFO">
             <appender-ref ref="FILE"/>
         </root>
-        <logger name="me.scene.dinner" level="WARN"/>
+        <logger name="me.scene.paper" level="WARN"/>
     </springProfile>
 
 </configuration>
