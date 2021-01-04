@@ -6,12 +6,9 @@ import me.scene.paper.board.article.application.command.request.ArticleUpdateReq
 import me.scene.paper.board.article.application.command.request.ReplyCreateRequest;
 import me.scene.paper.board.article.application.command.request.ReplyDeleteRequest;
 import me.scene.paper.board.article.domain.article.model.Article;
-import me.scene.paper.board.article.domain.article.model.ArticleTag;
 import me.scene.paper.board.article.domain.article.model.Like;
 import me.scene.paper.board.article.domain.article.model.Reply;
 import me.scene.paper.board.article.domain.article.repository.ArticleRepository;
-import me.scene.paper.board.article.domain.tag.model.Tag;
-import me.scene.paper.board.article.domain.tag.repository.TagRepository;
 import me.scene.paper.board.common.domain.model.Point;
 import me.scene.paper.board.topic.domain.model.Topic;
 import me.scene.paper.board.topic.domain.repository.TopicRepository;
@@ -23,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 
 @Service
@@ -33,7 +29,8 @@ public class ArticleService {
 
     private final ArticleRepository repository;
     private final TopicRepository topicRepository;
-    private final TagRepository tagRepository;
+
+    private final TagService tagService;
 
     private final NotificationMessageFactory messageFactory;
     private final NotificationEventPublisher notification;
@@ -63,7 +60,7 @@ public class ArticleService {
         Long id = repository.save(article).getId();
 
         Set<String> tagNames = request.getTagNames();
-        renewTags(article, tagNames);
+        tagService.allocate(article, tagNames);
 
         return id;
     }
@@ -79,29 +76,17 @@ public class ArticleService {
         article.update(username, title, content, publicized);
 
         Set<String> tagNames = request.getTagNames();
-        renewTags(article, tagNames);
+        tagService.renew(article, tagNames);
     }
 
     public Long delete(Long id, String current) {
         Article article = repository.fetchToRate(id);
         article.beforeDelete(current);
         repository.delete(article);
+
+        tagService.release(article);
+
         return article.getTopic().getId();
-    }
-
-
-    private void renewTags(Article article, Set<String> tagNames) {
-        Set<ArticleTag> articleTags = article.getArticleTags();
-        articleTags.clear();
-
-        Set<Tag> tags = tagNames.stream()
-                .map(tagRepository::find)
-                .collect(Collectors.toSet());
-
-        for (Tag tag : tags) {
-            ArticleTag articleTag = new ArticleTag(article, tag);
-            articleTags.add(articleTag);
-        }
     }
 
 
