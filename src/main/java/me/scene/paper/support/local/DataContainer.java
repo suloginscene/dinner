@@ -1,4 +1,4 @@
-package me.scene.paper.support;
+package me.scene.paper.support.local;
 
 import lombok.RequiredArgsConstructor;
 import me.scene.paper.account.application.command.AccountService;
@@ -14,7 +14,6 @@ import me.scene.paper.board.article.application.command.request.ReplyCreateReque
 import me.scene.paper.board.article.domain.article.model.Article;
 import me.scene.paper.board.article.domain.article.repository.ArticleRepository;
 import me.scene.paper.board.article.domain.tag.repository.TagRepository;
-import me.scene.paper.board.magazine.application.cache.BestMagazineCache;
 import me.scene.paper.board.magazine.application.command.MagazineService;
 import me.scene.paper.board.magazine.application.command.MemberService;
 import me.scene.paper.board.magazine.application.command.request.MagazineCreateRequest;
@@ -25,8 +24,7 @@ import me.scene.paper.board.topic.application.command.TopicService;
 import me.scene.paper.board.topic.application.command.request.TopicCreateRequest;
 import me.scene.paper.board.topic.domain.model.Topic;
 import me.scene.paper.board.topic.domain.repository.TopicRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -34,28 +32,21 @@ import javax.annotation.PreDestroy;
 import java.util.Set;
 
 
+@Profile("local")
 @Component
 @RequiredArgsConstructor
 public class DataContainer {
 
     private final DataService dataService;
-    private final String profile;
 
-    @Autowired
-    public DataContainer(Environment environment, DataService dataService) {
-        this.dataService = dataService;
-        this.profile = environment.getActiveProfiles()[0];
-    }
 
     @PostConstruct
     public void init() {
-        if (!profile.equals("local")) return;
         dataService.init();
     }
 
     @PreDestroy
     public void destroy() {
-        if (!profile.equals("local")) return;
         dataService.destroy();
     }
 
@@ -68,7 +59,6 @@ public class DataContainer {
         private final AccountRepository accountRepository;
 
         private final MagazineService magazineService;
-        private final BestMagazineCache magazineCache;
         private final MemberService memberService;
         private final MagazineRepository magazineRepository;
 
@@ -82,12 +72,6 @@ public class DataContainer {
 
 
         private void init() {
-
-            if (accountRepository.count() != 0) {
-                magazineCache.update();
-                return;
-            }
-
 
             Account scene = user("scene", "suloginscene@gmail.com", "password_s");
             Account doeon = user("doeon", "ahndoeon@naver.com", "password_d");

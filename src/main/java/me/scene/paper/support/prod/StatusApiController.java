@@ -1,4 +1,4 @@
-package me.scene.paper.support;
+package me.scene.paper.support.prod;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
