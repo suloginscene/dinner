@@ -20,7 +20,7 @@ public class TagQueryService {
     private final TagRepository repository;
 
 
-    public List<String> findAllTagNames() {
+    public List<String> names() {
         List<Tag> tags = repository.findAll();
         return tags.stream()
                 .map(Tag::getName)

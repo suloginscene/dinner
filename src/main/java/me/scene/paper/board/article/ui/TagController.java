@@ -20,7 +20,7 @@ public class TagController {
 
     @GetMapping("/tags")
     public String showTags(Model model) {
-        List<String> tags = query.findAllTagNames();
+        List<String> tags = query.names();
 
         model.addAttribute("tags", tags);
         return "page/board/article/tags";
