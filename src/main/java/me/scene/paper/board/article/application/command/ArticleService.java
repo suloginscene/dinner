@@ -77,6 +77,9 @@ public class ArticleService {
 
         Article article = repository.fetchToRate(id);
         article.update(username, title, content, publicized);
+
+        Set<String> tagNames = request.getTagNames();
+        renewTags(article, tagNames);
     }
 
     public Long delete(Long id, String current) {

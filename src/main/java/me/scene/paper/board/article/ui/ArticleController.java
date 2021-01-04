@@ -90,12 +90,12 @@ public class ArticleController {
 
         ArticleView article = query.view(id);
 
-        ArticleUpdateForm form = ArticleUpdateForm.builder()
-                .topicId(article.getTopic().getId())
-                .title(article.getTitle())
-                .content(article.getContent())
-                .status(article.isPublicized() ? "PUBLIC" : "PRIVATE")
-                .build();
+        ArticleUpdateForm form = new ArticleUpdateForm(
+                article.getTitle(),
+                article.getContent(),
+                article.isPublicized() ? "PUBLIC" : "PRIVATE",
+                String.join(",", article.getTags())
+        );
 
         model.addAttribute("updateForm", form);
         return "page/board/article/update";
@@ -111,8 +111,9 @@ public class ArticleController {
         String title = form.getTitle();
         String content = form.getContent();
         boolean publicized = form.getStatus().equals("PUBLIC");
+        Set<String> tagNames = tag.parse(form.getJsonTags());
 
-        ArticleUpdateRequest request = new ArticleUpdateRequest(username, id, title, content, publicized);
+        ArticleUpdateRequest request = new ArticleUpdateRequest(username, id, title, content, publicized, tagNames);
         service.update(request);
 
         return "redirect:" + ("/articles/" + id);

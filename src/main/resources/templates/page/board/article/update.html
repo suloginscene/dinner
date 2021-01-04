@@ -15,7 +15,6 @@
     <body th:replace="layout/layout::body(~{::section})">
         <section>
             <form th:action="'/articles/'+${id}" th:method="put" th:object="${updateForm}" id="board-form" novalidate>
-                <label hidden><input type="text" name="topicId" th:value="*{topicId}" hidden></label>
                 <div id="bar">
                     <label id="title">
                         <input type="text" th:field="*{title}" placeholder="제목은 20자까지 가능합니다." required maxlength="20">
@@ -30,8 +29,7 @@
                     <small class="valid-feedback"><i class="fa fa-check"></i></small>
                 </label>
                 <div id="under-bar">
-                    <!-- TODO use another method to update -->
-                    <input th:type="text" id="tagInput" placeholder="태그를 입력하세요."><label for="tagInput"></label>
+                    <input th:type="text" id="tagInput" th:field="*{jsonTags}" placeholder="태그 (최대 3개, 한글/영(소)/숫자/_)"><label for="tagInput"></label>
                     <div th:text="${_csrf.token}" id="tagify-csrf" hidden></div>
                     <div class="form-checks">
                         <label for="radio-1"><input th:field="*{status}" type="radio" id="radio-1" value="PUBLIC"/>public</label>
