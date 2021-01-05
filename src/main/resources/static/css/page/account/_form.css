@@ -1,0 +1,12 @@
+.centered-content {
+    width: 300px;
+}
+
+.form-main input {
+    padding: 10px;
+    width: 100%;
+}
+
+.error-msg {
+    margin-bottom: 25px;
+}

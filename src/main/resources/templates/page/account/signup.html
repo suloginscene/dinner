@@ -9,38 +9,32 @@
     <body th:replace="layout/layout::body(~{::section})">
         <section>
             <div class="centered-content">
-                <div class="message">
-                    회원가입
-                </div>
+                <div class="title">회원가입</div>
                 <form th:object="${signupForm}" th:action="@{/signup}" th:method="post" id="signup-form" novalidate>
-                    <div class="form-texts">
+                    <div class="form-main">
                         <label>
                             <input type="text" th:field="*{username}" placeholder="이름 (2~16자의 한글, 영(소), 숫자, -, _)"
                                    required pattern="[a-z가-힣0-9\-_]{2,16}">
                             <small class="invalid-feedback"><i class="fa fa-ban"></i></small>
                             <small class="valid-feedback"><i class="fa fa-check"></i></small>
-                            <small th:if="${#fields.hasErrors('username')}" th:errors="*{username}" class="form-text text-danger"></small>
                         </label>
                         <label>
                             <input type="email" th:field="*{email}" placeholder="이메일 (인증 후 가입 완료)"
                                    required>
                             <small class="invalid-feedback"><i class="fa fa-ban"></i></small>
                             <small class="valid-feedback"><i class="fa fa-check"></i></small>
-                            <small th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="form-text text-danger"></small>
                         </label>
                         <label>
                             <input type="password" th:field="*{password}" placeholder="비밀번호 (8자 이상)"
                                    required minlength="8">
                             <small class="invalid-feedback"><i class="fa fa-ban"></i></small>
                             <small class="valid-feedback"><i class="fa fa-check"></i></small>
-                            <small th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="form-text text-danger"></small>
                         </label>
                         <label>
                             <input type="password" th:field="*{passwordConfirm}" placeholder="비밀번호 확인"
                                    required minlength="8">
                             <small class="invalid-feedback"><i class="fa fa-ban"></i></small>
                             <small class="valid-feedback"><i class="fa fa-check"></i></small>
-                            <small th:if="${#fields.hasErrors('passwordConfirm')}" th:errors="*{passwordConfirm}" class="form-text text-danger"></small>
                         </label>
                     </div>
                     <div class="form-checks">
@@ -48,11 +42,16 @@
                             <input id="term" type="checkbox" th:field="*{agreement}">
                             <a href="#">약관</a>에 동의합니다.
                             <small id="term-hint" class="form-text text-danger">가입에는 동의가 필요합니다.</small>
-                            <small th:if="${#fields.hasErrors('agreement')}" th:errors="*{agreement}" class="form-text text-danger"></small>
                         </label>
                     </div>
-                    <br>
-                    <button type="submit">
+                    <div class="error-msg text-danger">
+                        <small th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></small>
+                        <small th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></small>
+                        <small th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></small>
+                        <small th:if="${#fields.hasErrors('passwordConfirm')}" th:errors="*{passwordConfirm}"></small>
+                        <small th:if="${#fields.hasErrors('agreement')}" th:errors="*{agreement}"></small>
+                    </div>
+                    <button type="submit" class="account-button">
                         submit
                     </button>
                 </form>

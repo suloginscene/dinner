@@ -8,10 +8,11 @@
     <body th:replace="layout/layout::body(~{::section})">
         <section>
             <div class="centered-content">
-                <div><span th:text="${username}"></span> 님,</div>
-                <div>가입을 환영합니다.</div>
-                <br>
-                <button onclick="location.href='/login'">login</button>
+                <div class="title">
+                    <div><span th:text="${username}"></span> 님,</div>
+                    <div>가입을 환영합니다.</div>
+                </div>
+                <a href="/login" class="account-button">login</a>
             </div>
         </section>
     </body>

@@ -1,25 +1,18 @@
-@import "/css/page/account/_base.css";
 @import "/css/lib/_centered.css";
+@import "/css/page/account/_title.css";
+@import "/css/page/account/_button.css";
+@import "/css/page/account/_form.css";
 
-section .centered-content {
-    width: 320px;
+
+.form-main {
+    margin-bottom: 10px;
 }
 
-section .centered-content form .form-texts {
-    margin: 20px 0;
-}
-
-section .centered-content form .form-texts label {
+.form-main label {
     position: relative;
 }
 
-section .centered-content form .form-texts label input {
-    width: 100%;
-    padding: 10px;
-}
-
-section .centered-content form .form-texts label .invalid-feedback,
-section .centered-content form .form-texts label .valid-feedback {
+.invalid-feedback, .valid-feedback {
     position: absolute;
     right: 0;
     top: 0;
@@ -28,10 +21,6 @@ section .centered-content form .form-texts label .valid-feedback {
     text-align: right;
 }
 
-section .centered-content form label small {
-    font-size: 16px;
-}
-
-section .centered-content form .form-checks label #term-hint {
+#term-hint {
     display: none;
 }

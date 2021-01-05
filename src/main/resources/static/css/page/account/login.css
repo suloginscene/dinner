@@ -1,54 +1,16 @@
-@import "/css/page/account/_base.css";
 @import "/css/lib/_centered.css";
+@import "/css/page/account/_button.css";
+@import "/css/page/account/_form.css";
 
-section .centered-content {
-    width: 280px;
-    color: black;
+
+.form-sub {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 25px;
+    padding: 0 3px;
+    font-size: 15px;
 }
 
-section .centered-content .message {
-    position: relative;
-    min-height: 50px;
-    margin-bottom: 10px;
-}
-
-section .centered-content .message #login-sign {
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    margin-left: 3px;
-    font-size: 26px;
-}
-
-section .centered-content .message #link-to-signup {
-    position: absolute;
-    right: 0;
-    bottom: 0;
+.checkbox {
     margin-right: 3px;
-    font-size: 22px;
-}
-
-section .centered-content form .form-main input {
-    padding: 10px;
-    width: 100%;
-}
-
-section .centered-content form .form-sub {
-    overflow: auto;
-}
-
-section .centered-content form .form-sub #forgot-password {
-    float: left;
-}
-
-section .centered-content form .form-sub #remember-me {
-    float: right;
-}
-
-section .centered-content form .form-sub #remember-me .checkbox {
-    margin-right: 5px;
-}
-
-section .centered-content form .form-info {
-    margin-top: 10px;
 }
