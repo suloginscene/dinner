@@ -27,7 +27,8 @@
                     </th:block>
                 </div>
                 <a href="#" id="board-accordion">
-                    <span th:text="*{shortExplanation}"></span> <i class="fa fa-chevron-down"></i>
+                    <span th:text="*{shortExplanation}"></span>
+                    <i class="fa fa-chevron-down" th:unless="*{longExplanation.isEmpty()}"></i>
                 </a>
                 <div class="panel" th:utext="*{longExplanation}"></div>
             </div>

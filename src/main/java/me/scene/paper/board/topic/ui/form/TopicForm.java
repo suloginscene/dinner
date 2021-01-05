@@ -19,8 +19,7 @@ public class TopicForm {
     @Length(max = 30, message = "짧은 소개는 최대 30자까지 가능합니다.")
     private String shortExplanation;
 
-    @NotBlank(message = "자세한 소개를 적어주세요.")
-    @Length(max = 250, message = "자세한 소개는 최대 250자까지 가능합니다.")
+    @Length(max = 255, message = "자세한 소개는 최대 255자까지 가능합니다.")
     private String longExplanation;
 
 }
