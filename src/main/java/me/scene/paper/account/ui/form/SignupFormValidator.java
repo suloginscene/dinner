@@ -22,8 +22,8 @@ public class SignupFormValidator implements Validator {
 
     @Override
     public void validate(Object o, Errors errors) {
-
         SignupForm signupForm = (SignupForm) o;
+
         String username = signupForm.getUsername();
         String email = signupForm.getEmail();
 
@@ -39,6 +39,13 @@ public class SignupFormValidator implements Validator {
             errors.rejectValue("email", "duplicated.email", "이미 사용 중인 이메일입니다.");
         }
 
+
+        String password = signupForm.getPassword();
+        String passwordConfirm = signupForm.getPasswordConfirm();
+
+        if (!password.equals(passwordConfirm)) {
+            errors.rejectValue("passwordConfirm", "invalid.passwordConfirm", "패스워드를 다시 확인해주세요.");
+        }
     }
 
 }

@@ -35,6 +35,13 @@
                             <small class="valid-feedback"><i class="fa fa-check"></i></small>
                             <small th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="form-text text-danger"></small>
                         </label>
+                        <label>
+                            <input type="password" th:field="*{passwordConfirm}" placeholder="비밀번호 확인"
+                                   required minlength="8">
+                            <small class="invalid-feedback"><i class="fa fa-ban"></i></small>
+                            <small class="valid-feedback"><i class="fa fa-check"></i></small>
+                            <small th:if="${#fields.hasErrors('passwordConfirm')}" th:errors="*{passwordConfirm}" class="form-text text-danger"></small>
+                        </label>
                     </div>
                     <div class="form-checks">
                         <label>

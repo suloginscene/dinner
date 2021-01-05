@@ -8,6 +8,7 @@ import me.scene.paper.account.application.query.AccountQueryService;
 import me.scene.paper.account.application.query.dto.AccountView;
 import me.scene.paper.account.domain.account.model.Profile;
 import me.scene.paper.account.ui.form.PasswordForm;
+import me.scene.paper.account.ui.form.PasswordFormValidator;
 import me.scene.paper.account.ui.form.ProfileForm;
 import me.scene.paper.account.ui.form.SignupForm;
 import me.scene.paper.account.ui.form.SignupFormValidator;
@@ -35,13 +36,20 @@ public class AccountController {
     private final AccountService service;
     private final AccountQueryService query;
 
-    private final SignupFormValidator validator;
+    private final SignupFormValidator signupValidator;
+    private final PasswordFormValidator passwordValidator;
+
     private final RefererParser parser;
 
 
     @InitBinder("signupForm")
-    public void initBinder(WebDataBinder webDataBinder) {
-        webDataBinder.addValidators(validator);
+    public void initSignupBinder(WebDataBinder webDataBinder) {
+        webDataBinder.addValidators(signupValidator);
+    }
+
+    @InitBinder("passwordForm")
+    public void initPasswordBinder(WebDataBinder webDataBinder) {
+        webDataBinder.addValidators(passwordValidator);
     }
 
 

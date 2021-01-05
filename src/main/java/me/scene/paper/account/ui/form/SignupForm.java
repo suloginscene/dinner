@@ -25,6 +25,10 @@ public class SignupForm {
     @Length(min = 8, message = "비밀번호는 8자 이상이어야 합니다.")
     private String password;
 
+    @NotBlank(message = "비밀번호 확인은 공백일 수 없습니다.")
+    @Length(min = 8, message = "비밀번호 확인은 8자 이상이어야 합니다.")
+    private String passwordConfirm;
+
     @NotNull(message = "가입에는 동의가 필요합니다.")
     @AssertTrue(message = "가입에는 동의가 필요합니다.")
     private Boolean agreement;
