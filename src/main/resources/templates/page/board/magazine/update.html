@@ -9,31 +9,32 @@
     <body th:replace="layout/layout::body(~{::section})">
         <section th:object="${updateForm}">
             <div class="centered-content">
-                <div class="message">
-                    매거진을 수정할 수 있습니다.
-                </div>
                 <form th:action="'/magazines/'+${id}" th:method="put" id="board-form" novalidate>
                     <div class="form-texts">
-                        <div class="magazine-form-info">매거진 이름을 변경할 수 있습니다.</div>
-                        <label>
-                            <input th:field="*{title}" type="text" placeholder="매거진 이름은 최대 20자까지 가능합니다." required maxlength="20">
-                            <small class="invalid-feedback"><i class="fa fa-ban"></i></small>
-                            <small class="valid-feedback"><i class="fa fa-check"></i></small>
-                        </label>
-                        <div class="magazine-form-info">매거진 소개글을 변경할 수 있습니다.</div>
-                        <label>
-                            <input th:field="*{shortExplanation}" type="text" placeholder="간략한 소개는 최대 30자까지 가능합니다." required maxlength="30">
-                            <small class="invalid-feedback"><i class="fa fa-ban"></i></small>
-                            <small class="valid-feedback"><i class="fa fa-check"></i></small>
-                        </label>
-                        <label>
-                            <textarea th:field="*{longExplanation}" rows="5" placeholder="자세한 소개는 최대 255자까지 가능합니다. 생략할 수 있습니다." maxlength="255"></textarea>
-                            <small class="invalid-feedback"><i class="fa fa-ban"></i></small>
-                            <small class="valid-feedback"><i class="fa fa-check"></i></small>
-                        </label>
+                        <div class="box">
+                            <div class="guide-message">매거진 이름을 변경할 수 있습니다.</div>
+                            <label>
+                                <input th:field="*{title}" type="text" placeholder="매거진 이름은 최대 20자까지 가능합니다." required maxlength="20">
+                                <small class="invalid-feedback"><i class="fa fa-ban"></i></small>
+                                <small class="valid-feedback"><i class="fa fa-check"></i></small>
+                            </label>
+                        </div>
+                        <div class="box">
+                            <div class="guide-message">매거진 소개글을 변경할 수 있습니다.</div>
+                            <label>
+                                <input th:field="*{shortExplanation}" type="text" placeholder="간략한 소개는 최대 30자까지 가능합니다." required maxlength="30">
+                                <small class="invalid-feedback"><i class="fa fa-ban"></i></small>
+                                <small class="valid-feedback"><i class="fa fa-check"></i></small>
+                            </label>
+                            <label>
+                                <textarea th:field="*{longExplanation}" rows="5" placeholder="자세한 소개는 최대 255자까지 가능합니다. 생략할 수 있습니다." maxlength="255"></textarea>
+                                <small class="invalid-feedback"><i class="fa fa-ban"></i></small>
+                                <small class="valid-feedback"><i class="fa fa-check"></i></small>
+                            </label>
+                        </div>
                     </div>
                     <div class="form-checks">
-                        <div class="magazine-form-info">매거진 성격은 변경할 수 없습니다.</div>
+                        <div class="guide-message">매거진 성격은 변경할 수 없습니다.</div>
                         <div th:text="*{policy}"></div>
                         <label hidden>
                             <input type="text" th:field="*{policy}" th:value="*{policy}">

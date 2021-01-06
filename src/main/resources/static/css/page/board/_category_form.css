@@ -1,0 +1,30 @@
+.guide-message {
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+.centered-content {
+    width: 640px;
+}
+
+.form-texts label {
+    display: block;
+}
+
+.form-texts label input,
+.form-texts label textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.box {
+    margin-bottom: 25px;
+}
+
+
+@media (max-width: 768px) {
+    .centered-content {
+        width: 80vw;
+    }
+}

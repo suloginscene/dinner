@@ -2,6 +2,10 @@
     width: 300px;
 }
 
+.centered-content label {
+    display: block;
+}
+
 .form-main input {
     padding: 10px;
     width: 100%;

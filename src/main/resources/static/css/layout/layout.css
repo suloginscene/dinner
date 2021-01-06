@@ -30,10 +30,6 @@ section {
     border-bottom: 1px solid dimgray;
 }
 
-label {
-    display: block;
-}
-
 footer {
     height: 80px;
     display: flex;

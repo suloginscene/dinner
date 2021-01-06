@@ -1,42 +1,4 @@
 @import "/css/page/board/_base.css";
 @import "/css/lib/_centered.css";
 @import "/css/page/board/_validate.css";
-
-section .centered-content .message {
-    font-size: 32px;
-}
-
-section .centered-content .topic-form-info {
-    font-size: 20px;
-    margin-bottom: 10px;
-}
-
-section .centered-content form {
-    margin-bottom: 30px;
-}
-
-section .centered-content form .form-texts {
-    margin-top: 30px;
-}
-
-section .centered-content form .form-texts label {
-    display: block;
-}
-
-section .centered-content form .form-texts label input {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 10px;
-}
-
-section .centered-content form .form-texts label textarea {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 10px;
-}
-
-@media (max-width: 768px) {
-    section .centered-content {
-        width: 80vw;
-    }
-}
+@import "/css/page/board/_category_form.css";

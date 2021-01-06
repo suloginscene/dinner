@@ -9,37 +9,36 @@
     <body th:replace="layout/layout::body(~{::section})">
         <section>
             <div class="centered-content">
-                <div class="info">
-                    <div class="message">
-                        <div>Create New Topic</div>
-                    </div>
-                </div>
                 <form th:action="@{/topics}" th:method="post" th:object="${topicForm}" id="board-form" novalidate>
                     <div class="form-texts">
                         <label>
                             <input type="text" name="magazineId" th:value="*{magazineId}" hidden>
                             <small th:if="${#fields.hasErrors('magazineId')}" th:errors="*{magazineId}" class="form-text text-danger"></small>
                         </label>
-                        <div class="topic-form-info">토픽의 이름을 정해주세요.</div>
-                        <label>
-                            <input th:field="*{title}" type="text" placeholder="토픽 이름은 최대 20자까지 가능합니다." required maxlength="20">
-                            <small class="invalid-feedback"><i class="fa fa-ban"></i></small>
-                            <small class="valid-feedback"><i class="fa fa-check"></i></small>
-                            <small th:if="${#fields.hasErrors('title')}" th:errors="*{title}" class="form-text text-danger"></small>
-                        </label>
-                        <div class="topic-form-info">토픽 소개글을 작성해주세요.</div>
-                        <label>
-                            <input th:field="*{shortExplanation}" type="text" placeholder="간략한 소개는 최대 30자까지 가능합니다." required maxlength="30">
-                            <small class="invalid-feedback"><i class="fa fa-ban"></i></small>
-                            <small class="valid-feedback"><i class="fa fa-check"></i></small>
-                            <small th:if="${#fields.hasErrors('shortExplanation')}" th:errors="*{shortExplanation}" class="form-text text-danger"></small>
-                        </label>
-                        <label>
-                            <textarea th:field="*{longExplanation}" rows="5" placeholder="자세한 소개는 최대 255자까지 가능합니다. 생략할 수 있습니다." maxlength="255"></textarea>
-                            <small class="invalid-feedback"><i class="fa fa-ban"></i></small>
-                            <small class="valid-feedback"><i class="fa fa-check"></i></small>
-                            <small th:if="${#fields.hasErrors('longExplanation')}" th:errors="*{longExplanation}" class="form-text text-danger"></small>
-                        </label>
+                        <div class="box">
+                            <div class="guide-message">토픽의 이름을 정해주세요.</div>
+                            <label>
+                                <input th:field="*{title}" type="text" placeholder="토픽 이름은 최대 20자까지 가능합니다." required maxlength="20">
+                                <small class="invalid-feedback"><i class="fa fa-ban"></i></small>
+                                <small class="valid-feedback"><i class="fa fa-check"></i></small>
+                                <small th:if="${#fields.hasErrors('title')}" th:errors="*{title}" class="form-text text-danger"></small>
+                            </label>
+                        </div>
+                        <div class="box">
+                            <div class="guide-message">토픽 소개글을 작성해주세요.</div>
+                            <label>
+                                <input th:field="*{shortExplanation}" type="text" placeholder="간략한 소개는 최대 30자까지 가능합니다." required maxlength="30">
+                                <small class="invalid-feedback"><i class="fa fa-ban"></i></small>
+                                <small class="valid-feedback"><i class="fa fa-check"></i></small>
+                                <small th:if="${#fields.hasErrors('shortExplanation')}" th:errors="*{shortExplanation}" class="form-text text-danger"></small>
+                            </label>
+                            <label>
+                                <textarea th:field="*{longExplanation}" rows="5" placeholder="자세한 소개는 최대 255자까지 가능합니다. 생략할 수 있습니다." maxlength="255"></textarea>
+                                <small class="invalid-feedback"><i class="fa fa-ban"></i></small>
+                                <small class="valid-feedback"><i class="fa fa-check"></i></small>
+                                <small th:if="${#fields.hasErrors('longExplanation')}" th:errors="*{longExplanation}" class="form-text text-danger"></small>
+                            </label>
+                        </div>
                     </div>
                     <button type="submit">
                         create
