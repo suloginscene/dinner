@@ -9,6 +9,7 @@ section {
     min-height: 130px;
     overflow: auto;
     margin-bottom: 25px;
+    word-break: keep-all;
 }
 
 .parent {

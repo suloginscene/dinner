@@ -1,5 +1,7 @@
 @import "/css/page/board/_base.css";
 @import "/css/page/board/_validate.css";
+@import "/css/page/board/article/_format.css";
+
 
 section {
     padding-top: 120px;

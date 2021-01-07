@@ -25,7 +25,7 @@ header {
 
 section {
     min-height: calc(100vh - 80px);
-    margin: 0 160px;
+    margin: 0 280px;
     padding: 80px 0;
     border-bottom: 1px solid dimgray;
 }
@@ -43,17 +43,34 @@ hr {
     width: 32px;
 }
 
-@media (max-width: 768px) {
 
+@media (max-width: 1600px) {
+    section {
+        margin: 0 160px;
+    }
+}
+
+@media (max-width: 1024px) {
+    section {
+        margin: 0 100px;
+    }
+}
+
+@media (max-width: 768px) {
     header {
         background-color: lightgray;
         height: 60px;
     }
 
     section {
-        margin: 0;
+        margin: 0 30px;
         padding-top: 120px;
         padding-bottom: 40px;
     }
+}
 
+@media (max-width: 480px) {
+    section {
+        margin: 0 10px;
+    }
 }
