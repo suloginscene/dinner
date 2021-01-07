@@ -54,6 +54,7 @@ public class Topic extends Board {
     public void beforeDelete(String current) {
         owner.identify(current);
         articles.emptyCheck();
+        magazine.getTopics().remove();
     }
 
     @Override
