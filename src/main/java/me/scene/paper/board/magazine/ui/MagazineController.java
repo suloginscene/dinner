@@ -6,6 +6,7 @@ import me.scene.paper.board.magazine.application.command.request.MagazineCreateR
 import me.scene.paper.board.magazine.application.command.request.MagazineUpdateRequest;
 import me.scene.paper.board.magazine.application.query.MagazineQueryService;
 import me.scene.paper.board.magazine.application.query.dto.MagazineLink;
+import me.scene.paper.board.magazine.application.query.dto.MagazineToUpdate;
 import me.scene.paper.board.magazine.application.query.dto.MagazineView;
 import me.scene.paper.board.magazine.ui.form.MagazineForm;
 import me.scene.paper.board.magazine.ui.form.MagazineUpdateForm;
@@ -75,8 +76,9 @@ public class MagazineController {
 
 
     @GetMapping("/magazines/{id}/form")
-    public String updateForm(@PathVariable Long id, Model model) {
-        MagazineView magazine = query.view(id);
+    public String updateForm(@PathVariable Long id,
+                             @Principal String username, Model model) {
+        MagazineToUpdate magazine = query.toUpdate(id, username);
 
         MagazineUpdateForm updateForm = new MagazineUpdateForm(
                 magazine.getId(),

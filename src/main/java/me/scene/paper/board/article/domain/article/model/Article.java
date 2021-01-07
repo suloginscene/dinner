@@ -83,6 +83,7 @@ public class Article extends Board {
         owner.identify(current);
 
         publicized = false;
+        rate(-point.get());
         topic.getArticles().remove();
 
         logWriter();

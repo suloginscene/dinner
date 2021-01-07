@@ -5,6 +5,7 @@ import me.scene.paper.board.topic.application.command.TopicService;
 import me.scene.paper.board.topic.application.command.request.TopicCreateRequest;
 import me.scene.paper.board.topic.application.command.request.TopicUpdateRequest;
 import me.scene.paper.board.topic.application.query.TopicQueryService;
+import me.scene.paper.board.topic.application.query.dto.TopicToUpdate;
 import me.scene.paper.board.topic.application.query.dto.TopicView;
 import me.scene.paper.board.topic.ui.form.TopicForm;
 import me.scene.paper.board.topic.ui.form.TopicUpdateForm;
@@ -27,7 +28,7 @@ import javax.validation.Valid;
 public class TopicController {
 
     private final TopicService service;
-    private final TopicQueryService queryService;
+    private final TopicQueryService query;
 
 
     @GetMapping("/topic-form")
@@ -58,7 +59,7 @@ public class TopicController {
 
     @GetMapping("/topics/{id}")
     public String showTopic(@PathVariable Long id, Model model) {
-        TopicView topic = queryService.find(id);
+        TopicView topic = query.view(id);
 
         model.addAttribute("topic", topic);
         return "page/board/topic/view";
@@ -66,8 +67,9 @@ public class TopicController {
 
 
     @GetMapping("/topics/{id}/form")
-    public String updateForm(@PathVariable Long id, Model model) {
-        TopicView topic = queryService.find(id);
+    public String updateForm(@PathVariable Long id,
+                             @Principal String username, Model model) {
+        TopicToUpdate topic = query.toUpdate(id, username);
 
         TopicUpdateForm updateForm = new TopicUpdateForm(
                 topic.getId(),

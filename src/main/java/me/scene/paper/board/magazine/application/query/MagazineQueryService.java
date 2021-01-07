@@ -3,6 +3,7 @@ package me.scene.paper.board.magazine.application.query;
 import lombok.RequiredArgsConstructor;
 import me.scene.paper.board.common.domain.model.Owner;
 import me.scene.paper.board.magazine.application.query.dto.MagazineLink;
+import me.scene.paper.board.magazine.application.query.dto.MagazineToUpdate;
 import me.scene.paper.board.magazine.application.query.dto.MagazineView;
 import me.scene.paper.board.magazine.domain.magazine.model.Magazine;
 import me.scene.paper.board.magazine.domain.magazine.repository.MagazineRepository;
@@ -29,6 +30,12 @@ public class MagazineQueryService {
     public MagazineView view(Long id) {
         Magazine magazine = repository.find(id);
         return new MagazineView(magazine);
+    }
+
+    public MagazineToUpdate toUpdate(Long id, String username) {
+        Magazine magazine = repository.find(id);
+        magazine.getOwner().identify(username);
+        return new MagazineToUpdate(magazine);
     }
 
 
