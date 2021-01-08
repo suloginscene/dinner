@@ -6,16 +6,19 @@ import org.springframework.stereotype.Component;
 @Component
 public class LinkConverter {
 
+    private static final String TEMPLATE = "<a href=\"%s\">%s</a>";
+
+
     public String account(String username) {
-        return String.format("<a href=\"/@%s\">%s</a>", username, username);
+        return String.format(TEMPLATE, "/@" + username, username);
     }
 
     public String article(Long id, String title) {
-        return String.format("<a href=\"/articles/%s\">%s</a>", id, title);
+        return String.format(TEMPLATE, "/articles/" + id, title);
     }
 
     public String magazine(Long id, String title) {
-        return String.format("<a href=\"/magazines/%s\">%s</a>", id, title);
+        return String.format(TEMPLATE, "/magazines/" + id, title);
     }
 
 }

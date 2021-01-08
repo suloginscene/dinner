@@ -33,7 +33,9 @@ public class MemberService {
 
     public void applyMember(Long id, String memberName) {
         ManagedMagazine magazine = findManagedMagazine(id);
-        if (magazine.apply(memberName)) {
+        boolean success = magazine.apply(memberName);
+
+        if (success) {
             String receiver = magazine.getOwner().name();
             String message = messageFactory.memberApplied(memberName, magazine.getId(), magazine.getTitle());
             notification.publish(receiver, message);
@@ -42,7 +44,9 @@ public class MemberService {
 
     public void quitMember(Long id, String memberName) {
         ManagedMagazine magazine = findManagedMagazine(id);
-        if (magazine.quit(memberName)) {
+        boolean success = magazine.quit(memberName);
+
+        if (success) {
             String receiver = magazine.getOwner().name();
             String message = messageFactory.memberQuit(memberName, magazine.getId(), magazine.getTitle());
             notification.publish(receiver, message);
@@ -52,7 +56,9 @@ public class MemberService {
 
     public void addMember(Long id, String ownerName, String memberName) {
         ManagedMagazine magazine = findManagedMagazine(id);
-        if (magazine.addMember(ownerName, memberName)) {
+        boolean success = magazine.addMember(ownerName, memberName);
+
+        if (success) {
             String message = messageFactory.memberAdded(magazine.getId(), magazine.getTitle());
             notification.publish(memberName, message);
         }
@@ -60,7 +66,9 @@ public class MemberService {
 
     public void removeMember(Long id, String ownerName, String memberName) {
         ManagedMagazine magazine = findManagedMagazine(id);
-        if (magazine.removeMember(ownerName, memberName)) {
+        boolean success = magazine.removeMember(ownerName, memberName);
+
+        if (success) {
             String message = messageFactory.memberRemoved(magazine.getId(), magazine.getTitle());
             notification.publish(memberName, message);
         }

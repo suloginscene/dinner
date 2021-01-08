@@ -4,6 +4,7 @@
 @import "/css/layout/_nav.css";
 @import "/css/layout/_desk.css";
 
+
 body {
     background-color: ghostwhite;
     min-height: 100vh;
@@ -63,7 +64,7 @@ hr {
     }
 
     section {
-        margin: 0 30px;
+        margin: 0 15px;
         padding-top: 120px;
         padding-bottom: 40px;
     }
@@ -71,6 +72,6 @@ hr {
 
 @media (max-width: 480px) {
     section {
-        margin: 0 10px;
+        margin: 0 0;
     }
 }

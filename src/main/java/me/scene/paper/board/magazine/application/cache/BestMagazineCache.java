@@ -9,7 +9,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -17,16 +16,18 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BestMagazineCache implements MagazineCache {
 
+    private final MagazineQueryService query;
+
     @Getter
-    private List<MagazineLink> magazines = new ArrayList<>();
+    private List<MagazineLink> magazines;
     private static final int SIZE = 5;
 
-    private final MagazineQueryService query;
 
     @PostConstruct
     public void init() {
         update();
     }
+
 
     @Override
     public void update(Long id) {
@@ -43,7 +44,7 @@ public class BestMagazineCache implements MagazineCache {
     }
 
 
-    public void update() {
+    private void update() {
         magazines = query.bestLinks(SIZE);
     }
 
