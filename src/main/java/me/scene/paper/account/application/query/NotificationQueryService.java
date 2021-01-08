@@ -2,12 +2,10 @@ package me.scene.paper.account.application.query;
 
 import lombok.RequiredArgsConstructor;
 import me.scene.paper.account.application.query.dto.NotificationView;
-import me.scene.paper.account.domain.account.model.Notification;
+import me.scene.paper.account.domain.account.model.Account;
 import me.scene.paper.account.domain.account.repository.AccountRepository;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 
 @Component
@@ -23,8 +21,8 @@ public class NotificationQueryService {
     }
 
     public NotificationView find(String username) {
-        List<Notification> notifications = repository.find(username).getNotifications();
-        return new NotificationView(notifications);
+        Account account = repository.find(username);
+        return new NotificationView(account.getNotifications());
     }
 
 }

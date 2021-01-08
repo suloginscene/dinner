@@ -7,8 +7,6 @@ import me.scene.paper.account.domain.account.repository.AccountRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 
 @Service
 @Transactional
@@ -20,16 +18,12 @@ public class NotificationService {
 
     public void save(String username, String message) {
         Account account = repository.find(username);
-
-        Notification notification = new Notification(username, message);
-        account.getNotifications().add(notification);
+        account.addNotification(new Notification(username, message));
     }
 
     public void check(String username) {
         Account account = repository.find(username);
-
-        List<Notification> notifications = account.getNotifications();
-        notifications.forEach(Notification::check);
+        account.checkNotifications();
     }
 
 }

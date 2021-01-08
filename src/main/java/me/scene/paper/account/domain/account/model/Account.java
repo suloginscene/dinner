@@ -48,12 +48,22 @@ public class Account extends BaseEntity {
         this.password = encodedPassword;
     }
 
+
     public void changePassword(String encodedPassword) {
         this.password = encodedPassword;
     }
 
     public void changeIntroduction(Profile profile) {
         this.profile = profile;
+    }
+
+
+    public void addNotification(Notification notification) {
+        notifications.add(notification);
+    }
+
+    public void checkNotifications() {
+        notifications.forEach(Notification::check);
     }
 
 }

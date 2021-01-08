@@ -37,7 +37,7 @@ public class Notification extends BaseEntity {
         this.checked = false;
     }
 
-    public void check() {
+    protected void check() {
         checked = true;
     }
 
