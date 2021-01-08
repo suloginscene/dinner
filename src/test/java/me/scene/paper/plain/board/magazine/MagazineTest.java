@@ -27,8 +27,6 @@ class MagazineTest {
     @Nested class OnCreate {
         @Test
         void has_properties() {
-            assertThat(magazine.type()).isNotNull();
-            assertThat(magazine.authorization()).isNotNull();
 
             assertThat(magazine.getPoint()).isNotNull();
             assertThat(magazine.getTopics()).isNotNull();

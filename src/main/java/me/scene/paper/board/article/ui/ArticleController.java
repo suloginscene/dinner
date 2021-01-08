@@ -136,7 +136,7 @@ public class ArticleController {
                          @RequestParam String content) {
 
         ReplyCreateRequest request = new ReplyCreateRequest(username, id, content);
-        service.save(request);
+        service.saveReply(request);
 
         return "redirect:" + ("/articles/" + id);
     }
@@ -147,7 +147,7 @@ public class ArticleController {
                          @Principal String username) {
 
         ReplyDeleteRequest request = new ReplyDeleteRequest(username, id, replyId);
-        service.delete(request);
+        service.removeReply(request);
 
         return "redirect:" + ("/articles/" + id);
     }

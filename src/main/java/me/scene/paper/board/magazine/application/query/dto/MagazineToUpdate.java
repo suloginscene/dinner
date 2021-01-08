@@ -18,7 +18,7 @@ public class MagazineToUpdate extends View {
 
         this.shortExplanation = magazine.getShortExplanation();
         this.longExplanation = magazine.getLongExplanation();
-        this.policy = magazine.type().name();
+        this.policy = magazine.typeName();
     }
 
 }

@@ -6,7 +6,6 @@ import me.scene.paper.board.article.application.query.dto.ArticleView;
 import me.scene.paper.board.article.domain.article.model.Article;
 import me.scene.paper.board.article.domain.article.model.Like;
 import me.scene.paper.board.article.domain.article.repository.ArticleRepository;
-import me.scene.paper.board.common.domain.model.Owner;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,16 +30,14 @@ public class ArticleQueryService {
 
 
     public List<ArticleExtendedLink> findPublicByWriter(String username) {
-        Owner owner = new Owner(username);
-        List<Article> articles = repository.findByUsername(owner);
+        List<Article> articles = repository.findByUsername(username);
         return articles.stream()
                 .map(ArticleExtendedLink::new)
                 .collect(toList());
     }
 
     public List<ArticleExtendedLink> findPrivateByWriter(String username) {
-        Owner owner = new Owner(username);
-        List<Article> articles = repository.findPrivateByUsername(owner);
+        List<Article> articles = repository.findPrivateByUsername(username);
         return articles.stream()
                 .map(ArticleExtendedLink::new)
                 .collect(toList());
@@ -54,8 +51,8 @@ public class ArticleQueryService {
     }
 
     public boolean doesLike(String username, Long articleId) {
-        Set<Like> likes = repository.find(articleId).getLikes();
-        return likes.contains(new Like(username));
+        Article article = repository.find(articleId);
+        return article.isLikedBy(username);
     }
 
 }

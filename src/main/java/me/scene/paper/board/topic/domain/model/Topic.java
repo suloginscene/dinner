@@ -3,8 +3,7 @@ package me.scene.paper.board.topic.domain.model;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import me.scene.paper.board.common.domain.model.Board;
-import me.scene.paper.board.common.domain.model.Owner;
-import me.scene.paper.board.common.domain.model.ToManyInfo;
+import me.scene.paper.board.common.domain.model.Children;
 import me.scene.paper.board.magazine.domain.magazine.model.Magazine;
 
 import javax.persistence.Column;
@@ -27,7 +26,7 @@ public class Topic extends Board {
     private String longExplanation;
 
     @Embedded
-    private final ToManyInfo articles = new ToManyInfo();
+    private final Children articles = new Children();
 
 
     @ManyToOne(fetch = LAZY)
@@ -35,13 +34,12 @@ public class Topic extends Board {
 
 
     public Topic(Magazine magazine, String owner, String title, String shortExplanation, String longExplanation) {
-        magazine.authorization().check(owner);
-        magazine.getTopics().add();
-        this.owner = new Owner(owner);
-        this.title = title;
+        super(title, owner);
+        magazine.authorize(owner);
         this.shortExplanation = shortExplanation;
         this.longExplanation = longExplanation;
         this.magazine = magazine;
+        magazine.addTopic();
     }
 
     public void update(String current, String title, String shortExplanation, String longExplanation) {
@@ -54,7 +52,29 @@ public class Topic extends Board {
     public void beforeDelete(String current) {
         owner.identify(current);
         articles.emptyCheck();
-        magazine.getTopics().remove();
+        magazine.removeTopic();
+    }
+
+
+    public void addArticle() {
+        articles.add();
+    }
+
+    public void removeArticle() {
+        articles.remove();
+    }
+
+    public boolean hasArticle() {
+        return articles.exists();
+    }
+
+
+    public void propagateAuthorize(String username) {
+        magazine.authorize(username);
+    }
+
+    public void propagateLogWriter(String writer, boolean publicized) {
+        magazine.logWriter(writer, publicized);
     }
 
     @Override

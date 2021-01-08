@@ -69,9 +69,7 @@ public class ManagedMagazine extends Magazine {
     }
 
 
-    public boolean addMember(String ownerName, String memberName) {
-        owner.identify(ownerName);
-
+    public boolean addMember(String memberName) {
         if (owner.is(memberName)) return false;
 
         Optional<Member> optionalMember = findMember(memberName);
@@ -82,9 +80,7 @@ public class ManagedMagazine extends Magazine {
         return true;
     }
 
-    public boolean removeMember(String ownerName, String memberName) {
-        owner.identify(ownerName);
-
+    public boolean removeMember(String memberName) {
         Optional<Member> optionalMember = findMember(memberName);
         if (optionalMember.isEmpty()) return false;
 

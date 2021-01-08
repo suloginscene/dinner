@@ -3,15 +3,12 @@ package me.scene.paper.board.magazine.application.command;
 import lombok.RequiredArgsConstructor;
 import me.scene.paper.board.magazine.domain.magazine.model.Magazine;
 import me.scene.paper.board.magazine.domain.magazine.repository.MagazineRepository;
-import me.scene.paper.board.magazine.domain.managed.model.ManagedMagazine;
-import me.scene.paper.common.notification.message.NotificationMessageFactory;
 import me.scene.paper.common.notification.event.NotificationEventPublisher;
+import me.scene.paper.common.notification.message.NotificationMessageFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-
-import static me.scene.paper.board.magazine.domain.magazine.model.Type.MANAGED;
 
 
 @Service
@@ -26,14 +23,14 @@ public class MemberService {
 
 
     public List<String> memberNames(Long id) {
-        ManagedMagazine magazine = findManagedMagazine(id);
+        Magazine magazine = repository.find(id);
         return magazine.memberNames();
     }
 
 
     public void applyMember(Long id, String memberName) {
-        ManagedMagazine magazine = findManagedMagazine(id);
-        boolean success = magazine.apply(memberName);
+        Magazine magazine = repository.find(id);
+        boolean success = magazine.actAsMember(memberName, true);
 
         if (success) {
             String receiver = magazine.getOwner().name();
@@ -43,8 +40,8 @@ public class MemberService {
     }
 
     public void quitMember(Long id, String memberName) {
-        ManagedMagazine magazine = findManagedMagazine(id);
-        boolean success = magazine.quit(memberName);
+        Magazine magazine = repository.find(id);
+        boolean success = magazine.actAsMember(memberName, false);
 
         if (success) {
             String receiver = magazine.getOwner().name();
@@ -55,8 +52,8 @@ public class MemberService {
 
 
     public void addMember(Long id, String ownerName, String memberName) {
-        ManagedMagazine magazine = findManagedMagazine(id);
-        boolean success = magazine.addMember(ownerName, memberName);
+        Magazine magazine = repository.find(id);
+        boolean success = magazine.manageMember(ownerName, memberName, true);
 
         if (success) {
             String message = messageFactory.memberAdded(magazine.getId(), magazine.getTitle());
@@ -65,20 +62,13 @@ public class MemberService {
     }
 
     public void removeMember(Long id, String ownerName, String memberName) {
-        ManagedMagazine magazine = findManagedMagazine(id);
-        boolean success = magazine.removeMember(ownerName, memberName);
+        Magazine magazine = repository.find(id);
+        boolean success = magazine.manageMember(ownerName, memberName, false);
 
         if (success) {
             String message = messageFactory.memberRemoved(magazine.getId(), magazine.getTitle());
             notification.publish(memberName, message);
         }
-    }
-
-
-    private ManagedMagazine findManagedMagazine(Long id) {
-        Magazine magazine = repository.find(id);
-        magazine.type().check(MANAGED);
-        return (ManagedMagazine) magazine;
     }
 
 }

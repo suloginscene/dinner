@@ -150,7 +150,7 @@ public class DataContainer {
 
         private void reply(Article article, Account writer, String content) {
             ReplyCreateRequest request = new ReplyCreateRequest(writer.getUsername(), article.getId(), content);
-            articleService.save(request);
+            articleService.saveReply(request);
         }
 
         private void like(Account reader, Article article) {

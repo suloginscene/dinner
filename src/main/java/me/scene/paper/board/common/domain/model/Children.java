@@ -6,7 +6,7 @@ import javax.persistence.Embeddable;
 
 
 @Embeddable
-public class ToManyInfo {
+public class Children {
 
     private int count;
 

@@ -27,15 +27,15 @@ class ManagedMagazineTest {
     @Nested class OnManageMember {
         @Test
         void adds_member() {
-            magazine.addMember("owner", "member");
+            magazine.addMember("member");
             assertThat(magazine.memberNames()).contains("member");
         }
 
         @Test
         void remove_member() {
-            magazine.addMember("owner", "member");
+            magazine.addMember("member");
 
-            magazine.removeMember("owner", "member");
+            magazine.removeMember("member");
             assertThat(magazine.memberNames()).doesNotContain("member");
         }
     }
@@ -43,7 +43,7 @@ class ManagedMagazineTest {
     @Nested class OnQuitFromMagazine {
         @Test
         void remove_member() {
-            magazine.addMember("owner", "member");
+            magazine.addMember("member");
 
             magazine.quit("member");
             assertThat(magazine.memberNames()).doesNotContain("member");
@@ -59,7 +59,7 @@ class ManagedMagazineTest {
                         () -> new Topic(magazine, "notMember", "title", "short", "long")
                 );
 
-                magazine.addMember("owner", "member");
+                magazine.addMember("member");
                 Topic topic = new Topic(magazine, "member", "title", "short", "long");
                 assertThrows(
                         AuthorizationException.class,

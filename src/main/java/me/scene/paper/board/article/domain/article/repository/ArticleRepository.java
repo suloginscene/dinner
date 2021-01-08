@@ -1,7 +1,6 @@
 package me.scene.paper.board.article.domain.article.repository;
 
 import me.scene.paper.board.article.domain.article.model.Article;
-import me.scene.paper.board.common.domain.model.Owner;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -23,14 +22,14 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
     Article fetchToView(@Param("id") Long id);
 
     @Query("select distinct a from Article a" +
-            " where a.owner = :owner and a.publicized = true" +
+            " where a.owner.name = :owner and a.publicized = true" +
             " order by a.point desc")
-    List<Article> findByUsername(@Param("owner") Owner owner);
+    List<Article> findByUsername(@Param("owner") String owner);
 
     @Query("select distinct a from Article a" +
-            " where a.owner = :owner and a.publicized = false" +
+            " where a.owner.name = :owner and a.publicized = false" +
             " order by a.createdAt")
-    List<Article> findPrivateByUsername(@Param("owner") Owner owner);
+    List<Article> findPrivateByUsername(@Param("owner") String owner);
 
     @Query("select distinct a" +
             " from Article a" +

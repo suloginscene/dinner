@@ -23,7 +23,7 @@ public class TopicView extends View {
         this.shortExplanation = topic.getShortExplanation();
         this.longExplanation = topic.getLongExplanation().replace("\n", "<br>");
 
-        this.hasChild = topic.getArticles().exists();
+        this.hasChild = topic.hasArticle();
 
         magazine = new MagazineInfo(topic.getMagazine());
     }

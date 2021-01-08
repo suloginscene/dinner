@@ -108,8 +108,7 @@ class ArticleServiceTest {
 
             service.delete(id, "user");
 
-            TagView tag = tagQuery.view("tag");
-            assertThat(tag.getArticles().size()).isEqualTo(0);
+            assertThrows(NoSuchElementException.class, () -> tagQuery.view("tag"));
         }
     }
 

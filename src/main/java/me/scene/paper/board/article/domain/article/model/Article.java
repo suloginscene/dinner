@@ -3,9 +3,7 @@ package me.scene.paper.board.article.domain.article.model;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import me.scene.paper.board.common.domain.model.Board;
-import me.scene.paper.board.common.domain.model.Owner;
-import me.scene.paper.board.magazine.domain.magazine.model.Magazine;
-import me.scene.paper.board.magazine.domain.open.model.OpenMagazine;
+import me.scene.paper.board.common.domain.model.Point;
 import me.scene.paper.board.topic.domain.model.Topic;
 import org.hibernate.annotations.BatchSize;
 
@@ -17,12 +15,12 @@ import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import static javax.persistence.CascadeType.ALL;
 import static javax.persistence.FetchType.LAZY;
 import static lombok.AccessLevel.PROTECTED;
-import static me.scene.paper.board.magazine.domain.magazine.model.Type.OPEN;
 
 
 @Entity
@@ -55,58 +53,75 @@ public class Article extends Board {
 
 
     public Article(Topic topic, String owner, String title, String content, boolean publicized) {
-        topic.getMagazine().authorization().check(owner);
-
-        this.topic = topic;
-        topic.getArticles().add();
-
-        this.owner = new Owner(owner);
-        this.title = title;
+        super(title, owner);
+        topic.propagateAuthorize(owner);
         this.content = content;
         this.publicized = publicized;
-
-        logWriter();
+        this.topic = topic;
+        topic.addArticle();
+        topic.propagateLogWriter(owner, publicized);
     }
 
 
     public void update(String current, String title, String content, boolean publicized) {
         owner.identify(current);
-
         this.title = title;
         this.content = content;
         this.publicized = publicized;
-
-        logWriter();
+        topic.propagateLogWriter(current, publicized);
     }
 
     public void beforeDelete(String current) {
         owner.identify(current);
-
-        publicized = false;
         rate(-point.get());
-        topic.getArticles().remove();
-
-        logWriter();
+        topic.removeArticle();
+        topic.propagateLogWriter(current, false);
     }
 
 
-    private void logWriter() {
-        Magazine magazine = topic.getMagazine();
+    public void addReply(Reply reply) {
+        replies.add(reply);
+    }
 
-        if (magazine.type() != OPEN) return;
+    public void removeReply(String username, Long replyId) {
+        Optional<Reply> optionalReply = replies.stream()
+                .filter(reply -> reply.getId().equals(replyId))
+                .findAny();
 
-        String writer = owner.name();
-        if (magazine.getOwner().is(writer)) return;
-
-        OpenMagazine open = (OpenMagazine) magazine;
-
-        if (publicized) open.logWriting(writer);
-        else open.logErasing(writer);
+        optionalReply.ifPresent(reply -> {
+            reply.getOwner().identify(username);
+            replies.remove(reply);
+        });
     }
 
 
-    public void read() {
-        read++;
+    public void read(String username) {
+        if (publicized) {
+            read++;
+            rate(Point.READ);
+        } else {
+            owner.identify(username);
+        }
+    }
+
+    public void like(String username) {
+        Like like = new Like(username);
+        if (likes.contains(like)) return;
+
+        likes.add(like);
+        rate(Point.LIKE);
+    }
+
+    public void dislike(String username) {
+        Like like = new Like(username);
+        if (!likes.contains(like)) return;
+
+        likes.remove(like);
+        rate(-Point.LIKE);
+    }
+
+    public boolean isLikedBy(String username) {
+        return likes.contains(new Like(username));
     }
 
     @Override
