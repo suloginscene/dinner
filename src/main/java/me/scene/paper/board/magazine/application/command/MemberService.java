@@ -8,8 +8,6 @@ import me.scene.paper.common.notification.message.NotificationMessageFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 
 @Service
 @Transactional
@@ -20,12 +18,6 @@ public class MemberService {
 
     private final NotificationMessageFactory messageFactory;
     private final NotificationEventPublisher notification;
-
-
-    public List<String> memberNames(Long id) {
-        Magazine magazine = repository.find(id);
-        return magazine.memberNames();
-    }
 
 
     public void applyMember(Long id, String memberName) {

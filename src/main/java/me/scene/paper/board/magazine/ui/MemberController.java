@@ -2,6 +2,7 @@ package me.scene.paper.board.magazine.ui;
 
 import lombok.RequiredArgsConstructor;
 import me.scene.paper.board.magazine.application.command.MemberService;
+import me.scene.paper.board.magazine.application.query.MemberQueryService;
 import me.scene.paper.common.security.Principal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,11 +20,12 @@ import java.util.List;
 public class MemberController {
 
     private final MemberService service;
+    private final MemberQueryService query;
 
 
     @GetMapping("/magazines/{id}/members")
     public String memberPage(@PathVariable Long id, Model model) {
-        List<String> memberNames = service.memberNames(id);
+        List<String> memberNames = query.memberNames(id);
 
         model.addAttribute("id", id);
         model.addAttribute("members", memberNames);
