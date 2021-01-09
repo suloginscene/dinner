@@ -22,7 +22,7 @@ public class ArticleInTag extends Link {
     public ArticleInTag(Article article) {
         super(article);
 
-        this.owner = article.getOwner().name();
+        this.owner = article.getOwnerName();
 
         this.read = article.getRead();
         this.like = article.getLikes().size();

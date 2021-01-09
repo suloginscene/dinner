@@ -25,7 +25,7 @@ public class MemberService {
         boolean success = magazine.actAsMember(memberName, true);
 
         if (success) {
-            String receiver = magazine.getOwner().name();
+            String receiver = magazine.getOwnerName();
             String message = messageFactory.memberApplied(memberName, magazine.getId(), magazine.getTitle());
             notification.publish(receiver, message);
         }
@@ -36,7 +36,7 @@ public class MemberService {
         boolean success = magazine.actAsMember(memberName, false);
 
         if (success) {
-            String receiver = magazine.getOwner().name();
+            String receiver = magazine.getOwnerName();
             String message = messageFactory.memberQuit(memberName, magazine.getId(), magazine.getTitle());
             notification.publish(receiver, message);
         }

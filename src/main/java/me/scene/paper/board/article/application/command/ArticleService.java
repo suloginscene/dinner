@@ -88,7 +88,7 @@ public class ArticleService {
         Article article = repository.find(articleId);
         article.addReply(new Reply(username, content));
 
-        String receiver = article.getOwner().name();
+        String receiver = article.getOwnerName();
         String message = messageFactory.articleReplied(username, articleId, article.getTitle());
         notification.publish(receiver, message);
     }
@@ -107,7 +107,7 @@ public class ArticleService {
         Article article = repository.fetchToRate(id);
         article.like(reader);
 
-        String receiver = article.getOwner().name();
+        String receiver = article.getOwnerName();
         String message = messageFactory.articleLiked(reader, article.getId(), article.getTitle());
         notification.publish(receiver, message);
     }

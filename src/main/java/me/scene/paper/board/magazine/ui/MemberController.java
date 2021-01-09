@@ -59,7 +59,7 @@ public class MemberController {
         service.applyMember(id, username);
 
         // TODO alert applied
-        return "redirect:" + ("/magazines" + id);
+        return "redirect:" + ("/magazines/" + id);
     }
 
     @PostMapping("/magazines/{id}/members/quit")

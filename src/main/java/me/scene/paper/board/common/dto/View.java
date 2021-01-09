@@ -19,8 +19,8 @@ public abstract class View {
     protected View(Board board) {
         this.id = board.getId();
         this.title = board.getTitle();
-        this.owner = board.getOwner().name();
-        this.point = board.getPoint().get();
+        this.owner = board.getOwnerName();
+        this.point = board.getPoint();
         this.createdAt = board.getCreatedAt();
     }
 

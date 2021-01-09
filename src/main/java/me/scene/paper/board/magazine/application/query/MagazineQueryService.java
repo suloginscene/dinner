@@ -34,7 +34,7 @@ public class MagazineQueryService {
 
     public MagazineToUpdate toUpdate(Long id, String username) {
         Magazine magazine = repository.find(id);
-        magazine.getOwner().identify(username);
+        magazine.identifyOwner(username);
         return new MagazineToUpdate(magazine);
     }
 

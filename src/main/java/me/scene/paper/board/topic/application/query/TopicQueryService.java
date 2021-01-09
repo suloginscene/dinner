@@ -29,7 +29,7 @@ public class TopicQueryService {
 
     public TopicToUpdate toUpdate(Long id, String username) {
         Topic topic = repository.find(id);
-        topic.getOwner().identify(username);
+        topic.identifyOwner(username);
         return new TopicToUpdate(topic);
     }
 

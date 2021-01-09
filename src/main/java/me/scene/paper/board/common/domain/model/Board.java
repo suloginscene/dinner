@@ -39,6 +39,20 @@ public abstract class Board extends BaseEntity {
     }
 
 
+    public String getOwnerName() {
+        return owner.name();
+    }
+
+    public void identifyOwner(String username) {
+        owner.identify(username);
+    }
+
+
+    public int getPoint() {
+        return point.get();
+    }
+
+
     public final void rate(int p) {
         point.add(p);
         propagateRate(p);

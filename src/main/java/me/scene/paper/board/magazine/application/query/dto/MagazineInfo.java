@@ -20,7 +20,7 @@ public class MagazineInfo {
         id = magazine.getId();
         title = magazine.getTitle();
         policy = magazine.typeName();
-        owner = magazine.getOwner().name();
+        owner = magazine.getOwnerName();
         members = magazine.memberNames();
     }
 

@@ -83,10 +83,10 @@ class ArticleTest {
             article.rate(100);
 
             Topic topic = article.getTopic();
-            assertThat(topic.getPoint().get()).isEqualTo(100);
+            assertThat(topic.getPoint()).isEqualTo(100);
 
             Magazine magazine = article.getTopic().getMagazine();
-            assertThat(magazine.getPoint().get()).isEqualTo(100);
+            assertThat(magazine.getPoint()).isEqualTo(100);
         }
     }
 

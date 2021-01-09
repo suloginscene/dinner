@@ -53,7 +53,7 @@ class MemberServiceTest {
             service.applyMember(id, "member");
 
             ManagedMagazine magazine = (ManagedMagazine) repository.find(id);
-            String receiver = magazine.getOwner().name();
+            String receiver = magazine.getOwnerName();
             String message = messageFactory.memberApplied("member", magazine.getId(), magazine.getTitle());
             NotificationEvent event = new NotificationEvent(receiver, message);
             then(notification).should().notify(event);
@@ -80,7 +80,7 @@ class MemberServiceTest {
             service.quitMember(id, "member");
 
             ManagedMagazine magazine = (ManagedMagazine) repository.find(id);
-            String receiver = magazine.getOwner().name();
+            String receiver = magazine.getOwnerName();
             String message = messageFactory.memberQuit("member", magazine.getId(), magazine.getTitle());
             NotificationEvent event = new NotificationEvent(receiver, message);
             then(notification).should().notify(event);
