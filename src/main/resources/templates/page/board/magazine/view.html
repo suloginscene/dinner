@@ -6,6 +6,7 @@
         <link rel="stylesheet" href="/css/page/board/magazine/view.css"/>
         <script src="/js/accordion/in_board.js"></script>
         <script src="/js/ajax/topics_in_magazine.js"></script>
+        <script src="/js/alert/apply.js"></script>
 
         <script type="text/template" id="topic-template">
             <li class="topic-link"><a href="/topics/{id}">{title}</a></li>
@@ -46,7 +47,7 @@
                     <th:block th:if="${magazine.policy.equals('MANAGED')}and${magazine.owner!=#authentication.name}">
                         <th:block th:unless="${magazine.members.contains(#authentication.name)}">
                             <form th:action="'/magazines/'+*{id}+'/members/apply'" th:method="post">
-                                <button type="submit">apply</button>
+                                <button id="apply-button" type="submit">apply</button>
                             </form>
                         </th:block>
                         <th:block th:if="${magazine.members.contains(#authentication.name)}">
