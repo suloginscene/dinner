@@ -11,8 +11,6 @@ const validate = function (form) {
     };
 
 
-    // TODO use after refine article validation
-    // $form.bind('input', checkStrings);
     $form.bind('submit', checkStrings);
 
 };

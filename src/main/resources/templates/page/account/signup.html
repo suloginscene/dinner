@@ -4,6 +4,7 @@
     <div th:replace="layout/layout::head(_, ~{::link}, ~{::script})">
         <link rel="stylesheet" href="/css/page/account/signup.css"/>
         <script src="/js/validate/in_signup.js"></script>
+        <script src="/js/alert/on_signup.js"></script>
     </div>
 
     <body th:replace="layout/layout::body(~{::section})">
@@ -51,7 +52,7 @@
                         <small th:if="${#fields.hasErrors('passwordConfirm')}" th:errors="*{passwordConfirm}"></small>
                         <small th:if="${#fields.hasErrors('agreement')}" th:errors="*{agreement}"></small>
                     </div>
-                    <button type="submit" class="account-button">
+                    <button type="submit" class="account-button" id="signup-button">
                         submit
                     </button>
                 </form>

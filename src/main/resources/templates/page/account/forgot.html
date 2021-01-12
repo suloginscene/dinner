@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 
-    <div th:replace="layout/layout::head(_, ~{::link}, ~{})">
+    <div th:replace="layout/layout::head(_, ~{::link}, ~{::script})">
         <link rel="stylesheet" href="/css/page/account/forgot.css"/>
+        <script src="/js/alert/on_forgot.js"></script>
     </div>
 
     <body th:replace="layout/layout::body(~{::section})">
@@ -19,7 +20,7 @@
                         가입한 이메일로 새 비밀번호를 전송합니다.
                         <div class="text-danger">이전의 비밀번호는 사용할 수 없습니다.</div>
                     </div>
-                    <button type="submit" class="account-button">send</button>
+                    <button type="submit" class="account-button" id="forgot-button">send</button>
                 </form>
             </div>
         </section>
