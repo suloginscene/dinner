@@ -1,6 +1,7 @@
-package me.scene.paper.common.notification.message;
+package me.scene.paper.common.utility;
 
 import lombok.RequiredArgsConstructor;
+import me.scene.paper.common.utility.LinkConverter;
 import org.springframework.stereotype.Component;
 
 

@@ -7,7 +7,7 @@ import me.scene.paper.account.domain.account.repository.AccountRepository;
 import me.scene.paper.account.domain.tempaccount.model.TempAccount;
 import me.scene.paper.account.domain.tempaccount.repository.TempAccountRepository;
 import me.scene.paper.common.mail.message.MailMessage;
-import me.scene.paper.common.mail.message.MailMessageFactory;
+import me.scene.paper.common.utility.MailMessageFactory;
 import me.scene.paper.common.mail.sender.MailSender;
 import me.scene.paper.integration.utils.AccountTestHelper;
 import org.junit.jupiter.api.AfterEach;

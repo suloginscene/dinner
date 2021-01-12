@@ -1,4 +1,4 @@
-package me.scene.paper.common.notification.message;
+package me.scene.paper.common.utility;
 
 import org.springframework.stereotype.Component;
 
@@ -19,6 +19,10 @@ public class LinkConverter {
 
     public String magazine(Long id, String title) {
         return String.format(TEMPLATE, "/magazines/" + id, title);
+    }
+
+    public String excerpt(Long id, String text) {
+        return String.format(TEMPLATE, "/articles/" + id, text);
     }
 
 }

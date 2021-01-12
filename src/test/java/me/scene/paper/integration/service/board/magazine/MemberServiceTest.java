@@ -6,7 +6,7 @@ import me.scene.paper.board.magazine.domain.magazine.model.Type;
 import me.scene.paper.board.magazine.domain.magazine.repository.MagazineRepository;
 import me.scene.paper.board.magazine.domain.managed.model.ManagedMagazine;
 import me.scene.paper.common.notification.event.NotificationEvent;
-import me.scene.paper.common.notification.message.NotificationMessageFactory;
+import me.scene.paper.common.utility.NotificationMessageFactory;
 import me.scene.paper.integration.utils.MagazineTestHelper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

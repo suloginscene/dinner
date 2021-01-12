@@ -1,6 +1,7 @@
-package me.scene.paper.common.mail.message;
+package me.scene.paper.common.utility;
 
 import lombok.RequiredArgsConstructor;
+import me.scene.paper.common.mail.message.MailMessage;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.thymeleaf.TemplateEngine;

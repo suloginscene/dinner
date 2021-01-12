@@ -74,6 +74,7 @@ public class DataContainer {
         private void init() {
 
             Account scene = user("scene", "suloginscene@gmail.com", "password_s");
+            accountService.designateAdmin(scene.getUsername());
             Account doeon = user("doeon", "ahndoeon@naver.com", "password_d");
 
 

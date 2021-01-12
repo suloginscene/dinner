@@ -4,15 +4,17 @@ import lombok.RequiredArgsConstructor;
 import me.scene.paper.board.article.application.query.dto.ArticleExtendedLink;
 import me.scene.paper.board.article.application.query.dto.ArticleView;
 import me.scene.paper.board.article.domain.article.model.Article;
-import me.scene.paper.board.article.domain.article.model.Like;
 import me.scene.paper.board.article.domain.article.repository.ArticleRepository;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Set;
 
 import static java.util.stream.Collectors.toList;
+import static org.springframework.data.domain.Sort.Direction.DESC;
+import static org.springframework.data.domain.Sort.by;
 
 
 @Component
@@ -41,6 +43,13 @@ public class ArticleQueryService {
         return articles.stream()
                 .map(ArticleExtendedLink::new)
                 .collect(toList());
+    }
+
+    public List<ArticleExtendedLink> findBest(int size) {
+        Slice<Article> articles = repository.findAll(PageRequest.of(0, size, by(DESC, "point")));
+        return articles
+                .map(ArticleExtendedLink::new)
+                .getContent();
     }
 
     public List<ArticleExtendedLink> linksOfTopic(Long topicId) {

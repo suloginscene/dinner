@@ -18,18 +18,12 @@ body {
     background-size: cover;
 }
 
-section button {
-    background-color: palevioletred;
-    color: ghostwhite;
+button, a {
+    color: white;
 }
 
-section button:hover {
-    background-color: ghostwhite;
-    color: palevioletred;
-}
-
-section .message {
-    color: ghostwhite;
+.message {
+    color: white;
 }
 
 

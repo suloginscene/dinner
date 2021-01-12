@@ -1,0 +1,23 @@
+#articles {
+    margin-bottom: 25px;
+}
+
+#excerpt-post-form {
+    overflow: auto;
+}
+
+#excerpt-post-form input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+#excerpt-post-form button {
+    float: right;
+}
+
+#excerpt-delete-form {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}

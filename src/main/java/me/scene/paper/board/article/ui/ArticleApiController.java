@@ -28,6 +28,11 @@ public class ArticleApiController {
         return query.findPublicByWriter(username);
     }
 
+    @GetMapping("/api/articles/best")
+    public List<ArticleExtendedLink> bestArticles() {
+        return query.findBest(5);
+    }
+
     @GetMapping("/api/topics/{id}/articles")
     public List<ArticleExtendedLink> articlesOfTopic(@PathVariable Long id) {
         return query.linksOfTopic(id);

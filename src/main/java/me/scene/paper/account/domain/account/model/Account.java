@@ -33,7 +33,7 @@ public class Account extends BaseEntity {
     private String password;
 
     @Enumerated(STRING) @Column(nullable = false, length = 5)
-    private final Role role = Role.USER;
+    private Role role = Role.USER;
 
     @Embedded
     private Profile profile = new Profile("");
@@ -46,6 +46,11 @@ public class Account extends BaseEntity {
         this.username = username;
         this.email = email;
         this.password = encodedPassword;
+    }
+
+
+    public void beAdmin() {
+        role = Role.ADMIN;
     }
 
 

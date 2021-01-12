@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import me.scene.paper.board.magazine.domain.magazine.model.Magazine;
 import me.scene.paper.board.magazine.domain.magazine.repository.MagazineRepository;
 import me.scene.paper.common.notification.event.NotificationEventPublisher;
-import me.scene.paper.common.notification.message.NotificationMessageFactory;
+import me.scene.paper.common.utility.NotificationMessageFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

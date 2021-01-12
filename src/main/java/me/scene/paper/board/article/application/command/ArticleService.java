@@ -11,7 +11,7 @@ import me.scene.paper.board.article.domain.article.repository.ArticleRepository;
 import me.scene.paper.board.topic.domain.model.Topic;
 import me.scene.paper.board.topic.domain.repository.TopicRepository;
 import me.scene.paper.common.notification.event.NotificationEventPublisher;
-import me.scene.paper.common.notification.message.NotificationMessageFactory;
+import me.scene.paper.common.utility.NotificationMessageFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

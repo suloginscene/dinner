@@ -9,7 +9,7 @@ import me.scene.paper.account.domain.account.repository.AccountRepository;
 import me.scene.paper.account.domain.tempaccount.model.TempAccount;
 import me.scene.paper.account.domain.tempaccount.repository.TempAccountRepository;
 import me.scene.paper.common.mail.message.MailMessage;
-import me.scene.paper.common.mail.message.MailMessageFactory;
+import me.scene.paper.common.utility.MailMessageFactory;
 import me.scene.paper.common.mail.sender.MailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -88,6 +88,11 @@ public class AccountService {
 
         MailMessage message = messageFactory.randomPassword(email, randomPassword);
         mail.send(message);
+    }
+
+    public void designateAdmin(String username) {
+        Account account = repository.find(username);
+        account.beAdmin();
     }
 
 }

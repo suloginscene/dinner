@@ -11,7 +11,7 @@ import me.scene.paper.board.article.domain.article.model.Article;
 import me.scene.paper.board.article.domain.article.repository.ArticleRepository;
 import me.scene.paper.board.magazine.domain.magazine.model.Type;
 import me.scene.paper.common.notification.event.NotificationEvent;
-import me.scene.paper.common.notification.message.NotificationMessageFactory;
+import me.scene.paper.common.utility.NotificationMessageFactory;
 import me.scene.paper.integration.utils.ArticleTestHelper;
 import me.scene.paper.integration.utils.MagazineTestHelper;
 import me.scene.paper.integration.utils.TagTestHelper;
