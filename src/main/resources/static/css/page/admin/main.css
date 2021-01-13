@@ -6,6 +6,10 @@
     overflow: auto;
 }
 
+#excerpt-post-form label {
+    display: block;
+}
+
 #excerpt-post-form input {
     width: 100%;
     padding: 10px;
