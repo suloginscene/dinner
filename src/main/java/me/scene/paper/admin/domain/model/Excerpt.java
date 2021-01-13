@@ -2,7 +2,7 @@ package me.scene.paper.admin.domain.model;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import me.scene.paper.common.entity.BaseEntity;
+import me.scene.paper.common.framework.entity.BaseEntity;
 
 import javax.persistence.Entity;
 

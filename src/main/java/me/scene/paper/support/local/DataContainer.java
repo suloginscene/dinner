@@ -1,30 +1,29 @@
 package me.scene.paper.support.local;
 
 import lombok.RequiredArgsConstructor;
-import me.scene.paper.account.application.command.AccountService;
-import me.scene.paper.account.application.command.request.SignupRequest;
-import me.scene.paper.account.domain.account.model.Account;
-import me.scene.paper.account.domain.account.repository.AccountRepository;
-import me.scene.paper.account.domain.tempaccount.model.TempAccount;
-import me.scene.paper.account.domain.tempaccount.repository.TempAccountRepository;
-import me.scene.paper.admin.domain.repository.ExcerptRepository;
-import me.scene.paper.board.article.application.command.ArticleService;
-import me.scene.paper.board.article.application.command.TagService;
-import me.scene.paper.board.article.application.command.request.ArticleCreateRequest;
-import me.scene.paper.board.article.application.command.request.ReplyCreateRequest;
-import me.scene.paper.board.article.domain.article.model.Article;
-import me.scene.paper.board.article.domain.article.repository.ArticleRepository;
-import me.scene.paper.board.article.domain.tag.repository.TagRepository;
-import me.scene.paper.board.magazine.application.command.MagazineService;
-import me.scene.paper.board.magazine.application.command.MemberService;
-import me.scene.paper.board.magazine.application.command.request.MagazineCreateRequest;
-import me.scene.paper.board.magazine.domain.magazine.model.Magazine;
-import me.scene.paper.board.magazine.domain.magazine.repository.MagazineRepository;
-import me.scene.paper.board.magazine.domain.managed.model.ManagedMagazine;
-import me.scene.paper.board.topic.application.command.TopicService;
-import me.scene.paper.board.topic.application.command.request.TopicCreateRequest;
-import me.scene.paper.board.topic.domain.model.Topic;
-import me.scene.paper.board.topic.domain.repository.TopicRepository;
+import me.scene.paper.service.account.application.command.AccountService;
+import me.scene.paper.service.account.application.command.request.SignupRequest;
+import me.scene.paper.service.account.domain.account.model.Account;
+import me.scene.paper.service.account.domain.account.repository.AccountRepository;
+import me.scene.paper.service.account.domain.tempaccount.model.TempAccount;
+import me.scene.paper.service.account.domain.tempaccount.repository.TempAccountRepository;
+import me.scene.paper.service.board.article.application.command.ArticleService;
+import me.scene.paper.service.board.article.application.command.TagService;
+import me.scene.paper.service.board.article.application.command.request.ArticleCreateRequest;
+import me.scene.paper.service.board.article.application.command.request.ReplyCreateRequest;
+import me.scene.paper.service.board.article.domain.article.model.Article;
+import me.scene.paper.service.board.article.domain.article.repository.ArticleRepository;
+import me.scene.paper.service.board.article.domain.tag.repository.TagRepository;
+import me.scene.paper.service.board.magazine.application.command.MagazineService;
+import me.scene.paper.service.board.magazine.application.command.MemberService;
+import me.scene.paper.service.board.magazine.application.command.request.MagazineCreateRequest;
+import me.scene.paper.service.board.magazine.domain.magazine.model.Magazine;
+import me.scene.paper.service.board.magazine.domain.magazine.repository.MagazineRepository;
+import me.scene.paper.service.board.magazine.domain.managed.model.ManagedMagazine;
+import me.scene.paper.service.board.topic.application.command.TopicService;
+import me.scene.paper.service.board.topic.application.command.request.TopicCreateRequest;
+import me.scene.paper.service.board.topic.domain.model.Topic;
+import me.scene.paper.service.board.topic.domain.repository.TopicRepository;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
@@ -70,8 +69,6 @@ public class DataContainer {
         private final ArticleRepository articleRepository;
         private final TagService tagService;
         private final TagRepository tagRepository;
-
-        private final ExcerptRepository excerptRepository;
 
 
         private void init() {
@@ -175,8 +172,6 @@ public class DataContainer {
             magazineRepository.deleteAll();
 
             tagRepository.deleteAll();
-
-            excerptRepository.deleteAll();
         }
 
     }

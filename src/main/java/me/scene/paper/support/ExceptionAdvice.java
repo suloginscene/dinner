@@ -1,12 +1,12 @@
 package me.scene.paper.support;
 
 import lombok.extern.slf4j.Slf4j;
-import me.scene.paper.account.domain.tempaccount.exception.VerificationException;
-import me.scene.paper.board.common.domain.exception.NotDeletableException;
-import me.scene.paper.board.common.domain.exception.NotOwnerException;
-import me.scene.paper.board.magazine.domain.magazine.exception.AuthorizationException;
-import me.scene.paper.board.magazine.domain.magazine.exception.TypeMismatchException;
-import me.scene.paper.common.mail.sender.MailException;
+import me.scene.paper.service.account.domain.tempaccount.exception.VerificationException;
+import me.scene.paper.service.board.common.domain.exception.NotDeletableException;
+import me.scene.paper.service.board.common.domain.exception.NotOwnerException;
+import me.scene.paper.service.board.magazine.domain.magazine.exception.AuthorizationException;
+import me.scene.paper.service.board.magazine.domain.magazine.exception.TypeMismatchException;
+import me.scene.paper.common.communication.mail.sender.MailException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;

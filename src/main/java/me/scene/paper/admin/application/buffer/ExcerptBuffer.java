@@ -2,7 +2,7 @@ package me.scene.paper.admin.application.buffer;
 
 import lombok.RequiredArgsConstructor;
 import me.scene.paper.admin.application.command.ExcerptService;
-import me.scene.paper.main.application.cache.ExcerptCache;
+import me.scene.paper.service.home.application.cache.ExcerptCache;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
