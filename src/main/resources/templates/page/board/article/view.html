@@ -32,11 +32,11 @@
                 </div>
             </div>
 
-            <div th:if="${article.publicized=='PRIVATE'}">
+            <div th:if="${article.publicized==false}" class="draft">
                 비공개 게시글입니다. 수정화면을 통해 공개하실 수 있습니다.
             </div>
 
-            <article th:utext="*{content}"></article>
+            <article th:text="*{content}"></article>
 
 
             <div class="point">

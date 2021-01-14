@@ -24,7 +24,7 @@ public class MagazineView extends View {
         super(magazine);
 
         this.shortExplanation = magazine.getShortExplanation();
-        this.longExplanation = magazine.getLongExplanation().replace("\n", "<br>");
+        this.longExplanation = magazine.getLongExplanation();
 
         this.hasChild = magazine.hasTopic();
 

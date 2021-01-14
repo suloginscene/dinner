@@ -22,6 +22,7 @@ public class ExceptionAdvice {
     private static final String templateMessage = "{}({}) when request \"{}\"";
 
 
+
     @ExceptionHandler
     public String usernameNotFoundException(HttpServletRequest req, UsernameNotFoundException e) {
         warn(req, e);

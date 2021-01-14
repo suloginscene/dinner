@@ -38,7 +38,7 @@
                     <span th:text="*{shortExplanation}"></span>
                     <i class="fa fa-chevron-down" th:unless="*{longExplanation.isEmpty()}"></i>
                 </a>
-                <div class="panel" th:utext="*{longExplanation}"></div>
+                <div class="panel" th:utext="${#strings.replace(#strings.escapeXml(topic.longExplanation), T(System).getProperty('line.separator'), '<br>')}"></div>
             </div>
 
             <div id="button-container-wrapper">
