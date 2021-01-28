@@ -12,9 +12,13 @@
             <div class="space"></div>
             <ul id="tags" class="children">
                 <li th:each="tag:${tags}" class="tag-link">
-                    <div class="centered">
-                        <div class="tag-title"><a th:href="'/tags/'+${tag.name}" th:text="${tag.name}">개별 태그</a></div>
-                        <div>(<span th:text="${tag.count}"></span>)</div>
+                    <div>
+                        <div class="centered tag-title">
+                            <a th:href="'/tags/'+${tag.name}" th:text="${tag.name}">개별 태그</a>
+                        </div>
+                        <div class="centered">
+                            (<span th:text="${tag.count}"></span>)
+                        </div>
                     </div>
                 </li>
             </ul>

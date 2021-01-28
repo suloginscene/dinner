@@ -11,14 +11,15 @@
             <div class="space"></div>
             <ul id="magazines" class="children">
                 <li th:each="magazine:${magazines}" class="magazine-link">
-                    <div class="centered">
-                        <div class="magazine-title">
+                    <div>
+                        <div class="centered magazine-title">
                             <a th:href="'/magazines/'+${magazine.id}" th:text="${magazine.title}"></a>
                         </div>
-                        <div class="magazine-owner">
+                        <div class="centered magazine-owner">
                             by <a th:href="'/@'+${magazine.owner}" th:text="${magazine.owner}" class="person"></a>
                         </div>
-                        <div th:text="${magazine.shortExplanation}"></div>
+                        <div class="centered" th:text="${magazine.shortExplanation}">
+                        </div>
                     </div>
                 </li>
             </ul>
