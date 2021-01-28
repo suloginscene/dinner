@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import me.scene.paper.service.board.article.domain.article.model.ArticleTag;
 import me.scene.paper.common.framework.entity.BaseEntity;
+import org.hibernate.annotations.BatchSize;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -23,6 +24,7 @@ public class Tag extends BaseEntity {
     @Column(length = 16, unique = true, nullable = false)
     private String name;
 
+    @BatchSize(size = 100)
     @OneToMany(mappedBy = "tag")
     private final Set<ArticleTag> articleTags = new HashSet<>();
 

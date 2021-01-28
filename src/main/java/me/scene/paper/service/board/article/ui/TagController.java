@@ -2,6 +2,7 @@ package me.scene.paper.service.board.article.ui;
 
 import lombok.RequiredArgsConstructor;
 import me.scene.paper.service.board.article.application.query.TagQueryService;
+import me.scene.paper.service.board.article.application.query.dto.TagLink;
 import me.scene.paper.service.board.article.application.query.dto.TagView;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,7 +21,7 @@ public class TagController {
 
     @GetMapping("/tags")
     public String showTags(Model model) {
-        List<String> tags = query.names();
+        List<TagLink> tags = query.tags();
 
         model.addAttribute("tags", tags);
         return "page/board/article/tags";

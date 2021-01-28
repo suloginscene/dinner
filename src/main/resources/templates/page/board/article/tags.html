@@ -7,10 +7,15 @@
 
     <body th:replace="layout/layout::body(~{::section})">
         <section>
-            <h1>디너의 모든 태그</h1>
-            <ul>
-                <li th:each="tag:${tags}">
-                    <a th:href="'/tags/'+${tag}" th:text="${tag}">개별 태그</a>
+
+            <div class="centered title">태그 목록</div>
+            <div class="space"></div>
+            <ul id="tags" class="children">
+                <li th:each="tag:${tags}" class="tag-link">
+                    <div class="centered">
+                        <div class="tag-title"><a th:href="'/tags/'+${tag.name}" th:text="${tag.name}">개별 태그</a></div>
+                        <div>(<span th:text="${tag.count}"></span>)</div>
+                    </div>
                 </li>
             </ul>
         </section>
