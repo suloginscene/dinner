@@ -2,6 +2,7 @@ package me.scene.paper.service.integration.service.board.magazine;
 
 import me.scene.paper.service.board.common.dto.Link;
 import me.scene.paper.service.board.magazine.application.query.MagazineQueryService;
+import me.scene.paper.service.board.magazine.application.query.dto.MagazineExtendedLink;
 import me.scene.paper.service.board.magazine.application.query.dto.MagazineLink;
 import me.scene.paper.service.board.magazine.domain.magazine.model.Magazine;
 import me.scene.paper.service.board.magazine.domain.magazine.repository.MagazineRepository;
@@ -60,7 +61,7 @@ class MagazineQueryServiceTest {
     @Nested class OnFindAll {
         @Test
         void returns_all() {
-            List<MagazineLink> magazines = query.allLinks();
+            List<MagazineExtendedLink> magazines = query.allLinks();
             assertThat(magazines.size()).isEqualTo(3);
         }
     }

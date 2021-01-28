@@ -5,7 +5,7 @@ import me.scene.paper.service.board.magazine.application.command.MagazineService
 import me.scene.paper.service.board.magazine.application.command.request.MagazineCreateRequest;
 import me.scene.paper.service.board.magazine.application.command.request.MagazineUpdateRequest;
 import me.scene.paper.service.board.magazine.application.query.MagazineQueryService;
-import me.scene.paper.service.board.magazine.application.query.dto.MagazineLink;
+import me.scene.paper.service.board.magazine.application.query.dto.MagazineExtendedLink;
 import me.scene.paper.service.board.magazine.application.query.dto.MagazineToUpdate;
 import me.scene.paper.service.board.magazine.application.query.dto.MagazineView;
 import me.scene.paper.service.board.magazine.ui.form.MagazineForm;
@@ -68,7 +68,7 @@ public class MagazineController {
 
     @GetMapping("/magazines")
     public String showList(Model model) {
-        List<MagazineLink> magazines = query.allLinks();
+        List<MagazineExtendedLink> magazines = query.allLinks();
 
         model.addAttribute("magazines", magazines);
         return "page/board/magazine/list";

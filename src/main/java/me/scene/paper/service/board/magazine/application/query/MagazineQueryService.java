@@ -2,6 +2,7 @@ package me.scene.paper.service.board.magazine.application.query;
 
 import lombok.RequiredArgsConstructor;
 import me.scene.paper.service.board.common.domain.model.Owner;
+import me.scene.paper.service.board.magazine.application.query.dto.MagazineExtendedLink;
 import me.scene.paper.service.board.magazine.application.query.dto.MagazineLink;
 import me.scene.paper.service.board.magazine.application.query.dto.MagazineToUpdate;
 import me.scene.paper.service.board.magazine.application.query.dto.MagazineView;
@@ -47,10 +48,10 @@ public class MagazineQueryService {
                 .collect(toList());
     }
 
-    public List<MagazineLink> allLinks() {
+    public List<MagazineExtendedLink> allLinks() {
         List<Magazine> magazines = repository.findAll();
         return magazines.stream()
-                .map(MagazineLink::new)
+                .map(MagazineExtendedLink::new)
                 .collect(toList());
     }
 

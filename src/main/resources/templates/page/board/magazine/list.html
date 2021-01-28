@@ -7,10 +7,19 @@
 
     <body th:replace="layout/layout::body(~{::section})">
         <section>
-            <h1>All Magazines</h1>
-            <ul>
-                <li th:each="magazine:${magazines}">
-                    <a th:href="@{'/magazines/'+${magazine.id}}" th:text="${magazine.title}"></a>
+            <div class="centered title">매거진 스탠드</div>
+            <div class="space"></div>
+            <ul id="magazines" class="children">
+                <li th:each="magazine:${magazines}" class="magazine-link">
+                    <div class="centered">
+                        <div class="magazine-title">
+                            <a th:href="'/magazines/'+${magazine.id}" th:text="${magazine.title}"></a>
+                        </div>
+                        <div class="magazine-owner">
+                            by <a th:href="'/@'+${magazine.owner}" th:text="${magazine.owner}" class="person"></a>
+                        </div>
+                        <div th:text="${magazine.shortExplanation}"></div>
+                    </div>
                 </li>
             </ul>
         </section>

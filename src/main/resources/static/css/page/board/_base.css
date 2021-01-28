@@ -24,6 +24,14 @@ section {
     margin-bottom: 25px;
 }
 
+.centered {
+    text-align: center;
+}
+
+.space {
+    height: 60px;
+}
+
 .bi-line {
     font-size: 18px;
     margin-bottom: 25px;

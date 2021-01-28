@@ -1,1 +1,28 @@
 @import "/css/page/board/_base.css";
+
+#magazines {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.magazine-link {
+    height: 330px;
+    width: 250px;
+    margin: 33px;
+    padding: 20px;
+    border: solid 1px dimgray;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.magazine-title {
+    font-size: 30px;
+    margin-bottom: 20px;
+}
+
+.magazine-owner {
+    margin-bottom: 50px;
+}
