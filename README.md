@@ -1,6 +1,6 @@
 # Paper [![Build Status](https://travis-ci.com/suloginscene/paper.svg?branch=master)](https://travis-ci.com/suloginscene/paper)
 
-웹 / 개발 1인 + 비개발 1인 / 2020. 9 - 12 / [웹사이트](https://onpaper.cf)  
+웹 / 개발 1인 + 비개발 1인 / 2020. 9 - 12 / [웹사이트](https://blog.scene-cho.com)  
 자바, 스프링, JPA / 타임리프, 자바스크립트 / 도커, nginx, ec2 & rds(postgres), https
 
 매거진(공유 블로그) 서비스입니다.   
